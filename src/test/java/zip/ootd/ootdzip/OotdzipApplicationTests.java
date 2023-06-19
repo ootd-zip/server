@@ -1,13 +1,13 @@
-package com.sharemap.sharemap;
+package zip.ootd.ootdzip;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ShareMapApplicationTests {
+class OotdzipApplicationTests {
 
-	@Test
-	void contextLoads() {
-	}
+    @Test
+    void contextLoads() {
+    }
 
 }
