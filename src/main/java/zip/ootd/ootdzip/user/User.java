@@ -14,6 +14,7 @@ public class User extends BaseEntity {
 
     private String name;
 
+    @Enumerated(EnumType.ORDINAL)
     private UserGender gender = UserGender.UNKNOWN;
 
     private LocalDate birthdate;
