@@ -10,10 +10,10 @@ import zip.ootd.ootdzip.user.User;
 import java.util.List;
 
 @Entity
+@Table(name = "boards")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "boards")
 public class Board extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

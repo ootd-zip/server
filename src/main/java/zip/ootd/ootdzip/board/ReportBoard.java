@@ -7,10 +7,10 @@ import lombok.NoArgsConstructor;
 import zip.ootd.ootdzip.user.User;
 
 @Entity
+@Table(name = "report_boards")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "report_boards")
 public class ReportBoard {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

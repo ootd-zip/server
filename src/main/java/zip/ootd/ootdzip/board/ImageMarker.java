@@ -8,10 +8,10 @@ import zip.ootd.ootdzip.board.Board;
 import zip.ootd.ootdzip.clothes.Clothes;
 
 @Entity
+@Table(name = "image_markers")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "image_markers")
 public class ImageMarker {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

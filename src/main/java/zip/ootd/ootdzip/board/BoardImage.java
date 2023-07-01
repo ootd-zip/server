@@ -7,10 +7,10 @@ import lombok.NoArgsConstructor;
 import zip.ootd.ootdzip.BaseEntity;
 
 @Entity
+@Table(name = "board_images")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "board_images")
 public class BoardImage extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "board_id", nullable = false)

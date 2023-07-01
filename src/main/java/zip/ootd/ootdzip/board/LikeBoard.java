@@ -8,10 +8,10 @@ import zip.ootd.ootdzip.BaseEntity;
 import zip.ootd.ootdzip.user.User;
 
 @Entity
+@Table(name = "like_boards")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "like_boards")
 public class LikeBoard {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

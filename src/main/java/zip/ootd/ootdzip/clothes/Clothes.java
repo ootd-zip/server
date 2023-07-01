@@ -11,10 +11,10 @@ import zip.ootd.ootdzip.BaseEntity;
 import zip.ootd.ootdzip.user.User;
 
 @Entity
+@Table(name = "Clothes")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "Clothes")
 public class Clothes extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

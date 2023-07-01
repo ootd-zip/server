@@ -12,10 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "Comments")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "Comments")
 public class Comment extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "board_id", nullable = false)
