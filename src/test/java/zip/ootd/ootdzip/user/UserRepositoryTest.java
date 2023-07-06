@@ -34,6 +34,7 @@ public class UserRepositoryTest {
                 gender,
                 birthdate,
                 userHeight,
+                true,
                 80,
                 true,
                 null,

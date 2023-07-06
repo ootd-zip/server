@@ -25,9 +25,11 @@ public class User extends BaseEntity {
 
     private Integer height;
 
+    private Boolean showHeight;
+
     private Integer weight;
 
-    private Boolean isOpenBody;
+    private Boolean showWeight;
 
     @Column(length = 2048)
     private String profileImage;
