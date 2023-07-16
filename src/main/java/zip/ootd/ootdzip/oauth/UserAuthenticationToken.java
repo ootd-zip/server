@@ -1,4 +1,4 @@
-package zip.ootd.ootdzip.security;
+package zip.ootd.ootdzip.oauth;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

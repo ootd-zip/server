@@ -3,16 +3,17 @@ package zip.ootd.ootdzip.security;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.core.Authentication;
+import zip.ootd.ootdzip.oauth.TokenInfo;
+import zip.ootd.ootdzip.oauth.UserAuthenticationToken;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class JwtUtilsTest {
 
-    private JwtUtils jwtUtils;
+    private final JwtUtils jwtUtils;
 
     public JwtUtilsTest() {
         this.jwtUtils = new JwtUtils(
@@ -61,23 +62,22 @@ public class JwtUtilsTest {
         UserAuthenticationToken.UserDetails userDetails = new UserAuthenticationToken.UserDetails(1580L);
         Authentication authentication = new UserAuthenticationToken(userDetails);
         // Cannot use fixed jwt value since it expires after some amount of time.
-        Optional<Authentication> decoded = jwtUtils.decode(jwtUtils.encode(authentication, new Date(), 60000L));
-        assertThat(decoded.isPresent()).isTrue();
-        assertThat(decoded.get().getName()).isEqualTo("1580");
+        Authentication decoded = jwtUtils.decode(jwtUtils.encode(authentication, new Date(), 60000L));
+        assertThat(decoded.getName()).isEqualTo("1580");
     }
 
     @Test
     @DisplayName("JWT decode 실패: verify signature 불일치")
     void decodeWrongVeritySignatureJwt() {
-        Optional<Authentication> authentication = jwtUtils.decode("eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJvb3RkLnppcCIsInN1YiI6IjE1ODAiLCJpYXQiOjE2ODg0NjAzOTEsImV4cCI6MTY4ODQ2Mzk5MX0.pIse_4MuOMZIIQgywdHg18wVF6ynQCL3s5cgYXn9wDY");
-        assertThat(authentication.isEmpty()).isTrue();
+        Authentication authentication = jwtUtils.decode("eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJvb3RkLnppcCIsInN1YiI6IjE1ODAiLCJpYXQiOjE2ODg0NjAzOTEsImV4cCI6MTY4ODQ2Mzk5MX0.pIse_4MuOMZIIQgywdHg18wVF6ynQCL3s5cgYXn9wDY");
+        assertThat(authentication).isNull();
     }
 
     @Test
     @DisplayName("JWT decode 실패: 잘못된 문자열 형식")
     void decodeEmptyJwt() {
-        Optional<Authentication> authentication = jwtUtils.decode("eyJhbGciOiJIUzI1NiJ9.eyAiaGVsbG8iOiAxMTEsICJieWUiOiAid29ybGQiOiB7IiJ9IHs=.pIse_4MuOMZIIQgywdHg18wVF6ynQCL3s5cgYXn9wDY");
-        assertThat(authentication.isEmpty()).isTrue();
+        Authentication authentication = jwtUtils.decode("eyJhbGciOiJIUzI1NiJ9.eyAiaGVsbG8iOiAxMTEsICJieWUiOiAid29ybGQiOiB7IiJ9IHs=.pIse_4MuOMZIIQgywdHg18wVF6ynQCL3s5cgYXn9wDY");
+        assertThat(authentication).isNull();
     }
 
 }

@@ -1,12 +1,10 @@
-package zip.ootd.ootdzip.security;
+package zip.ootd.ootdzip.oauth;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.core.Authentication;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class UserAuthenticationTokenTest {
 

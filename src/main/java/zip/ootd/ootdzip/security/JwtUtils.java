@@ -6,11 +6,12 @@ import io.jsonwebtoken.security.SignatureException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
+import zip.ootd.ootdzip.oauth.TokenInfo;
+import zip.ootd.ootdzip.oauth.UserAuthenticationToken;
 
 import javax.crypto.SecretKey;
 import java.util.Base64;
 import java.util.Date;
-import java.util.Optional;
 
 @Component
 public class JwtUtils {
