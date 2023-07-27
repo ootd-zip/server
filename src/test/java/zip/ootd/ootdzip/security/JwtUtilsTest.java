@@ -3,8 +3,8 @@ package zip.ootd.ootdzip.security;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.core.Authentication;
-import zip.ootd.ootdzip.oauth.TokenInfo;
-import zip.ootd.ootdzip.oauth.UserAuthenticationToken;
+import zip.ootd.ootdzip.oauth.data.TokenInfo;
+import zip.ootd.ootdzip.oauth.domain.UserAuthenticationToken;
 
 import java.util.Calendar;
 import java.util.Date;

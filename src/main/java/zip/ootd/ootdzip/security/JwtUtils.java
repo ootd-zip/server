@@ -6,8 +6,8 @@ import io.jsonwebtoken.security.SignatureException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
-import zip.ootd.ootdzip.oauth.TokenInfo;
-import zip.ootd.ootdzip.oauth.UserAuthenticationToken;
+import zip.ootd.ootdzip.oauth.data.TokenInfo;
+import zip.ootd.ootdzip.oauth.domain.UserAuthenticationToken;
 
 import javax.crypto.SecretKey;
 import java.util.Base64;

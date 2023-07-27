@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import zip.ootd.ootdzip.BaseEntity;
 import zip.ootd.ootdzip.board.Board;
-import zip.ootd.ootdzip.user.User;
+import zip.ootd.ootdzip.user.domain.User;
 
 import java.util.ArrayList;
 import java.util.List;

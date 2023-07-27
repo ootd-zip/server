@@ -3,6 +3,7 @@ package zip.ootd.ootdzip.oauth;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.core.Authentication;
+import zip.ootd.ootdzip.oauth.domain.UserAuthenticationToken;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

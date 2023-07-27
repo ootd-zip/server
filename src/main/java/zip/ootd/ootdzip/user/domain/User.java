@@ -1,4 +1,4 @@
-package zip.ootd.ootdzip.user;
+package zip.ootd.ootdzip.user.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
