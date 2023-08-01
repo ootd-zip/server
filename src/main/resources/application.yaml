@@ -1,0 +1,40 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+  datasource:
+    url: jdbc:mariadb://localhost:3306/ootdzip
+    username: root
+    password: 1234
+    driver-class-name: org.mariadb.jdbc.Driver
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+      timeout: 10
+security:
+  jwt:
+    secret-key: fg+KVO+mAOI82PpNTvTr+qOGfDbnOWNzgI9vHfRT3cQ=
+    signature-algorithm: HS256
+    expires-in: 10800000
+    refresh-token-expires-in: 604800000
+
+# for swagger
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    path: /swagger-ui
+    disable-swagger-default-url: true
+    display-request-duration: true
+    tags-sorter: alpha
+    operations-sorter: alpha
+    doc-expansion: none
+    syntax-highlight:
+      theme: nord
+    urls-primary-name: TEST API
+    persist-authorization: true
+    query-config-enabled: true
+  pre-loading-enabled: true
+
