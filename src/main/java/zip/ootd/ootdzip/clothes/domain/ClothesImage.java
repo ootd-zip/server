@@ -1,20 +1,22 @@
-package zip.ootd.ootdzip.board;
+package zip.ootd.ootdzip.clothes.domain;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import zip.ootd.ootdzip.BaseEntity;
 
 @Entity
-@Table(name = "board_images")
+@Table(name = "clothes_image")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class BoardImage extends BaseEntity {
+@Builder
+public class ClothesImage extends BaseEntity {
     @ManyToOne
-    @JoinColumn(name = "board_id", nullable = false)
-    private Board board;
+    @JoinColumn(name = "clothes_id")
+    private Clothes clothes;
     @Column(length = 2048)
     private String imageUrl;
 }

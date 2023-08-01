@@ -1,4 +1,4 @@
-package zip.ootd.ootdzip.board;
+package zip.ootd.ootdzip.board.domain;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -18,24 +18,31 @@ public class Board extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User writer;
+
     private String contents;
+
     @Column(nullable = false)
     private Integer viewCount = 0;
+
     @Column(nullable = false)
     private Boolean isDeleted = false;
+
     @Column(nullable = false)
     private Boolean isBlocked = false;
+
     @Column(nullable = false)
     private Integer reportCount = 0;
+
     @Column(nullable = false)
     private Integer likeCount = 0;
+
     @OneToMany
     @JoinColumn(name = "board_id")
-    private List<BoardImage> boardImages;
+    private List<BoardImage> boardImageList;
 
     public void writeBoard(User user, String contents, List<BoardImage> boardImages){
         this.writer = user;
         this.contents = contents;
-        this.boardImages = boardImages;
+        this.boardImageList = boardImages;
     }
 }

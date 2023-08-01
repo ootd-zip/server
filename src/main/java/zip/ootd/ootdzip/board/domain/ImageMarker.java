@@ -1,25 +1,27 @@
-package zip.ootd.ootdzip.board;
+package zip.ootd.ootdzip.board.domain;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import zip.ootd.ootdzip.BaseEntity;
-import zip.ootd.ootdzip.user.User;
+import zip.ootd.ootdzip.board.domain.Board;
+import zip.ootd.ootdzip.clothes.domain.Clothes;
 
 @Entity
-@Table(name = "like_boards")
+@Table(name = "image_markers")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class LikeBoard {
+public class ImageMarker {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected Long id;
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private Long id;
+
     @ManyToOne
     @JoinColumn(name = "board_id", nullable = false)
     private Board board;
+
+    @ManyToOne
+    @JoinColumn(name = "clothes_id", nullable = false)
+    private Clothes clothes;
 }
