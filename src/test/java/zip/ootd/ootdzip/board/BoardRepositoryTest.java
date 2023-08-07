@@ -37,6 +37,7 @@ public class BoardRepositoryTest {
                 80,
                 true,
                 null,
+                false,
                 false));
 
         String contents = "test contents";

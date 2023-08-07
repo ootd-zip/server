@@ -44,9 +44,9 @@ public class JwtUtils {
         return TokenInfo.builder()
                 .tokenType("Bearer")
                 .accessToken(accessToken)
-                .expiresIn(accessTokenLifetime / 1000)
+                .expiresIn((int) (accessTokenLifetime / 1000))
                 .refreshToken(refreshToken)
-                .refreshTokenExpiresIn(refreshTokenLifetime / 1000)
+                .refreshTokenExpiresIn((int) (refreshTokenLifetime / 1000))
                 .build();
     }
 

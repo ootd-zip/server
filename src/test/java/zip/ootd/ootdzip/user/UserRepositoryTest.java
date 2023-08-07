@@ -41,6 +41,7 @@ public class UserRepositoryTest {
                 80,
                 true,
                 null,
+                false,
                 false));
 
         Optional<User> result = userRepository.findById(saved.getId());

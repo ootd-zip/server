@@ -22,8 +22,8 @@ public class UserOAuth extends BaseEntity {
     private User user;
 
     @Column(name = "oauth_provider", nullable = false)
-    private OAuthProvider oauthProvider;
+    private OAuthProvider oAuthProvider;
 
     @Column(name = "oauth_provider_id", nullable = false)
-    private String oauthUserId;
+    private String oAuthUserId;
 }

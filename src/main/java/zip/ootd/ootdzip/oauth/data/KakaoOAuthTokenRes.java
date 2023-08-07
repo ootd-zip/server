@@ -5,13 +5,13 @@ import lombok.Data;
 @Data
 public class KakaoOAuthTokenRes {
 
-    private String tokenType;
+    private String token_type;
 
-    private String accessToken;
+    private String access_token;
 
-    private Integer expiresIn;
+    private Integer expires_in;
 
-    private String refreshToken;
+    private String refresh_token;
 
-    private Integer refreshTokenExpiresIn;
+    private Integer refresh_token_expires_in;
 }

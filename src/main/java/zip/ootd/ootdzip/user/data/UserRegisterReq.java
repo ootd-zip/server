@@ -25,10 +25,4 @@ public class UserRegisterReq {
     private Long weight;
 
     private Boolean showWeight;
-
-    @JsonProperty(required = true)
-    private String oauthProvider;
-
-    @JsonProperty(required = true)
-    private String authorizationCode;
 }

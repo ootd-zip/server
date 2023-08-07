@@ -13,14 +13,12 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class User extends BaseEntity {
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true)
     private String name;
 
     @Enumerated(EnumType.ORDINAL)
-    @Column(nullable = false)
     private UserGender gender = UserGender.UNKNOWN;
 
-    @Column(nullable = false)
     private LocalDate birthdate;
 
     private Integer height;
@@ -35,5 +33,22 @@ public class User extends BaseEntity {
     private String profileImage;
 
     @Column(nullable = false)
+    private Boolean isCompleted = false;
+
+    @Column(nullable = false)
     private Boolean isDeleted = false;
+
+    public static User getDefault() {
+        return new User(
+                null,
+                null,
+                null,
+                0,
+                false,
+                0,
+                false,
+                null,
+                false,
+                false);
+    }
 }

@@ -13,9 +13,9 @@ public class TokenInfo {
 
     private String accessToken;
 
-    private Long expiresIn;
+    private Integer expiresIn;
 
     private String refreshToken;
 
-    private Long refreshTokenExpiresIn;
+    private Integer refreshTokenExpiresIn;
 }
