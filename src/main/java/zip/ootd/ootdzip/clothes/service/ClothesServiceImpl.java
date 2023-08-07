@@ -23,10 +23,10 @@ import zip.ootd.ootdzip.clothes.repository.ClothesColorRepository;
 import zip.ootd.ootdzip.clothes.repository.ClothesImageRepository;
 import zip.ootd.ootdzip.clothes.repository.ClothesRepository;
 import zip.ootd.ootdzip.clothes.repository.ClothesStyleRepository;
-import zip.ootd.ootdzip.config.S3Config;
 import zip.ootd.ootdzip.user.User;
 import zip.ootd.ootdzip.user.UserRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,7 +45,7 @@ public class ClothesServiceImpl implements ClothesService{
     private final StyleRepository styleRepository;
     private final ColorRepository colorRepository;
 
-    private final S3Config s3Config;
+    //private final S3Config s3Config;
 
     @Override
     @Transactional
@@ -62,14 +62,25 @@ public class ClothesServiceImpl implements ClothesService{
         List<ClothesStyle> clothesStyleList;
         List<ClothesColor> clothesColorList;
 
+        /*
+        옷 관련 도메인 조회
+         */
         brand       = brandRepository.findById(clothesSaveDto.getBrandId());
         user        = userRepository.findById(clothesSaveDto.getUserId());
         category    = categoryRepository.findById(clothesSaveDto.getCategoryId());
         styleList   = styleRepository.findAllById(clothesSaveDto.getStyleIdList());
         colorList   = colorRepository.findAllById(clothesSaveDto.getColorIdList());
 
-        imageUrlList = s3Config.uploadImageListToS3(imageList);
+        /*
+        이미지 저장 로직 추가 필요(S3 연결 예정)
+         */
+        imageUrlList = new ArrayList<>();
+        imageUrlList.add("image 1");
+        //imageUrlList = s3Config.uploadImageListToS3(imageList);
 
+        /*
+        옷 저장
+         */
         clothes = Clothes.builder()
                 .user(user.orElseThrow(() -> new IllegalArgumentException("유효하지 않은 User ID")))
                 .brand(brand.orElseThrow(() -> new IllegalArgumentException("유효하지 않은 Brand ID")))
@@ -84,6 +95,9 @@ public class ClothesServiceImpl implements ClothesService{
 
         Clothes savedClothes = clothesRepository.save(clothes);
 
+        /*
+        옷 관련 1:N 데이터 저장
+         */
         clothesStyleList = styleList
                 .stream()
                 .map(x -> ClothesStyle
@@ -113,7 +127,9 @@ public class ClothesServiceImpl implements ClothesService{
         List<ClothesImage> savedClothesImageList = clothesImageRepository.saveAll(clothesImageList);
         List<ClothesColor> savedClothesColorList = clothesColorRepository.saveAll(clothesColorList);
 
-
+        /*
+        옷 저장 결과 DTO 반환(저장 후에 어떤 정보 보내줄지 확인 필요)
+         */
         result = ClothesResponseDto.builder()
                 .clothesName(savedClothes.getName())
                 .brand(new BrandDto(brand.get()))

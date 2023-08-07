@@ -18,13 +18,14 @@ import zip.ootd.ootdzip.clothes.data.ClothesResponseDto;
 import zip.ootd.ootdzip.clothes.data.ClothesSaveDto;
 import zip.ootd.ootdzip.clothes.service.ClothesService;
 import zip.ootd.ootdzip.user.User;
+import zip.ootd.ootdzip.user.UserGender;
 import zip.ootd.ootdzip.user.UserRepository;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
 public class ClothesServiceTest {
@@ -53,7 +54,13 @@ public class ClothesServiceTest {
         User user = User
                 .builder()
                 .name("유저1")
+                .gender(UserGender.MALE)
                 .birthdate(LocalDate.of(1999,1,1))
+                .height(170)
+                .weight(70)
+                .isOpenBody(true)
+                .profileImage("imageUrl")
+                .isDeleted(false)
                 .build();
 
         Category largeCategory = Category
@@ -104,11 +111,91 @@ public class ClothesServiceTest {
 
         ClothesSaveDto clothesSaveDto = new ClothesSaveDto(savedUser.getId(), "옷1", savedBrand.getId(), savedDetailCategory.getId(), styleIdList, colorIdList, true, "사이즈1", "재질1", "상품구입처1", "구매일");
         List<MultipartFile> imageList = new ArrayList<>();
-        //When(실행)
-        ClothesResponseDto savedClothse = clothesService.saveClothes(clothesSaveDto, imageList);
-        //Then(검증)
-        assertThat(savedClothse.getClothesName()).isEqualTo("옷1");
 
+        //When(실행)
+        ClothesResponseDto savedClothes = clothesService.saveClothes(clothesSaveDto, imageList);
+
+        //Then(검증)
+        assertThat(savedClothes.getClothesName()).isEqualTo("옷1");
+        assertThat(savedClothes.getBrand().getName()).isEqualTo(brand.getName());
+        assertThat(savedClothes.getCategory().getCategoryName()).isEqualTo(savedDetailCategory.getName());
+    }
+
+    @Test
+    public void 옷저장_실패_유효하지않은브랜드() throws Exception{
+        //Given(준비)
+        Brand brand = Brand
+                .builder()
+                .name("브랜드2")
+                .status(BrandStatus.Used)
+                .build();
+
+        User user = User
+                .builder()
+                .name("유저2")
+                .gender(UserGender.MALE)
+                .birthdate(LocalDate.of(1999,1,1))
+                .height(170)
+                .weight(70)
+                .isOpenBody(true)
+                .profileImage("imageUrl")
+                .isDeleted(false)
+                .build();
+
+        Category largeCategory = Category
+                .builder()
+                .name("카테고리4")
+                .type(CategoryType.LargeCategory)
+                .build();
+
+        Category savedLargeCategory = categoryRepository.save(largeCategory);
+
+        Category middleCategory = Category
+                .builder()
+                .name("카테고리5")
+                .type(CategoryType.MiddleCategory)
+                .parentCategory(savedLargeCategory)
+                .build();
+
+        Category savedMiddleCategory = categoryRepository.save(middleCategory);
+
+        Category detailCategory = Category
+                .builder()
+                .name("카테고리6")
+                .type(CategoryType.DetailCategory)
+                .parentCategory(savedMiddleCategory)
+                .build();
+
+        Category savedDetailCategory = categoryRepository.save(detailCategory);
+
+        Color color = Color
+                .builder()
+                .name("색2")
+                .build();
+
+        Style style = Style
+                .builder()
+                .name("스타일2")
+                .build();
+
+        Brand savedBrand    = brandRepository.save(brand);
+        User savedUser      = userRepository.save(user);
+        Color savedColor    = colorRepository.save(color);
+        Style savedStyle    = styleRepository.save(style);
+
+        List<Long> styleIdList = new ArrayList<>();
+        List<Long> colorIdList = new ArrayList<>();
+        styleIdList.add(savedStyle.getId());
+        colorIdList.add(savedColor.getId());
+
+        //When(실행)
+        ClothesSaveDto clothesSaveDto = new ClothesSaveDto(savedUser.getId(), "옷1", savedBrand.getId() + 300L, savedDetailCategory.getId(), styleIdList, colorIdList, true, "사이즈1", "재질1", "상품구입처1", "구매일");
+        List<MultipartFile> imageList = new ArrayList<>();
+
+        //Then(검증)
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> clothesService.saveClothes(clothesSaveDto, imageList))
+                .withMessage("유효하지 않은 Brand ID");
 
     }
 }

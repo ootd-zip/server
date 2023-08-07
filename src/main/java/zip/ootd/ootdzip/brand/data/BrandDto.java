@@ -1,10 +1,11 @@
 package zip.ootd.ootdzip.brand.data;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import zip.ootd.ootdzip.brand.domain.Brand;
 
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class BrandDto {
