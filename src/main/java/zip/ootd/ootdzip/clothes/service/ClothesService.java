@@ -2,15 +2,15 @@ package zip.ootd.ootdzip.clothes.service;
 
 import org.springframework.web.multipart.MultipartFile;
 import zip.ootd.ootdzip.clothes.data.ClothesResponseDto;
-import zip.ootd.ootdzip.clothes.data.ClothesSaveDto;
+import zip.ootd.ootdzip.clothes.data.SaveClothesDto;
 
 import java.util.List;
 
 public interface ClothesService {
     /**
      * 옷을 저장하고, 저장된 옷을 반환한다.
-     * @param clothesSaveDto
+     * @param saveClothesDto
      * @return
      */
-    public ClothesResponseDto saveClothes(ClothesSaveDto clothesSaveDto, List<MultipartFile> clothesImageList);
+    public ClothesResponseDto saveClothes(SaveClothesDto saveClothesDto);
 }

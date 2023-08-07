@@ -15,7 +15,7 @@ import zip.ootd.ootdzip.category.repository.CategoryRepository;
 import zip.ootd.ootdzip.category.repository.ColorRepository;
 import zip.ootd.ootdzip.category.repository.StyleRepository;
 import zip.ootd.ootdzip.clothes.data.ClothesResponseDto;
-import zip.ootd.ootdzip.clothes.data.ClothesSaveDto;
+import zip.ootd.ootdzip.clothes.data.SaveClothesDto;
 import zip.ootd.ootdzip.clothes.service.ClothesService;
 import zip.ootd.ootdzip.user.User;
 import zip.ootd.ootdzip.user.UserGender;
@@ -108,12 +108,12 @@ public class ClothesServiceTest {
         List<Long> colorIdList = new ArrayList<>();
         styleIdList.add(savedStyle.getId());
         colorIdList.add(savedColor.getId());
-
-        ClothesSaveDto clothesSaveDto = new ClothesSaveDto(savedUser.getId(), "옷1", savedBrand.getId(), savedDetailCategory.getId(), styleIdList, colorIdList, true, "사이즈1", "재질1", "상품구입처1", "구매일");
         List<MultipartFile> imageList = new ArrayList<>();
+        SaveClothesDto saveClothesDto = new SaveClothesDto(savedUser.getId(), "옷1", savedBrand.getId(), savedDetailCategory.getId(), styleIdList, colorIdList, true, "사이즈1", "재질1", "상품구입처1", "구매일", imageList);
+
 
         //When(실행)
-        ClothesResponseDto savedClothes = clothesService.saveClothes(clothesSaveDto, imageList);
+        ClothesResponseDto savedClothes = clothesService.saveClothes(saveClothesDto);
 
         //Then(검증)
         assertThat(savedClothes.getClothesName()).isEqualTo("옷1");
@@ -189,12 +189,13 @@ public class ClothesServiceTest {
         colorIdList.add(savedColor.getId());
 
         //When(실행)
-        ClothesSaveDto clothesSaveDto = new ClothesSaveDto(savedUser.getId(), "옷1", savedBrand.getId() + 300L, savedDetailCategory.getId(), styleIdList, colorIdList, true, "사이즈1", "재질1", "상품구입처1", "구매일");
         List<MultipartFile> imageList = new ArrayList<>();
+        SaveClothesDto saveClothesDto = new SaveClothesDto(savedUser.getId(), "옷1", savedBrand.getId() + 300L, savedDetailCategory.getId(), styleIdList, colorIdList, true, "사이즈1", "재질1", "상품구입처1", "구매일", imageList);
+
 
         //Then(검증)
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> clothesService.saveClothes(clothesSaveDto, imageList))
+                .isThrownBy(() -> clothesService.saveClothes(saveClothesDto))
                 .withMessage("유효하지 않은 Brand ID");
 
     }
