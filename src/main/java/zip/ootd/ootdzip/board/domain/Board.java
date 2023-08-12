@@ -15,6 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Board extends BaseEntity {
+
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User writer;
