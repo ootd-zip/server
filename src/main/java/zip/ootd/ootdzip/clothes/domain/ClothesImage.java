@@ -14,9 +14,11 @@ import zip.ootd.ootdzip.BaseEntity;
 @AllArgsConstructor
 @Builder
 public class ClothesImage extends BaseEntity {
+
     @ManyToOne
     @JoinColumn(name = "clothes_id")
     private Clothes clothes;
+
     @Column(length = 2048)
     private String imageUrl;
 }

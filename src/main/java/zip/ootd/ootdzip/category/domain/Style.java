@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class Style {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

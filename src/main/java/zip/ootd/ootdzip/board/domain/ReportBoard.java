@@ -13,6 +13,7 @@ import zip.ootd.ootdzip.user.User;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReportBoard {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Long id;

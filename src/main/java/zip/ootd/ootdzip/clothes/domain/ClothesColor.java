@@ -14,12 +14,15 @@ import zip.ootd.ootdzip.category.domain.Color;
 @AllArgsConstructor
 @Builder
 public class ClothesColor {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
+
     @ManyToOne
     @JoinColumn(name = "clothes_id")
     private Clothes clothes;
+
     @ManyToOne
     @JoinColumn(name = "color_id")
     private Color color;

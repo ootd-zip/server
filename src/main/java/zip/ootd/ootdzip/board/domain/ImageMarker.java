@@ -13,6 +13,7 @@ import zip.ootd.ootdzip.clothes.domain.Clothes;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ImageMarker {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

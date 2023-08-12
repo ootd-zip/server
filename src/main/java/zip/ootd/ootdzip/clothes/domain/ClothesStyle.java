@@ -13,12 +13,15 @@ import zip.ootd.ootdzip.category.domain.Style;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ClothesStyle {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @ManyToOne
     @JoinColumn(name = "clothes_id", nullable = false)
     private Clothes clothes;
+
     @ManyToOne
     @JoinColumn(name = "style_id", nullable = false)
     private Style style;

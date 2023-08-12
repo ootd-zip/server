@@ -16,6 +16,8 @@ import zip.ootd.ootdzip.category.repository.ColorRepository;
 import zip.ootd.ootdzip.category.repository.StyleRepository;
 import zip.ootd.ootdzip.clothes.data.ClothesResponseDto;
 import zip.ootd.ootdzip.clothes.data.SaveClothesDto;
+import zip.ootd.ootdzip.clothes.domain.Clothes;
+import zip.ootd.ootdzip.clothes.repository.ClothesRepository;
 import zip.ootd.ootdzip.clothes.service.ClothesService;
 import zip.ootd.ootdzip.user.User;
 import zip.ootd.ootdzip.user.UserGender;
@@ -24,6 +26,7 @@ import zip.ootd.ootdzip.user.UserRepository;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -31,6 +34,8 @@ import static org.assertj.core.api.Assertions.*;
 public class ClothesServiceTest {
     @Autowired
     private ClothesService clothesService;
+    @Autowired
+    private ClothesRepository clothesRepository;
     @Autowired
     private BrandRepository brandRepository;
     @Autowired
@@ -105,20 +110,27 @@ public class ClothesServiceTest {
         Style savedStyle    = styleRepository.save(style);
 
         List<Long> styleIdList = new ArrayList<>();
-        List<Long> colorIdList = new ArrayList<>();
         styleIdList.add(savedStyle.getId());
-        colorIdList.add(savedColor.getId());
-        List<MultipartFile> imageList = new ArrayList<>();
-        SaveClothesDto saveClothesDto = new SaveClothesDto(savedUser.getId(), "옷1", savedBrand.getId(), savedDetailCategory.getId(), styleIdList, colorIdList, true, "사이즈1", "재질1", "상품구입처1", "구매일", imageList);
 
+        List<Long> colorIdList = new ArrayList<>();
+        colorIdList.add(savedColor.getId());
+
+        List<String> imageList = new ArrayList<>();
+        imageList.add("https://url/urlTest");
+
+        SaveClothesDto saveClothesDto = new SaveClothesDto(savedUser.getId(), "옷1", savedBrand.getId(), savedDetailCategory.getId(), styleIdList, colorIdList, true, "사이즈1", "재질1", "상품구입처1", "구매일", imageList);
 
         //When(실행)
         ClothesResponseDto savedClothes = clothesService.saveClothes(saveClothesDto);
 
         //Then(검증)
-        assertThat(savedClothes.getClothesName()).isEqualTo("옷1");
-        assertThat(savedClothes.getBrand().getName()).isEqualTo(brand.getName());
-        assertThat(savedClothes.getCategory().getCategoryName()).isEqualTo(savedDetailCategory.getName());
+        Optional<Clothes> findClothes = clothesRepository.findById(savedClothes.getId());
+
+        assertThat(findClothes.isEmpty()).isFalse();
+
+        assertThat(findClothes.orElse(new Clothes()).getName()).isEqualTo("옷1");
+        assertThat(findClothes.orElse(new Clothes()).getBrand().getName()).isEqualTo(brand.getName());
+        assertThat(findClothes.orElse(new Clothes()).getCategory().getName()).isEqualTo(savedDetailCategory.getName());
     }
 
     @Test
@@ -184,12 +196,15 @@ public class ClothesServiceTest {
         Style savedStyle    = styleRepository.save(style);
 
         List<Long> styleIdList = new ArrayList<>();
-        List<Long> colorIdList = new ArrayList<>();
         styleIdList.add(savedStyle.getId());
+
+        List<Long> colorIdList = new ArrayList<>();
         colorIdList.add(savedColor.getId());
 
+        List<String> imageList = new ArrayList<>();
+        imageList.add("https://url/urlTest");
+
         //When(실행)
-        List<MultipartFile> imageList = new ArrayList<>();
         SaveClothesDto saveClothesDto = new SaveClothesDto(savedUser.getId(), "옷1", savedBrand.getId() + 300L, savedDetailCategory.getId(), styleIdList, colorIdList, true, "사이즈1", "재질1", "상품구입처1", "구매일", imageList);
 
 

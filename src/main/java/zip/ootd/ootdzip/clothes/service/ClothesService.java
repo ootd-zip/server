@@ -7,8 +7,9 @@ import zip.ootd.ootdzip.clothes.data.SaveClothesDto;
 import java.util.List;
 
 public interface ClothesService {
+
     /**
-     * 옷을 저장하고, 저장된 옷을 반환한다.
+     * 옷을 저장하고, 저장된 옷 ID를 반환한다.
      * @param saveClothesDto
      * @return
      */

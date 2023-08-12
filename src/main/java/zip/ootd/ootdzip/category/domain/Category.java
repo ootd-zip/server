@@ -8,12 +8,13 @@ import lombok.NoArgsConstructor;
 import zip.ootd.ootdzip.category.data.CategoryType;
 
 @Entity
-@Table(name = "categoies")
+@Table(name = "categories")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class Category {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

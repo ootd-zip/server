@@ -16,6 +16,8 @@ import zip.ootd.ootdzip.brand.data.BrandStatus;
 @AllArgsConstructor
 @Builder
 public class Brand extends BaseEntity {
+
     private String name;
+
     private BrandStatus status;
 }

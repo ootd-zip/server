@@ -57,7 +57,6 @@ public class ClothesServiceImpl implements ClothesService{
         Optional<Category> category;
         List<Style> styleList;
         List<Color> colorList;
-        List<String> imageUrlList;
         List<ClothesImage> clothesImageList;
         List<ClothesStyle> clothesStyleList;
         List<ClothesColor> clothesColorList;
@@ -70,13 +69,6 @@ public class ClothesServiceImpl implements ClothesService{
         category    = categoryRepository.findById(saveClothesDto.getCategoryId());
         styleList   = styleRepository.findAllById(saveClothesDto.getStyleIdList());
         colorList   = colorRepository.findAllById(saveClothesDto.getColorIdList());
-
-        /*
-        이미지 저장 로직 추가 필요(S3 연결 예정)
-         */
-        imageUrlList = new ArrayList<>();
-        imageUrlList.add("image 1");
-        //imageUrlList = s3Config.uploadImageListToS3(saveClothesDto.getClothesImageList());
 
         /*
         옷 저장
@@ -107,7 +99,7 @@ public class ClothesServiceImpl implements ClothesService{
                     .build())
                 .toList();
 
-        clothesImageList = imageUrlList
+        clothesImageList = saveClothesDto.getClothesImageList()
                 .stream()
                 .map(x -> ClothesImage.builder()
                     .imageUrl(x)
@@ -131,17 +123,7 @@ public class ClothesServiceImpl implements ClothesService{
         옷 저장 결과 DTO 반환(저장 후에 어떤 정보 보내줄지 확인 필요)
          */
         result = ClothesResponseDto.builder()
-                .clothesName(savedClothes.getName())
-                .brand(new BrandDto(brand.get()))
-                .category(categoryRepository.findDetailCategoryById(category.get().getId()))
-                .styleList(savedClothesStyleList.stream().map(x -> x.getStyle().getName()).toList())
-                .colorList(savedClothesColorList.stream().map(x -> x.getColor().getName()).toList())
-                .imageList(savedClothesImageList.stream().map(ClothesImage::getImageUrl).toList())
-                .isOpen(savedClothes.getIsOpen())
-                .size(savedClothes.getSize())
-                .material(savedClothes.getMaterial())
-                .purchaseStore(savedClothes.getPurchaseStore())
-                .purchaseDate(savedClothes.getPurchaseDate())
+                .id(clothes.getId())
                 .build();
 
         return result;

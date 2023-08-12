@@ -18,12 +18,16 @@ import java.time.Duration;
 @Configuration
 @RequiredArgsConstructor
 public class RedisConfig {
+
     @Value("${spring.data.redis.host}")
     public String host;
+
     @Value("${spring.data.redis.port}")
     public int port;
+
     @Value("${spring.data.redis.timeout}")
     private Long timeout;
+
     @Bean
     public LettuceConnectionFactory lettuceConnectionFactory() {
         final SocketOptions socketoptions = SocketOptions.builder().connectTimeout(Duration.ofSeconds(10)).build();
@@ -36,6 +40,7 @@ public class RedisConfig {
         redisStandaloneConfiguration.setDatabase(0);
         return new LettuceConnectionFactory(redisStandaloneConfiguration, lettuceClientConfiguration);
     }
+
     @Bean(name="redisTemplate")
     public RedisTemplate<String, Object> redisTemplate() {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();

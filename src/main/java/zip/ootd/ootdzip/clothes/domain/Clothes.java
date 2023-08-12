@@ -17,21 +17,29 @@ import zip.ootd.ootdzip.user.User;
 @AllArgsConstructor
 @Builder
 public class Clothes extends BaseEntity {
+
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
     @ManyToOne
     @JoinColumn(name = "brand_id", nullable = false)
     private Brand brand;
+
     @Column(nullable = false)
     private String name;
+
     @Column(nullable = false)
     private Boolean isOpen;
+
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
     private String size;
+
     private String material;
+
     private String purchaseStore;
+
     private String purchaseDate;
 }

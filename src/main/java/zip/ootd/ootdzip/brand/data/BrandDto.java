@@ -9,7 +9,9 @@ import zip.ootd.ootdzip.brand.domain.Brand;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BrandDto {
+
     private Long id;
+
     private String name;
 
     public BrandDto(Brand brand){

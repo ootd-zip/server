@@ -13,6 +13,7 @@ import zip.ootd.ootdzip.board.domain.Board;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BoardImage extends BaseEntity {
+
     @ManyToOne
     @JoinColumn(name = "board_id", nullable = false)
     private Board board;

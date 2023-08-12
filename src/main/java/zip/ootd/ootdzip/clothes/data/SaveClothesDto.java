@@ -11,16 +11,28 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SaveClothesDto {
+
     private Long userId;
+
     private String clothesName;
+
     private Long brandId;
+
     private Long categoryId;
+
     private List<Long> styleIdList;
+
     private List<Long> colorIdList;
+
     private Boolean isOpen;
+
     private String size;
+
     private String material;
+
     private String purchaseStore;
+
     private String purchaseDate;
-    private List<MultipartFile> clothesImageList;
+
+    private List<String> clothesImageList;
 }
