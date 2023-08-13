@@ -3,6 +3,7 @@ package zip.ootd.ootdzip.user.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import zip.ootd.ootdzip.oauth.data.KakaoOAuthTokenRes;
 import zip.ootd.ootdzip.oauth.data.TokenInfo;
@@ -15,10 +16,12 @@ import zip.ootd.ootdzip.oauth.repository.UserOAuthRepository;
 import zip.ootd.ootdzip.oauth.service.KakaoOAuthUtils;
 import zip.ootd.ootdzip.security.JwtUtils;
 import zip.ootd.ootdzip.user.data.UserLoginReq;
+import zip.ootd.ootdzip.user.data.UserRegisterReq;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -59,5 +62,27 @@ public class UserService {
                 now.plusSeconds(tokenInfo.getRefreshTokenExpiresIn()),
                 false));
         return tokenInfo;
+    }
+
+    @Transactional
+    public void register(UserRegisterReq request) {
+        String idString = SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<User> u = userRepository.findById(Long.parseLong(idString));
+        User user = u.orElseThrow(() -> new IllegalStateException("404")); // TODO : 적절한 Exception 정의해서 사용
+        if (user.getIsDeleted()) {
+            throw new IllegalStateException("404"); // TODO : 적절한 Exception 정의해서 사용
+        }
+        if (user.getIsCompleted()) {
+            throw new IllegalStateException("409"); // TODO : 적절한 Exception 정의해서 사용
+        }
+        user.setName(request.getName());
+        user.setGender(request.getGender());
+        user.setBirthdate(request.getBirthdate());
+        user.setHeight(request.getHeight());
+        user.setShowHeight(request.getShowHeight());
+        user.setWeight(request.getWeight());
+        user.setShowHeight(request.getShowHeight());
+        user.setIsCompleted(true);
+        userRepository.save(user);
     }
 }

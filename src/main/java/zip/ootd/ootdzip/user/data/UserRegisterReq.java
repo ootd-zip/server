@@ -18,11 +18,11 @@ public class UserRegisterReq {
     @JsonProperty(required = true)
     private LocalDate birthdate;
 
-    private Long height;
+    private Integer height;
 
     private Boolean showHeight;
 
-    private Long weight;
+    private Integer weight;
 
     private Boolean showWeight;
 }

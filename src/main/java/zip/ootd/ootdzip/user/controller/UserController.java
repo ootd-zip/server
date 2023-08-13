@@ -5,12 +5,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import zip.ootd.ootdzip.oauth.data.TokenInfo;
 import zip.ootd.ootdzip.user.data.UserLoginReq;
+import zip.ootd.ootdzip.user.data.UserRegisterReq;
 import zip.ootd.ootdzip.user.service.UserService;
 
 @RestController
@@ -20,7 +18,7 @@ public class UserController {
 
     private final UserService userService;
 
-    @PostMapping(value = "/login")
+    @PostMapping("/login")
     public ResponseEntity<TokenInfo> login(@RequestBody UserLoginReq request, HttpServletResponse response) {
         TokenInfo info = userService.login(request);
         String refreshToken = info.getRefreshToken();
@@ -34,5 +32,10 @@ public class UserController {
         response.addCookie(cookie);
 
         return new ResponseEntity<>(info, HttpStatus.OK);
+    }
+
+    @PostMapping("/register")
+    public void register(@RequestBody UserRegisterReq request) {
+        userService.register(request);
     }
 }
