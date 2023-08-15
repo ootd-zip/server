@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import zip.ootd.ootdzip.BaseEntity;
+import zip.ootd.ootdzip.common.entity.BaseEntity;
 import zip.ootd.ootdzip.board.Board;
 import zip.ootd.ootdzip.user.User;
 
