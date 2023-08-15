@@ -3,6 +3,7 @@ package zip.ootd.ootdzip.user.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import zip.ootd.ootdzip.oauth.data.KakaoOauthTokenRes;
@@ -43,15 +44,15 @@ public class UserService {
         // request 정보로 카카오 멤버 ID 가져오기
         KakaoOauthTokenRes response = kakaoOauthUtils.requestTokenByAuthorizationCode(request.getAuthorizationCode(), request.getRedirectUri());
         Long memberId = kakaoOauthUtils.requestAccessTokenMemberId(response.getAccess_token()); // 카카오 멤버 ID
-        UserOauth userOAuth = userOAuthRepository.findUserOauthByOauthProviderAndOauthUserId(OauthProvider.KAKAO, String.valueOf(memberId));
+        Optional<UserOauth> foundUserOauth = userOAuthRepository.findUserOauthByOauthProviderAndOauthUserId(OauthProvider.KAKAO, String.valueOf(memberId));
         User user;
-        if (userOAuth == null) { // 새로운 멤버 ID일 경우 User 추가, 카카오 로그인 연동
+        if (foundUserOauth.isEmpty()) { // 새로운 멤버 ID일 경우 User 추가, 카카오 로그인 연동
             user = User.getDefault();
             user = userRepository.save(user);
-            userOAuth = new UserOauth(user, OauthProvider.KAKAO, String.valueOf(memberId));
-            userOAuthRepository.save(userOAuth);
+            UserOauth userOauth = new UserOauth(user, OauthProvider.KAKAO, String.valueOf(memberId));
+            userOAuthRepository.save(userOauth);
         } else { // 카카오 멤버 ID가 이미 존재할 경우 불러오기
-            user = userOAuth.getUser();
+            user = foundUserOauth.get().getUser();
         }
         UserAuthenticationToken authenticationToken = new UserAuthenticationToken(new UserAuthenticationToken.UserDetails(user.getId()));
         TokenInfo tokenInfo = jwtUtils.buildTokenInfo(authenticationToken);
@@ -84,5 +85,18 @@ public class UserService {
         user.setShowHeight(request.getShowHeight());
         user.setIsCompleted(true);
         userRepository.save(user);
+    }
+
+    @Transactional
+    public TokenInfo refresh(String refreshToken) {
+        // refresh token white-list로 관리
+        RefreshToken token = refreshTokenRepository.findByToken(refreshToken).orElseThrow(() ->
+                new IllegalStateException("401")); // TODO : 적절한 Exception 정의해서 사용
+        Authentication decoded = jwtUtils.decode(token.getToken());
+        if (decoded == null) { // 잘못되었거나 기한이 지난 jwt
+            throw new IllegalStateException("403"); // TODO : 적절한 Exception 정의해서 사용
+        }
+        refreshTokenRepository.delete(token); // 이전 refresh token invalidate
+        return jwtUtils.buildTokenInfo(decoded);
     }
 }
