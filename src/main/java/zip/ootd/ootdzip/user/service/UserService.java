@@ -5,14 +5,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import zip.ootd.ootdzip.oauth.data.KakaoOAuthTokenRes;
+import zip.ootd.ootdzip.oauth.data.KakaoOauthTokenRes;
 import zip.ootd.ootdzip.oauth.data.TokenInfo;
-import zip.ootd.ootdzip.oauth.domain.OAuthProvider;
+import zip.ootd.ootdzip.oauth.domain.OauthProvider;
 import zip.ootd.ootdzip.oauth.domain.RefreshToken;
 import zip.ootd.ootdzip.oauth.domain.UserAuthenticationToken;
-import zip.ootd.ootdzip.oauth.domain.UserOAuth;
+import zip.ootd.ootdzip.oauth.domain.UserOauth;
 import zip.ootd.ootdzip.oauth.repository.RefreshTokenRepository;
-import zip.ootd.ootdzip.oauth.repository.UserOAuthRepository;
+import zip.ootd.ootdzip.oauth.repository.UserOauthRepository;
 import zip.ootd.ootdzip.oauth.service.KakaoOAuthUtils;
 import zip.ootd.ootdzip.security.JwtUtils;
 import zip.ootd.ootdzip.user.data.UserLoginReq;
@@ -29,7 +29,7 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final UserOAuthRepository userOAuthRepository;
+    private final UserOauthRepository userOAuthRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtUtils jwtUtils;
     private final KakaoOAuthUtils kakaoOauthUtils;
@@ -41,14 +41,14 @@ public class UserService {
             throw new IllegalArgumentException("Not implemented Oauth provider: " + request.getOauthProvider());
         }
         // request 정보로 카카오 멤버 ID 가져오기
-        KakaoOAuthTokenRes response = kakaoOauthUtils.requestTokenByAuthorizationCode(request.getAuthorizationCode(), request.getRedirectUri());
+        KakaoOauthTokenRes response = kakaoOauthUtils.requestTokenByAuthorizationCode(request.getAuthorizationCode(), request.getRedirectUri());
         Long memberId = kakaoOauthUtils.requestAccessTokenMemberId(response.getAccess_token()); // 카카오 멤버 ID
-        UserOAuth userOAuth = userOAuthRepository.findUserOAuthByOAuthProviderAndOAuthUserId(OAuthProvider.KAKAO, String.valueOf(memberId));
+        UserOauth userOAuth = userOAuthRepository.findUserOauthByOauthProviderAndOauthUserId(OauthProvider.KAKAO, String.valueOf(memberId));
         User user;
         if (userOAuth == null) { // 새로운 멤버 ID일 경우 User 추가, 카카오 로그인 연동
             user = User.getDefault();
             user = userRepository.save(user);
-            userOAuth = new UserOAuth(user, OAuthProvider.KAKAO, String.valueOf(memberId));
+            userOAuth = new UserOauth(user, OauthProvider.KAKAO, String.valueOf(memberId));
             userOAuthRepository.save(userOAuth);
         } else { // 카카오 멤버 ID가 이미 존재할 경우 불러오기
             user = userOAuth.getUser();

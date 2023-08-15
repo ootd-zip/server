@@ -1,5 +1,5 @@
 package zip.ootd.ootdzip.oauth.domain;
 
-public enum OAuthProvider {
+public enum OauthProvider {
     KAKAO,
 }

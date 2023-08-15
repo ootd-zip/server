@@ -3,7 +3,7 @@ package zip.ootd.ootdzip.oauth.data;
 import lombok.Data;
 
 @Data
-public class KakaoOAuthTokenRes {
+public class KakaoOauthTokenRes {
 
     private String token_type;
 

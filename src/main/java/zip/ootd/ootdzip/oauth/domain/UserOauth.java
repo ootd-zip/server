@@ -15,15 +15,15 @@ import zip.ootd.ootdzip.user.domain.User;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserOAuth extends BaseEntity {
+public class UserOauth extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
     @Column(name = "oauth_provider", nullable = false)
-    private OAuthProvider oAuthProvider;
+    private OauthProvider oauthProvider;
 
     @Column(name = "oauth_provider_id", nullable = false)
-    private String oAuthUserId;
+    private String oauthUserId;
 }

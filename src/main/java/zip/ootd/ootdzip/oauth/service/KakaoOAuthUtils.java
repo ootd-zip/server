@@ -9,7 +9,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 import zip.ootd.ootdzip.oauth.data.KakaoAccessTokenInfoRes;
-import zip.ootd.ootdzip.oauth.data.KakaoOAuthTokenRes;
+import zip.ootd.ootdzip.oauth.data.KakaoOauthTokenRes;
 
 @Component
 public class KakaoOAuthUtils {
@@ -20,7 +20,7 @@ public class KakaoOAuthUtils {
         this.kakaoAppRestApiKey = kakaoAppRestApiKey;
     }
 
-    public KakaoOAuthTokenRes requestTokenByAuthorizationCode(String authorizationCode, String redirectUri) {
+    public KakaoOauthTokenRes requestTokenByAuthorizationCode(String authorizationCode, String redirectUri) {
         String url = "https://kauth.kakao.com/oauth/token";
         RestTemplate restTemplate = new RestTemplate();
 
@@ -34,7 +34,7 @@ public class KakaoOAuthUtils {
         HttpEntity<MultiValueMap<String, String>> kakaoRequest = new HttpEntity<>(requestData, headers);
 
         try {
-            ResponseEntity<KakaoOAuthTokenRes> response = restTemplate.postForEntity(url, kakaoRequest, KakaoOAuthTokenRes.class);
+            ResponseEntity<KakaoOauthTokenRes> response = restTemplate.postForEntity(url, kakaoRequest, KakaoOauthTokenRes.class);
             if (response.getStatusCode().is2xxSuccessful()) {
                 return response.getBody();
             } else { // TODO: 자주 발생하는 오류 코드 KOE320 (잘못된 auth code)
