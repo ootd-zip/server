@@ -7,7 +7,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 @Builder
-public class ApiResponse<T> implements Response {
+public class ApiResponse<T> {
 
     private T result;
 
