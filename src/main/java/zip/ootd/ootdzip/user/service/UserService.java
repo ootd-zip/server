@@ -97,6 +97,14 @@ public class UserService {
             throw new IllegalStateException("403"); // TODO : 적절한 Exception 정의해서 사용
         }
         refreshTokenRepository.delete(token); // 이전 refresh token invalidate
-        return jwtUtils.buildTokenInfo(decoded);
+        User user = token.getUser();
+        TokenInfo tokenInfo = jwtUtils.buildTokenInfo(decoded);
+        // 리프레시 토큰 DB에 저장
+        LocalDateTime now = LocalDateTime.now();
+        refreshTokenRepository.save(new RefreshToken(user,
+                tokenInfo.getRefreshToken(),
+                now.plusSeconds(tokenInfo.getRefreshTokenExpiresIn()),
+                false));
+        return tokenInfo;
     }
 }
