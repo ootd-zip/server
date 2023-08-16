@@ -68,6 +68,9 @@ public enum ErrorCode {
     // Transaction Delete Error
     DELETE_ERROR(200, "9999", "Delete Transaction Error Exception"),
 
+    KAKAO_LOGIN_ERROR(400, "A001", "KAKAO Login Error Exception"),
+
+    GOOGLE_LOGIN_ERROR(400, "A002", "Google Login Error Exception"),
     ;
 
     private final Integer status;
