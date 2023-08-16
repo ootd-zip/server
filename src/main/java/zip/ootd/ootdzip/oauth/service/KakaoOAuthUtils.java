@@ -8,19 +8,22 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
+import zip.ootd.ootdzip.common.exception.CustomException;
+import zip.ootd.ootdzip.common.exception.code.ErrorCode;
 import zip.ootd.ootdzip.oauth.data.KakaoAccessTokenInfoRes;
 import zip.ootd.ootdzip.oauth.data.KakaoOauthTokenRes;
 
 @Component
-public class KakaoOAuthUtils {
+public class KakaoOAuthUtils implements SocialOAuth {
 
     private final String kakaoAppRestApiKey;
 
-    public KakaoOAuthUtils() {
-        this.kakaoAppRestApiKey = "6cb6819c2363f9dcf94fdbf2c012f97e";
+    public KakaoOAuthUtils(@Value("${spring.security.oauth2.client.registration.kakao.app-rest-api-key}") String kakaoAppRestApiKey) {
+        this.kakaoAppRestApiKey = kakaoAppRestApiKey;
     }
 
-    public KakaoOauthTokenRes requestTokenByAuthorizationCode(String authorizationCode, String redirectUri) {
+
+    private KakaoOauthTokenRes requestTokenByAuthorizationCode(String authorizationCode, String redirectUri) {
         String url = "https://kauth.kakao.com/oauth/token";
         RestTemplate restTemplate = new RestTemplate();
 
@@ -37,15 +40,19 @@ public class KakaoOAuthUtils {
             ResponseEntity<KakaoOauthTokenRes> response = restTemplate.postForEntity(url, kakaoRequest, KakaoOauthTokenRes.class);
             if (response.getStatusCode().is2xxSuccessful()) {
                 return response.getBody();
-            } else { // TODO: 자주 발생하는 오류 코드 KOE320 (잘못된 auth code)
-                throw new IllegalStateException("카카오 토큰 발급 중 오류 발생: " + response.getStatusCode());
+            } else {
+                throw new CustomException(ErrorCode.KAKAO_LOGIN_ERROR);
             }
         } catch (HttpClientErrorException | HttpServerErrorException exception) {
-            throw new IllegalStateException("카카오 토큰 발급 중 오류 발생: " + exception.getMessage());
+            throw new CustomException(ErrorCode.KAKAO_LOGIN_ERROR);
         }
     }
 
-    public Long requestAccessTokenMemberId(String accessToken) {
+    private String getAccessToken(String authorizationCode, String redirectUri) {
+        return requestTokenByAuthorizationCode(authorizationCode, redirectUri).getAccess_token();
+    }
+
+    private Long requestAccessTokenMemberId(String accessToken) {
         String url = "https://kapi.kakao.com/v1/user/access_token_info";
         RestTemplate restTemplate = new RestTemplate();
 
@@ -61,4 +68,10 @@ public class KakaoOAuthUtils {
         }
     }
 
+
+    @Override
+    public String getSocialIdBy(String... args) {
+        String accessToken = getAccessToken(args[0], args[1]);
+        return String.valueOf(requestAccessTokenMemberId(accessToken));
+    }
 }
