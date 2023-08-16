@@ -2,6 +2,7 @@ package zip.ootd.ootdzip.user.data;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import zip.ootd.ootdzip.oauth.domain.OauthProvider;
 
 @Data
 public class UserLoginReq {
@@ -10,7 +11,7 @@ public class UserLoginReq {
     private String redirectUri;
 
     @JsonProperty(required = true)
-    private String oauthProvider;
+    private OauthProvider oauthProvider;
 
     @JsonProperty(required = true)
     private String authorizationCode;
