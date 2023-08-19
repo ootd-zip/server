@@ -71,6 +71,8 @@ public enum ErrorCode {
     KAKAO_LOGIN_ERROR(400, "A001", "KAKAO Login Error Exception"),
 
     GOOGLE_LOGIN_ERROR(400, "A002", "Google Login Error Exception"),
+
+    NONE_SOCIAL_ERROR(400, "U001", "존재 하지 않는 소셜로그인 요청")
     ;
 
     private final Integer status;

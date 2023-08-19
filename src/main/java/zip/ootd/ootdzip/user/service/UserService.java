@@ -6,6 +6,8 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import zip.ootd.ootdzip.common.exception.CustomException;
+import zip.ootd.ootdzip.common.exception.code.ErrorCode;
 import zip.ootd.ootdzip.oauth.data.TokenInfo;
 import zip.ootd.ootdzip.oauth.domain.OauthProvider;
 import zip.ootd.ootdzip.oauth.domain.RefreshToken;
@@ -68,7 +70,7 @@ public class UserService {
         return socialOAuths.stream()
                 .filter(s -> s.type() == oAuthProvider)
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("없는건디?"));
+                .orElseThrow(() -> new CustomException(ErrorCode.NONE_SOCIAL_ERROR));
     }
 
     @Transactional
