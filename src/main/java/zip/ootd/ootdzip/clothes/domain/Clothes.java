@@ -5,9 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import zip.ootd.ootdzip.BaseEntity;
 import zip.ootd.ootdzip.brand.domain.Brand;
 import zip.ootd.ootdzip.category.domain.Category;
+import zip.ootd.ootdzip.common.entity.BaseEntity;
 import zip.ootd.ootdzip.user.User;
 
 @Entity
@@ -35,6 +35,7 @@ public class Clothes extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
+
     private String size;
 
     private String material;

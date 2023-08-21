@@ -6,8 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import zip.ootd.ootdzip.BaseEntity;
 import zip.ootd.ootdzip.brand.data.BrandStatus;
+import zip.ootd.ootdzip.common.entity.BaseEntity;
 
 @Entity
 @Table(name = "brands")

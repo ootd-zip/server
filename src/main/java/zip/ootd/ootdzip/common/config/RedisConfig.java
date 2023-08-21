@@ -1,4 +1,4 @@
-package zip.ootd.ootdzip.config;
+package zip.ootd.ootdzip.common.config;
 
 import io.lettuce.core.ClientOptions;
 import io.lettuce.core.SocketOptions;

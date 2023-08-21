@@ -2,7 +2,7 @@ package zip.ootd.ootdzip.user;
 
 import jakarta.persistence.*;
 import lombok.*;
-import zip.ootd.ootdzip.BaseEntity;
+import zip.ootd.ootdzip.common.entity.BaseEntity;
 
 import java.time.LocalDate;
 

@@ -3,7 +3,6 @@ package zip.ootd.ootdzip.clothes;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.web.multipart.MultipartFile;
 import zip.ootd.ootdzip.brand.data.BrandStatus;
 import zip.ootd.ootdzip.brand.domain.Brand;
 import zip.ootd.ootdzip.brand.repository.BrandRepository;

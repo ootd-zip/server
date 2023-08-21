@@ -1,4 +1,4 @@
-package zip.ootd.ootdzip;
+package zip.ootd.ootdzip.common.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
