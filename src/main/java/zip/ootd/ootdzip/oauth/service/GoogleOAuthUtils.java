@@ -11,8 +11,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.exception.code.ErrorCode;
@@ -39,7 +37,7 @@ public class GoogleOAuthUtils implements SocialOAuth {
     private final ObjectMapper objectMapper;
 
     private ResponseEntity<String> requestTokenByAuthorizationCode(String authorizationCode) {
-        String GOOGLE_TOKEN_REQUEST_URL = "https://oauth2.googleapis.com/token";
+        String url = "https://oauth2.googleapis.com/token"; // Google Token Request URL
         RestTemplate restTemplate = new RestTemplate();
         Map<String, Object> params = new HashMap<>();
         params.put("code", authorizationCode);
@@ -48,40 +46,35 @@ public class GoogleOAuthUtils implements SocialOAuth {
         params.put("redirect_uri", GOOGLE_SNS_CALLBACK_URL);
         params.put("grant_type", "authorization_code");
 
-        try {
-            ResponseEntity<String> response = restTemplate.postForEntity(GOOGLE_TOKEN_REQUEST_URL, params, String.class);
-            if (response.getStatusCode().is2xxSuccessful()) {
-                return response;
-            } else {
-                throw new CustomException(ErrorCode.GOOGLE_LOGIN_ERROR);
-            }
-        } catch (HttpClientErrorException | HttpServerErrorException exception) {
+        ResponseEntity<String> response = restTemplate.postForEntity(url, params, String.class);
+        if (!response.getStatusCode().is2xxSuccessful()) {
             throw new CustomException(ErrorCode.GOOGLE_LOGIN_ERROR);
         }
+        return response;
     }
 
     private String getAccessToken(ResponseEntity<String> response) {
         try {
-            return objectMapper.readValue(response.getBody(), GoogleOauthToken.class).getAccess_token();
+            return objectMapper.readValue(response.getBody(), GoogleOauthToken.class).getAccessToken();
         } catch (JsonProcessingException e) {
             throw new CustomException(ErrorCode.GOOGLE_LOGIN_ERROR);
         }
     }
 
     private GoogleAccessTokenInfoRes requestMemberInfo(String accessToken) {
-        String GOOGLE_USERINFO_REQUEST_URL = "https://www.googleapis.com/oauth2/v2/userinfo";
+        String url = "https://www.googleapis.com/oauth2/v2/userinfo"; // Google UserInfo Request URL
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
-
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(headers);
-        headers.add("Authorization", "Bearer " + accessToken);
-        ResponseEntity<String> response = restTemplate.exchange(GOOGLE_USERINFO_REQUEST_URL, HttpMethod.GET, request, String.class);
+        headers.setBearerAuth(accessToken);
+
+        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, request, String.class);
         try {
-            if (response.getStatusCode().is2xxSuccessful()) {
-                return objectMapper.readValue(response.getBody(), GoogleAccessTokenInfoRes.class);
-            } else {
+            if (!response.getStatusCode().is2xxSuccessful()) {
                 throw new CustomException(ErrorCode.GOOGLE_LOGIN_ERROR);
             }
+            return objectMapper.readValue(response.getBody(), GoogleAccessTokenInfoRes.class);
+
         } catch (JsonProcessingException e) {
             throw new CustomException(ErrorCode.GOOGLE_LOGIN_ERROR);
         }

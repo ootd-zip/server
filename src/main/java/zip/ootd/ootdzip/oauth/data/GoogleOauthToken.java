@@ -1,15 +1,23 @@
 package zip.ootd.ootdzip.oauth.data;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @AllArgsConstructor
 @Data
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class GoogleOauthToken {
-    private String access_token;
-    private int expires_in;
+
+    private String accessToken;
+
+    private int expiresIn;
+
     private String scope;
-    private String token_type;
-    private String id_token;
+
+    private String tokenType;
+
+    private String idToken;
 }
 
