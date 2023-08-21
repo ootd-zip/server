@@ -4,8 +4,8 @@ spring:
       ddl-auto: create-drop
     show-sql: true
   datasource:
-    url: jdbc:mariadb://localhost:3307/ootdzip
-    username: root
+    url: jdbc:mariadb://localhost:3306/ootdzip
+    username: ootdzip
     password: 1234
     driver-class-name: org.mariadb.jdbc.Driver
   data:
@@ -13,6 +13,8 @@ spring:
       host: 127.0.0.1
       port: 6379
       timeout: 10
+  profiles:
+    include: secret
 security:
   jwt:
     secret-key: fg+KVO+mAOI82PpNTvTr+qOGfDbnOWNzgI9vHfRT3cQ=
