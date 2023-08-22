@@ -18,9 +18,9 @@ import zip.ootd.ootdzip.clothes.data.SaveClothesDto;
 import zip.ootd.ootdzip.clothes.domain.Clothes;
 import zip.ootd.ootdzip.clothes.repository.ClothesRepository;
 import zip.ootd.ootdzip.clothes.service.ClothesService;
-import zip.ootd.ootdzip.user.User;
-import zip.ootd.ootdzip.user.UserGender;
-import zip.ootd.ootdzip.user.UserRepository;
+import zip.ootd.ootdzip.user.domain.User;
+import zip.ootd.ootdzip.user.domain.UserGender;
+import zip.ootd.ootdzip.user.repository.UserRepository;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -62,9 +62,9 @@ public class ClothesServiceTest {
                 .birthdate(LocalDate.of(1999,1,1))
                 .height(170)
                 .weight(70)
-                .isOpenBody(true)
                 .profileImage("imageUrl")
                 .isDeleted(false)
+                .isCompleted(true)
                 .build();
 
         Category largeCategory = Category
@@ -148,9 +148,9 @@ public class ClothesServiceTest {
                 .birthdate(LocalDate.of(1999,1,1))
                 .height(170)
                 .weight(70)
-                .isOpenBody(true)
                 .profileImage("imageUrl")
                 .isDeleted(false)
+                .isCompleted(true)
                 .build();
 
         Category largeCategory = Category

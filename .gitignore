@@ -35,3 +35,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### key file ###
+**/application-secret.yaml

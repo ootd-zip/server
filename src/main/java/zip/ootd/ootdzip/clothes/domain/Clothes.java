@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import zip.ootd.ootdzip.brand.domain.Brand;
 import zip.ootd.ootdzip.category.domain.Category;
 import zip.ootd.ootdzip.common.entity.BaseEntity;
-import zip.ootd.ootdzip.user.User;
+import zip.ootd.ootdzip.user.domain.User;
 
 @Entity
 @Table(name = "clothes")

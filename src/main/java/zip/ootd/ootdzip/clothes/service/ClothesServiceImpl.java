@@ -3,8 +3,6 @@ package zip.ootd.ootdzip.clothes.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-import zip.ootd.ootdzip.brand.data.BrandDto;
 import zip.ootd.ootdzip.brand.domain.Brand;
 import zip.ootd.ootdzip.brand.repository.BrandRepository;
 import zip.ootd.ootdzip.category.domain.Category;
@@ -23,10 +21,9 @@ import zip.ootd.ootdzip.clothes.repository.ClothesColorRepository;
 import zip.ootd.ootdzip.clothes.repository.ClothesImageRepository;
 import zip.ootd.ootdzip.clothes.repository.ClothesRepository;
 import zip.ootd.ootdzip.clothes.repository.ClothesStyleRepository;
-import zip.ootd.ootdzip.user.User;
-import zip.ootd.ootdzip.user.UserRepository;
+import zip.ootd.ootdzip.user.domain.User;
+import zip.ootd.ootdzip.user.repository.UserRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 

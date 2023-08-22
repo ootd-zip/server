@@ -182,4 +182,12 @@ public class GlobalExceptionHandler {
         final ErrorResponse response = ErrorResponse.of(ErrorCode.INTERNAL_SERVER_ERROR, ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    // ======================================Custom Exception===========================================================
+
+    @ExceptionHandler(CustomException.class)
+    protected final ErrorResponse handleAllExceptions(CustomException ex) {
+        log.error("Custom Exception", ex);
+        return ErrorResponse.of(ex.getErrorCode(), ex.getMessage());
+    }
 }

@@ -4,8 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import zip.ootd.ootdzip.board.domain.Board;
-import zip.ootd.ootdzip.user.User;
+import zip.ootd.ootdzip.user.domain.User;
 
 @Entity
 @Table(name = "report_boards")
