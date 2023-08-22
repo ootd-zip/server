@@ -4,9 +4,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import zip.ootd.ootdzip.user.User;
-import zip.ootd.ootdzip.user.UserGender;
-import zip.ootd.ootdzip.user.UserRepository;
+import zip.ootd.ootdzip.user.domain.User;
+import zip.ootd.ootdzip.user.domain.UserGender;
+import zip.ootd.ootdzip.user.repository.UserRepository;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -33,9 +33,11 @@ public class BoardRepositoryTest {
                 gender,
                 birthdate,
                 userHeight,
+                true,
                 80,
                 true,
                 null,
+                false,
                 false));
 
         String contents = "test contents";
