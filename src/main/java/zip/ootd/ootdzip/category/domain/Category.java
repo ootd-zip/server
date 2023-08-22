@@ -22,7 +22,7 @@ public class Category {
     @Column(nullable = false)
     private String name;
 
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private CategoryType type;
 

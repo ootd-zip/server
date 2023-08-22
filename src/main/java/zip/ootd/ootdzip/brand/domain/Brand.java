@@ -1,7 +1,6 @@
 package zip.ootd.ootdzip.brand.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,5 +18,7 @@ public class Brand extends BaseEntity {
 
     private String name;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private BrandStatus status;
 }
