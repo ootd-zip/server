@@ -13,12 +13,8 @@ spring:
       host: 127.0.0.1
       port: 6379
       timeout: 10
-security:
-  jwt:
-    secret-key: fg+KVO+mAOI82PpNTvTr+qOGfDbnOWNzgI9vHfRT3cQ=
-    signature-algorithm: HS256
-    expires-in: 10800000
-    refresh-token-expires-in: 604800000
+  profiles:
+    include: secret
 
 # for swagger
 springdoc:
