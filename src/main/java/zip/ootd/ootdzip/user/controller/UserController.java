@@ -27,11 +27,7 @@ public class UserController {
         String refreshToken = info.getRefreshToken();
         info.setRefreshToken("");
 
-        Cookie cookie = new Cookie("refreshToken", refreshToken);
-        cookie.setMaxAge(info.getRefreshTokenExpiresIn());
-//        cookie.setSecure(true);
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
+        Cookie cookie = createRefreshTokenCookie(refreshToken, info.getRefreshTokenExpiresIn());
         response.addCookie(cookie);
 
         return new ResponseEntity<>(info, HttpStatus.OK);
@@ -44,7 +40,7 @@ public class UserController {
 
     @PostMapping("/refresh")
     public ResponseEntity<TokenInfo> refresh(HttpServletRequest request, HttpServletResponse response) {
-        Optional<Cookie> refreshTokenCookie = getRefreshTokenCookie(request.getCookies());
+        Optional<Cookie> refreshTokenCookie = findRefreshTokenCookie(request.getCookies());
         if (refreshTokenCookie.isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
@@ -53,17 +49,22 @@ public class UserController {
         String refreshToken = info.getRefreshToken();
         info.setRefreshToken("");
 
-        Cookie cookie = new Cookie("refreshToken", refreshToken);
-        cookie.setMaxAge(info.getRefreshTokenExpiresIn());
-//        cookie.setSecure(true);
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
+        Cookie cookie = createRefreshTokenCookie(refreshToken, info.getRefreshTokenExpiresIn());
         response.addCookie(cookie);
 
         return new ResponseEntity<>(info, HttpStatus.OK);
     }
 
-    private Optional<Cookie> getRefreshTokenCookie(Cookie[] cookies) {
+    private Cookie createRefreshTokenCookie(String refreshToken, int maxAge) {
+        Cookie cookie = new Cookie("refreshToken", refreshToken);
+        cookie.setMaxAge(maxAge);
+//        cookie.setSecure(true);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        return cookie;
+    }
+
+    private Optional<Cookie> findRefreshTokenCookie(Cookie[] cookies) {
         if (cookies == null) {
             return Optional.empty();
         }
