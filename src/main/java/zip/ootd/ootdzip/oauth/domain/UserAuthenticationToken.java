@@ -11,6 +11,7 @@ public class UserAuthenticationToken extends AbstractAuthenticationToken {
     public UserAuthenticationToken(UserDetails principal) {
         super(null);
         this.principal = principal;
+        setAuthenticated(true);
     }
 
     @Override
