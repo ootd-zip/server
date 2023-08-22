@@ -23,10 +23,10 @@ public class JwtUtils {
     private final long refreshTokenLifetime;
     private final JwtParser jwtParser;
 
-    public JwtUtils(@Value("${security.jwt.secret-key}") String secretKey,
-                    @Value("${security.jwt.signature-algorithm}") String signatureAlgorithm,
-                    @Value("${security.jwt.expires-in:10800000}") long accessTokenLifetime, // 3 hours
-                    @Value("${security.jwt.refresh-token-expires-in:604800000}") long refreshTokenLifetime // 7 days
+    public JwtUtils(@Value("${spring.security.jwt.secret-key}") String secretKey,
+                    @Value("${spring.security.jwt.signature-algorithm}") String signatureAlgorithm,
+                    @Value("${spring.security.jwt.expires-in:10800000}") long accessTokenLifetime, // 3 hours
+                    @Value("${spring.security.jwt.refresh-token-expires-in:604800000}") long refreshTokenLifetime // 7 days
     ) {
         byte[] keyBytes = Base64.getDecoder().decode(secretKey);
         this.secretKey = Keys.hmacShaKeyFor(keyBytes);

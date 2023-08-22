@@ -1,4 +1,4 @@
-package zip.ootd.ootdzip.board;
+package zip.ootd.ootdzip.board.domain;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -12,12 +12,15 @@ import zip.ootd.ootdzip.user.domain.User;
 @NoArgsConstructor
 @AllArgsConstructor
 public class LikeBoard {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Long id;
+
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
     @ManyToOne
     @JoinColumn(name = "board_id", nullable = false)
     private Board board;

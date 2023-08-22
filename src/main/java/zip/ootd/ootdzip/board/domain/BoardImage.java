@@ -1,4 +1,4 @@
-package zip.ootd.ootdzip.board;
+package zip.ootd.ootdzip.board.domain;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -12,9 +12,11 @@ import zip.ootd.ootdzip.common.entity.BaseEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BoardImage extends BaseEntity {
+
     @ManyToOne
     @JoinColumn(name = "board_id", nullable = false)
     private Board board;
+
     @Column(length = 2048)
     private String imageUrl;
 }

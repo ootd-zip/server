@@ -37,4 +37,4 @@ out/
 .vscode/
 
 ### key file ###
-src/main/resources/application-secret.yaml
+**/application-secret.yaml
