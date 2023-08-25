@@ -21,7 +21,7 @@ public class S3Config {  // 설정 값 등록 파일
     private String region;
 
     @Bean
-    public AmazonS3Client amazonS3Client(){
+    public AmazonS3Client amazonS3Client() {
         BasicAWSCredentials awsCreds = new BasicAWSCredentials(accessKey, secretKey);
         return (AmazonS3Client) AmazonS3ClientBuilder.standard()
                 .withRegion(region)
