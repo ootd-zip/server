@@ -19,6 +19,7 @@ import zip.ootd.ootdzip.common.exception.code.ErrorCode;
 import zip.ootd.ootdzip.common.response.ErrorResponse;
 
 import java.io.IOException;
+import java.util.NoSuchElementException;
 
 @RestControllerAdvice
 @Slf4j
@@ -165,6 +166,16 @@ public class GlobalExceptionHandler {
         log.error("handleJsonProcessingException", ex);
         final ErrorResponse response = ErrorResponse.of(ErrorCode.REQUEST_BODY_MISSING_ERROR, ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * repository에서 row를 찾지 못했을 경우
+     */
+    @ExceptionHandler(NoSuchElementException.class)
+    protected ResponseEntity<ErrorResponse> handleNoSuchElementException(NoSuchElementException ex) {
+        log.debug("handleNoSuchElementException", ex);
+        final ErrorResponse response = ErrorResponse.of(ErrorCode.NOT_FOUND_ERROR, ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
 
