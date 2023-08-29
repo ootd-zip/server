@@ -13,7 +13,9 @@ import zip.ootd.ootdzip.common.exception.code.ErrorCode;
 import zip.ootd.ootdzip.s3.data.S3ImageReq;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -36,7 +38,7 @@ public class S3UploadService {
 
     // s3로 파일 업로드하기
     private String upload(MultipartFile multipartFile) {
-        String fileName = UUID.randomUUID() + "." + System.nanoTime();   // S3에 저장될 파일 이름
+        String fileName = makeFileName(multipartFile);
         return putS3(multipartFile, fileName);
     }
 
@@ -50,5 +52,12 @@ public class S3UploadService {
         } catch (IOException e) {
             throw new CustomException(ErrorCode.IMAGE_CONVERT_ERROR);
         }
+    }
+
+    private String makeFileName(MultipartFile multipartFile) {
+        String originalFileName = multipartFile.getOriginalFilename();
+        String fileExtension = Objects.requireNonNull(originalFileName).substring(originalFileName.lastIndexOf("."));
+
+        return UUID.randomUUID() + "_" + LocalDate.now() + fileExtension;
     }
 }
