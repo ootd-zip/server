@@ -32,7 +32,7 @@ public class S3UploadService {
 
     public List<String> saveImageS3(S3ImageReq request) {
 
-        return request.getOotdImages().stream()
+        return request.getImages().stream()
                 .map(this::upload)
                 .collect(Collectors.toList());
     }

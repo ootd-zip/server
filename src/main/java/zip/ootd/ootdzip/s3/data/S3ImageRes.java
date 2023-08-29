@@ -9,5 +9,5 @@ import java.util.List;
 @AllArgsConstructor
 public class S3ImageRes {
 
-    private List<String> ootdImageUrls;
+    private List<String> imageUrls;
 }

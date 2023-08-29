@@ -8,5 +8,5 @@ import java.util.List;
 @Data
 public class S3ImageReq {
 
-    private List<MultipartFile> ootdImages;
+    private List<MultipartFile> images;
 }
