@@ -1,17 +1,18 @@
 package zip.ootd.ootdzip.common.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
-@AllArgsConstructor
-@Builder
+@NoArgsConstructor
 public class ApiResponse<T> {
 
     private T result;
 
-    private Integer resultCode;
+    private int statusCode;
 
-    private String resultMsg;
+    public ApiResponse(T result){
+        this.result = result;
+        statusCode = 200;
+    }
 }
