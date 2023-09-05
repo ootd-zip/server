@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public class ErrorResponse {
 
     // 에러 상태 코드
-    private int status;
+    private int statusCode;
 
     // 에러 구분 코드
     private String divisionCode;
@@ -38,7 +38,7 @@ public class ErrorResponse {
     @Builder
     protected ErrorResponse(final ErrorCode code) {
         this.resultMsg = code.getMessage();
-        this.status = code.getStatus();
+        this.statusCode = code.getStatus();
         this.divisionCode = code.getDivisionCode();
         this.errors = new ArrayList<>();
     }
@@ -52,7 +52,7 @@ public class ErrorResponse {
     @Builder
     protected ErrorResponse(final ErrorCode code, final String reason) {
         this.resultMsg = code.getMessage();
-        this.status = code.getStatus();
+        this.statusCode = code.getStatus();
         this.divisionCode = code.getDivisionCode();
         this.reason = reason;
     }
@@ -66,7 +66,7 @@ public class ErrorResponse {
     @Builder
     protected ErrorResponse(final ErrorCode code, final List<FieldError> errors) {
         this.resultMsg = code.getMessage();
-        this.status = code.getStatus();
+        this.statusCode = code.getStatus();
         this.errors = errors;
         this.divisionCode = code.getDivisionCode();
     }
