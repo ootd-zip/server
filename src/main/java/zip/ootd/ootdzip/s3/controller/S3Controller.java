@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import zip.ootd.ootdzip.common.exception.code.SuccessCode;
 import zip.ootd.ootdzip.common.response.ApiResponse;
 import zip.ootd.ootdzip.s3.data.S3ImageReq;
 import zip.ootd.ootdzip.s3.data.S3ImageRes;
@@ -32,9 +31,6 @@ public class S3Controller {
         List<String> images = s3UploadService.saveImageS3(request);
         S3ImageRes s3ImageRes = new S3ImageRes(images);
 
-        return ApiResponse.<S3ImageRes>builder().result(s3ImageRes)
-                .resultCode(SuccessCode.INSERT_SUCCESS.getStatus())
-                .resultMsg(SuccessCode.INSERT_SUCCESS.getMessage())
-                .build();
+        return new ApiResponse<>(s3ImageRes);
     }
 }
