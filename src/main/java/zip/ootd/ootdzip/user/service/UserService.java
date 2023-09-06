@@ -115,4 +115,15 @@ public class UserService {
                 false));
         return tokenInfo;
     }
+
+    public User getAuthenticatiedUser() {
+
+        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || authentication.getName() == null) {
+            throw new CustomException(ErrorCode.NOT_AUTHENTICATED_ERROR);
+        }
+
+        Optional<User> user = userRepository.findById(Long.valueOf(authentication.getName()));
+        return user.orElseThrow();
+    }
 }
