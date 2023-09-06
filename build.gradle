@@ -27,6 +27,11 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
+    // 파일 업로드
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+    implementation 'commons-io:commons-io:2.6'
+    implementation 'commons-fileupload:commons-fileupload:1.4'
+
     // swagger 설정 추가, spring 3.x 이후에는 아래 의존성을 추가
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
 

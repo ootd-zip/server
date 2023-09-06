@@ -72,7 +72,11 @@ public enum ErrorCode {
 
     GOOGLE_LOGIN_ERROR(400, "A002", "Google Login Error Exception"),
 
-    NONE_SOCIAL_ERROR(400, "U001", "존재 하지 않는 소셜로그인 요청")
+    NONE_SOCIAL_ERROR(400, "U001", "존재 하지 않는 소셜로그인 요청"),
+
+    NONE_USER(400, "U002", "존재하지 않는 유저"),
+
+    IMAGE_CONVERT_ERROR(400, "UT001", "이미지 변환 실패"),
     ;
 
     private final Integer status;
