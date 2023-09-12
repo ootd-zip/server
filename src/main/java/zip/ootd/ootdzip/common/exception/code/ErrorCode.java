@@ -74,7 +74,7 @@ public enum ErrorCode {
 
     NONE_SOCIAL_ERROR(400, "U001", "존재 하지 않는 소셜로그인 요청"),
 
-    NOT_AUTHENTICATED_ERROR(400, "U002", "인가되지 않은 사용자")
+    NOT_AUTHENTICATED_ERROR(400, "U002", "인가되지 않은 사용자"),
 
     IMAGE_CONVERT_ERROR(400, "UT001", "이미지 변환 실패"),
 
