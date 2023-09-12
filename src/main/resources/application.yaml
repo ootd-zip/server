@@ -15,6 +15,10 @@ spring:
       timeout: 10
   profiles:
     include: secret
+  servlet:
+    multipart:
+      max-file-size: 10MB # 파일 최대 사이즈
+      max-request-size: 20MB # 요청 당 최대 사이즈
 
 # for swagger
 springdoc:

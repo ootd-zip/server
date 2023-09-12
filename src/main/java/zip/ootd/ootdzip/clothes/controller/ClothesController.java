@@ -27,10 +27,7 @@ public class ClothesController {
     public ApiResponse<ClothesResponseDto> saveClothes(@RequestBody SaveClothesDto saveClothesDto){
         ClothesResponseDto clothesResponseDto = null;
         clothesResponseDto = clothesService.saveClothes(saveClothesDto);
-        return ApiResponse.<ClothesResponseDto>builder()
-                .result(clothesResponseDto)
-                .resultCode(0)
-                .resultMsg("옷 저장 성공").build();
+        return new ApiResponse<ClothesResponseDto>(clothesResponseDto);
     }
 
 }
