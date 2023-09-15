@@ -22,7 +22,7 @@ public class BoardController {
     private final BoardService boardService;
 
     @Operation(summary = "ootd 게시글 작성", description = "사용자가 ootd 게시글에 작성한 글을 저장하는 api")
-    @PostMapping("/ootd/post")
+    @PostMapping("/ootd")
     public ApiResponse<BoardOotdPostRes> saveOotdPost(@RequestBody @Valid BoardOotdPostReq request) {
 
         BoardOotdPostRes response = new BoardOotdPostRes(boardService.postOotd(request));
