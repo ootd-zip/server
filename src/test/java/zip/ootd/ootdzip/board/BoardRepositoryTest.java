@@ -4,6 +4,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import zip.ootd.ootdzip.board.domain.Style;
+import zip.ootd.ootdzip.boardclothe.domain.BoardClothes;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.domain.UserGender;
 import zip.ootd.ootdzip.user.repository.UserRepository;
@@ -45,10 +47,12 @@ public class BoardRepositoryTest {
 
         String contents = "test contents";
         List<BoardImage> boardImages = new ArrayList<>();
-        Board board = new Board();
+        List<BoardClothes> boardClothes = new ArrayList<>();
+        List<Style> styles = new ArrayList<>();
+
 
         //when
-        board.writeBoard(writer, contents, boardImages);
+        Board board = Board.createBoard(writer, contents, UserGender.MALE, true, boardImages, boardClothes, styles);
         Board savedBoard = boardRepository.save(board);
         //then
         assertThat(savedBoard).isEqualTo(board);
