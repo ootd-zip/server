@@ -2,7 +2,6 @@ package zip.ootd.ootdzip.board.data;
 
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
-import zip.ootd.ootdzip.board.domain.Style;
 import zip.ootd.ootdzip.user.domain.UserGender;
 
 import java.util.List;
@@ -16,7 +15,7 @@ public class BoardOotdPostReq {
 
     private UserGender gender;
 
-    private List<Style> styles;
+    private List<Long> styles;
 
     private List<Long> clotheIds;
 
