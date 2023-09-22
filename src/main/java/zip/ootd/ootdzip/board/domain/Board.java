@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import zip.ootd.ootdzip.boardclothe.domain.BoardClothes;
+import zip.ootd.ootdzip.boardstyle.BoardStyle;
 import zip.ootd.ootdzip.common.entity.BaseEntity;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.domain.UserGender;
@@ -52,10 +53,8 @@ public class Board extends BaseEntity {
     private List<BoardImage> boardImages = new ArrayList<>();
 
     @Builder.Default
-    @ElementCollection(targetClass = Style.class, fetch = FetchType.LAZY)
-    @CollectionTable(name = "board_styles", joinColumns = @JoinColumn(name = "board_id"))
-    @Enumerated(EnumType.STRING)
-    private List<Style> styles = new ArrayList<>();
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
+    private List<BoardStyle> styles = new ArrayList<>();
 
     @Column(nullable = false)
     private boolean isPublic;
@@ -74,7 +73,7 @@ public class Board extends BaseEntity {
                                     boolean isPublic,
                                     List<BoardImage> boardImages,
                                     List<BoardClothes> boardClothesList,
-                                    List<Style> styles) {
+                                    List<BoardStyle> boardStyles) {
 
         Board board = Board.builder()
                 .writer(user)
@@ -86,7 +85,7 @@ public class Board extends BaseEntity {
 
         board.addBoardImages(boardImages);
         board.addBoardClothesList(boardClothesList);
-        board.addStyles(styles);
+        board.addBoardStyles(boardStyles);
 
         return board;
     }
@@ -110,11 +109,12 @@ public class Board extends BaseEntity {
         boardClothesList.forEach(this::addBoardClothes);
     }
 
-    public void addStyle(Style style) {
-        styles.add(style);
+    public void addBoardStyle(BoardStyle boardStyle) {
+        styles.add(boardStyle);
+        boardStyle.setBoard(this);
     }
 
-    public void addStyles(List<Style> styles) {
-        styles.forEach(this::addStyle);
+    public void addBoardStyles(List<BoardStyle> boardStyles) {
+        boardStyles.forEach(this::addBoardStyle);
     }
 }
