@@ -4,14 +4,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import zip.ootd.ootdzip.board.data.BoardOotdPostReq;
-import zip.ootd.ootdzip.board.data.BoardOotdPostRes;
+import org.springframework.web.bind.annotation.*;
+import zip.ootd.ootdzip.board.data.*;
 import zip.ootd.ootdzip.board.service.BoardService;
 import zip.ootd.ootdzip.common.response.ApiResponse;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,5 +28,30 @@ public class BoardController {
         return new ApiResponse<>(response);
     }
 
+    @Operation(summary = "ootd 게시글 조회", description = "게시판 id 를 주면 해당 id에 해당하는 게시글 반환 api")
+    @GetMapping("/ootd")
+    public ApiResponse<BoardOotdGetRes> getOotdPost(@Valid BoardOotdGetReq request) {
 
+        BoardOotdGetRes response = boardService.getOotd(request);
+
+        return new ApiResponse<>(response);
+    }
+
+    @Operation(summary = "ootd 게시글 전체 조회", description = "최신순으로 게시글을 조회 api")
+    @GetMapping("/ootds")
+    public ApiResponse<List<BoardOotdGetAllRes>> getOotdPosts() {
+
+        List<BoardOotdGetAllRes> response = boardService.getOotds();
+
+        return new ApiResponse<>(response);
+    }
+
+    @Operation(summary = "ootd 게시글 좋아요 수 변경", description = "특정 게시글의 좋아요를")
+    @PostMapping("/like")
+    public ApiResponse<BoardLikeRes> changeLike(@RequestBody BoardLikeReq request) {
+
+        BoardLikeRes response = new BoardLikeRes(boardService.changeLike(request));
+
+        return new ApiResponse<>(response);
+    }
 }
