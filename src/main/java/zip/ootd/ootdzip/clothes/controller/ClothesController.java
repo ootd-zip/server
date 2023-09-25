@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import zip.ootd.ootdzip.clothes.data.ClothesResponseDto;
-import zip.ootd.ootdzip.clothes.data.SaveClothesDto;
+import zip.ootd.ootdzip.clothes.data.SaveClothesReq;
+import zip.ootd.ootdzip.clothes.data.SaveClothesRes;
 import zip.ootd.ootdzip.clothes.service.ClothesService;
 import zip.ootd.ootdzip.common.response.ApiResponse;
 
@@ -22,12 +22,11 @@ public class ClothesController {
     @Autowired
     private final ClothesService clothesService;
 
-    @Operation(summary = "옷 저장 API", description = "옷 저장 API")
+    @Operation(summary = "옷 저장"
+            , description = "옷 저장 API")
     @PostMapping("/")
-    public ApiResponse<ClothesResponseDto> saveClothes(@RequestBody SaveClothesDto saveClothesDto){
-        ClothesResponseDto clothesResponseDto = null;
-        clothesResponseDto = clothesService.saveClothes(saveClothesDto);
-        return new ApiResponse<ClothesResponseDto>(clothesResponseDto);
+    public ApiResponse<SaveClothesRes> saveClothes(@RequestBody SaveClothesReq saveClothesReq) {
+        return new ApiResponse<>(new SaveClothesRes(clothesService.saveClothes(saveClothesReq)));
     }
 
 }

@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import zip.ootd.ootdzip.category.data.CategoryType;
-import zip.ootd.ootdzip.category.data.DetailCategoryDto;
+import zip.ootd.ootdzip.category.data.DetailCategory;
 import zip.ootd.ootdzip.category.domain.Category;
 import zip.ootd.ootdzip.category.repository.CategoryRepository;
 
@@ -44,7 +44,7 @@ public class CategoryRepositoryTest {
 
         Category savedDetailCategory = categoryRepository.save(detailCategory);
         //When(실행)
-        DetailCategoryDto result = categoryRepository.findDetailCategoryById(savedDetailCategory.getId());
+        DetailCategory result = categoryRepository.findDetailCategoryById(savedDetailCategory.getId());
         //Then(검증)
         assertThat(result.getCategoryName()).isEqualTo(savedDetailCategory.getName());
         assertThat(result.getLargeCategoryName()).isEqualTo(savedLargeCategory.getName());

@@ -1,6 +1,6 @@
 package zip.ootd.ootdzip.category.data;
 
-public interface DetailCategoryDto {
+public interface DetailCategory {
 
     Long getId();
 

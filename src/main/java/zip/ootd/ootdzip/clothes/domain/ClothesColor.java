@@ -1,11 +1,11 @@
 package zip.ootd.ootdzip.clothes.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import zip.ootd.ootdzip.category.domain.Color;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "clothes_colors_map")
@@ -13,6 +13,7 @@ import zip.ootd.ootdzip.category.domain.Color;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Setter
 public class ClothesColor {
 
     @Id
@@ -26,4 +27,17 @@ public class ClothesColor {
     @ManyToOne
     @JoinColumn(name = "color_id")
     private Color color;
+
+    public static ClothesColor createClothesColorBy(Color color){
+        return ClothesColor.builder()
+                .color(color)
+                .build();
+    }
+
+    public static List<ClothesColor> createClothesColorsBy(List<Color> colors){
+        return colors.stream()
+                .map(ClothesColor::createClothesColorBy)
+                .collect(Collectors.toList());
+    }
+
 }

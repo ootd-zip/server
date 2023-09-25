@@ -1,4 +1,4 @@
-package zip.ootd.ootdzip;
+package zip.ootd.ootdzip.clothes.data;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

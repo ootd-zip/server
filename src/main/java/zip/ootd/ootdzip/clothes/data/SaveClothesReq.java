@@ -13,11 +13,7 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class SaveClothesDto {
-
-    @NotNull
-    @Positive
-    private Long userId;
+public class SaveClothesReq {
 
     @NotBlank
     @Size(max = 100)
@@ -31,9 +27,9 @@ public class SaveClothesDto {
     @Positive
     private Long categoryId;
 
-    private List<@Positive Long> styleIdList;
+    private List<@Positive Long> styleIds;
 
-    private List<@Positive Long> colorIdList;
+    private List<@Positive Long> colorIds;
 
     private Boolean isOpen;
 
@@ -48,5 +44,5 @@ public class SaveClothesDto {
     @NotBlank
     private String purchaseDate;
 
-    private List<@NotBlank String> clothesImageList;
+    private List<@NotBlank String> clothesImages;
 }
