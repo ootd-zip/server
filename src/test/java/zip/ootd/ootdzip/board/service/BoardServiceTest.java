@@ -5,11 +5,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import zip.ootd.ootdzip.board.data.BoardOotdGetReq;
+import zip.ootd.ootdzip.board.data.BoardOotdGetRes;
 import zip.ootd.ootdzip.board.data.BoardOotdPostReq;
 import zip.ootd.ootdzip.board.domain.Board;
 import zip.ootd.ootdzip.board.repository.BoardRepository;
+import zip.ootd.ootdzip.boarduser.domain.BoardUser;
+import zip.ootd.ootdzip.category.repository.StyleRepository;
 import zip.ootd.ootdzip.clothes.domain.Clothes;
 import zip.ootd.ootdzip.clothes.repository.ClothesRepository;
+import zip.ootd.ootdzip.common.dao.RedisDao;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.domain.UserGender;
 import zip.ootd.ootdzip.user.service.UserService;
@@ -32,6 +37,12 @@ public class BoardServiceTest {
 
     @Mock
     private ClothesRepository clothesRepository;
+
+    @Mock
+    private StyleRepository styleRepository;
+
+    @Mock
+    private RedisDao redisDao;
 
     @Mock
     private UserService userService;
@@ -66,5 +77,40 @@ public class BoardServiceTest {
 
         // boardRepository.save 메서드가 한 번 호출되었는지 확인
         verify(boardRepository, times(1)).save(board);
+    }
+
+    @Test
+    public void OOTD게시판_해당글_조회() {
+
+        User user = new User();
+        user.setId(1L);
+
+        BoardUser boardUser = BoardUser.builder()
+                .isLike(true)
+                .user(user)
+                .build();
+
+        Board board = Board.builder()
+                .contents("테스트 컨텐츠")
+                .gender(UserGender.MALE)
+                .build();
+        board.addBoardUser(boardUser);
+
+        board.setId(1L);
+
+
+        // boardRepository.findById 메서드의 결과로 샘플 Board 객체를 반환하도록 설정합니다.
+        when(boardRepository.findById(1L)).thenReturn(java.util.Optional.of(board));
+
+        // userService.getAuthenticatiedUser 메서드의 결과로 샘플 User 객체를 반환하도록 설정합니다.
+        when(userService.getAuthenticatiedUser()).thenReturn(user);
+
+        BoardOotdGetReq request = new BoardOotdGetReq();
+        request.setBoardId(1L);
+
+        BoardOotdGetRes result = boardService.getOotd(request);
+
+        assertEquals("테스트 컨텐츠", result.getContents());
+        assertEquals(UserGender.MALE, result.getGender());
     }
 }
