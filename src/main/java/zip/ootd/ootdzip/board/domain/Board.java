@@ -1,22 +1,22 @@
 package zip.ootd.ootdzip.board.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import zip.ootd.ootdzip.boardclothe.domain.BoardClothes;
 import zip.ootd.ootdzip.boardstyle.BoardStyle;
+import zip.ootd.ootdzip.boarduser.domain.BoardUser;
 import zip.ootd.ootdzip.common.entity.BaseEntity;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.domain.UserGender;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "boards")
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -56,6 +56,10 @@ public class Board extends BaseEntity {
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
     private List<BoardStyle> styles = new ArrayList<>();
 
+    @Builder.Default
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
+    private List<BoardUser> boardUsers = new ArrayList<>();
+
     @Column(nullable = false)
     private boolean isPublic;
 
@@ -90,6 +94,22 @@ public class Board extends BaseEntity {
         return board;
     }
 
+    public boolean isUserLike(Long id) {
+        return boardUsers.stream()
+                .filter(bu -> Objects.equals(bu.getUser().getId(), id))
+                .findAny()
+                .map(BoardUser::isLike)
+                .orElseThrow();
+    }
+
+    public boolean changeUserLike(Long id) {
+        return boardUsers.stream()
+                .filter(bu -> Objects.equals(bu.getUser().getId(), id))
+                .findAny()
+                .map(BoardUser::changeLike)
+                .orElseThrow();
+    }
+
     // == 연관관계 메서드 == //
     public void addBoardImage(BoardImage boardImage) {
         boardImages.add(boardImage);
@@ -116,5 +136,14 @@ public class Board extends BaseEntity {
 
     public void addBoardStyles(List<BoardStyle> boardStyles) {
         boardStyles.forEach(this::addBoardStyle);
+    }
+
+    public void addBoardUser(BoardUser boardUser) {
+        boardUsers.add(boardUser);
+        boardUser.setBoard(this);
+    }
+
+    public void addBoardUsers(List<BoardUser> boardUsers) {
+        boardUsers.forEach(this::addBoardUser);
     }
 }
