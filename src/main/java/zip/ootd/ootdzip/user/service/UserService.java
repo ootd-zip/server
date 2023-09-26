@@ -25,6 +25,7 @@ import zip.ootd.ootdzip.user.repository.UserRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -114,6 +115,32 @@ public class UserService {
                 now.plusSeconds(tokenInfo.getRefreshTokenExpiresIn()),
                 false));
         return tokenInfo;
+    }
+
+    @Transactional
+    public boolean follow(Long userId, Long followerId) {
+        User user = userRepository.findById(userId).orElseThrow();
+        User follower = userRepository.findById(followerId).orElseThrow();
+        return user.addFollower(follower);
+    }
+
+    @Transactional
+    public boolean unfollow(Long userId, Long followerId) {
+        User user = userRepository.findById(userId).orElseThrow();
+        User follower = userRepository.findById(followerId).orElseThrow();
+        return user.removeFollower(follower);
+    }
+
+    @Transactional
+    public Set<User> getFollowers(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow();
+        return user.getFollowers();
+    }
+
+    @Transactional
+    public Set<User> getFollowings(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow();
+        return user.getFollowings();
     }
 
     public User getAuthenticatiedUser() {
