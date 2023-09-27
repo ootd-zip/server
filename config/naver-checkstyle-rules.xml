@@ -126,6 +126,9 @@ The following rules in the Naver coding convention cannot be checked by this con
                      value="[avoid-star-import] Using the ''.*'' form of import should be avoided - {0}."/>
         </module>
 
+        <!-- [no-unused-imports] -->
+        <module name="UnusedImports"/>
+
         <!-- [modifier-order] -->
         <module name="ModifierOrder">
             <message key="mod.order"
@@ -252,7 +255,7 @@ The following rules in the Naver coding convention cannot be checked by this con
             <property name="braceAdjustment" value="0"/>
             <property name="caseIndent" value="4"/>
             <property name="throwsIndent" value="4"/>
-            <property name="lineWrappingIndentation" value="4"/>
+            <property name="lineWrappingIndentation" value="8"/>
             <property name="arrayInitIndent" value="4"/>
         </module>
 
