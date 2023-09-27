@@ -26,11 +26,16 @@
 
   ![img.png](img/checkstyle-add.png)
 - `suppressionFile` 속성을 `naver-checkstyle-suppressions.xml`로 설정합니다.
-- 추가한 파일를 체크한 뒤 저장합니다.
+- 추가한 파일를 체크하고 저장합니다.
+
+### Editorconfig 설정
+
+- 이 프로젝트에서는 빠르게 설정을 적용할 수 있도록 `.editorconfig` 파일을 사용합니다.
+- **Settings** - **Editor** - **Code Style**에서 **Enable EditorConfig Support**를 체크하고 저장하면 설정이 적용됩니다.ㅠㅜ
 
 ### Pre commit 검사 설정
 
 - **Settings** - **Version Control** - **Commit**으로 이동합니다.
-- **Commit Checks**에서 `Reformat Code`, `Rearrange Code`, `Optimize Imports` 등을 체크하고 저장합니다.
+- **Commit Checks**에서 **Reformat Code**, **Rearrange Code**, **Optimize Imports** 등을 체크하고 저장합니다.
 
   ![img.png](img/pre-commit.png)
