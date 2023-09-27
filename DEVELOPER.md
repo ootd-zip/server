@@ -19,23 +19,18 @@
 
 ### CheckStyle Plugin 설정
 
-- **Settings** - **Plugins** - **Marketplace**에서 `CheckStyle-IDEA` 플러그인을 설치합니다.
+- **Settings** - **Plugins** - **Marketplace**에서 **CheckStyle-IDEA** 플러그인을 설치합니다.
 - **Settings** - **Tools** - **CheckStyle**로 이동합니다.
 - **Scan Scope**를 `All sources (including tests)`로 변경합니다.
 - **Configuration File** - `+` 를 누르고 다음과 같이 설정합니다.
+
   ![img.png](img/checkstyle-add.png)
 - `suppressionFile` 속성을 `naver-checkstyle-suppressions.xml`로 설정합니다.
 - 추가한 파일를 체크한 뒤 저장합니다.
 
-### IDE Formatting 설정
+### Pre commit 검사 설정
 
-- **Settings** - **Editor** - **Code Style** - **Java**으로 이동합니다.
-- **Scheme 설정** - **Import Scheme** - **IntelliJ IDEA code style XML**을 선택합니다.
-  ![img.png](img/editor-scheme-add.png)
-- `/config/naver-intellij-formatter.xml`을 추가하고 저장합니다.
+- **Settings** - **Version Control** - **Commit**으로 이동합니다.
+- **Commit Checks**에서 `Reformat Code`, `Rearrange Code`, `Optimize Imports` 등을 체크하고 저장합니다.
 
-### 자동 Formatting 설정
-
-- **Settings** - **Tools** - **Actions on Save**으로 이동합니다.
-- Reformat code, Optimize imports, Rearrange code를 체크하고 저장합니다.
-- ![img.png](img/save-setting.png)
+  ![img.png](img/pre-commit.png)
