@@ -11,3 +11,4 @@ jobs:
           github_token: ${{ secrets.github_token }}
           reporter: github-pr-review
           checkstyle_config: ./config/naver-checkstyle-rules.xml
+          properties_file: ./config/checkstyle.properties
