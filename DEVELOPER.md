@@ -31,7 +31,8 @@
 ### Editorconfig 설정
 
 - 이 프로젝트에서는 빠르게 설정을 적용할 수 있도록 `.editorconfig` 파일을 사용합니다.
-- **Settings** - **Editor** - **Code Style**에서 **Enable EditorConfig Support**를 체크하고 저장하면 설정이 적용됩니다.ㅠㅜ
+- **Settings** - **Editor** - **Code Style**에서 **Enable EditorConfig Support**를 체크하고 저장합니다.
+- 마지막으로 `.editorconfig` 파일을 열면 설정이 적용됩니다.
 
 ### Pre commit 검사 설정
 
