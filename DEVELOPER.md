@@ -34,6 +34,14 @@
 - **Settings** - **Editor** - **Code Style**에서 **Enable EditorConfig Support**를 체크하고 저장합니다.
 - 마지막으로 `.editorconfig` 파일을 열면 설정이 적용됩니다.
 
+### IntelliJ 추가 설정
+
+- 이 프로젝트에서는 파일의 끝에 단 하나의 줄바꿈 문자를 사용합니다.
+- **Settings** - **Editor** - **General**로 이동합니다.
+- 가장 아래의 **On Save**에서 아래 항목을 다음과 같이 체크합니다.
+
+  ![img.png](img/newline-eof.png)
+
 ### Pre commit 검사 설정
 
 - **Settings** - **Version Control** - **Commit**으로 이동합니다.
