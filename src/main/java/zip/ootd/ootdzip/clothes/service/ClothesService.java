@@ -10,5 +10,5 @@ public interface ClothesService {
      * @param saveClothesDto
      * @return
      */
-    public ClothesResponseDto saveClothes(SaveClothesDto saveClothesDto);
+    ClothesResponseDto saveClothes(SaveClothesDto saveClothesDto);
 }

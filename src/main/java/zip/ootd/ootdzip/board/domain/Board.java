@@ -1,6 +1,18 @@
 package zip.ootd.ootdzip.board.domain;
 
-import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,9 +22,6 @@ import zip.ootd.ootdzip.boardstyle.BoardStyle;
 import zip.ootd.ootdzip.common.entity.BaseEntity;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.domain.UserGender;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "boards")
@@ -68,12 +77,12 @@ public class Board extends BaseEntity {
     private List<BoardClothes> boardClothesList = new ArrayList<>();
 
     public static Board createBoard(User user,
-                                    String contents,
-                                    UserGender gender,
-                                    boolean isPublic,
-                                    List<BoardImage> boardImages,
-                                    List<BoardClothes> boardClothesList,
-                                    List<BoardStyle> boardStyles) {
+            String contents,
+            UserGender gender,
+            boolean isPublic,
+            List<BoardImage> boardImages,
+            List<BoardClothes> boardClothesList,
+            List<BoardStyle> boardStyles) {
 
         Board board = Board.builder()
                 .writer(user)
@@ -81,7 +90,6 @@ public class Board extends BaseEntity {
                 .isPublic(isPublic)
                 .contents(contents)
                 .build();
-
 
         board.addBoardImages(boardImages);
         board.addBoardClothesList(boardClothesList);

@@ -1,15 +1,18 @@
 package zip.ootd.ootdzip.user.controller;
 
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
+import java.util.Optional;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.exception.code.ErrorCode;
 import zip.ootd.ootdzip.common.response.ApiResponse;
@@ -19,8 +22,6 @@ import zip.ootd.ootdzip.user.data.UserLoginReq;
 import zip.ootd.ootdzip.user.data.UserRegisterReq;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.service.UserService;
-
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -86,7 +87,7 @@ public class UserController {
     private Cookie createRefreshTokenCookie(String refreshToken, int maxAge) {
         Cookie cookie = new Cookie("refreshToken", refreshToken);
         cookie.setMaxAge(maxAge);
-//        cookie.setSecure(true);
+        //        cookie.setSecure(true);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
         return cookie;

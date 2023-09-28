@@ -1,6 +1,5 @@
 package zip.ootd.ootdzip.common.exception.code;
 
-
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

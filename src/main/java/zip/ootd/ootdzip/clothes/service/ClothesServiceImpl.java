@@ -1,8 +1,12 @@
 package zip.ootd.ootdzip.clothes.service;
 
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.stereotype.Service;
+
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 import zip.ootd.ootdzip.brand.domain.Brand;
 import zip.ootd.ootdzip.brand.repository.BrandRepository;
 import zip.ootd.ootdzip.category.domain.Category;
@@ -24,12 +28,9 @@ import zip.ootd.ootdzip.clothes.repository.ClothesStyleRepository;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.repository.UserRepository;
 
-import java.util.List;
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
-public class ClothesServiceImpl implements ClothesService{
+public class ClothesServiceImpl implements ClothesService {
 
     private final ClothesRepository clothesRepository;
     private final ClothesStyleRepository clothesStyleRepository;
@@ -61,11 +62,11 @@ public class ClothesServiceImpl implements ClothesService{
         /*
         옷 관련 도메인 조회
          */
-        brand       = brandRepository.findById(saveClothesDto.getBrandId());
-        user        = userRepository.findById(saveClothesDto.getUserId());
-        category    = categoryRepository.findById(saveClothesDto.getCategoryId());
-        styleList   = styleRepository.findAllById(saveClothesDto.getStyleIdList());
-        colorList   = colorRepository.findAllById(saveClothesDto.getColorIdList());
+        brand = brandRepository.findById(saveClothesDto.getBrandId());
+        user = userRepository.findById(saveClothesDto.getUserId());
+        category = categoryRepository.findById(saveClothesDto.getCategoryId());
+        styleList = styleRepository.findAllById(saveClothesDto.getStyleIdList());
+        colorList = colorRepository.findAllById(saveClothesDto.getColorIdList());
 
         /*
         옷 저장
@@ -90,26 +91,26 @@ public class ClothesServiceImpl implements ClothesService{
         clothesStyleList = styleList
                 .stream()
                 .map(x -> ClothesStyle
-                    .builder()
-                    .style(x)
-                    .clothes(savedClothes)
-                    .build())
+                        .builder()
+                        .style(x)
+                        .clothes(savedClothes)
+                        .build())
                 .toList();
 
         clothesImageList = saveClothesDto.getClothesImageList()
                 .stream()
                 .map(x -> ClothesImage.builder()
-                    .imageUrl(x)
-                    .clothes(savedClothes)
-                    .build())
+                        .imageUrl(x)
+                        .clothes(savedClothes)
+                        .build())
                 .toList();
 
         clothesColorList = colorList
                 .stream()
                 .map(x -> ClothesColor.builder()
-                    .color(x)
-                    .clothes(savedClothes)
-                    .build())
+                        .color(x)
+                        .clothes(savedClothes)
+                        .build())
                 .toList();
 
         List<ClothesStyle> savedClothesStyleList = clothesStyleRepository.saveAll(clothesStyleList);

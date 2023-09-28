@@ -14,7 +14,7 @@ public class BrandDto {
 
     private String name;
 
-    public BrandDto(Brand brand){
+    public BrandDto(Brand brand) {
         this.id = brand.getId();
         this.name = brand.getName();
     }

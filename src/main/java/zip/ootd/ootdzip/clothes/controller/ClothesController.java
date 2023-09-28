@@ -1,13 +1,14 @@
 package zip.ootd.ootdzip.clothes.controller;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import zip.ootd.ootdzip.clothes.data.ClothesResponseDto;
 import zip.ootd.ootdzip.clothes.data.SaveClothesDto;
 import zip.ootd.ootdzip.clothes.service.ClothesService;
@@ -24,7 +25,7 @@ public class ClothesController {
 
     @Operation(summary = "옷 저장 API", description = "옷 저장 API")
     @PostMapping("/")
-    public ApiResponse<ClothesResponseDto> saveClothes(@RequestBody SaveClothesDto saveClothesDto){
+    public ApiResponse<ClothesResponseDto> saveClothes(@RequestBody SaveClothesDto saveClothesDto) {
         ClothesResponseDto clothesResponseDto = null;
         clothesResponseDto = clothesService.saveClothes(saveClothesDto);
         return new ApiResponse<ClothesResponseDto>(clothesResponseDto);

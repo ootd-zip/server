@@ -1,11 +1,17 @@
 package zip.ootd.ootdzip.user.service;
 
-import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.exception.code.ErrorCode;
 import zip.ootd.ootdzip.oauth.data.TokenInfo;
@@ -21,11 +27,6 @@ import zip.ootd.ootdzip.user.data.UserLoginReq;
 import zip.ootd.ootdzip.user.data.UserRegisterReq;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.repository.UserRepository;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
 @Service
 @Transactional
@@ -45,8 +46,10 @@ public class UserService {
         SocialOAuth socialOAuth = findSocialOauthByType(oAuthProvider);
 
         // request 정보로 카카오 멤버 ID 가져오기
-        String memberId = socialOAuth.getSocialIdBy(request.getAuthorizationCode(), request.getRedirectUri()); // 카카오 멤버 ID
-        Optional<UserOauth> foundUserOauth = userOAuthRepository.findUserOauthByOauthProviderAndOauthUserId(OauthProvider.KAKAO, memberId);
+        String memberId = socialOAuth.getSocialIdBy(request.getAuthorizationCode(),
+                request.getRedirectUri()); // 카카오 멤버 ID
+        Optional<UserOauth> foundUserOauth = userOAuthRepository.findUserOauthByOauthProviderAndOauthUserId(
+                OauthProvider.KAKAO, memberId);
         User user;
         if (foundUserOauth.isEmpty()) { // 새로운 멤버 ID일 경우 User 추가, 카카오 로그인 연동
             user = User.getDefault();
@@ -56,7 +59,8 @@ public class UserService {
         } else { // 카카오 멤버 ID가 이미 존재할 경우 불러오기
             user = foundUserOauth.get().getUser();
         }
-        UserAuthenticationToken authenticationToken = new UserAuthenticationToken(new UserAuthenticationToken.UserDetails(user.getId()));
+        UserAuthenticationToken authenticationToken = new UserAuthenticationToken(
+                new UserAuthenticationToken.UserDetails(user.getId()));
         TokenInfo tokenInfo = jwtUtils.buildTokenInfo(authenticationToken);
         // 리프레시 토큰 DB에 저장
         LocalDateTime now = LocalDateTime.now();

@@ -1,10 +1,10 @@
 package zip.ootd.ootdzip.board.data;
 
+import java.util.List;
+
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 import zip.ootd.ootdzip.user.domain.UserGender;
-
-import java.util.List;
 
 @Data
 public class BoardOotdPostReq {

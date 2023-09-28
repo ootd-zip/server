@@ -1,17 +1,25 @@
 package zip.ootd.ootdzip.security;
 
-import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.security.SignatureException;
+import java.util.Base64;
+import java.util.Date;
+
+import javax.crypto.SecretKey;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtParser;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import zip.ootd.ootdzip.oauth.data.TokenInfo;
 import zip.ootd.ootdzip.oauth.domain.UserAuthenticationToken;
-
-import javax.crypto.SecretKey;
-import java.util.Base64;
-import java.util.Date;
 
 @Component
 public class JwtUtils {
@@ -24,9 +32,9 @@ public class JwtUtils {
     private final JwtParser jwtParser;
 
     public JwtUtils(@Value("${spring.security.jwt.secret-key}") String secretKey,
-                    @Value("${spring.security.jwt.signature-algorithm}") String signatureAlgorithm,
-                    @Value("${spring.security.jwt.expires-in:10800000}") long accessTokenLifetime, // 3 hours
-                    @Value("${spring.security.jwt.refresh-token-expires-in:604800000}") long refreshTokenLifetime // 7 days
+            @Value("${spring.security.jwt.signature-algorithm}") String signatureAlgorithm,
+            @Value("${spring.security.jwt.expires-in:10800000}") long accessTokenLifetime, // 3 hours
+            @Value("${spring.security.jwt.refresh-token-expires-in:604800000}") long refreshTokenLifetime // 7 days
     ) {
         byte[] keyBytes = Base64.getDecoder().decode(secretKey);
         this.secretKey = Keys.hmacShaKeyFor(keyBytes);
@@ -44,9 +52,9 @@ public class JwtUtils {
         return TokenInfo.builder()
                 .tokenType("Bearer")
                 .accessToken(accessToken)
-                .expiresIn((int) (accessTokenLifetime / 1000))
+                .expiresIn((int)(accessTokenLifetime / 1000))
                 .refreshToken(refreshToken)
-                .refreshTokenExpiresIn((int) (refreshTokenLifetime / 1000))
+                .refreshTokenExpiresIn((int)(refreshTokenLifetime / 1000))
                 .build();
     }
 
@@ -66,7 +74,8 @@ public class JwtUtils {
     public Authentication decode(String token) {
         try {
             Claims claims = jwtParser.parseClaimsJws(token).getBody();
-            UserAuthenticationToken.UserDetails principal = new UserAuthenticationToken.UserDetails(Long.parseLong(claims.getSubject()));
+            UserAuthenticationToken.UserDetails principal = new UserAuthenticationToken.UserDetails(
+                    Long.parseLong(claims.getSubject()));
             return new UserAuthenticationToken(principal);
         } catch (UnsupportedJwtException | MalformedJwtException | SignatureException | ExpiredJwtException |
                  IllegalArgumentException e) {
@@ -74,7 +83,12 @@ public class JwtUtils {
         }
     }
 
-    public void validate(String token) throws UnsupportedJwtException, MalformedJwtException, SignatureException, ExpiredJwtException, IllegalArgumentException {
+    public void validate(String token) throws
+            UnsupportedJwtException,
+            MalformedJwtException,
+            SignatureException,
+            ExpiredJwtException,
+            IllegalArgumentException {
         jwtParser.parseClaimsJws(token);
     }
 

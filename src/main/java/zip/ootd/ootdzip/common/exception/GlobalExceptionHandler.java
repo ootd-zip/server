@@ -1,8 +1,8 @@
 package zip.ootd.ootdzip.common.exception;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import lombok.extern.slf4j.Slf4j;
+import java.io.IOException;
+import java.util.NoSuchElementException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -15,11 +15,13 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.servlet.NoHandlerFoundException;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+
+import lombok.extern.slf4j.Slf4j;
 import zip.ootd.ootdzip.common.exception.code.ErrorCode;
 import zip.ootd.ootdzip.common.response.ErrorResponse;
-
-import java.io.IOException;
-import java.util.NoSuchElementException;
 
 @RestControllerAdvice
 @Slf4j
@@ -27,7 +29,6 @@ public class GlobalExceptionHandler {
 
     /**
      * [Exception] API 호출 시 '객체' 혹은 '파라미터' 데이터 값이 유효하지 않은 경우
-     *
      * @param ex MethodArgumentNotValidException
      * @return ResponseEntity<ErrorResponse>
      */
@@ -47,7 +48,6 @@ public class GlobalExceptionHandler {
 
     /**
      * [Exception] API 호출 시 'Header' 내에 데이터 값이 유효하지 않은 경우
-     *
      * @param ex MissingRequestHeaderException
      * @return ResponseEntity<ErrorResponse>
      */
@@ -60,7 +60,6 @@ public class GlobalExceptionHandler {
 
     /**
      * [Exception] 클라이언트에서 Body로 '객체' 데이터가 넘어오지 않았을 경우
-     *
      * @param ex HttpMessageNotReadableException
      * @return ResponseEntity<ErrorResponse>
      */
@@ -74,7 +73,6 @@ public class GlobalExceptionHandler {
 
     /**
      * [Exception] 클라이언트에서 request로 '파라미터로' 데이터가 넘어오지 않았을 경우
-     *
      * @param ex MissingServletRequestParameterException
      * @return ResponseEntity<ErrorResponse>
      */
@@ -86,10 +84,8 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
-
     /**
      * [Exception] 잘못된 서버 요청일 경우 발생한 경우
-     *
      * @param e HttpClientErrorException
      * @return ResponseEntity<ErrorResponse>
      */
@@ -100,10 +96,8 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
-
     /**
      * [Exception] 잘못된 주소로 요청 한 경우
-     *
      * @param e NoHandlerFoundException
      * @return ResponseEntity<ErrorResponse>
      */
@@ -114,10 +108,8 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
-
     /**
      * [Exception] NULL 값이 발생한 경우
-     *
      * @param e NullPointerException
      * @return ResponseEntity<ErrorResponse>
      */
@@ -130,7 +122,6 @@ public class GlobalExceptionHandler {
 
     /**
      * Input / Output 내에서 발생한 경우
-     *
      * @param ex IOException
      * @return ResponseEntity<ErrorResponse>
      */
@@ -141,10 +132,8 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
-
     /**
      * com.google.gson 내에 Exception 발생하는 경우
-     *
      * @param ex JsonParseException
      * @return ResponseEntity<ErrorResponse>
      */
@@ -157,7 +146,6 @@ public class GlobalExceptionHandler {
 
     /**
      * com.fasterxml.jackson.core 내에 Exception 발생하는 경우
-     *
      * @param ex JsonProcessingException
      * @return ResponseEntity<ErrorResponse>
      */
@@ -178,12 +166,10 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
-
     // ==================================================================================================================
 
     /**
      * [Exception] 모든 Exception 경우 발생
-     *
      * @param ex Exception
      * @return ResponseEntity<ErrorResponse>
      */

@@ -1,9 +1,8 @@
 package zip.ootd.ootdzip.oauth.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -12,29 +11,29 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.exception.code.ErrorCode;
 import zip.ootd.ootdzip.oauth.data.GoogleAccessTokenInfoRes;
 import zip.ootd.ootdzip.oauth.data.GoogleOauthToken;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class GoogleOAuthUtils implements SocialOAuth {
 
+    private final ObjectMapper objectMapper;
     @Value("${spring.security.oauth2.client.registration.google.client-id}")
     private String GOOGLE_SNS_CLIENT_ID;
-
     @Value("${spring.security.oauth2.client.registration.google.redirect_uri}")
     private String GOOGLE_SNS_CALLBACK_URL;
-
     @Value("${spring.security.oauth2.client.registration.google.client-secret}")
     private String GOOGLE_SNS_CLIENT_SECRET;
-
-    private final ObjectMapper objectMapper;
 
     private ResponseEntity<String> requestTokenByAuthorizationCode(String authorizationCode) {
         String url = "https://oauth2.googleapis.com/token"; // Google Token Request URL

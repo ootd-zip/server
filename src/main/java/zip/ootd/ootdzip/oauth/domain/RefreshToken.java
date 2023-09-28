@@ -1,5 +1,7 @@
 package zip.ootd.ootdzip.oauth.domain;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;
@@ -9,8 +11,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import zip.ootd.ootdzip.common.entity.BaseEntity;
 import zip.ootd.ootdzip.user.domain.User;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "refresh_tokens")
