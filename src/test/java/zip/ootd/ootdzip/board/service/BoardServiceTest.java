@@ -1,10 +1,18 @@
 package zip.ootd.ootdzip.board.service;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
 import zip.ootd.ootdzip.board.data.BoardOotdPostReq;
 import zip.ootd.ootdzip.board.domain.Board;
 import zip.ootd.ootdzip.board.repository.BoardRepository;
@@ -13,13 +21,6 @@ import zip.ootd.ootdzip.clothes.repository.ClothesRepository;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.domain.UserGender;
 import zip.ootd.ootdzip.user.service.UserService;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class BoardServiceTest {
@@ -37,7 +38,8 @@ public class BoardServiceTest {
     private UserService userService;
 
     @Test
-    public void OOTD게시판_정상_등록() {
+    @DisplayName("OOTD게시판_정상_등록")
+    public void boardRegisterSuccess() {
         // 가짜 데이터 생성
         BoardOotdPostReq request = new BoardOotdPostReq();
         request.setOotdImages(new ArrayList<>()); // 필요한 이미지 URL 리스트 추가

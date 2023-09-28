@@ -17,9 +17,7 @@ public enum SuccessCode {
     INSERT_SUCCESS(201, "SUCCESS_003", "INSERT SUCCESS"),
 
     // 수정 성공 코드
-    UPDATE_SUCCESS(201, "SUCCESS_004", "UPDATE SUCCESS"),
-
-    ;
+    UPDATE_SUCCESS(201, "SUCCESS_004", "UPDATE SUCCESS");
 
     private final Integer status;
 

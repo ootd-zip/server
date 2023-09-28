@@ -80,9 +80,7 @@ public enum ErrorCode {
 
     FOLLOW_ERROR(409, "F001", "이미 팔로우 상태임"),
 
-    UNFOLLOW_ERROR(409, "F002", "이미 언팔로우 상태임"),
-
-    ;
+    UNFOLLOW_ERROR(409, "F002", "이미 언팔로우 상태임");
 
     private final Integer status;
 

@@ -1,8 +1,17 @@
 package zip.ootd.ootdzip.clothes;
 
+import static org.assertj.core.api.Assertions.*;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
 import zip.ootd.ootdzip.brand.data.BrandStatus;
 import zip.ootd.ootdzip.brand.domain.Brand;
 import zip.ootd.ootdzip.brand.repository.BrandRepository;
@@ -22,13 +31,6 @@ import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.domain.UserGender;
 import zip.ootd.ootdzip.user.repository.UserRepository;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.*;
-
 @SpringBootTest
 public class ClothesServiceTest {
     @Autowired
@@ -47,7 +49,8 @@ public class ClothesServiceTest {
     private StyleRepository styleRepository;
 
     @Test
-    public void 옷저장_성공() throws Exception {
+    @DisplayName("옷저장_성공")
+    public void clothesSaveSuccess() throws Exception {
         //Given(준비)
         Brand brand = Brand
                 .builder()
@@ -59,7 +62,7 @@ public class ClothesServiceTest {
                 .builder()
                 .name("유저1")
                 .gender(UserGender.MALE)
-                .birthdate(LocalDate.of(1999,1,1))
+                .birthdate(LocalDate.of(1999, 1, 1))
                 .height(170)
                 .weight(70)
                 .profileImage("imageUrl")
@@ -103,10 +106,10 @@ public class ClothesServiceTest {
                 .name("스타일1")
                 .build();
 
-        Brand savedBrand    = brandRepository.save(brand);
-        User savedUser      = userRepository.save(user);
-        Color savedColor    = colorRepository.save(color);
-        Style savedStyle    = styleRepository.save(style);
+        Brand savedBrand = brandRepository.save(brand);
+        User savedUser = userRepository.save(user);
+        Color savedColor = colorRepository.save(color);
+        Style savedStyle = styleRepository.save(style);
 
         List<Long> styleIdList = new ArrayList<>();
         styleIdList.add(savedStyle.getId());
@@ -117,7 +120,8 @@ public class ClothesServiceTest {
         List<String> imageList = new ArrayList<>();
         imageList.add("https://url/urlTest");
 
-        SaveClothesDto saveClothesDto = new SaveClothesDto(savedUser.getId(), "옷1", savedBrand.getId(), savedDetailCategory.getId(), styleIdList, colorIdList, true, "사이즈1", "재질1", "상품구입처1", "구매일", imageList);
+        SaveClothesDto saveClothesDto = new SaveClothesDto(savedUser.getId(), "옷1", savedBrand.getId(),
+                savedDetailCategory.getId(), styleIdList, colorIdList, true, "사이즈1", "재질1", "상품구입처1", "구매일", imageList);
 
         //When(실행)
         ClothesResponseDto savedClothes = clothesService.saveClothes(saveClothesDto);
@@ -133,7 +137,8 @@ public class ClothesServiceTest {
     }
 
     @Test
-    public void 옷저장_실패_유효하지않은브랜드() throws Exception{
+    @DisplayName("옷저장_실패_유효하지않은브랜드")
+    public void clothesSaveFailInvalidBrand() throws Exception {
         //Given(준비)
         Brand brand = Brand
                 .builder()
@@ -145,7 +150,7 @@ public class ClothesServiceTest {
                 .builder()
                 .name("유저2")
                 .gender(UserGender.MALE)
-                .birthdate(LocalDate.of(1999,1,1))
+                .birthdate(LocalDate.of(1999, 1, 1))
                 .height(170)
                 .weight(70)
                 .profileImage("imageUrl")
@@ -189,10 +194,10 @@ public class ClothesServiceTest {
                 .name("스타일2")
                 .build();
 
-        Brand savedBrand    = brandRepository.save(brand);
-        User savedUser      = userRepository.save(user);
-        Color savedColor    = colorRepository.save(color);
-        Style savedStyle    = styleRepository.save(style);
+        Brand savedBrand = brandRepository.save(brand);
+        User savedUser = userRepository.save(user);
+        Color savedColor = colorRepository.save(color);
+        Style savedStyle = styleRepository.save(style);
 
         List<Long> styleIdList = new ArrayList<>();
         styleIdList.add(savedStyle.getId());
@@ -204,8 +209,8 @@ public class ClothesServiceTest {
         imageList.add("https://url/urlTest");
 
         //When(실행)
-        SaveClothesDto saveClothesDto = new SaveClothesDto(savedUser.getId(), "옷1", savedBrand.getId() + 300L, savedDetailCategory.getId(), styleIdList, colorIdList, true, "사이즈1", "재질1", "상품구입처1", "구매일", imageList);
-
+        SaveClothesDto saveClothesDto = new SaveClothesDto(savedUser.getId(), "옷1", savedBrand.getId() + 300L,
+                savedDetailCategory.getId(), styleIdList, colorIdList, true, "사이즈1", "재질1", "상품구입처1", "구매일", imageList);
 
         //Then(검증)
         assertThatIllegalArgumentException()

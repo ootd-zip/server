@@ -81,8 +81,8 @@ public class UserService {
     @Transactional
     public void register(UserRegisterReq request) {
         String idString = SecurityContextHolder.getContext().getAuthentication().getName();
-        Optional<User> u = userRepository.findById(Long.parseLong(idString));
-        User user = u.orElseThrow(() -> new IllegalStateException("404")); // TODO : 적절한 Exception 정의해서 사용
+        Optional<User> found = userRepository.findById(Long.parseLong(idString));
+        User user = found.orElseThrow(() -> new IllegalStateException("404")); // TODO : 적절한 Exception 정의해서 사용
         if (user.getIsDeleted()) {
             throw new IllegalStateException("404"); // TODO : 적절한 Exception 정의해서 사용
         }

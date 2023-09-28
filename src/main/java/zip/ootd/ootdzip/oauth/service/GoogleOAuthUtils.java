@@ -15,7 +15,6 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.exception.code.ErrorCode;
@@ -23,26 +22,32 @@ import zip.ootd.ootdzip.oauth.data.GoogleAccessTokenInfoRes;
 import zip.ootd.ootdzip.oauth.data.GoogleOauthToken;
 
 @Component
-@RequiredArgsConstructor
 @Slf4j
 public class GoogleOAuthUtils implements SocialOAuth {
 
     private final ObjectMapper objectMapper;
-    @Value("${spring.security.oauth2.client.registration.google.client-id}")
-    private String GOOGLE_SNS_CLIENT_ID;
-    @Value("${spring.security.oauth2.client.registration.google.redirect_uri}")
-    private String GOOGLE_SNS_CALLBACK_URL;
-    @Value("${spring.security.oauth2.client.registration.google.client-secret}")
-    private String GOOGLE_SNS_CLIENT_SECRET;
+    private final String googleSnsClientId;
+    private final String googleSnsCallbackUrl;
+    private final String googleSnsClientSecret;
+
+    public GoogleOAuthUtils(ObjectMapper objectMapper,
+            @Value("${spring.security.oauth2.client.registration.google.client-id}") String googleSnsClientId,
+            @Value("${spring.security.oauth2.client.registration.google.redirect_uri}") String googleSnsCallbackUrl,
+            @Value("${spring.security.oauth2.client.registration.google.client-secret}") String googleSnsClientSecret) {
+        this.objectMapper = objectMapper;
+        this.googleSnsClientId = googleSnsClientId;
+        this.googleSnsCallbackUrl = googleSnsCallbackUrl;
+        this.googleSnsClientSecret = googleSnsClientSecret;
+    }
 
     private ResponseEntity<String> requestTokenByAuthorizationCode(String authorizationCode) {
         String url = "https://oauth2.googleapis.com/token"; // Google Token Request URL
         RestTemplate restTemplate = new RestTemplate();
         Map<String, Object> params = new HashMap<>();
         params.put("code", authorizationCode);
-        params.put("client_id", GOOGLE_SNS_CLIENT_ID);
-        params.put("client_secret", GOOGLE_SNS_CLIENT_SECRET);
-        params.put("redirect_uri", GOOGLE_SNS_CALLBACK_URL);
+        params.put("client_id", googleSnsClientId);
+        params.put("client_secret", googleSnsClientSecret);
+        params.put("redirect_uri", googleSnsCallbackUrl);
         params.put("grant_type", "authorization_code");
 
         ResponseEntity<String> response = restTemplate.postForEntity(url, params, String.class);

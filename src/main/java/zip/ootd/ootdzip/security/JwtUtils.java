@@ -77,8 +77,8 @@ public class JwtUtils {
             UserAuthenticationToken.UserDetails principal = new UserAuthenticationToken.UserDetails(
                     Long.parseLong(claims.getSubject()));
             return new UserAuthenticationToken(principal);
-        } catch (UnsupportedJwtException | MalformedJwtException | SignatureException | ExpiredJwtException |
-                 IllegalArgumentException e) {
+        } catch (UnsupportedJwtException | MalformedJwtException | SignatureException | ExpiredJwtException
+                 | IllegalArgumentException e) {
             return null;
         }
     }

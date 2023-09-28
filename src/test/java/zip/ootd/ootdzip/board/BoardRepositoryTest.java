@@ -1,9 +1,16 @@
 package zip.ootd.ootdzip.board;
 
+import static org.assertj.core.api.Assertions.*;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+
 import zip.ootd.ootdzip.board.domain.Board;
 import zip.ootd.ootdzip.board.domain.BoardImage;
 import zip.ootd.ootdzip.board.repository.BoardRepository;
@@ -12,12 +19,6 @@ import zip.ootd.ootdzip.boardstyle.BoardStyle;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.domain.UserGender;
 import zip.ootd.ootdzip.user.repository.UserRepository;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 public class BoardRepositoryTest {
@@ -50,9 +51,9 @@ public class BoardRepositoryTest {
         List<BoardClothes> boardClothes = new ArrayList<>();
         List<BoardStyle> boardStyles = new ArrayList<>();
 
-
         //when
-        Board board = Board.createBoard(writer, contents, UserGender.MALE, true, boardImages, boardClothes, boardStyles);
+        Board board = Board.createBoard(writer, contents, UserGender.MALE, true, boardImages, boardClothes,
+                boardStyles);
         Board savedBoard = boardRepository.save(board);
         //then
         assertThat(savedBoard).isEqualTo(board);
