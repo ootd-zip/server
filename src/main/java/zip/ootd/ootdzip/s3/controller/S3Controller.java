@@ -1,19 +1,20 @@
 package zip.ootd.ootdzip.s3.controller;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import zip.ootd.ootdzip.common.response.ApiResponse;
 import zip.ootd.ootdzip.s3.data.S3ImageReq;
 import zip.ootd.ootdzip.s3.data.S3ImageRes;
 import zip.ootd.ootdzip.s3.service.S3UploadService;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
