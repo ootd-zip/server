@@ -66,17 +66,17 @@ public class Clothes extends BaseEntity {
     private List<ClothesColor> clothesColors = new ArrayList<>();
 
     public static Clothes createClothes(User user,
-                                        Brand brand,
-                                        String name,
-                                        Boolean isOpen,
-                                        Category category,
-                                        String size,
-                                        String material,
-                                        String purchaseStore,
-                                        String purchaseDate,
-                                        List<ClothesImage> clothesImages,
-                                        List<ClothesStyle> clothesStyles,
-                                        List<ClothesColor> clothesColors) {
+            Brand brand,
+            String name,
+            Boolean isOpen,
+            Category category,
+            String size,
+            String material,
+            String purchaseStore,
+            String purchaseDate,
+            List<ClothesImage> clothesImages,
+            List<ClothesStyle> clothesStyles,
+            List<ClothesColor> clothesColors) {
 
         Clothes clothes = Clothes.builder()
                 .user(user)
@@ -96,7 +96,6 @@ public class Clothes extends BaseEntity {
 
         return clothes;
     }
-
 
     public void addClothesImage(ClothesImage image) {
         this.clothesImages.add(image);

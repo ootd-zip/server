@@ -7,7 +7,7 @@ import zip.ootd.ootdzip.category.data.DetailCategory;
 import zip.ootd.ootdzip.category.domain.Category;
 
 public interface CategoryRepository extends JpaRepository<Category, Long> {
-    @Query("SELECT c.id, c.name as categoryName, mc.name as middleCategoryName, lc.name as largeCategoryName "
+    @Query("SELECT new zip.ootd.ootdzip.category.data.DetailCategory(c.id, c.name, mc.name, lc.name)"
             + "FROM Category c " + "INNER JOIN Category mc ON c.parentCategory = mc "
             + "INNER JOIN Category lc ON mc.parentCategory = lc " + "WHERE c.id = :id")
     DetailCategory findDetailCategoryById(Long id);

@@ -1,40 +1,44 @@
 package zip.ootd.ootdzip.clothes.service;
 
+import static zip.ootd.ootdzip.common.exception.code.ErrorCode.*;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 import zip.ootd.ootdzip.brand.domain.Brand;
 import zip.ootd.ootdzip.brand.repository.BrandRepository;
+import zip.ootd.ootdzip.category.data.DetailCategory;
 import zip.ootd.ootdzip.category.domain.Category;
 import zip.ootd.ootdzip.category.domain.Color;
 import zip.ootd.ootdzip.category.domain.Style;
 import zip.ootd.ootdzip.category.repository.CategoryRepository;
 import zip.ootd.ootdzip.category.repository.ColorRepository;
 import zip.ootd.ootdzip.category.repository.StyleRepository;
+import zip.ootd.ootdzip.clothes.data.FindClothesRes;
 import zip.ootd.ootdzip.clothes.data.SaveClothesReq;
 import zip.ootd.ootdzip.clothes.domain.Clothes;
 import zip.ootd.ootdzip.clothes.domain.ClothesColor;
 import zip.ootd.ootdzip.clothes.domain.ClothesImage;
 import zip.ootd.ootdzip.clothes.domain.ClothesStyle;
 import zip.ootd.ootdzip.clothes.repository.ClothesRepository;
+import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.service.UserService;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class ClothesServiceImpl implements ClothesService {
 
-
     private final BrandRepository brandRepository;
     private final CategoryRepository categoryRepository;
     private final StyleRepository styleRepository;
     private final ColorRepository colorRepository;
+    private final ClothesRepository clothesRepository;
 
     private final UserService userService;
-
-    //private final S3Config s3Config;
 
     @Override
     @Transactional
@@ -43,9 +47,11 @@ public class ClothesServiceImpl implements ClothesService {
         /*
         옷 관련 도메인 조회
          */
-        Brand brand = brandRepository.findById(saveClothesReq.getBrandId()).orElseThrow(() -> new IllegalArgumentException("유효하지 않은 Brand ID"));
+        Brand brand = brandRepository.findById(saveClothesReq.getBrandId())
+                .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 Brand ID"));
         User user = userService.getAuthenticatiedUser();
-        Category category = categoryRepository.findById(saveClothesReq.getCategoryId()).orElseThrow(() -> new IllegalArgumentException("유효하지 않은 Category ID"));
+        Category category = categoryRepository.findById(saveClothesReq.getCategoryId())
+                .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 Category ID"));
         List<Style> styles = styleRepository.findAllById(saveClothesReq.getStyleIds());
         List<Color> colors = colorRepository.findAllById(saveClothesReq.getColorIds());
 
@@ -61,7 +67,7 @@ public class ClothesServiceImpl implements ClothesService {
         List<ClothesColor> clothesColors = ClothesColor.createClothesColorsBy(colors);
         List<ClothesImage> clothesImages = ClothesImage.createClothesImagesBy(saveClothesReq.getClothesImages());
 
-        Clothes clothes = Clothes.createClothes(user,
+        return Clothes.createClothes(user,
                 brand,
                 saveClothesReq.getClothesName(),
                 saveClothesReq.getIsOpen(),
@@ -73,7 +79,26 @@ public class ClothesServiceImpl implements ClothesService {
                 clothesImages,
                 clothesStyles,
                 clothesColors);
+    }
 
-        return clothes;
+    @Override
+    public FindClothesRes findClothesById(Long id) {
+
+        Clothes clothes = clothesRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 옷 ID"));
+
+        User findUser = userService.getAuthenticatiedUser();
+
+        if (!clothes.getIsOpen() && !clothes.getUser().getId().equals(findUser.getId())) {
+            throw new CustomException(UNAUTHORIZED_USER_ERROR);
+        }
+
+        DetailCategory detailCategory = categoryRepository.findDetailCategoryById(clothes.getCategory().getId());
+
+        if (detailCategory == null) {
+            throw new IllegalArgumentException("유효하지 않은 카테고리 ID");
+        }
+
+        return FindClothesRes.createFindClothesRes(clothes, detailCategory);
     }
 }

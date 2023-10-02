@@ -1,13 +1,19 @@
 package zip.ootd.ootdzip.category.data;
 
-public interface DetailCategory {
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-    Long getId();
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class DetailCategory {
 
-    String getCategoryName();
+    private Long id;
 
-    String getMiddleCategoryName();
+    private String categoryName;
 
-    String getLargeCategoryName();
+    private String middleCategoryName;
 
+    private String largeCategoryName;
 }
