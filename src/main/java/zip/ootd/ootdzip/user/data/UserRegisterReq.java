@@ -1,10 +1,11 @@
 package zip.ootd.ootdzip.user.data;
 
+import java.time.LocalDate;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.Data;
 import zip.ootd.ootdzip.user.domain.UserGender;
-
-import java.time.LocalDate;
 
 @Data
 public class UserRegisterReq {

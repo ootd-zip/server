@@ -1,23 +1,25 @@
 package zip.ootd.ootdzip.user;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import zip.ootd.ootdzip.user.domain.User;
-import zip.ootd.ootdzip.user.domain.UserGender;
-import zip.ootd.ootdzip.user.repository.UserRepository;
+import static org.assertj.core.api.Assertions.*;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+
+import zip.ootd.ootdzip.user.domain.User;
+import zip.ootd.ootdzip.user.domain.UserGender;
+import zip.ootd.ootdzip.user.repository.UserRepository;
 
 @DataJpaTest
 public class UserRepositoryTest {
 
-    @Autowired private UserRepository userRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     @Test
     @DisplayName("findAll이 작동해야 함")
@@ -31,7 +33,7 @@ public class UserRepositoryTest {
     void findUserById() {
         String userName = "test user name";
         UserGender gender = UserGender.MALE;
-        LocalDate birthdate =LocalDate.of(2000, 1, 1);
+        LocalDate birthdate = LocalDate.of(2000, 1, 1);
         Integer userHeight = 180;
         User saved = userRepository.save(new User(userName,
                 gender,

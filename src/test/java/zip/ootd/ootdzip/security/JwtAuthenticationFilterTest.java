@@ -1,18 +1,19 @@
 package zip.ootd.ootdzip.security;
 
-import jakarta.servlet.http.HttpServletRequest;
+import static org.assertj.core.api.Assertions.*;
+
+import java.lang.reflect.Method;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 
-import java.lang.reflect.Method;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import jakarta.servlet.http.HttpServletRequest;
 
 class JwtAuthenticationFilterTest {
 
-    private JwtUtils jwtUtils;
-    private JwtAuthenticationFilter filter;
+    private final JwtUtils jwtUtils;
+    private final JwtAuthenticationFilter filter;
 
     public JwtAuthenticationFilterTest() {
         this.jwtUtils = new JwtUtils(
