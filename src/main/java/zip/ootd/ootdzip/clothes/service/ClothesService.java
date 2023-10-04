@@ -1,5 +1,8 @@
 package zip.ootd.ootdzip.clothes.service;
 
+import java.util.List;
+
+import zip.ootd.ootdzip.clothes.data.FindClothesByUserReq;
 import zip.ootd.ootdzip.clothes.data.FindClothesRes;
 import zip.ootd.ootdzip.clothes.data.SaveClothesReq;
 import zip.ootd.ootdzip.clothes.domain.Clothes;
@@ -15,8 +18,15 @@ public interface ClothesService {
 
     /**
      * 옷 id로, 옷을 조회한다.
-     * @param findClothesReq
+     * @param id
      * @return
      */
     FindClothesRes findClothesById(Long id);
+
+    /**
+     * 유저가 등록한 옷 리스트 조회
+     * @param request
+     * @return
+     */
+    List<FindClothesRes> findClothesByUser(FindClothesByUserReq request);
 }
