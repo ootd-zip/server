@@ -1,5 +1,8 @@
 package zip.ootd.ootdzip.clothes.domain;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -11,6 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import zip.ootd.ootdzip.category.domain.Style;
 
 @Entity
@@ -18,6 +22,8 @@ import zip.ootd.ootdzip.category.domain.Style;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Setter
+@Builder
 public class ClothesStyle {
 
     @Id
@@ -32,9 +38,16 @@ public class ClothesStyle {
     @JoinColumn(name = "style_id", nullable = false)
     private Style style;
 
-    @Builder
-    public ClothesStyle(Clothes clothes, Style style) {
-        this.clothes = clothes;
-        this.style = style;
+    public static ClothesStyle createClothesStyleBy(Style style) {
+        return ClothesStyle.builder()
+                .style(style)
+                .build();
     }
+
+    public static List<ClothesStyle> createClothesStylesBy(List<Style> styles) {
+        return styles.stream()
+                .map(ClothesStyle::createClothesStyleBy)
+                .collect(Collectors.toList());
+    }
+
 }
