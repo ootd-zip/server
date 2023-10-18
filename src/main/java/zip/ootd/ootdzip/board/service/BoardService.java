@@ -60,11 +60,10 @@ public class BoardService {
         Board board = boardRepository.findById(request.getBoardId()).orElseThrow();
         User user = userService.getAuthenticatiedUser();
 
-        Long boardId = board.getId();
-        countView(boardId);
-        int view = getViewInRedis(boardId);
-        int like = getLikeInRedis(boardId);
-        boolean isLike = board.isUserLike(user.getId());
+        countView(board);
+        int view = getView(board);
+        int like = getLike(board);
+        boolean isLike = isUserLike(board, user);
 
         return new BoardOotdGetRes(board, isLike, view, like);
     }
@@ -75,26 +74,55 @@ public class BoardService {
         User user = userService.getAuthenticatiedUser();
 
         return boards.stream()
-                .map(b -> new BoardOotdGetAllRes(b, b.isUserLike(user.getId()), getViewInRedis(b.getId()), getLikeInRedis(b.getId())))
+                .map(b -> new BoardOotdGetAllRes(b, isUserLike(b, user), getView(b), getLike(b)))
                 .collect(Collectors.toList());
     }
 
 
-    public void countView(Long id) {
+    private void countView(Board board) {
+
+        Long id = board.getId();
+
+        if (isCountViewInRedis(id)) {
+            countViewInRedis(id, 0);
+        }
+
+        int view = board.getViewCount();
+        countViewInRedis(id, view);
+    }
+
+    private void countViewInRedis(Long id, int boardView) {
 
         String info = "view";
         String filter = "filter";
-        String redisKey = id.toString() + info;
-        String userKey = userService.getAuthenticatiedUser().getId().toString() + info + filter;
+        String boardKey = id.toString() + info;
+        String boardFilterKey = boardKey + filter;
+        String userKey = userService.getAuthenticatiedUser().getId().toString() + info;
 
-        if (!redisDao.getValuesList(userKey).contains(redisKey)) {
-            redisDao.setValuesList(userKey, redisKey);
-            int view = NumberUtils.toInt(redisDao.getValues(redisKey));
-            redisDao.setValues(redisKey, String.valueOf(view + 1));
+        if (!redisDao.getValuesSet(boardFilterKey).contains(userKey)) {
+            redisDao.setValuesSet(boardFilterKey, userKey);
+            int view = NumberUtils.toInt(redisDao.getValues(boardKey));
+            redisDao.setValues(boardKey, String.valueOf(boardView + view + 1));
         }
     }
 
-    public int getViewInRedis(Long id) {
+    private void setViewInRedis(Long id, int count) {
+        String info = "view";
+        String boardKey = id.toString() + info;
+
+        redisDao.setValues(boardKey, String.valueOf(count));
+    }
+
+    private boolean isCountViewInRedis(Long id) {
+        String info = "view";
+        String filter = "filter";
+        String boardFilterKey = id.toString() + info + filter;
+        String userKey = userService.getAuthenticatiedUser().getId().toString() + info;
+
+        return redisDao.getValuesSet(boardFilterKey).contains(userKey);
+    }
+
+    private int getViewInRedis(Long id) {
 
         String info = "view";
         String redisKey = id.toString() + info;
@@ -102,39 +130,119 @@ public class BoardService {
         return NumberUtils.toInt(redisDao.getValues(redisKey));
     }
 
-    public int getView(Board board) {
-        return Math.max(getViewInRedis(board.getId()), board.getViewCount());
+    // getView 의 경우 DB에서 가져온 view 와 redis 에서 가져온 view 를 비교 하여 redis 가 비어있다면 redis 최신화 후 db의 값을 반환
+    private int getView(Board board) {
+        int viewInRedis = getViewInRedis(board.getId());
+        int viewInDb = board.getViewCount();
+
+        if (viewInRedis > 0) {
+            return viewInRedis;
+        }
+
+        setViewInRedis(board.getId(), viewInDb);
+        return viewInDb;
     }
 
     public boolean changeLike(BoardLikeReq request) {
 
         Board board = boardRepository.findById(request.getBoardId()).orElseThrow();
-        return board.changeUserLike(userService.getAuthenticatiedUser().getId());
+        User user = userService.getAuthenticatiedUser();
+        Long boardId = board.getId();
+        Long userId = user.getId();
+
+        boolean resultLike = board.changeUserLike(user);
+        changeUserLikeInRedis(boardId, userId, resultLike);
+
+        return resultLike;
     }
 
-    private void countLike(Long id) {
+    private boolean isUserLike(Board board, User user) {
+
+        Long boardId = board.getId();
+        Long userId = user.getId();
+
+        if (isUserLikeSavedRedis(boardId)) {
+            return isUserLikeInRedis(boardId, userId);
+        }
+
+        return board.isUserLike(userId);
+    }
+
+    private boolean isUserLikeSavedRedis(Long boardId) {
+        String info = "userLike";
+        String boardKey = boardId + info;
+
+        return redisDao.getValuesSet(boardKey).size() != 0;
+    }
+
+    private boolean isUserLikeInRedis(Long boardId, Long userId) {
+        String info = "userLike";
+        String boardKey = boardId + info;
+        String userKey = userId + info;
+
+        return redisDao.getValuesSet(boardKey).contains(userKey);
+    }
+
+    // 해당 함수는 목표하는 like 에 맞춰서 redis 값을 조정하는데 쓰입니다.
+    // 예를 들어 targetLike 가 true 이면 false(싫어요) -> true(좋아요) 로 바뀐것이므로 redis 에서 좋아요수를 증가시킵니다.
+    private boolean changeUserLikeInRedis(Long boardId, Long userId, boolean targetLike) {
+        String info = "userLike";
+        String boardKey = boardId + info;
+        String userKey = userId + info;
+
+        if (targetLike) {
+            redisDao.setValuesSet(boardKey, userKey);
+            countLikeInRedis(boardId);
+        } else {
+            redisDao.deleteValuesSet(boardKey, userKey);
+            discountLikeInRedis(boardId);
+        }
+
+        return targetLike;
+    }
+
+    private void countLikeInRedis(Long id) {
 
         String info = "like";
-        String filter = "filter";
-        String redisKey = id.toString() + info;
-        String userKey = userService.getAuthenticatiedUser().getId().toString() + info + filter;
+        String likeKey = id.toString() + info;
 
-        if (!redisDao.getValuesList(userKey).contains(redisKey)) {
-            redisDao.setValuesList(userKey, redisKey);
-            int like = NumberUtils.toInt(redisDao.getValues(redisKey));
-            redisDao.setValues(redisKey, String.valueOf(like + 1));
-        }
+        int like = NumberUtils.toInt(redisDao.getValues(likeKey));
+        redisDao.setValues(likeKey, String.valueOf(like + 1));
     }
 
-    public int getLike(Board board) {
-        return Math.max(getLikeInRedis(board.getId()), board.getLikeCount());
+    private void discountLikeInRedis(Long id) {
+
+        String info = "like";
+        String likeKey = id.toString() + info;
+
+        int like = NumberUtils.toInt(redisDao.getValues(likeKey));
+        redisDao.setValues(likeKey, String.valueOf(like - 1));
+    }
+
+    private void setLikeInRedis(Long id, int count) {
+
+        String info = "like";
+        String likeKey = id.toString() + info;
+
+        redisDao.setValues(likeKey, String.valueOf(count));
+    }
+
+    // getLike 의 경우 DB에서 가져온 like 와 redis 에서 가져온 like 를 비교 하여 redis 가 비어있다면 redis 최신화 후 db의 값을 반환
+    private int getLike(Board board) {
+        int likeInRedis = getLikeInRedis(board.getId());
+        int likeInDb = board.getLikeCount();
+        if (likeInRedis > 0) {
+            return likeInRedis;
+        }
+        setLikeInRedis(board.getId(), likeInDb);
+        return likeInDb;
     }
 
     private int getLikeInRedis(Long id) {
 
         String info = "like";
-        String redisKey = id.toString() + info;
+        String likeKey = id.toString() + info;
 
-        return NumberUtils.toInt(redisDao.getValues(redisKey));
+        return NumberUtils.toInt(redisDao.getValues(likeKey));
     }
 }
