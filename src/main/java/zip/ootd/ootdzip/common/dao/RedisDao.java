@@ -2,12 +2,15 @@ package zip.ootd.ootdzip.common.dao;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.SetOperations;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
@@ -25,7 +28,10 @@ public class RedisDao {
 
     public List<String> getValuesList(String key) {
         Long len = redisTemplate.opsForList().size(key);
-        return len == 0 ? new ArrayList<>() : redisTemplate.opsForList().range(key, 0, len - 1);
+        if (len == null || len == 0) {
+            return new ArrayList<>();
+        }
+        return redisTemplate.opsForList().range(key, 0, len - 1);
     }
 
     public void setValues(String key, String data, Duration duration) {
@@ -40,5 +46,23 @@ public class RedisDao {
 
     public void deleteValues(String key) {
         redisTemplate.delete(key);
+    }
+
+    public void setValuesSet(String key, String data) {
+        redisTemplate.opsForSet().add(key, data);
+    }
+
+    public Set<String> getValuesSet(String key) {
+        SetOperations<String, String> values = redisTemplate.opsForSet();
+        Long size = values.size(key);
+        if (size == null || size == 0) {
+            return new HashSet<>();
+        }
+        return values.members(key);
+    }
+
+    public void deleteValuesSet(String key, String value) {
+        SetOperations<String, String> values = redisTemplate.opsForSet();
+        values.remove(key, value);
     }
 }
