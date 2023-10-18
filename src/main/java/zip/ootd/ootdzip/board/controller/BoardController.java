@@ -46,7 +46,7 @@ public class BoardController {
         return new ApiResponse<>(response);
     }
 
-    @Operation(summary = "ootd 게시글 좋아요 수 변경", description = "특정 게시글의 좋아요를")
+    @Operation(summary = "ootd 게시글 좋아요 변경", description = "특정 게시글의 좋아요를 변경하는 api, 좋아요 상태면 취소가 되고 취소상태면 좋아요가 됩니다.")
     @PostMapping("/like")
     public ApiResponse<BoardLikeRes> changeLike(@RequestBody BoardLikeReq request) {
 
