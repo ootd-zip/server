@@ -12,6 +12,7 @@ import zip.ootd.ootdzip.user.domain.UserGender;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Entity
 @Table(name = "boards")
@@ -99,15 +100,23 @@ public class Board extends BaseEntity {
                 .filter(bu -> Objects.equals(bu.getUser().getId(), id))
                 .findAny()
                 .map(BoardUser::isLike)
-                .orElseThrow();
+                .orElse(false);
     }
 
-    public boolean changeUserLike(Long id) {
-        return boardUsers.stream()
-                .filter(bu -> Objects.equals(bu.getUser().getId(), id))
-                .findAny()
-                .map(BoardUser::changeLike)
-                .orElseThrow();
+    public boolean changeUserLike(User user) {
+        Optional<BoardUser> boardUserOptional = boardUsers.stream()
+                .filter(bu -> Objects.equals(bu.getUser().getId(), user.getId()))
+                .findAny();
+
+        boolean result;
+        if (boardUserOptional.isPresent()) {
+            result = boardUserOptional.get().changeLike();
+        } else {
+            BoardUser boardUser = BoardUser.createBoardUserBy(user);
+            addBoardUser(boardUser);
+            result = boardUser.changeLike();
+        }
+        return result;
     }
 
     // == 연관관계 메서드 == //
