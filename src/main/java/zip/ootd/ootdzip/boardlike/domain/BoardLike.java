@@ -1,9 +1,13 @@
-package zip.ootd.ootdzip.boarduser.domain;
+package zip.ootd.ootdzip.boardlike.domain;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import zip.ootd.ootdzip.board.domain.Board;
 import zip.ootd.ootdzip.common.entity.BaseEntity;
 import zip.ootd.ootdzip.user.domain.User;
@@ -14,7 +18,7 @@ import zip.ootd.ootdzip.user.domain.User;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BoardUser extends BaseEntity {
+public class BoardLike extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "board_id")
@@ -27,14 +31,18 @@ public class BoardUser extends BaseEntity {
     @Builder.Default
     private boolean isLike = false;
 
-    public static BoardUser createBoardUserBy(User user) {
+    public static BoardLike createBoardLikeBy(User user) {
 
-        return BoardUser.builder()
+        return BoardLike.builder()
                 .user(user)
                 .build();
     }
 
-    public boolean changeLike() {
-        return isLike = !isLike;
+    public void addLike() {
+        this.isLike = true;
+    }
+
+    public void cancelLike() {
+        this.isLike = false;
     }
 }
