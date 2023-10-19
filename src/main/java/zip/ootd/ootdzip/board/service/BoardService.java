@@ -9,8 +9,9 @@ import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import zip.ootd.ootdzip.board.data.BoardAddBookmarkReq;
+import zip.ootd.ootdzip.board.data.BoardAddLikeReq;
 import zip.ootd.ootdzip.board.data.BoardCancelBookmarkReq;
-import zip.ootd.ootdzip.board.data.BoardLikeReq;
+import zip.ootd.ootdzip.board.data.BoardCancelLikeReq;
 import zip.ootd.ootdzip.board.data.BoardOotdGetAllRes;
 import zip.ootd.ootdzip.board.data.BoardOotdGetReq;
 import zip.ootd.ootdzip.board.data.BoardOotdGetRes;
@@ -18,7 +19,6 @@ import zip.ootd.ootdzip.board.data.BoardOotdPostReq;
 import zip.ootd.ootdzip.board.domain.Board;
 import zip.ootd.ootdzip.board.domain.BoardImage;
 import zip.ootd.ootdzip.board.repository.BoardRepository;
-import zip.ootd.ootdzip.boardbookmark.repository.BoardBookmarkRepository;
 import zip.ootd.ootdzip.boardclothe.domain.BoardClothes;
 import zip.ootd.ootdzip.boardstyle.BoardStyle;
 import zip.ootd.ootdzip.category.domain.Style;
@@ -39,7 +39,6 @@ public class BoardService {
     private final UserService userService;
     private final StyleRepository styleRepository;
     private final RedisDao redisDao;
-    private final BoardBookmarkRepository boardBookmarkRepository;
 
     public Board postOotd(BoardOotdPostReq request) {
 
@@ -152,17 +151,24 @@ public class BoardService {
         return viewInDb;
     }
 
-    public boolean changeLike(BoardLikeReq request) {
-
+    public void addLike(BoardAddLikeReq request) {
         Board board = boardRepository.findById(request.getBoardId()).orElseThrow();
         User user = userService.getAuthenticatiedUser();
         Long boardId = board.getId();
         Long userId = user.getId();
 
-        boolean resultLike = board.changeUserLike(user);
-        changeUserLikeInRedis(boardId, userId, resultLike);
+        board.addLike(user);
+        addUserLikeInRedis(boardId, userId);
+    }
 
-        return resultLike;
+    public void cancelLike(BoardCancelLikeReq request) {
+        Board board = boardRepository.findById(request.getBoardId()).orElseThrow();
+        User user = userService.getAuthenticatiedUser();
+        Long boardId = board.getId();
+        Long userId = user.getId();
+
+        board.cancelLike(user);
+        cancelUserLikeInRedis(boardId, userId);
     }
 
     private boolean isUserLike(Board board, User user) {
@@ -174,7 +180,7 @@ public class BoardService {
             return isUserLikeInRedis(boardId, userId);
         }
 
-        return board.isUserLike(userId);
+        return board.isBoardLike(user);
     }
 
     private boolean isUserLikeSavedRedis(Long boardId) {
@@ -192,22 +198,22 @@ public class BoardService {
         return redisDao.getValuesSet(boardKey).contains(userKey);
     }
 
-    // 해당 함수는 목표하는 like 에 맞춰서 redis 값을 조정하는데 쓰입니다.
-    // 예를 들어 targetLike 가 true 이면 false(싫어요) -> true(좋아요) 로 바뀐것이므로 redis 에서 좋아요수를 증가시킵니다.
-    private boolean changeUserLikeInRedis(Long boardId, Long userId, boolean targetLike) {
+    private void addUserLikeInRedis(Long boardId, Long userId) {
         String info = "userLike";
         String boardKey = boardId + info;
         String userKey = userId + info;
 
-        if (targetLike) {
-            redisDao.setValuesSet(boardKey, userKey);
-            countLikeInRedis(boardId);
-        } else {
-            redisDao.deleteValuesSet(boardKey, userKey);
-            discountLikeInRedis(boardId);
-        }
+        redisDao.setValuesSet(boardKey, userKey);
+        countLikeInRedis(boardId);
+    }
 
-        return targetLike;
+    private void cancelUserLikeInRedis(Long boardId, Long userId) {
+        String info = "userLike";
+        String boardKey = boardId + info;
+        String userKey = userId + info;
+
+        redisDao.deleteValuesSet(boardKey, userKey);
+        discountLikeInRedis(boardId);
     }
 
     private void countLikeInRedis(Long id) {
