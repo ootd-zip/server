@@ -113,18 +113,27 @@ public class Board extends BaseEntity {
         return board;
     }
 
-    public boolean isUserLike(Long id) {
-        return boardLikes.stream()
-                .filter(bu -> Objects.equals(bu.getUser().getId(), id))
-                .findAny()
-                .map(BoardLike::isLike)
-                .orElse(false);
+    public void addLike(User user) {
+        BoardLike boardLike = getBoardLike(user).orElse(BoardLike.createBoardLikeBy(user));
+        boardLike.addLike();
+        addBoardLike(boardLike);
     }
 
-    public boolean changeUserLike(User user) {
-        BoardLike boardLike = getBoardLikeOrMakeBoardLike(user);
+    public void cancelLike(User user) {
+        BoardLike boardLike = getBoardLike(user).orElseThrow(NoSuchElementException::new);
+        boardLike.cancelLike();
+        deleteBoardLike(boardLike);
+    }
 
-        return boardLike.changeLike();
+    public boolean isBoardLike(User user) {
+        Optional<BoardLike> boardLike = getBoardLike(user);
+        return boardLike.map(BoardLike::isLike).orElse(false);
+    }
+
+    private Optional<BoardLike> getBoardLike(User user) {
+        return boardLikes.stream()
+                .filter(bl -> Objects.equals(bl.getUser().getId(), user.getId()))
+                .findAny();
     }
 
     public void addBookmark(User user) {
@@ -142,20 +151,6 @@ public class Board extends BaseEntity {
     public boolean isBookmark(User user) {
         Optional<BoardBookmark> boardBookmark = getBoardBookmark(user);
         return boardBookmark.map(BoardBookmark::isBookmark).orElse(false);
-    }
-
-    private BoardLike getBoardLikeOrMakeBoardLike(User user) {
-        Optional<BoardLike> boardLikeOptional = boardLikes.stream()
-                .filter(bu -> Objects.equals(bu.getUser().getId(), user.getId()))
-                .findAny();
-
-        if (boardLikeOptional.isPresent()) {
-            return boardLikeOptional.get();
-        } else {
-            BoardLike boardLike = BoardLike.createBoardLikeBy(user);
-            addBoardLike(boardLike);
-            return boardLike;
-        }
     }
 
     private Optional<BoardBookmark> getBoardBookmark(User user) {
@@ -195,6 +190,10 @@ public class Board extends BaseEntity {
     public void addBoardLike(BoardLike boardLike) {
         boardLikes.add(boardLike);
         boardLike.setBoard(this);
+    }
+
+    public void deleteBoardLike(BoardLike boardLike) {
+        boardLikes.remove(boardLike);
     }
 
     public void addBoardLikes(List<BoardLike> boardLikes) {
