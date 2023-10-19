@@ -1,18 +1,33 @@
 package zip.ootd.ootdzip.board.domain;
 
-import jakarta.persistence.*;
-import lombok.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.Optional;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import zip.ootd.ootdzip.boardbookmark.domain.BoardBookmark;
 import zip.ootd.ootdzip.boardclothe.domain.BoardClothes;
+import zip.ootd.ootdzip.boardlike.domain.BoardLike;
 import zip.ootd.ootdzip.boardstyle.BoardStyle;
-import zip.ootd.ootdzip.boarduser.domain.BoardUser;
 import zip.ootd.ootdzip.common.entity.BaseEntity;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.domain.UserGender;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 @Entity
 @Table(name = "boards")
@@ -58,8 +73,12 @@ public class Board extends BaseEntity {
     private List<BoardStyle> styles = new ArrayList<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
-    private List<BoardUser> boardUsers = new ArrayList<>();
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BoardLike> boardLikes = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BoardBookmark> boardBookmarks = new ArrayList<>();
 
     @Column(nullable = false)
     private boolean isPublic;
@@ -95,27 +114,54 @@ public class Board extends BaseEntity {
     }
 
     public boolean isUserLike(Long id) {
-        return boardUsers.stream()
+        return boardLikes.stream()
                 .filter(bu -> Objects.equals(bu.getUser().getId(), id))
                 .findAny()
-                .map(BoardUser::isLike)
+                .map(BoardLike::isLike)
                 .orElse(false);
     }
 
     public boolean changeUserLike(User user) {
-        Optional<BoardUser> boardUserOptional = boardUsers.stream()
+        BoardLike boardLike = getBoardLikeOrMakeBoardLike(user);
+
+        return boardLike.changeLike();
+    }
+
+    public void addBookmark(User user) {
+        BoardBookmark boardBookmark = getBoardBookmark(user).orElse(BoardBookmark.createBoardBookmarkBy(user));
+        boardBookmark.addBookmark();
+        addBoardBookmark(boardBookmark);
+    }
+
+    public void cancelBookmark(User user) {
+        BoardBookmark boardBookmark = getBoardBookmark(user).orElseThrow(NoSuchElementException::new);
+        boardBookmark.cancelBookmark();
+        deleteBoardBookmark(boardBookmark);
+    }
+
+    public boolean isBookmark(User user) {
+        Optional<BoardBookmark> boardBookmark = getBoardBookmark(user);
+        return boardBookmark.map(BoardBookmark::isBookmark).orElse(false);
+    }
+
+    private BoardLike getBoardLikeOrMakeBoardLike(User user) {
+        Optional<BoardLike> boardLikeOptional = boardLikes.stream()
                 .filter(bu -> Objects.equals(bu.getUser().getId(), user.getId()))
                 .findAny();
 
-        boolean result;
-        if (boardUserOptional.isPresent()) {
-            result = boardUserOptional.get().changeLike();
+        if (boardLikeOptional.isPresent()) {
+            return boardLikeOptional.get();
         } else {
-            BoardUser boardUser = BoardUser.createBoardUserBy(user);
-            addBoardUser(boardUser);
-            result = boardUser.changeLike();
+            BoardLike boardLike = BoardLike.createBoardLikeBy(user);
+            addBoardLike(boardLike);
+            return boardLike;
         }
-        return result;
+    }
+
+    private Optional<BoardBookmark> getBoardBookmark(User user) {
+        return boardBookmarks.stream()
+                .filter(bb -> Objects.equals(bb.getUser().getId(), user.getId()))
+                .findAny();
     }
 
     // == 연관관계 메서드 == //
@@ -146,12 +192,21 @@ public class Board extends BaseEntity {
         boardStyles.forEach(this::addBoardStyle);
     }
 
-    public void addBoardUser(BoardUser boardUser) {
-        boardUsers.add(boardUser);
-        boardUser.setBoard(this);
+    public void addBoardLike(BoardLike boardLike) {
+        boardLikes.add(boardLike);
+        boardLike.setBoard(this);
     }
 
-    public void addBoardUsers(List<BoardUser> boardUsers) {
-        boardUsers.forEach(this::addBoardUser);
+    public void addBoardLikes(List<BoardLike> boardLikes) {
+        boardLikes.forEach(this::addBoardLike);
+    }
+
+    public void addBoardBookmark(BoardBookmark boardBookmark) {
+        boardBookmarks.add(boardBookmark);
+        boardBookmark.setBoard(this);
+    }
+
+    public void deleteBoardBookmark(BoardBookmark boardBookmark) {
+        boardBookmarks.remove(boardBookmark);
     }
 }
