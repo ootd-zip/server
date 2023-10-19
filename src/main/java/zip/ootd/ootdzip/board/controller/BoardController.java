@@ -1,17 +1,29 @@
 package zip.ootd.ootdzip.board.controller;
 
+import java.util.List;
+
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-
-import org.springframework.web.bind.annotation.*;
-
-import zip.ootd.ootdzip.board.data.*;
+import zip.ootd.ootdzip.board.data.BoardAddBookmarkReq;
+import zip.ootd.ootdzip.board.data.BoardCancelBookmarkReq;
+import zip.ootd.ootdzip.board.data.BoardLikeReq;
+import zip.ootd.ootdzip.board.data.BoardLikeRes;
+import zip.ootd.ootdzip.board.data.BoardOotdGetAllRes;
+import zip.ootd.ootdzip.board.data.BoardOotdGetReq;
+import zip.ootd.ootdzip.board.data.BoardOotdGetRes;
+import zip.ootd.ootdzip.board.data.BoardOotdPostReq;
+import zip.ootd.ootdzip.board.data.BoardOotdPostRes;
 import zip.ootd.ootdzip.board.service.BoardService;
 import zip.ootd.ootdzip.common.response.ApiResponse;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -55,5 +67,23 @@ public class BoardController {
         BoardLikeRes response = new BoardLikeRes(boardService.changeLike(request));
 
         return new ApiResponse<>(response);
+    }
+
+    @Operation(summary = "ootd 게시글 북마크 추가", description = "특정 게시글에 북마크를 추가 합니다.")
+    @PostMapping("/bookmark")
+    public ApiResponse<Boolean> addBookMark(@RequestBody BoardAddBookmarkReq request) {
+
+        boardService.addBookmark(request);
+
+        return new ApiResponse<>(true);
+    }
+
+    @Operation(summary = "ootd 게시글 북마크 제거", description = "특정 게시글에 북마크를 취소 합니다.")
+    @DeleteMapping("/bookmark")
+    public ApiResponse<Boolean> cancelBookMark(@RequestBody BoardCancelBookmarkReq request) {
+
+        boardService.cancelBookmark(request);
+
+        return new ApiResponse<>(true);
     }
 }
