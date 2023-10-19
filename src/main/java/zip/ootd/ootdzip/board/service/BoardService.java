@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import zip.ootd.ootdzip.board.data.BoardAddBookmarkReq;
+import zip.ootd.ootdzip.board.data.BoardCancelBookmarkReq;
 import zip.ootd.ootdzip.board.data.BoardLikeReq;
 import zip.ootd.ootdzip.board.data.BoardOotdGetAllRes;
 import zip.ootd.ootdzip.board.data.BoardOotdGetReq;
@@ -16,6 +18,7 @@ import zip.ootd.ootdzip.board.data.BoardOotdPostReq;
 import zip.ootd.ootdzip.board.domain.Board;
 import zip.ootd.ootdzip.board.domain.BoardImage;
 import zip.ootd.ootdzip.board.repository.BoardRepository;
+import zip.ootd.ootdzip.boardbookmark.repository.BoardBookmarkRepository;
 import zip.ootd.ootdzip.boardclothe.domain.BoardClothes;
 import zip.ootd.ootdzip.boardstyle.BoardStyle;
 import zip.ootd.ootdzip.category.domain.Style;
@@ -36,6 +39,7 @@ public class BoardService {
     private final UserService userService;
     private final StyleRepository styleRepository;
     private final RedisDao redisDao;
+    private final BoardBookmarkRepository boardBookmarkRepository;
 
     public Board postOotd(BoardOotdPostReq request) {
 
@@ -69,8 +73,9 @@ public class BoardService {
         int view = getView(board);
         int like = getLike(board);
         boolean isLike = isUserLike(board, user);
+        boolean isBookmark = board.isBookmark(user);
 
-        return new BoardOotdGetRes(board, isLike, view, like);
+        return new BoardOotdGetRes(board, isLike, isBookmark, view, like);
     }
 
     public List<BoardOotdGetAllRes> getOotds() {
@@ -79,7 +84,7 @@ public class BoardService {
         User user = userService.getAuthenticatiedUser();
 
         return boards.stream()
-                .map(b -> new BoardOotdGetAllRes(b, isUserLike(b, user), getView(b), getLike(b)))
+                .map(b -> new BoardOotdGetAllRes(b, isUserLike(b, user), b.isBookmark(user), getView(b), getLike(b)))
                 .collect(Collectors.toList());
     }
 
@@ -248,5 +253,17 @@ public class BoardService {
         String likeKey = id.toString() + info;
 
         return NumberUtils.toInt(redisDao.getValues(likeKey));
+    }
+
+    public void addBookmark(BoardAddBookmarkReq request) {
+        Board board = boardRepository.findById(request.getBoardId()).orElseThrow();
+        User user = userService.getAuthenticatiedUser();
+        board.addBookmark(user);
+    }
+
+    public void cancelBookmark(BoardCancelBookmarkReq request) {
+        Board board = boardRepository.findById(request.getBoardId()).orElseThrow();
+        User user = userService.getAuthenticatiedUser();
+        board.cancelBookmark(user);
     }
 }
