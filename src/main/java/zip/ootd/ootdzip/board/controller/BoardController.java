@@ -14,9 +14,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import zip.ootd.ootdzip.board.data.BoardAddBookmarkReq;
+import zip.ootd.ootdzip.board.data.BoardAddLikeReq;
 import zip.ootd.ootdzip.board.data.BoardCancelBookmarkReq;
-import zip.ootd.ootdzip.board.data.BoardLikeReq;
-import zip.ootd.ootdzip.board.data.BoardLikeRes;
+import zip.ootd.ootdzip.board.data.BoardCancelLikeReq;
 import zip.ootd.ootdzip.board.data.BoardOotdGetAllRes;
 import zip.ootd.ootdzip.board.data.BoardOotdGetReq;
 import zip.ootd.ootdzip.board.data.BoardOotdGetRes;
@@ -60,16 +60,25 @@ public class BoardController {
         return new ApiResponse<>(response);
     }
 
-    @Operation(summary = "ootd 게시글 좋아요 변경", description = "특정 게시글의 좋아요를 변경하는 api, 좋아요 상태면 취소가 되고 취소상태면 좋아요가 됩니다.")
+    @Operation(summary = "ootd 게시글 좋아요 추가", description = "특정 게시글의 좋아요를 추가합니다.")
     @PostMapping("/like")
-    public ApiResponse<BoardLikeRes> changeLike(@RequestBody BoardLikeReq request) {
+    public ApiResponse<Boolean> addLike(@RequestBody BoardAddLikeReq request) {
 
-        BoardLikeRes response = new BoardLikeRes(boardService.changeLike(request));
+        boardService.addLike(request);
 
-        return new ApiResponse<>(response);
+        return new ApiResponse<>(true);
     }
 
-    @Operation(summary = "ootd 게시글 북마크 추가", description = "특정 게시글에 북마크를 추가 합니다.")
+    @Operation(summary = "ootd 게시글 좋아요 제거", description = "특정 게시글의 좋아요를 취소합니다.")
+    @DeleteMapping("/like")
+    public ApiResponse<Boolean> cancelLike(@RequestBody BoardCancelLikeReq request) {
+
+        boardService.cancelLike(request);
+
+        return new ApiResponse<>(true);
+    }
+
+    @Operation(summary = "ootd 게시글 북마크 추가", description = "특정 게시글에 북마크를 추가합니다.")
     @PostMapping("/bookmark")
     public ApiResponse<Boolean> addBookMark(@RequestBody BoardAddBookmarkReq request) {
 
@@ -78,7 +87,7 @@ public class BoardController {
         return new ApiResponse<>(true);
     }
 
-    @Operation(summary = "ootd 게시글 북마크 제거", description = "특정 게시글에 북마크를 취소 합니다.")
+    @Operation(summary = "ootd 게시글 북마크 제거", description = "특정 게시글에 북마크를 취소합니다.")
     @DeleteMapping("/bookmark")
     public ApiResponse<Boolean> cancelBookMark(@RequestBody BoardCancelBookmarkReq request) {
 
