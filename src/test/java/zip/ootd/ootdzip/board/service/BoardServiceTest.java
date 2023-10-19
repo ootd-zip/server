@@ -18,7 +18,7 @@ import zip.ootd.ootdzip.board.data.BoardOotdGetRes;
 import zip.ootd.ootdzip.board.data.BoardOotdPostReq;
 import zip.ootd.ootdzip.board.domain.Board;
 import zip.ootd.ootdzip.board.repository.BoardRepository;
-import zip.ootd.ootdzip.boarduser.domain.BoardUser;
+import zip.ootd.ootdzip.boardlike.domain.BoardLike;
 import zip.ootd.ootdzip.category.repository.StyleRepository;
 import zip.ootd.ootdzip.clothes.domain.Clothes;
 import zip.ootd.ootdzip.clothes.repository.ClothesRepository;
@@ -87,7 +87,7 @@ public class BoardServiceTest {
         User user = new User();
         user.setId(1L);
 
-        BoardUser boardUser = BoardUser.builder()
+        BoardLike boardLike = BoardLike.builder()
                 .isLike(true)
                 .user(user)
                 .build();
@@ -96,7 +96,7 @@ public class BoardServiceTest {
                 .contents("테스트 컨텐츠")
                 .gender(UserGender.MALE)
                 .build();
-        board.addBoardUser(boardUser);
+        board.addBoardUser(boardLike);
 
         board.setId(1L);
 
