@@ -1,5 +1,9 @@
 package zip.ootd.ootdzip.board.data;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import lombok.Data;
 import zip.ootd.ootdzip.board.domain.Board;
 import zip.ootd.ootdzip.board.domain.BoardImage;
@@ -9,10 +13,6 @@ import zip.ootd.ootdzip.brand.domain.Brand;
 import zip.ootd.ootdzip.category.domain.Category;
 import zip.ootd.ootdzip.clothes.domain.Clothes;
 import zip.ootd.ootdzip.user.domain.UserGender;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Data
 public class BoardOotdGetRes {
@@ -27,6 +27,8 @@ public class BoardOotdGetRes {
 
     private int likeCount;
 
+    private boolean isBookmark;
+
     private LocalDateTime createAt;
 
     private UserGender gender;
@@ -38,13 +40,15 @@ public class BoardOotdGetRes {
     private List<OotdBoardClothesList> boardClothesList;
 
     public BoardOotdGetRes(Board board,
-                           boolean isLike,
-                           int viewCount,
-                           int likeCount) {
+            boolean isLike,
+            boolean isBookmark,
+            int viewCount,
+            int likeCount) {
 
         this.isLike = isLike;
         this.viewCount = viewCount;
         this.likeCount = likeCount;
+        this.isBookmark = isBookmark;
 
         this.reportCount = board.getReportCount();
         this.contents = board.getContents();
