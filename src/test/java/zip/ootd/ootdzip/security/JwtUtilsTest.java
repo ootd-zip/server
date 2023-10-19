@@ -1,26 +1,23 @@
 package zip.ootd.ootdzip.security;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.security.core.Authentication;
-import zip.ootd.ootdzip.oauth.data.TokenInfo;
-import zip.ootd.ootdzip.oauth.domain.UserAuthenticationToken;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.Calendar;
 import java.util.Date;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.security.core.Authentication;
+
+import zip.ootd.ootdzip.oauth.data.TokenInfo;
+import zip.ootd.ootdzip.oauth.domain.UserAuthenticationToken;
 
 public class JwtUtilsTest {
 
     private final JwtUtils jwtUtils;
 
     public JwtUtilsTest() {
-        this.jwtUtils = new JwtUtils(
-                "ABCD1234567890123456789012345678901234567890",
-                "HS256",
-                3600000L,
-                86400000L);
+        this.jwtUtils = new JwtUtils("ABCD1234567890123456789012345678901234567890", "HS256", 3600000L, 86400000L);
     }
 
     @Test
@@ -53,7 +50,10 @@ public class JwtUtilsTest {
         calendar.set(Calendar.MILLISECOND, 0);
         Date time = calendar.getTime();
         String encoded = jwtUtils.encode(authentication, time, 86400000L);
-        assertThat(encoded).isEqualTo("eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJvb3RkLnppcCIsInN1YiI6IjE1ODAiLCJpYXQiOjE2MDU0MDUwMTcsImV4cCI6MTYwNTQ5MTQxN30.mXWRXo68XS94jxrNkmc9C0qicfBq5Db8PqK19W2yBQA");
+
+        @SuppressWarnings("checkstyle:LineLength")
+        String expected = "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJvb3RkLnppcCIsInN1YiI6IjE1ODAiLCJpYXQiOjE2MDU0MDUwMTcsImV4cCI6MTYwNTQ5MTQxN30.mXWRXo68XS94jxrNkmc9C0qicfBq5Db8PqK19W2yBQA";
+        assertThat(encoded).isEqualTo(expected);
     }
 
     @Test
@@ -69,14 +69,18 @@ public class JwtUtilsTest {
     @Test
     @DisplayName("JWT decode 실패: verify signature 불일치")
     void decodeWrongVeritySignatureJwt() {
-        Authentication authentication = jwtUtils.decode("eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJvb3RkLnppcCIsInN1YiI6IjE1ODAiLCJpYXQiOjE2ODg0NjAzOTEsImV4cCI6MTY4ODQ2Mzk5MX0.pIse_4MuOMZIIQgywdHg18wVF6ynQCL3s5cgYXn9wDY");
+        @SuppressWarnings("checkstyle:LineLength")
+        String token = "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJvb3RkLnppcCIsInN1YiI6IjE1ODAiLCJpYXQiOjE2ODg0NjAzOTEsImV4cCI6MTY4ODQ2Mzk5MX0.pIse_4MuOMZIIQgywdHg18wVF6ynQCL3s5cgYXn9wDY";
+        Authentication authentication = jwtUtils.decode(token);
         assertThat(authentication).isNull();
     }
 
     @Test
     @DisplayName("JWT decode 실패: 잘못된 문자열 형식")
     void decodeEmptyJwt() {
-        Authentication authentication = jwtUtils.decode("eyJhbGciOiJIUzI1NiJ9.eyAiaGVsbG8iOiAxMTEsICJieWUiOiAid29ybGQiOiB7IiJ9IHs=.pIse_4MuOMZIIQgywdHg18wVF6ynQCL3s5cgYXn9wDY");
+        @SuppressWarnings("checkstyle:LineLength")
+        String token = "eyJhbGciOiJIUzI1NiJ9.eyAiaGVsbG8iOiAxMTEsICJieWUiOiAid29ybGQiOiB7IiJ9IHs=.pIse_4MuOMZIIQgywdHg18wVF6ynQCL3s5cgYXn9wDY";
+        Authentication authentication = jwtUtils.decode(token);
         assertThat(authentication).isNull();
     }
 

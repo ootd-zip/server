@@ -1,10 +1,18 @@
 package zip.ootd.ootdzip.board.service;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
 import zip.ootd.ootdzip.board.data.BoardOotdGetReq;
 import zip.ootd.ootdzip.board.data.BoardOotdGetRes;
 import zip.ootd.ootdzip.board.data.BoardOotdPostReq;
@@ -18,13 +26,6 @@ import zip.ootd.ootdzip.common.dao.RedisDao;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.domain.UserGender;
 import zip.ootd.ootdzip.user.service.UserService;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class BoardServiceTest {
@@ -80,7 +81,8 @@ public class BoardServiceTest {
     }
 
     @Test
-    public void OOTD게시판_해당글_조회() {
+    @DisplayName("OOTD게시판_해당글_조회")
+    public void boardSelectSuccess() {
 
         User user = new User();
         user.setId(1L);
@@ -97,7 +99,6 @@ public class BoardServiceTest {
         board.addBoardUser(boardUser);
 
         board.setId(1L);
-
 
         // boardRepository.findById 메서드의 결과로 샘플 Board 객체를 반환하도록 설정합니다.
         when(boardRepository.findById(1L)).thenReturn(java.util.Optional.of(board));

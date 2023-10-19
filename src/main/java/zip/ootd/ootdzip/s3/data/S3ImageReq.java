@@ -1,9 +1,10 @@
 package zip.ootd.ootdzip.s3.data;
 
-import lombok.Data;
+import java.util.List;
+
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
+import lombok.Data;
 
 @Data
 public class S3ImageReq {

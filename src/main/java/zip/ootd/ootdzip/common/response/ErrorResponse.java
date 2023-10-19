@@ -1,15 +1,16 @@
 package zip.ootd.ootdzip.common.response;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.validation.BindingResult;
+
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.validation.BindingResult;
 import zip.ootd.ootdzip.common.exception.code.ErrorCode;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -32,7 +33,6 @@ public class ErrorResponse {
 
     /**
      * ErrorResponse 생성자-1
-     *
      * @param code ErrorCode
      */
     @Builder
@@ -45,8 +45,7 @@ public class ErrorResponse {
 
     /**
      * ErrorResponse 생성자-2
-     *
-     * @param code   ErrorCode
+     * @param code ErrorCode
      * @param reason String
      */
     @Builder
@@ -59,8 +58,7 @@ public class ErrorResponse {
 
     /**
      * ErrorResponse 생성자-3
-     *
-     * @param code   ErrorCode
+     * @param code ErrorCode
      * @param errors List<FieldError>
      */
     @Builder
@@ -71,11 +69,9 @@ public class ErrorResponse {
         this.divisionCode = code.getDivisionCode();
     }
 
-
     /**
      * Global Exception 전송 타입-1
-     *
-     * @param code          ErrorCode
+     * @param code ErrorCode
      * @param bindingResult BindingResult
      * @return ErrorResponse
      */
@@ -85,7 +81,6 @@ public class ErrorResponse {
 
     /**
      * Global Exception 전송 타입-2
-     *
      * @param code ErrorCode
      * @return ErrorResponse
      */
@@ -95,15 +90,13 @@ public class ErrorResponse {
 
     /**
      * Global Exception 전송 타입-3
-     *
-     * @param code   ErrorCode
+     * @param code ErrorCode
      * @param reason String
      * @return ErrorResponse
      */
     public static ErrorResponse of(final ErrorCode code, final String reason) {
         return new ErrorResponse(code, reason);
     }
-
 
     /**
      * 에러를 e.getBindingResult() 형태로 전달 받는 경우 해당 내용을 상세 내용으로 변경하는 기능을 수행한다.
@@ -114,13 +107,20 @@ public class ErrorResponse {
         private final String value;
         private final String reason;
 
+        @Builder
+        FieldError(String field, String value, String reason) {
+            this.field = field;
+            this.value = value;
+            this.reason = reason;
+        }
+
         public static List<FieldError> of(final String field, final String value, final String reason) {
             List<FieldError> fieldErrors = new ArrayList<>();
             fieldErrors.add(FieldError.builder()
-                            .field(field)
-                            .value(value)
-                            .reason(reason)
-                            .build());
+                    .field(field)
+                    .value(value)
+                    .reason(reason)
+                    .build());
             return fieldErrors;
         }
 
@@ -133,13 +133,6 @@ public class ErrorResponse {
                             .reason(error.getDefaultMessage())
                             .build())
                     .collect(Collectors.toList());
-        }
-
-        @Builder
-        FieldError(String field, String value, String reason) {
-            this.field = field;
-            this.value = value;
-            this.reason = reason;
         }
     }
 }

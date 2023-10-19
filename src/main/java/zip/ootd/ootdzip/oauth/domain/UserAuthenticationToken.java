@@ -1,8 +1,9 @@
 package zip.ootd.ootdzip.oauth.domain;
 
+import org.springframework.security.authentication.AbstractAuthenticationToken;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.springframework.security.authentication.AbstractAuthenticationToken;
 
 public class UserAuthenticationToken extends AbstractAuthenticationToken {
 

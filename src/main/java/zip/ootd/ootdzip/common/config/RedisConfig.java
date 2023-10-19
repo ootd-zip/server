@@ -1,8 +1,7 @@
 package zip.ootd.ootdzip.common.config;
 
-import io.lettuce.core.ClientOptions;
-import io.lettuce.core.SocketOptions;
-import lombok.RequiredArgsConstructor;
+import java.time.Duration;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,7 +12,9 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
-import java.time.Duration;
+import io.lettuce.core.ClientOptions;
+import io.lettuce.core.SocketOptions;
+import lombok.RequiredArgsConstructor;
 
 @Configuration
 @RequiredArgsConstructor
@@ -32,7 +33,8 @@ public class RedisConfig {
     public LettuceConnectionFactory lettuceConnectionFactory() {
         final SocketOptions socketoptions = SocketOptions.builder().connectTimeout(Duration.ofSeconds(10)).build();
         final ClientOptions clientoptions = ClientOptions.builder().socketOptions(socketoptions).build();
-        LettuceClientConfiguration lettuceClientConfiguration = LettuceClientConfiguration.builder().clientOptions(clientoptions)
+        LettuceClientConfiguration lettuceClientConfiguration = LettuceClientConfiguration.builder()
+                .clientOptions(clientoptions)
                 .commandTimeout(Duration.ofMinutes(1))
                 .shutdownTimeout(Duration.ZERO)
                 .build();
@@ -41,7 +43,7 @@ public class RedisConfig {
         return new LettuceConnectionFactory(redisStandaloneConfiguration, lettuceClientConfiguration);
     }
 
-    @Bean(name="redisTemplate")
+    @Bean(name = "redisTemplate")
     public RedisTemplate<String, Object> redisTemplate() {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(lettuceConnectionFactory());
@@ -52,6 +54,5 @@ public class RedisConfig {
         redisTemplate.afterPropertiesSet();
         return redisTemplate;
     }
-
 
 }

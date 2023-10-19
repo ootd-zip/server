@@ -11,7 +11,7 @@ public class ApiResponse<T> {
 
     private int statusCode;
 
-    public ApiResponse(T result){
+    public ApiResponse(T result) {
         this.result = result;
         statusCode = 200;
     }

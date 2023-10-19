@@ -1,14 +1,16 @@
 package zip.ootd.ootdzip.category;
 
+import static org.assertj.core.api.Assertions.*;
+
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+
 import zip.ootd.ootdzip.category.data.CategoryType;
-import zip.ootd.ootdzip.category.data.DetailCategoryDto;
+import zip.ootd.ootdzip.category.data.DetailCategory;
 import zip.ootd.ootdzip.category.domain.Category;
 import zip.ootd.ootdzip.category.repository.CategoryRepository;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 public class CategoryRepositoryTest {
@@ -16,7 +18,8 @@ public class CategoryRepositoryTest {
     private CategoryRepository categoryRepository;
 
     @Test
-    public void 세부카테고리조회_성공() {
+    @DisplayName("세부카테고리조회_성공")
+    public void subCategoryCheckSuccess() {
         //Given(준비)
         Category largeCategory = Category
                 .builder()
@@ -44,7 +47,7 @@ public class CategoryRepositoryTest {
 
         Category savedDetailCategory = categoryRepository.save(detailCategory);
         //When(실행)
-        DetailCategoryDto result = categoryRepository.findDetailCategoryById(savedDetailCategory.getId());
+        DetailCategory result = categoryRepository.findDetailCategoryById(savedDetailCategory.getId());
         //Then(검증)
         assertThat(result.getCategoryName()).isEqualTo(savedDetailCategory.getName());
         assertThat(result.getLargeCategoryName()).isEqualTo(savedLargeCategory.getName());

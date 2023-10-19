@@ -1,10 +1,18 @@
 package zip.ootd.ootdzip.board.service;
 
-import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.stereotype.Service;
-import zip.ootd.ootdzip.board.data.*;
+
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import zip.ootd.ootdzip.board.data.BoardLikeReq;
+import zip.ootd.ootdzip.board.data.BoardOotdGetAllRes;
+import zip.ootd.ootdzip.board.data.BoardOotdGetReq;
+import zip.ootd.ootdzip.board.data.BoardOotdGetRes;
+import zip.ootd.ootdzip.board.data.BoardOotdPostReq;
 import zip.ootd.ootdzip.board.domain.Board;
 import zip.ootd.ootdzip.board.domain.BoardImage;
 import zip.ootd.ootdzip.board.repository.BoardRepository;
@@ -17,9 +25,6 @@ import zip.ootd.ootdzip.clothes.repository.ClothesRepository;
 import zip.ootd.ootdzip.common.dao.RedisDao;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.service.UserService;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -77,7 +82,6 @@ public class BoardService {
                 .map(b -> new BoardOotdGetAllRes(b, isUserLike(b, user), getView(b), getLike(b)))
                 .collect(Collectors.toList());
     }
-
 
     private void countView(Board board) {
 

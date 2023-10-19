@@ -4,7 +4,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.web.bind.annotation.*;
+
 import zip.ootd.ootdzip.board.data.*;
 import zip.ootd.ootdzip.board.service.BoardService;
 import zip.ootd.ootdzip.common.response.ApiResponse;

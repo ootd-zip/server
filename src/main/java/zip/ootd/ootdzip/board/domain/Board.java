@@ -73,12 +73,12 @@ public class Board extends BaseEntity {
     private List<BoardClothes> boardClothesList = new ArrayList<>();
 
     public static Board createBoard(User user,
-                                    String contents,
-                                    UserGender gender,
-                                    boolean isPublic,
-                                    List<BoardImage> boardImages,
-                                    List<BoardClothes> boardClothesList,
-                                    List<BoardStyle> boardStyles) {
+            String contents,
+            UserGender gender,
+            boolean isPublic,
+            List<BoardImage> boardImages,
+            List<BoardClothes> boardClothesList,
+            List<BoardStyle> boardStyles) {
 
         Board board = Board.builder()
                 .writer(user)
@@ -86,7 +86,6 @@ public class Board extends BaseEntity {
                 .isPublic(isPublic)
                 .contents(contents)
                 .build();
-
 
         board.addBoardImages(boardImages);
         board.addBoardClothesList(boardClothesList);

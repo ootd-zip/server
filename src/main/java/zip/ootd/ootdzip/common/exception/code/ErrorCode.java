@@ -59,15 +59,6 @@ public enum ErrorCode {
     /**
      * ******************************* Custom Error CodeList ***************************************
      */
-    // Transaction Insert Error
-    INSERT_ERROR(200, "9999", "Insert Transaction Error Exception"),
-
-    // Transaction Update Error
-    UPDATE_ERROR(200, "9999", "Update Transaction Error Exception"),
-
-    // Transaction Delete Error
-    DELETE_ERROR(200, "9999", "Delete Transaction Error Exception"),
-
     KAKAO_LOGIN_ERROR(400, "A001", "KAKAO Login Error Exception"),
 
     GOOGLE_LOGIN_ERROR(400, "A002", "Google Login Error Exception"),
@@ -78,7 +69,11 @@ public enum ErrorCode {
 
     IMAGE_CONVERT_ERROR(400, "UT001", "이미지 변환 실패"),
 
-    ;
+    FOLLOW_ERROR(409, "F001", "이미 팔로우 상태임"),
+
+    UNFOLLOW_ERROR(409, "F002", "이미 언팔로우 상태임"),
+
+    UNAUTHORIZED_USER_ERROR(400, "C001", "해당 데이터에 접근할 수 없는 사용자");
 
     private final Integer status;
 

@@ -1,15 +1,19 @@
 package zip.ootd.ootdzip.boardstyle;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import zip.ootd.ootdzip.board.domain.Board;
 import zip.ootd.ootdzip.category.domain.Style;
 import zip.ootd.ootdzip.common.entity.BaseEntity;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Entity
 @Getter

@@ -1,13 +1,18 @@
 package zip.ootd.ootdzip.oauth.service;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
+
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.exception.code.ErrorCode;
 import zip.ootd.ootdzip.oauth.data.KakaoAccessTokenInfoRes;
@@ -18,10 +23,10 @@ public class KakaoOAuthUtils implements SocialOAuth {
 
     private final String kakaoAppRestApiKey;
 
-    public KakaoOAuthUtils(@Value("${spring.security.oauth2.client.registration.kakao.app-rest-api-key}") String kakaoAppRestApiKey) {
+    public KakaoOAuthUtils(
+            @Value("${spring.security.oauth2.client.registration.kakao.app-rest-api-key}") String kakaoAppRestApiKey) {
         this.kakaoAppRestApiKey = kakaoAppRestApiKey;
     }
-
 
     private KakaoOauthTokenRes requestTokenByAuthorizationCode(String authorizationCode, String redirectUri) {
         String url = "https://kauth.kakao.com/oauth/token";
@@ -37,7 +42,8 @@ public class KakaoOAuthUtils implements SocialOAuth {
         HttpEntity<MultiValueMap<String, String>> kakaoRequest = new HttpEntity<>(requestData, headers);
 
         try {
-            ResponseEntity<KakaoOauthTokenRes> response = restTemplate.postForEntity(url, kakaoRequest, KakaoOauthTokenRes.class);
+            ResponseEntity<KakaoOauthTokenRes> response = restTemplate.postForEntity(url, kakaoRequest,
+                    KakaoOauthTokenRes.class);
             if (response.getStatusCode().is2xxSuccessful()) {
                 return response.getBody();
             } else {
@@ -60,14 +66,14 @@ public class KakaoOAuthUtils implements SocialOAuth {
         headers.setBearerAuth(accessToken);
         HttpEntity<?> kakaoRequest = new HttpEntity<>(headers);
 
-        ResponseEntity<KakaoAccessTokenInfoRes> response = restTemplate.exchange(url, HttpMethod.GET, kakaoRequest, KakaoAccessTokenInfoRes.class);
+        ResponseEntity<KakaoAccessTokenInfoRes> response = restTemplate.exchange(url, HttpMethod.GET, kakaoRequest,
+                KakaoAccessTokenInfoRes.class);
         if (response.getStatusCode().is2xxSuccessful()) {
             return response.getBody().getId();
         } else {
             throw new IllegalStateException("카카오 토큰 조회 중 오류 발생: " + response.getStatusCode());
         }
     }
-
 
     @Override
     public String getSocialIdBy(String... args) {
