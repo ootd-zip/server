@@ -8,8 +8,8 @@ import zip.ootd.ootdzip.boardbookmark.domain.BoardBookmark;
 
 public interface BoardBookmarkRepository extends JpaRepository<BoardBookmark, Long> {
 
-    @Query("SELECT bl from BoardLike bl " +
-            "where bl.board.id = :boardId " +
-            "and bl.user.id = :userId ")
+    @Query("SELECT bl from BoardLike bl "
+            + "where bl.board.id = :boardId "
+            + "and bl.user.id = :userId ")
     BoardBookmark findByBoardIdAndUserId(@Param("boardId") Long boardId, @Param("userId") Long userId);
 }

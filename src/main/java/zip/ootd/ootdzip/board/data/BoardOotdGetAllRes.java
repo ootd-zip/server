@@ -46,10 +46,10 @@ public class BoardOotdGetAllRes {
     private List<OotdBoardClothesList> boardClothesList;
 
     public BoardOotdGetAllRes(Board board,
-                              boolean isLike,
-                              boolean isBookmark,
-                              int viewCount,
-                              int likeCount) {
+            boolean isLike,
+            boolean isBookmark,
+            int viewCount,
+            int likeCount) {
 
         this.viewCount = viewCount;
         this.likeCount = likeCount;

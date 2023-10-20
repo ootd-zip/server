@@ -49,7 +49,8 @@ public class BoardServiceTest {
     private UserService userService;
 
     @Test
-    public void OOTD게시판_정상_등록() {
+    @DisplayName("OOTD게시판_정상_등록")
+    public void createBoardSuccess() {
         // 가짜 데이터 생성
         BoardOotdPostReq request = new BoardOotdPostReq();
         request.setOotdImages(new ArrayList<>()); // 필요한 이미지 URL 리스트 추가
@@ -96,7 +97,7 @@ public class BoardServiceTest {
                 .contents("테스트 컨텐츠")
                 .gender(UserGender.MALE)
                 .build();
-        board.addBoardUser(boardLike);
+        board.addBoardLike(boardLike);
 
         board.setId(1L);
 
