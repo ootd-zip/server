@@ -13,6 +13,10 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * 구현된 RedisDao DataType
+ * String, List, Set
+ */
 @Component
 @RequiredArgsConstructor
 public class RedisDao {
