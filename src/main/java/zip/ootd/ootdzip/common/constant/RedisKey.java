@@ -1,11 +1,25 @@
 package zip.ootd.ootdzip.common.constant;
 
-public class RedisKey {
+public enum RedisKey {
 
-    public static class View {
+    VIEW("view", "viewfilter"),
+    LIKE("like", ""),
+    USER_LIKE("userLike", "");
 
-        public static final String KEY = "view";
+    private final String key;
 
-        public static final String FILTER_KEY = KEY + "filter";
+    private final String filterKey;
+
+    RedisKey(String key, String filterKey) {
+        this.key = key;
+        this.filterKey = filterKey;
+    }
+
+    public String makeKeyWith(Long uniqueNumber) {
+        return uniqueNumber + key;
+    }
+
+    public String makeFilterKeyWith(Long uniqueNumber) {
+        return uniqueNumber + key + filterKey;
     }
 }
