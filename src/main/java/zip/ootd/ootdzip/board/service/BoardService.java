@@ -181,7 +181,7 @@ public class BoardService {
         Long boardId = board.getId();
         Long userId = user.getId();
 
-        if (isUserLikeSavedRedis(boardId)) {
+        if (isUserLikeSavedInRedis(boardId)) {
             return isUserLikeInRedis(boardId, userId);
         }
 
@@ -193,7 +193,7 @@ public class BoardService {
         return userLike;
     }
 
-    private boolean isUserLikeSavedRedis(Long boardId) {
+    private boolean isUserLikeSavedInRedis(Long boardId) {
         String boardKey = RedisKey.USER_LIKE.makeKeyWith(boardId);
 
         return redisDao.getValuesSet(boardKey).size() != 0;
