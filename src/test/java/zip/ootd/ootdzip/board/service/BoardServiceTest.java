@@ -13,7 +13,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import zip.ootd.ootdzip.board.data.BoardOotdGetReq;
 import zip.ootd.ootdzip.board.data.BoardOotdGetRes;
 import zip.ootd.ootdzip.board.data.BoardOotdPostReq;
 import zip.ootd.ootdzip.board.domain.Board;
@@ -106,10 +105,7 @@ public class BoardServiceTest {
         // userService.getAuthenticatiedUser 메서드의 결과로 샘플 User 객체를 반환하도록 설정합니다.
         when(userService.getAuthenticatiedUser()).thenReturn(user);
 
-        BoardOotdGetReq request = new BoardOotdGetReq();
-        request.setBoardId(1L);
-
-        BoardOotdGetRes result = boardService.getOotd(request);
+        BoardOotdGetRes result = boardService.getOotd(1L);
 
         assertEquals("테스트 컨텐츠", result.getContents());
         assertEquals(UserGender.MALE, result.getGender());

@@ -8,12 +8,7 @@ import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import zip.ootd.ootdzip.board.data.BoardAddBookmarkReq;
-import zip.ootd.ootdzip.board.data.BoardAddLikeReq;
-import zip.ootd.ootdzip.board.data.BoardCancelBookmarkReq;
-import zip.ootd.ootdzip.board.data.BoardCancelLikeReq;
 import zip.ootd.ootdzip.board.data.BoardOotdGetAllRes;
-import zip.ootd.ootdzip.board.data.BoardOotdGetReq;
 import zip.ootd.ootdzip.board.data.BoardOotdGetRes;
 import zip.ootd.ootdzip.board.data.BoardOotdPostReq;
 import zip.ootd.ootdzip.board.domain.Board;
@@ -67,9 +62,9 @@ public class BoardService {
     /**
      * 기본적인 단건조회 API 입니다.
      */
-    public BoardOotdGetRes getOotd(BoardOotdGetReq request) {
+    public BoardOotdGetRes getOotd(Long boardId) {
         User user = userService.getAuthenticatiedUser();
-        Board board = boardRepository.findOotd(request.getBoardId()).orElseThrow();
+        Board board = boardRepository.findOotd(boardId).orElseThrow();
 
         countViewInRedis(board);
         int view = getView(board);
@@ -84,9 +79,9 @@ public class BoardService {
      * 본인글을 단건 조회할 때 사용되는 로직입니다.
      * 해당 로직에서는 isPublic 값과 상관없이 가져오기에 유저가 선택한 공개/비공개 상관없이 조회됩니다.
      */
-    public BoardOotdGetRes getOotdInMine(BoardOotdGetReq request) {
+    public BoardOotdGetRes getOotdInMine(Long boardId) {
         User user = userService.getAuthenticatiedUser();
-        Board board = boardRepository.findOotdRegardlessOfIsPublic(request.getBoardId()).orElseThrow();
+        Board board = boardRepository.findOotdRegardlessOfIsPublic(boardId).orElseThrow();
 
         countViewInRedis(board);
         int view = getView(board);
@@ -174,10 +169,9 @@ public class BoardService {
         redisDao.setValues(likeKey, String.valueOf(count));
     }
 
-    public void addLike(BoardAddLikeReq request) {
-        Board board = boardRepository.findById(request.getBoardId()).orElseThrow();
+    public void addLike(Long boardId) {
+        Board board = boardRepository.findById(boardId).orElseThrow();
         User user = userService.getAuthenticatiedUser();
-        Long boardId = board.getId();
         Long userId = user.getId();
 
         countLikeInRedis(board, user);
@@ -185,10 +179,9 @@ public class BoardService {
         board.addLike(user);
     }
 
-    public void cancelLike(BoardCancelLikeReq request) {
-        Board board = boardRepository.findById(request.getBoardId()).orElseThrow();
+    public void cancelLike(Long boardId) {
+        Board board = boardRepository.findById(boardId).orElseThrow();
         User user = userService.getAuthenticatiedUser();
-        Long boardId = board.getId();
         Long userId = user.getId();
 
         discountLikeInRedis(board, user);
@@ -258,14 +251,14 @@ public class BoardService {
         }
     }
 
-    public void addBookmark(BoardAddBookmarkReq request) {
-        Board board = boardRepository.findById(request.getBoardId()).orElseThrow();
+    public void addBookmark(Long boardId) {
+        Board board = boardRepository.findById(boardId).orElseThrow();
         User user = userService.getAuthenticatiedUser();
         board.addBookmark(user);
     }
 
-    public void cancelBookmark(BoardCancelBookmarkReq request) {
-        Board board = boardRepository.findById(request.getBoardId()).orElseThrow();
+    public void cancelBookmark(Long boardId) {
+        Board board = boardRepository.findById(boardId).orElseThrow();
         User user = userService.getAuthenticatiedUser();
         board.cancelBookmark(user);
     }

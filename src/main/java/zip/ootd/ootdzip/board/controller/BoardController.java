@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,12 +14,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import zip.ootd.ootdzip.board.data.BoardAddBookmarkReq;
-import zip.ootd.ootdzip.board.data.BoardAddLikeReq;
-import zip.ootd.ootdzip.board.data.BoardCancelBookmarkReq;
-import zip.ootd.ootdzip.board.data.BoardCancelLikeReq;
 import zip.ootd.ootdzip.board.data.BoardOotdGetAllRes;
-import zip.ootd.ootdzip.board.data.BoardOotdGetReq;
 import zip.ootd.ootdzip.board.data.BoardOotdGetRes;
 import zip.ootd.ootdzip.board.data.BoardOotdPostReq;
 import zip.ootd.ootdzip.board.data.BoardOotdPostRes;
@@ -43,19 +39,19 @@ public class BoardController {
     }
 
     @Operation(summary = "ootd 게시글 조회", description = "게시판 id 를 주면 해당 id에 해당하는 게시글 반환 api")
-    @GetMapping("/ootd")
-    public ApiResponse<BoardOotdGetRes> getOotdPost(@Valid BoardOotdGetReq request) {
+    @GetMapping("/ootd/{id}")
+    public ApiResponse<BoardOotdGetRes> getOotdPost(@PathVariable Long id) {
 
-        BoardOotdGetRes response = boardService.getOotd(request);
+        BoardOotdGetRes response = boardService.getOotd(id);
 
         return new ApiResponse<>(response);
     }
 
     @Operation(summary = "ootd 본인 게시글 조회", description = "게시판 id 를 주면 해당 id에 해당하는 게시글 공개여부 상관없이 반환 api")
-    @GetMapping("/ootd/mine")
-    public ApiResponse<BoardOotdGetRes> getOotdPostMine(@Valid BoardOotdGetReq request) {
+    @GetMapping("/ootd/mine/{id}")
+    public ApiResponse<BoardOotdGetRes> getOotdPostMine(@PathVariable Long id) {
 
-        BoardOotdGetRes response = boardService.getOotdInMine(request);
+        BoardOotdGetRes response = boardService.getOotdInMine(id);
 
         return new ApiResponse<>(response);
     }
@@ -70,37 +66,37 @@ public class BoardController {
     }
 
     @Operation(summary = "ootd 게시글 좋아요 추가", description = "특정 게시글의 좋아요를 추가합니다.")
-    @PostMapping("/like")
-    public ApiResponse<Boolean> addLike(@RequestBody BoardAddLikeReq request) {
+    @PostMapping("/like/{id}")
+    public ApiResponse<Boolean> addLike(@PathVariable Long id) {
 
-        boardService.addLike(request);
+        boardService.addLike(id);
 
         return new ApiResponse<>(true);
     }
 
     @Operation(summary = "ootd 게시글 좋아요 제거", description = "특정 게시글의 좋아요를 취소합니다.")
-    @DeleteMapping("/like")
-    public ApiResponse<Boolean> cancelLike(@RequestBody BoardCancelLikeReq request) {
+    @DeleteMapping("/like/{id}")
+    public ApiResponse<Boolean> cancelLike(@PathVariable Long id) {
 
-        boardService.cancelLike(request);
+        boardService.cancelLike(id);
 
         return new ApiResponse<>(true);
     }
 
     @Operation(summary = "ootd 게시글 북마크 추가", description = "특정 게시글에 북마크를 추가합니다.")
-    @PostMapping("/bookmark")
-    public ApiResponse<Boolean> addBookMark(@RequestBody BoardAddBookmarkReq request) {
+    @PostMapping("/bookmark/{id}")
+    public ApiResponse<Boolean> addBookMark(@PathVariable Long id) {
 
-        boardService.addBookmark(request);
+        boardService.addBookmark(id);
 
         return new ApiResponse<>(true);
     }
 
     @Operation(summary = "ootd 게시글 북마크 제거", description = "특정 게시글에 북마크를 취소합니다.")
     @DeleteMapping("/bookmark")
-    public ApiResponse<Boolean> cancelBookMark(@RequestBody BoardCancelBookmarkReq request) {
+    public ApiResponse<Boolean> cancelBookMark(@PathVariable Long id) {
 
-        boardService.cancelBookmark(request);
+        boardService.cancelBookmark(id);
 
         return new ApiResponse<>(true);
     }
