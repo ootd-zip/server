@@ -127,6 +127,9 @@ public class BoardService {
         return NumberUtils.toInt(redisDao.getValues(boardKey));
     }
 
+    /**
+     * redis 에 조회수가 저장되어있으면 반환, 없으면 entity 에서 조회수를 가져와 redis에 저장 후 조회수 반환
+     */
     private int getView(Board board) {
         int viewInRedis = getViewInRedis(board.getId());
 
@@ -145,6 +148,9 @@ public class BoardService {
         redisDao.setValues(boardKey, String.valueOf(count));
     }
 
+    /**
+     * redis 에 좋아요수가 저장되어있으면 반환, 없으면 entity 에서 좋아요수를 가져와 redis에 저장 후 좋아요 수 반환
+     */
     private int getLike(Board board) {
         int likeInRedis = getLikeInRedis(board.getId());
 
@@ -189,6 +195,9 @@ public class BoardService {
         board.cancelLike(user);
     }
 
+    /**
+     * redis 에 유저가 좋아요를 한 기록이 저장되어있으면 반환, 없으면 entity 에서 유저의 좋아요 여부 가져와 redis에 저장 후 좋아요 여부 반환
+     */
     private boolean getUserLike(Board board, User user) {
 
         Long boardId = board.getId();
