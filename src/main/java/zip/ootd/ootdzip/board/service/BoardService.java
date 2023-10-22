@@ -65,8 +65,8 @@ public class BoardService {
     }
 
     public BoardOotdGetRes getOotd(BoardOotdGetReq request) {
-        Board board = boardRepository.findById(request.getBoardId()).orElseThrow();
         User user = userService.getAuthenticatiedUser();
+        Board board = boardRepository.findOotd(request.getBoardId()).orElseThrow();
 
         countViewInRedis(board);
         int view = getView(board);
