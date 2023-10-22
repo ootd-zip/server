@@ -64,9 +64,29 @@ public class BoardService {
         return board;
     }
 
+    /**
+     * 기본적인 단건조회 API 입니다.
+     */
     public BoardOotdGetRes getOotd(BoardOotdGetReq request) {
         User user = userService.getAuthenticatiedUser();
         Board board = boardRepository.findOotd(request.getBoardId()).orElseThrow();
+
+        countViewInRedis(board);
+        int view = getView(board);
+        int like = getLike(board);
+        boolean isLike = getUserLike(board, user);
+        boolean isBookmark = board.isBookmark(user);
+
+        return new BoardOotdGetRes(board, isLike, isBookmark, view, like);
+    }
+
+    /**
+     * 본인글을 단건 조회할 때 사용되는 로직입니다.
+     * 해당 로직에서는 isPublic 값과 상관없이 가져오기에 유저가 선택한 공개/비공개 상관없이 조회됩니다.
+     */
+    public BoardOotdGetRes getOotdInMine(BoardOotdGetReq request) {
+        User user = userService.getAuthenticatiedUser();
+        Board board = boardRepository.findOotdRegardlessOfIsPublic(request.getBoardId()).orElseThrow();
 
         countViewInRedis(board);
         int view = getView(board);

@@ -25,4 +25,10 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
             + "and b.isPublic = true "
             + "and b.reportCount < 10 ")
     Optional<Board> findOotd(@Param(value = "boardId") Long boardId);
+
+    @Query("SELECT b from Board b where b.id = :boardId "
+            + "and b.isBlocked = false "
+            + "and b.isDeleted = false "
+            + "and b.reportCount < 10 ")
+    Optional<Board> findOotdRegardlessOfIsPublic(@Param(value = "boardId") Long boardId);
 }

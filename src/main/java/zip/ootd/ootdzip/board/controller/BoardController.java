@@ -51,6 +51,15 @@ public class BoardController {
         return new ApiResponse<>(response);
     }
 
+    @Operation(summary = "ootd 본인 게시글 조회", description = "게시판 id 를 주면 해당 id에 해당하는 게시글 공개여부 상관없이 반환 api")
+    @GetMapping("/ootd/mine")
+    public ApiResponse<BoardOotdGetRes> getOotdPostMine(@Valid BoardOotdGetReq request) {
+
+        BoardOotdGetRes response = boardService.getOotdInMine(request);
+
+        return new ApiResponse<>(response);
+    }
+
     @Operation(summary = "ootd 게시글 전체 조회", description = "최신순으로 게시글을 조회 api")
     @GetMapping("/ootds")
     public ApiResponse<List<BoardOotdGetAllRes>> getOotdPosts() {
