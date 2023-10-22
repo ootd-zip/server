@@ -28,21 +28,10 @@ public class BoardLike extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Builder.Default
-    private boolean isLike = false;
-
     public static BoardLike createBoardLikeBy(User user) {
 
         return BoardLike.builder()
                 .user(user)
                 .build();
-    }
-
-    public void addLike() {
-        this.isLike = true;
-    }
-
-    public void cancelLike() {
-        this.isLike = false;
     }
 }

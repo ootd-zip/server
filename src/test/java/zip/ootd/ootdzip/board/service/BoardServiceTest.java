@@ -89,7 +89,6 @@ public class BoardServiceTest {
         user.setId(1L);
 
         BoardLike boardLike = BoardLike.builder()
-                .isLike(true)
                 .user(user)
                 .build();
 

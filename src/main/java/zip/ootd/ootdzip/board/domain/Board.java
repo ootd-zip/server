@@ -115,19 +115,17 @@ public class Board extends BaseEntity {
 
     public void addLike(User user) {
         BoardLike boardLike = getBoardLike(user).orElse(BoardLike.createBoardLikeBy(user));
-        boardLike.addLike();
         addBoardLike(boardLike);
     }
 
     public void cancelLike(User user) {
         BoardLike boardLike = getBoardLike(user).orElseThrow(NoSuchElementException::new);
-        boardLike.cancelLike();
         deleteBoardLike(boardLike);
     }
 
     public boolean isBoardLike(User user) {
         Optional<BoardLike> boardLike = getBoardLike(user);
-        return boardLike.map(BoardLike::isLike).orElse(false);
+        return boardLike.isPresent();
     }
 
     private Optional<BoardLike> getBoardLike(User user) {
@@ -138,19 +136,17 @@ public class Board extends BaseEntity {
 
     public void addBookmark(User user) {
         BoardBookmark boardBookmark = getBoardBookmark(user).orElse(BoardBookmark.createBoardBookmarkBy(user));
-        boardBookmark.addBookmark();
         addBoardBookmark(boardBookmark);
     }
 
     public void cancelBookmark(User user) {
         BoardBookmark boardBookmark = getBoardBookmark(user).orElseThrow(NoSuchElementException::new);
-        boardBookmark.cancelBookmark();
         deleteBoardBookmark(boardBookmark);
     }
 
     public boolean isBookmark(User user) {
         Optional<BoardBookmark> boardBookmark = getBoardBookmark(user);
-        return boardBookmark.map(BoardBookmark::isBookmark).orElse(false);
+        return boardBookmark.isPresent();
     }
 
     private Optional<BoardBookmark> getBoardBookmark(User user) {

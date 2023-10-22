@@ -28,21 +28,10 @@ public class BoardBookmark extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Builder.Default
-    private boolean isBookmark = false;
-
     public static BoardBookmark createBoardBookmarkBy(User user) {
 
         return BoardBookmark.builder()
                 .user(user)
                 .build();
-    }
-
-    public void addBookmark() {
-        this.isBookmark = true;
-    }
-
-    public void cancelBookmark() {
-        this.isBookmark = false;
     }
 }
