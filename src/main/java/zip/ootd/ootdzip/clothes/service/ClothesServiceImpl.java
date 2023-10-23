@@ -18,6 +18,7 @@ import zip.ootd.ootdzip.category.domain.Style;
 import zip.ootd.ootdzip.category.repository.CategoryRepository;
 import zip.ootd.ootdzip.category.repository.ColorRepository;
 import zip.ootd.ootdzip.category.repository.StyleRepository;
+import zip.ootd.ootdzip.clothes.data.DeleteClothesByIdRes;
 import zip.ootd.ootdzip.clothes.data.FindClothesByUserReq;
 import zip.ootd.ootdzip.clothes.data.FindClothesRes;
 import zip.ootd.ootdzip.clothes.data.SaveClothesReq;
@@ -131,5 +132,26 @@ public class ClothesServiceImpl implements ClothesService {
         }
 
         return result;
+    }
+
+    @Override
+    @Transactional
+    public DeleteClothesByIdRes deleteClothesById(Long id) {
+
+        Clothes deleteClothes = clothesRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 옷 ID"));
+
+        User loginUser = userService.getAuthenticatiedUser();
+
+        /*
+        로그인한 유저와 옷을 등록한 유저가 다르면 실패
+         */
+        if (!deleteClothes.getUser().getId().equals(loginUser.getId())) {
+            throw new CustomException(UNAUTHORIZED_USER_ERROR);
+        }
+
+        clothesRepository.delete(deleteClothes);
+
+        return new DeleteClothesByIdRes("옷 삭제 성공");
     }
 }
