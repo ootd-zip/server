@@ -81,7 +81,7 @@ public class Ootd extends BaseEntity {
     private List<OotdBookmark> ootdBookmarks = new ArrayList<>();
 
     @Column(nullable = false)
-    private boolean isPublic;
+    private boolean isPrivate;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -94,7 +94,7 @@ public class Ootd extends BaseEntity {
     public static Ootd createOotd(User user,
             String contents,
             UserGender gender,
-            boolean isPublic,
+            boolean isPrivate,
             List<OotdImage> ootdImages,
             List<OotdClothes> ootdClothesList,
             List<OotdStyle> ootdStyles) {
@@ -102,7 +102,7 @@ public class Ootd extends BaseEntity {
         Ootd ootd = Ootd.builder()
                 .writer(user)
                 .gender(gender)
-                .isPublic(isPublic)
+                .isPrivate(isPrivate)
                 .contents(contents)
                 .build();
 

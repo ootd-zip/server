@@ -12,9 +12,9 @@ public interface OotdRepository extends JpaRepository<Ootd, Long> {
 
     @Query("SELECT o from Ootd o where o.isBlocked = false "
             + "and o.isDeleted = false "
-            + "and (o.isPublic = true or o.writer.id = :userId) "
+            + "and (o.isPrivate = false or o.writer.id = :userId) "
             + "and o.reportCount < 10 "
             + "order by o.createdAt desc "
             + "limit 20")
-    List<Ootd> findOotdAllWithPublicAndMine(@Param(value = "userId") Long userId);
+    List<Ootd> findAllByUserId(@Param(value = "userId") Long userId);
 }

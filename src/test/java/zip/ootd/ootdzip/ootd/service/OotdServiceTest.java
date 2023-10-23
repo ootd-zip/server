@@ -57,7 +57,7 @@ public class OotdServiceTest {
         request.setContent("OOTD Content");
         request.setGender(UserGender.MALE); // 적절한 성별 설정
         request.setStyles(new ArrayList<>());
-        request.setIsPublic(true);
+        request.setIsPrivate(true);
 
         // Mock 객체의 동작 설정
         List<Clothes> clothesList = new ArrayList<>();
@@ -74,7 +74,7 @@ public class OotdServiceTest {
         assertEquals(user, ootd.getWriter()); // 작성자가 올바른지 확인
         assertEquals(request.getContent(), ootd.getContents()); // 내용이 올바른지 확인
         assertEquals(request.getGender(), ootd.getGender()); // 성별이 올바른지 확인
-        assertEquals(request.getIsPublic(), ootd.isPublic()); // 공개 여부가 올바른지 확인
+        assertEquals(request.getIsPrivate(), ootd.isPrivate()); // 공개 여부가 올바른지 확인
 
         // boardRepository.save 메서드가 한 번 호출되었는지 확인
         verify(ootdRepository, times(1)).save(ootd);

@@ -52,7 +52,7 @@ public class OotdService {
         Ootd ootd = Ootd.createOotd(userService.getAuthenticatiedUser(),
                 request.getContent(),
                 request.getGender(),
-                request.getIsPublic(),
+                request.getIsPrivate(),
                 ootdImages,
                 ootdClothesList,
                 ootdStyles);
@@ -81,8 +81,8 @@ public class OotdService {
     }
 
     private void checkOotd(Ootd ootd, User user) {
-        if (!ootd.isPublic() && !ootd.getWriter().getId().equals(user.getId())) {
-            throw new CustomException(ErrorCode.NONE_PUBLIC);
+        if (ootd.isPrivate() && !ootd.getWriter().getId().equals(user.getId())) {
+            throw new CustomException(ErrorCode.PRIVATE);
         }
 
         if (ootd.getIsDeleted()) {
@@ -105,7 +105,7 @@ public class OotdService {
      */
     public List<OotdGetAllRes> getOotds() {
         User user = userService.getAuthenticatiedUser();
-        List<Ootd> ootds = ootdRepository.findOotdAllWithPublicAndMine(user.getId());
+        List<Ootd> ootds = ootdRepository.findAllByUserId(user.getId());
 
         return ootds.stream()
                 .map(b -> new OotdGetAllRes(b, getUserLike(b, user), b.isBookmark(user), getView(b), getLike(b)))

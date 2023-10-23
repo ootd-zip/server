@@ -75,7 +75,7 @@ public enum ErrorCode {
 
     UNAUTHORIZED_USER_ERROR(400, "C001", "해당 데이터에 접근할 수 없는 사용자"),
 
-    NONE_PUBLIC(401, "O001", "ootd 글이 비공개 상태"),
+    PRIVATE(401, "O001", "ootd 글이 비공개 상태"),
 
     DELETED(401, "O002", "ootd 글이 삭제된 상태"),
 

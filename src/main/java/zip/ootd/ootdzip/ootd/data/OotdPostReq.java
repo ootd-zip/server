@@ -11,7 +11,7 @@ public class OotdPostReq {
 
     private String content;
 
-    private Boolean isPublic;
+    private Boolean isPrivate;
 
     private UserGender gender;
 
