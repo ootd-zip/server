@@ -175,12 +175,15 @@ public class OotdService {
         redisDao.setValues(likeKey, String.valueOf(count));
     }
 
+    /**
+     * 로그인된 사용자 기준으로 좋아요를 추가합니다.
+     */
     public void addLike(Long ootdId) {
         Ootd ootd = ootdRepository.findById(ootdId).orElseThrow();
         User user = userService.getAuthenticatiedUser();
         Long userId = user.getId();
 
-        countLikeInRedis(ootd, user);
+        increaseLikeInRedis(ootd, user);
         addUserLikeInRedis(ootdId, userId);
         ootd.addLike(user);
     }
@@ -190,7 +193,7 @@ public class OotdService {
         User user = userService.getAuthenticatiedUser();
         Long userId = user.getId();
 
-        discountLikeInRedis(ootd, user);
+        decreaseLikeInRedis(ootd, user);
         cancelUserLikeInRedis(ootdId, userId);
         ootd.cancelLike(user);
     }
@@ -242,7 +245,7 @@ public class OotdService {
         redisDao.deleteValuesSet(ootdKey, userKey);
     }
 
-    private void countLikeInRedis(Ootd ootd, User user) {
+    private void increaseLikeInRedis(Ootd ootd, User user) {
         Long id = ootd.getId();
         String likeKey = RedisKey.LIKE.makeKeyWith(id);
 
@@ -251,7 +254,7 @@ public class OotdService {
         }
     }
 
-    private void discountLikeInRedis(Ootd ootd, User user) {
+    private void decreaseLikeInRedis(Ootd ootd, User user) {
         Long id = ootd.getId();
         String likeKey = RedisKey.LIKE.makeKeyWith(id);
 
@@ -260,6 +263,9 @@ public class OotdService {
         }
     }
 
+    /**
+     * 로그인된 사용자 기준으로 북마크를 추가합니다.
+     */
     public void addBookmark(Long ootdId) {
         Ootd ootd = ootdRepository.findById(ootdId).orElseThrow();
         User user = userService.getAuthenticatiedUser();
