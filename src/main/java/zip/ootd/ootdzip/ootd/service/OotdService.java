@@ -14,6 +14,8 @@ import zip.ootd.ootdzip.clothes.domain.Clothes;
 import zip.ootd.ootdzip.clothes.repository.ClothesRepository;
 import zip.ootd.ootdzip.common.constant.RedisKey;
 import zip.ootd.ootdzip.common.dao.RedisDao;
+import zip.ootd.ootdzip.common.exception.CustomException;
+import zip.ootd.ootdzip.common.exception.code.ErrorCode;
 import zip.ootd.ootdzip.ootd.data.OotdGetAllRes;
 import zip.ootd.ootdzip.ootd.data.OotdGetRes;
 import zip.ootd.ootdzip.ootd.data.OotdPostReq;
@@ -61,10 +63,13 @@ public class OotdService {
 
     /**
      * 기본적인 단건조회 API 입니다.
+     * 비공개글은 본인글이 아니면 볼 수 없습니다.
      */
     public OotdGetRes getOotd(Long ootdId) {
         User user = userService.getAuthenticatiedUser();
-        Ootd ootd = ootdRepository.findOotd(ootdId).orElseThrow();
+        Ootd ootd = ootdRepository.findById(ootdId).orElseThrow();
+
+        checkOotd(ootd, user);
 
         countViewInRedis(ootd);
         int view = getView(ootd);
@@ -73,28 +78,34 @@ public class OotdService {
         boolean isBookmark = ootd.isBookmark(user);
 
         return new OotdGetRes(ootd, isLike, isBookmark, view, like);
+    }
+
+    private void checkOotd(Ootd ootd, User user) {
+        if (!ootd.isPublic() && !ootd.getWriter().getId().equals(user.getId())) {
+            throw new CustomException(ErrorCode.NONE_PUBLIC);
+        }
+
+        if (ootd.getIsDeleted()) {
+            throw new CustomException(ErrorCode.DELETED);
+        }
+
+        if (ootd.getIsBlocked()) {
+            throw new CustomException(ErrorCode.BLOCKED);
+        }
+
+        if (ootd.getReportCount() >= 10) {
+            throw new CustomException(ErrorCode.OVER_REPORT);
+        }
     }
 
     /**
-     * 본인글을 단건 조회할 때 사용되는 로직입니다.
-     * 해당 로직에서는 isPublic 값과 상관없이 가져오기에 유저가 선택한 공개/비공개 상관없이 조회됩니다.
+     * 전체 ootd 조회
+     * 삭제된글, 차단된글, 신고수가 특정 수 이상, 비공개글은 가져오지 않습니다.
+     * 단, 비공개글이어도 본인 작성글이면 가져옵니다.
      */
-    public OotdGetRes getOotdInMine(Long ootdId) {
-        User user = userService.getAuthenticatiedUser();
-        Ootd ootd = ootdRepository.findOotdRegardlessOfIsPublic(ootdId).orElseThrow();
-
-        countViewInRedis(ootd);
-        int view = getView(ootd);
-        int like = getLike(ootd);
-        boolean isLike = getUserLike(ootd, user);
-        boolean isBookmark = ootd.isBookmark(user);
-
-        return new OotdGetRes(ootd, isLike, isBookmark, view, like);
-    }
-
     public List<OotdGetAllRes> getOotds() {
-        List<Ootd> ootds = ootdRepository.findOotdAll();
         User user = userService.getAuthenticatiedUser();
+        List<Ootd> ootds = ootdRepository.findOotdAllWithPublicAndMine(user.getId());
 
         return ootds.stream()
                 .map(b -> new OotdGetAllRes(b, getUserLike(b, user), b.isBookmark(user), getView(b), getLike(b)))

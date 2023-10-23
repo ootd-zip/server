@@ -47,15 +47,6 @@ public class OotdController {
         return new ApiResponse<>(response);
     }
 
-    @Operation(summary = "ootd 본인 조회", description = "게시판 id 를 주면 해당 id에 해당하는 게시글 공개여부 상관없이 반환 api")
-    @GetMapping("/mine/{id}")
-    public ApiResponse<OotdGetRes> getOotdPostMine(@PathVariable Long id) {
-
-        OotdGetRes response = ootdService.getOotdInMine(id);
-
-        return new ApiResponse<>(response);
-    }
-
     @Operation(summary = "ootd 전체 조회", description = "최신순으로 ootd를 조회 api")
     @GetMapping("/all")
     public ApiResponse<List<OotdGetAllRes>> getOotdPosts() {
