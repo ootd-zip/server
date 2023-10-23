@@ -1,4 +1,4 @@
-package zip.ootd.ootdzip.clothes;
+package zip.ootd.ootdzip.clothes.service;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -27,12 +27,11 @@ import zip.ootd.ootdzip.clothes.data.FindClothesRes;
 import zip.ootd.ootdzip.clothes.data.SaveClothesReq;
 import zip.ootd.ootdzip.clothes.domain.Clothes;
 import zip.ootd.ootdzip.clothes.repository.ClothesRepository;
-import zip.ootd.ootdzip.clothes.service.ClothesServiceImpl;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.service.UserService;
 
 @ExtendWith(MockitoExtension.class)
-public class ClothesServiceTest {
+public class ClothesServiceImplTest {
 
     @InjectMocks
     private ClothesServiceImpl clothesService;

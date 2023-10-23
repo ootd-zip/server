@@ -71,9 +71,14 @@ public class ClothesServiceImpl implements ClothesService {
         List<ClothesColor> clothesColors = ClothesColor.createClothesColorsBy(colors);
         List<ClothesImage> clothesImages = ClothesImage.createClothesImagesBy(saveClothesReq.getClothesImages());
 
-        return Clothes.createClothes(user, brand, saveClothesReq.getClothesName(), saveClothesReq.getIsOpen(), category,
+        Clothes clothes = Clothes.createClothes(user, brand, saveClothesReq.getClothesName(),
+                saveClothesReq.getIsOpen(),
+                category,
                 saveClothesReq.getSize(), saveClothesReq.getMaterial(), saveClothesReq.getPurchaseStore(),
                 saveClothesReq.getPurchaseDate(), clothesImages, clothesStyles, clothesColors);
+
+        clothesRepository.save(clothes);
+        return clothes;
     }
 
     @Override
@@ -113,7 +118,7 @@ public class ClothesServiceImpl implements ClothesService {
          * 본인 옷장은 isOpen 관계없이 모든 옷 리스트 조회
          * 본인 옷장이 아닌경우 isOpen이 true인 옷 리스트 조회
          */
-        if (user.equals(loginUser)) {
+        if (user.getId().equals(loginUser.getId())) {
             clothesList = clothesRepository.findByUser(user);
         } else {
             clothesList = clothesRepository.findByUserAndIsOpenTrue(user);
