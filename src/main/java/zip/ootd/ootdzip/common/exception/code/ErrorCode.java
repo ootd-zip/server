@@ -73,7 +73,15 @@ public enum ErrorCode {
 
     UNFOLLOW_ERROR(409, "F002", "이미 언팔로우 상태임"),
 
-    UNAUTHORIZED_USER_ERROR(400, "C001", "해당 데이터에 접근할 수 없는 사용자");
+    UNAUTHORIZED_USER_ERROR(400, "C001", "해당 데이터에 접근할 수 없는 사용자"),
+
+    PRIVATE(401, "O001", "ootd 글이 비공개 상태"),
+
+    DELETED(401, "O002", "ootd 글이 삭제된 상태"),
+
+    BLOCKED(401, "O003", "ootd 글이 차단된 상태"),
+
+    OVER_REPORT(401, "O001", "ootd 글이 신고를 많이 먹은 상태");
 
     private final Integer status;
 

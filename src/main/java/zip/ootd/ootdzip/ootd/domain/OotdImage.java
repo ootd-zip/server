@@ -1,4 +1,4 @@
-package zip.ootd.ootdzip.board.domain;
+package zip.ootd.ootdzip.ootd.domain;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,30 +16,30 @@ import lombok.Setter;
 import zip.ootd.ootdzip.common.entity.BaseEntity;
 
 @Entity
-@Table(name = "board_images")
+@Table(name = "ootd_images")
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BoardImage extends BaseEntity {
+public class OotdImage extends BaseEntity {
 
     @ManyToOne
-    @JoinColumn(name = "board_id", nullable = false)
-    private Board board;
+    @JoinColumn(name = "ootd_id", nullable = false)
+    private Ootd ootd;
 
     @Column(length = 2048)
     private String imageUrl;
 
-    public static BoardImage createBoardImageBy(String imageUrl) {
-        return BoardImage.builder()
+    public static OotdImage createOotdImageBy(String imageUrl) {
+        return OotdImage.builder()
                 .imageUrl(imageUrl)
                 .build();
     }
 
-    public static List<BoardImage> createBoardImagesBy(List<String> imageUrls) {
+    public static List<OotdImage> createOotdImagesBy(List<String> imageUrls) {
         return imageUrls.stream()
-                .map(BoardImage::createBoardImageBy)
+                .map(OotdImage::createOotdImageBy)
                 .collect(Collectors.toList());
     }
 }

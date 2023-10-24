@@ -12,8 +12,8 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import zip.ootd.ootdzip.board.domain.Board;
 import zip.ootd.ootdzip.common.entity.BaseEntity;
+import zip.ootd.ootdzip.ootd.domain.Ootd;
 import zip.ootd.ootdzip.user.domain.User;
 
 @Entity
@@ -23,8 +23,8 @@ import zip.ootd.ootdzip.user.domain.User;
 @AllArgsConstructor
 public class Comment extends BaseEntity {
     @ManyToOne
-    @JoinColumn(name = "board_id", nullable = false)
-    private Board board;
+    @JoinColumn(name = "ootd_id", nullable = false)
+    private Ootd ootd;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
