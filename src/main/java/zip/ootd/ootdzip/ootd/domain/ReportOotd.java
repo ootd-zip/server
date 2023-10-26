@@ -1,4 +1,4 @@
-package zip.ootd.ootdzip.board.domain;
+package zip.ootd.ootdzip.ootd.domain;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,11 +13,11 @@ import lombok.NoArgsConstructor;
 import zip.ootd.ootdzip.user.domain.User;
 
 @Entity
-@Table(name = "like_boards")
+@Table(name = "report_ootds")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class LikeBoard {
+public class ReportOotd {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,6 +28,6 @@ public class LikeBoard {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "board_id", nullable = false)
-    private Board board;
+    @JoinColumn(name = "ootd_id", nullable = false)
+    private Ootd ootd;
 }

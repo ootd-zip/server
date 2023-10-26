@@ -1,4 +1,4 @@
-package zip.ootd.ootdzip.board;
+package zip.ootd.ootdzip.ootd;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -11,19 +11,19 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import zip.ootd.ootdzip.board.domain.Board;
-import zip.ootd.ootdzip.board.domain.BoardImage;
-import zip.ootd.ootdzip.board.repository.BoardRepository;
-import zip.ootd.ootdzip.boardclothe.domain.BoardClothes;
-import zip.ootd.ootdzip.boardstyle.BoardStyle;
+import zip.ootd.ootdzip.ootd.domain.Ootd;
+import zip.ootd.ootdzip.ootd.domain.OotdImage;
+import zip.ootd.ootdzip.ootd.repository.OotdRepository;
+import zip.ootd.ootdzip.ootdclothe.domain.OotdClothes;
+import zip.ootd.ootdzip.ootdstyle.domain.OotdStyle;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.domain.UserGender;
 import zip.ootd.ootdzip.user.repository.UserRepository;
 
 @DataJpaTest
-public class BoardRepositoryTest {
+public class OotdRepositoryTest {
     @Autowired
-    private BoardRepository boardRepository;
+    private OotdRepository ootdRepository;
     @Autowired
     private UserRepository userRepository;
 
@@ -47,16 +47,16 @@ public class BoardRepositoryTest {
                 false));
 
         String contents = "test contents";
-        List<BoardImage> boardImages = new ArrayList<>();
-        List<BoardClothes> boardClothes = new ArrayList<>();
-        List<BoardStyle> boardStyles = new ArrayList<>();
+        List<OotdImage> ootdImages = new ArrayList<>();
+        List<OotdClothes> ootdClothes = new ArrayList<>();
+        List<OotdStyle> ootdStyles = new ArrayList<>();
 
         //when
-        Board board = Board.createBoard(writer, contents, UserGender.MALE, true, boardImages, boardClothes,
-                boardStyles);
-        Board savedBoard = boardRepository.save(board);
+        Ootd ootd = Ootd.createOotd(writer, contents, UserGender.MALE, true, ootdImages, ootdClothes,
+                ootdStyles);
+        Ootd savedOotd = ootdRepository.save(ootd);
         //then
-        assertThat(savedBoard).isEqualTo(board);
+        assertThat(savedOotd).isEqualTo(ootd);
 
     }
 }

@@ -1,4 +1,4 @@
-package zip.ootd.ootdzip.board.data;
+package zip.ootd.ootdzip.ootd.data;
 
 import java.util.List;
 
@@ -7,11 +7,11 @@ import lombok.Data;
 import zip.ootd.ootdzip.user.domain.UserGender;
 
 @Data
-public class BoardOotdPostReq {
+public class OotdPostReq {
 
     private String content;
 
-    private Boolean isPublic;
+    private Boolean isPrivate;
 
     private UserGender gender;
 

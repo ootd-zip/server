@@ -1,4 +1,4 @@
-package zip.ootd.ootdzip.board.domain;
+package zip.ootd.ootdzip.ootd.domain;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -24,8 +24,8 @@ public class ImageMarker {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "board_id", nullable = false)
-    private Board board;
+    @JoinColumn(name = "ootd_id", nullable = false)
+    private Ootd ootd;
 
     @ManyToOne
     @JoinColumn(name = "clothes_id", nullable = false)
