@@ -2,6 +2,7 @@ package zip.ootd.ootdzip.user.domain;
 
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import jakarta.persistence.CascadeType;
@@ -12,12 +13,14 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import zip.ootd.ootdzip.clothes.domain.Clothes;
 import zip.ootd.ootdzip.common.entity.BaseEntity;
 
 @Entity
@@ -51,6 +54,8 @@ public class User extends BaseEntity {
     private Boolean isCompleted = false;
     @Column(nullable = false)
     private Boolean isDeleted = false;
+    @OneToMany(mappedBy = "user")
+    private List<Clothes> clothesList;
 
     public static User getDefault() {
         return new User(
@@ -63,7 +68,8 @@ public class User extends BaseEntity {
                 false,
                 null,
                 false,
-                false);
+                false,
+                null);
     }
 
     public boolean addFollower(User user) {
