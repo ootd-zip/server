@@ -112,6 +112,11 @@ public class OotdService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * ootdKey : ootd 게시글 키
+     * ootdFilterKey : 중복된 사용자의 조회수 카운트 막기위한 ootd 필터키
+     * updateKey : 추후 스케줄러작업에서 조회수가 변경된 게시판을 가져오기위해, ootdKey 를 저장해두는 키
+     */
     private void countViewInRedis(Ootd ootd) {
         Long id = ootd.getId();
 
@@ -119,9 +124,11 @@ public class OotdService {
             String ootdKey = RedisKey.VIEW.makeKeyWith(id);
             String ootdFilterKey = RedisKey.VIEW.makeFilterKeyWith(id);
             String userKey = RedisKey.VIEW.makeKeyWith(userService.getAuthenticatiedUser().getId());
+            String updateKey = RedisKey.UPDATED_VIEW.getKey();
 
             redisDao.setValuesSet(ootdFilterKey, userKey);
             redisDao.setValues(ootdKey, String.valueOf(getView(ootd) + 1));
+            redisDao.setValuesSet(updateKey, ootdKey);
         }
     }
 

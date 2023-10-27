@@ -1,8 +1,12 @@
 package zip.ootd.ootdzip.common.constant;
 
+import lombok.Getter;
+
+@Getter
 public enum RedisKey {
 
     VIEW("view", "viewfilter"),
+    UPDATED_VIEW("updateview", ""),
     LIKE("like", ""),
     USER_LIKE("userLike", "");
 
@@ -16,10 +20,10 @@ public enum RedisKey {
     }
 
     public String makeKeyWith(Long uniqueNumber) {
-        return uniqueNumber + key;
+        return uniqueNumber + "_" + key;
     }
 
     public String makeFilterKeyWith(Long uniqueNumber) {
-        return uniqueNumber + key + filterKey;
+        return uniqueNumber + "_" + filterKey;
     }
 }
