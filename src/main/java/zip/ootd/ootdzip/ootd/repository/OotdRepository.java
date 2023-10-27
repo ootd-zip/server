@@ -2,6 +2,8 @@ package zip.ootd.ootdzip.ootd.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -17,4 +19,7 @@ public interface OotdRepository extends JpaRepository<Ootd, Long> {
             + "order by o.createdAt desc "
             + "limit 20")
     List<Ootd> findAllByUserId(@Param(value = "userId") Long userId);
+
+    @Query("SELECT o from Ootd o where o.id in(:ootdIds)")
+    Slice<Ootd> findAllByIds(@Param(value = "ootdIds") List<Long> ootdIds, Pageable pageable);
 }
