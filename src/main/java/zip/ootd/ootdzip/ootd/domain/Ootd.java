@@ -38,7 +38,7 @@ import zip.ootd.ootdzip.user.domain.UserGender;
 @AllArgsConstructor
 public class Ootd extends BaseEntity {
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User writer;
 
@@ -111,6 +111,10 @@ public class Ootd extends BaseEntity {
         ootd.addOotdStyles(ootdStyles);
 
         return ootd;
+    }
+
+    public void updateViewBy(int view) {
+        this.viewCount = view;
     }
 
     public void addLike(User user) {
