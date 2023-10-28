@@ -3,6 +3,7 @@ package zip.ootd.ootdzip.clothes.domain;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -17,6 +18,7 @@ import lombok.NoArgsConstructor;
 import zip.ootd.ootdzip.brand.domain.Brand;
 import zip.ootd.ootdzip.category.domain.Category;
 import zip.ootd.ootdzip.common.entity.BaseEntity;
+import zip.ootd.ootdzip.ootdclothe.domain.OotdClothes;
 import zip.ootd.ootdzip.user.domain.User;
 
 @Entity
@@ -64,6 +66,10 @@ public class Clothes extends BaseEntity {
     @Builder.Default
     @OneToMany(mappedBy = "clothes", fetch = FetchType.LAZY)
     private List<ClothesColor> clothesColors = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "clothes", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<OotdClothes> ootdClothesList = new ArrayList<>();
 
     public static Clothes createClothes(User user,
             Brand brand,

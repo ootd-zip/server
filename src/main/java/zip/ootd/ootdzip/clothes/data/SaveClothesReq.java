@@ -35,13 +35,10 @@ public class SaveClothesReq {
 
     private String size;
 
-    @NotBlank
     private String material;
 
-    @NotBlank
     private String purchaseStore;
 
-    @NotBlank
     private String purchaseDate;
 
     private List<@NotBlank String> clothesImages;

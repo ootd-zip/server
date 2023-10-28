@@ -2,6 +2,7 @@ package zip.ootd.ootdzip.clothes.service;
 
 import java.util.List;
 
+import zip.ootd.ootdzip.clothes.data.DeleteClothesByIdRes;
 import zip.ootd.ootdzip.clothes.data.FindClothesByUserReq;
 import zip.ootd.ootdzip.clothes.data.FindClothesRes;
 import zip.ootd.ootdzip.clothes.data.SaveClothesReq;
@@ -29,4 +30,11 @@ public interface ClothesService {
      * @return
      */
     List<FindClothesRes> findClothesByUser(FindClothesByUserReq request);
+
+    /**
+     * id로 옷 정보 삭제
+     * @param id
+     * @return
+     */
+    DeleteClothesByIdRes deleteClothesById(Long id);
 }
