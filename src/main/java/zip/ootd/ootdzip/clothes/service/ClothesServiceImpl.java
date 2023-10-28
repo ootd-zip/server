@@ -53,19 +53,19 @@ public class ClothesServiceImpl implements ClothesService {
         옷 관련 도메인 조회
          */
         Brand brand = brandRepository.findById(saveClothesReq.getBrandId())
-                .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 Brand ID"));
+                .orElseThrow(() -> new CustomException(NOT_FOUND_ERROR));
         User user = userService.getAuthenticatiedUser();
         Category category = categoryRepository.findById(saveClothesReq.getCategoryId())
-                .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 Category ID"));
+                .orElseThrow(() -> new CustomException(NOT_FOUND_ERROR));
         List<Style> styles = styleRepository.findAllById(saveClothesReq.getStyleIds());
         List<Color> colors = colorRepository.findAllById(saveClothesReq.getColorIds());
 
         if (styles.isEmpty()) {
-            throw new IllegalArgumentException("유효하지 않은 Style ID");
+            throw new CustomException(NOT_FOUND_ERROR);
         }
 
         if (colors.isEmpty()) {
-            throw new IllegalArgumentException("유효하지 않은 Color ID");
+            throw new CustomException(NOT_FOUND_ERROR);
         }
 
         List<ClothesStyle> clothesStyles = ClothesStyle.createClothesStylesBy(styles);
@@ -86,7 +86,7 @@ public class ClothesServiceImpl implements ClothesService {
     public FindClothesRes findClothesById(Long id) {
 
         Clothes clothes = clothesRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 옷 ID"));
+                .orElseThrow(() -> new CustomException(NOT_FOUND_ERROR));
 
         User findUser = userService.getAuthenticatiedUser();
 
@@ -97,7 +97,7 @@ public class ClothesServiceImpl implements ClothesService {
         DetailCategory detailCategory = categoryRepository.findDetailCategoryById(clothes.getCategory().getId());
 
         if (detailCategory == null) {
-            throw new IllegalArgumentException("유효하지 않은 카테고리 ID");
+            throw new CustomException(NOT_FOUND_ERROR);
         }
 
         return FindClothesRes.createFindClothesRes(clothes, detailCategory);
@@ -111,7 +111,7 @@ public class ClothesServiceImpl implements ClothesService {
         List<Clothes> clothesList;
 
         User user = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 User ID"));
+                .orElseThrow(() -> new CustomException(NOT_FOUND_ERROR));
 
         User loginUser = userService.getAuthenticatiedUser();
 
@@ -139,7 +139,7 @@ public class ClothesServiceImpl implements ClothesService {
     public DeleteClothesByIdRes deleteClothesById(Long id) {
 
         Clothes deleteClothes = clothesRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 옷 ID"));
+                .orElseThrow(() -> new CustomException(NOT_FOUND_ERROR));
 
         User loginUser = userService.getAuthenticatiedUser();
 
