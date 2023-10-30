@@ -20,7 +20,6 @@ public class GetClothesAndOotdsForHomeRes {
     String imageUrl;
 
     private GetClothesAndOotdsForHomeRes() {
-
     }
 
     public GetClothesAndOotdsForHomeRes(Clothes clothes, String message, String detailMessage) {
