@@ -76,7 +76,7 @@ public class OotdScheduler {
         String key = RedisKey.VIEWS.makeKeyWith(ootd.getId());
         int viewCount = Integer.parseInt(redisDao.getValues(key)); // redis 에 저장된 ootd 의 조회수를 가져옴
 
-        ootd.updateViewBy(viewCount);
+        ootd.updateViewCount(viewCount);
         redisDao.deleteValues(key);
 
         String filterKey = RedisKey.VIEWS.makeFilterKeyWith(ootd.getId());
