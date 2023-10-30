@@ -18,8 +18,8 @@ public interface OotdRepository extends JpaRepository<Ootd, Long> {
             + "and o.reportCount < 10 "
             + "order by o.createdAt desc "
             + "limit 20")
-    List<Ootd> findAllByUserId(@Param(value = "userId") Long userId);
+    List<Ootd> findAllByUserId(@Param("userId") Long userId);
 
     @Query("SELECT o from Ootd o where o.id in(:ootdIds)")
-    Slice<Ootd> findAllByIds(@Param(value = "ootdIds") List<Long> ootdIds, Pageable pageable);
+    Slice<Ootd> findAllByIds(@Param("ootdIds") List<Long> ootdIds, Pageable pageable);
 }
