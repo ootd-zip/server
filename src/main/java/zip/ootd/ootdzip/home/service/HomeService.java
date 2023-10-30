@@ -32,7 +32,7 @@ public class HomeService {
      * 2. 옷장에 등록된 옷 중 상세정보(사이즈, 소재, 구매처, 구매시기)가 입력되지 않은 옷
      * 3. 등록된 Ootd 중 옷을 태그하지 않은 Ootd
      */
-    public List<GetClothesAndOotdsForHomeRes> GetClothesAndOotdsForHomeRes() {
+    public List<GetClothesAndOotdsForHomeRes> getClothesAndOotdsForHomeRes() {
 
         List<GetClothesAndOotdsForHomeRes> result = new ArrayList<>();
         User loginUser = userService.getAuthenticatiedUser();

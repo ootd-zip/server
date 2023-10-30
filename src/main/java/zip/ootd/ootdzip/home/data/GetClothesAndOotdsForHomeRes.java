@@ -6,10 +6,6 @@ import zip.ootd.ootdzip.clothes.domain.ClothesImage;
 import zip.ootd.ootdzip.ootd.domain.Ootd;
 import zip.ootd.ootdzip.ootd.domain.OotdImage;
 
-enum Type {
-    CLOTHES, OOTD
-}
-
 @Data
 public class GetClothesAndOotdsForHomeRes {
 
