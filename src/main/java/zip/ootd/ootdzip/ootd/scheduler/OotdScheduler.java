@@ -63,14 +63,14 @@ public class OotdScheduler {
         Slice<Ootd> sliceOotds = ootdRepository.findAllByIds(ootdIds, PageRequest.of(0, UPDATE_VIEW_BATCH_SIZE));
 
         do {
-            sliceOotds.get().forEach(this::updateViewCountRedisToDB);
+            sliceOotds.get().forEach(this::updateViewCountRedisToDb);
             sliceOotds = ootdRepository.findAllByIds(ootdIds, sliceOotds.nextPageable());
         } while (sliceOotds.hasNext());
 
         redisDao.deleteValues(updateViewKey);
     }
 
-    private void updateViewCountRedisToDB(Ootd ootd) {
+    private void updateViewCountRedisToDb(Ootd ootd) {
         String key = RedisKey.VIEWS.makeKeyWith(ootd.getId());
         int viewCount = Integer.parseInt(redisDao.getValues(key)); // redis 에 저장된 ootd 의 조회수를 가져옴
 
