@@ -121,10 +121,10 @@ public class OotdService {
         Long id = ootd.getId();
 
         if (!isUserViewedInRedis(id)) {
-            String ootdKey = RedisKey.VIEW.makeKeyWith(id);
-            String ootdFilterKey = RedisKey.VIEW.makeFilterKeyWith(id);
-            String userKey = RedisKey.VIEW.makeKeyWith(userService.getAuthenticatiedUser().getId());
-            String updateKey = RedisKey.UPDATED_VIEW.getKey();
+            String ootdKey = RedisKey.VIEWS.makeKeyWith(id);
+            String ootdFilterKey = RedisKey.VIEWS.makeFilterKeyWith(id);
+            String userKey = RedisKey.VIEWS.makeKeyWith(userService.getAuthenticatiedUser().getId());
+            String updateKey = RedisKey.UPDATED_VIEWS.getKey();
 
             redisDao.setValuesSet(ootdFilterKey, userKey);
             redisDao.setValues(ootdKey, String.valueOf(getView(ootd) + 1));
@@ -133,14 +133,14 @@ public class OotdService {
     }
 
     private boolean isUserViewedInRedis(Long id) {
-        String ootdFilterKey = RedisKey.VIEW.makeFilterKeyWith(id);
-        String userKey = RedisKey.VIEW.makeKeyWith(userService.getAuthenticatiedUser().getId());
+        String ootdFilterKey = RedisKey.VIEWS.makeFilterKeyWith(id);
+        String userKey = RedisKey.VIEWS.makeKeyWith(userService.getAuthenticatiedUser().getId());
 
         return redisDao.getValuesSet(ootdFilterKey).contains(userKey);
     }
 
     private int getViewInRedis(Long id) {
-        String ootdKey = RedisKey.VIEW.makeKeyWith(id);
+        String ootdKey = RedisKey.VIEWS.makeKeyWith(id);
 
         return NumberUtils.toInt(redisDao.getValues(ootdKey));
     }
@@ -161,7 +161,7 @@ public class OotdService {
     }
 
     private void setViewInRedis(Long id, int count) {
-        String ootdKey = RedisKey.VIEW.makeKeyWith(id);
+        String ootdKey = RedisKey.VIEWS.makeKeyWith(id);
 
         redisDao.setValues(ootdKey, String.valueOf(count));
     }
@@ -182,13 +182,13 @@ public class OotdService {
     }
 
     private int getLikeInRedis(Long id) {
-        String likeKey = RedisKey.LIKE.makeKeyWith(id);
+        String likeKey = RedisKey.LIKES.makeKeyWith(id);
 
         return NumberUtils.toInt(redisDao.getValues(likeKey));
     }
 
     private void setLikeInRedis(Long id, int count) {
-        String likeKey = RedisKey.LIKE.makeKeyWith(id);
+        String likeKey = RedisKey.LIKES.makeKeyWith(id);
 
         redisDao.setValues(likeKey, String.valueOf(count));
     }
@@ -237,35 +237,35 @@ public class OotdService {
     }
 
     private boolean isUserLikeSavedInRedis(Long ootdId) {
-        String ootdKey = RedisKey.USER_LIKE.makeKeyWith(ootdId);
+        String ootdKey = RedisKey.USER_LIKES.makeKeyWith(ootdId);
 
         return redisDao.getValuesSet(ootdKey).size() != 0;
     }
 
     private boolean isUserLikeInRedis(Long ootdId, Long userId) {
-        String ootdKey = RedisKey.USER_LIKE.makeKeyWith(ootdId);
-        String userKey = RedisKey.USER_LIKE.makeKeyWith(userId);
+        String ootdKey = RedisKey.USER_LIKES.makeKeyWith(ootdId);
+        String userKey = RedisKey.USER_LIKES.makeKeyWith(userId);
 
         return redisDao.getValuesSet(ootdKey).contains(userKey);
     }
 
     private void addUserLikeInRedis(Long ootdId, Long userId) {
-        String ootdKey = RedisKey.USER_LIKE.makeKeyWith(ootdId);
-        String userKey = RedisKey.USER_LIKE.makeKeyWith(userId);
+        String ootdKey = RedisKey.USER_LIKES.makeKeyWith(ootdId);
+        String userKey = RedisKey.USER_LIKES.makeKeyWith(userId);
 
         redisDao.setValuesSet(ootdKey, userKey);
     }
 
     private void cancelUserLikeInRedis(Long ootdId, Long userId) {
-        String ootdKey = RedisKey.USER_LIKE.makeKeyWith(ootdId);
-        String userKey = RedisKey.USER_LIKE.makeKeyWith(userId);
+        String ootdKey = RedisKey.USER_LIKES.makeKeyWith(ootdId);
+        String userKey = RedisKey.USER_LIKES.makeKeyWith(userId);
 
         redisDao.deleteValuesSet(ootdKey, userKey);
     }
 
     private void increaseLikeInRedis(Ootd ootd, User user) {
         Long id = ootd.getId();
-        String likeKey = RedisKey.LIKE.makeKeyWith(id);
+        String likeKey = RedisKey.LIKES.makeKeyWith(id);
 
         if (!getUserLike(ootd, user)) {
             redisDao.setValues(likeKey, String.valueOf(getLike(ootd) + 1));
@@ -274,7 +274,7 @@ public class OotdService {
 
     private void decreaseLikeInRedis(Ootd ootd, User user) {
         Long id = ootd.getId();
-        String likeKey = RedisKey.LIKE.makeKeyWith(id);
+        String likeKey = RedisKey.LIKES.makeKeyWith(id);
 
         if (getUserLike(ootd, user)) {
             redisDao.setValues(likeKey, String.valueOf(getLike(ootd) - 1));

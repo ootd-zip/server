@@ -5,10 +5,10 @@ import lombok.Getter;
 @Getter
 public enum RedisKey {
 
-    VIEW("view", "viewfilter"),
-    UPDATED_VIEW("updateview", ""),
-    LIKE("like", ""),
-    USER_LIKE("userLike", "");
+    VIEWS("views", "viewfilter"),
+    UPDATED_VIEWS("updateviews", ""),
+    LIKES("likes", ""),
+    USER_LIKES("userLikes", "");
 
     private final String key;
 

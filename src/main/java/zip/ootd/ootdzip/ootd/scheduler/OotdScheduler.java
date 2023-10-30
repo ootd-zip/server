@@ -51,7 +51,7 @@ public class OotdScheduler {
     @Transactional
     @Scheduled(initialDelay = 30000, fixedDelay = 10000)
     public void updateViewCount() {
-        String updateViewKey = RedisKey.UPDATED_VIEW.getKey();
+        String updateViewKey = RedisKey.UPDATED_VIEWS.getKey();
         Set<String> keys = redisDao.getValuesSet(updateViewKey);
         List<Long> ootdIds = new ArrayList<>();
 
@@ -73,13 +73,13 @@ public class OotdScheduler {
     }
 
     private void updateViewCountRedisToDB(Ootd ootd) {
-        String key = RedisKey.VIEW.makeKeyWith(ootd.getId());
+        String key = RedisKey.VIEWS.makeKeyWith(ootd.getId());
         int viewCount = Integer.parseInt(redisDao.getValues(key)); // redis 에 저장된 ootd 의 조회수를 가져옴
 
         ootd.updateViewBy(viewCount);
         redisDao.deleteValues(key);
 
-        String filterKey = RedisKey.VIEW.makeFilterKeyWith(ootd.getId());
+        String filterKey = RedisKey.VIEWS.makeFilterKeyWith(ootd.getId());
         redisDao.deleteValues(filterKey);
     }
 }
