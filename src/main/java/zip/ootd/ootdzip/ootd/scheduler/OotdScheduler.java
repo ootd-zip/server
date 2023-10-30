@@ -61,13 +61,11 @@ public class OotdScheduler {
         }
 
         Slice<Ootd> sliceOotds = ootdRepository.findAllByIds(ootdIds, PageRequest.of(0, UPDATE_VIEW_BATCH_SIZE));
-        List<Ootd> ootds = sliceOotds.getContent();
-        ootds.forEach(this::updateViewCountRedisToDB);
 
-        while (sliceOotds.hasNext()) {
-            sliceOotds = ootdRepository.findAllByIds(ootdIds, sliceOotds.nextPageable());
+        do {
             sliceOotds.get().forEach(this::updateViewCountRedisToDB);
-        }
+            sliceOotds = ootdRepository.findAllByIds(ootdIds, sliceOotds.nextPageable());
+        } while (sliceOotds.hasNext());
 
         redisDao.deleteValues(updateViewKey);
     }
