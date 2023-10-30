@@ -122,7 +122,7 @@ public class OotdService {
 
         if (!isUserViewedInRedis(id)) {
             String ootdKey = RedisKey.VIEWS.makeKeyWith(id);
-            String ootdFilterKey = RedisKey.VIEWS.makeFilterKeyWith(id);
+            String ootdFilterKey = RedisKey.VIEW_FILTER.makeKeyWith(id);
             String userKey = RedisKey.VIEWS.makeKeyWith(userService.getAuthenticatiedUser().getId());
             String updateKey = RedisKey.UPDATED_VIEWS.getKey();
 
@@ -133,7 +133,7 @@ public class OotdService {
     }
 
     private boolean isUserViewedInRedis(Long id) {
-        String ootdFilterKey = RedisKey.VIEWS.makeFilterKeyWith(id);
+        String ootdFilterKey = RedisKey.VIEW_FILTER.makeKeyWith(id);
         String userKey = RedisKey.VIEWS.makeKeyWith(userService.getAuthenticatiedUser().getId());
 
         return redisDao.getValuesSet(ootdFilterKey).contains(userKey);

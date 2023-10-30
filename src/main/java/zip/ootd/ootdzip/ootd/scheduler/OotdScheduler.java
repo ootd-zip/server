@@ -77,7 +77,7 @@ public class OotdScheduler {
         ootd.updateViewCount(viewCount);
         redisDao.deleteValues(key);
 
-        String filterKey = RedisKey.VIEWS.makeFilterKeyWith(ootd.getId());
+        String filterKey = RedisKey.VIEW_FILTER.makeKeyWith(ootd.getId());
         redisDao.deleteValues(filterKey);
     }
 }
