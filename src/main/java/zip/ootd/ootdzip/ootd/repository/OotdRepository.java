@@ -2,11 +2,13 @@ package zip.ootd.ootdzip.ootd.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import io.lettuce.core.dynamic.annotation.Param;
 import zip.ootd.ootdzip.ootd.domain.Ootd;
+import zip.ootd.ootdzip.user.domain.User;
 
 public interface OotdRepository extends JpaRepository<Ootd, Long> {
 
@@ -17,4 +19,8 @@ public interface OotdRepository extends JpaRepository<Ootd, Long> {
             + "order by o.createdAt desc "
             + "limit 20")
     List<Ootd> findAllByUserId(@Param(value = "userId") Long userId);
+
+    Long countByWriterAndOotdClothesListIsNull(User writer);
+
+    List<Ootd> findByWriterAndOotdClothesListIsNull(User writer, Pageable pageable);
 }
