@@ -5,8 +5,7 @@ COPY gradle gradle
 COPY build.gradle .
 COPY settings.gradle .
 COPY src src
-RUN chmod +x ./gradlew
-RUN chmod -R 755 /.gradle
+RUN chmod -R 755 /.gradlew
 RUN ./gradlew clean build -x test -Penv=ci
 
 FROM openjdk:17
