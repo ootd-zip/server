@@ -16,9 +16,12 @@ import zip.ootd.ootdzip.common.dao.RedisDao;
 import zip.ootd.ootdzip.ootd.domain.Ootd;
 import zip.ootd.ootdzip.ootd.repository.OotdRepository;
 
+/**
+ * 해당 스케줄러는 Redis 에 저장된 정보를 DB 에 저장하는 스케줄러입니다.
+ */
 @Component
 @RequiredArgsConstructor
-public class OotdScheduler {
+public class OotdRedisScheduler {
 
     private static final int UPDATE_VIEW_BATCH_SIZE = 100;
     private static final int UPDATE_LIKE_BATCH_SIZE = 100;
