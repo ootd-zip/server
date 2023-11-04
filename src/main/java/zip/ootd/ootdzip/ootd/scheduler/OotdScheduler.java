@@ -55,7 +55,7 @@ public class OotdScheduler {
      * 현재는 멀티쓰레드가 필요하지 않다고 판단되어 사용하지 않았지만 추후 스케줄링 작업이 늘어나면 고려할 필요가 있습니다.
      */
     @Transactional
-    @Scheduled(initialDelay = 30000, fixedDelay = 10000)
+    @Scheduled(cron = "0 0 0 * * *") // 매일 자정마다 한번 실행
     public void updateViewCount() {
         String updateViewKey = RedisKey.UPDATED_VIEWS.getKey();
         List<Long> ootdIds = getOotdIds(updateViewKey);
@@ -83,7 +83,7 @@ public class OotdScheduler {
     }
 
     @Transactional
-    @Scheduled(initialDelay = 30000, fixedDelay = 10000)
+    @Scheduled(cron = "0 0 0 * * *") // 매일 자정마다 한번 실행
     public void updateLikeCount() {
         String updateViewKey = RedisKey.UPDATED_LIKES.getKey();
         List<Long> ootdIds = getOotdIds(updateViewKey);
