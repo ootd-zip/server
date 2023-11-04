@@ -21,6 +21,7 @@ import zip.ootd.ootdzip.ootd.repository.OotdRepository;
 public class OotdScheduler {
 
     private static final int UPDATE_VIEW_BATCH_SIZE = 100;
+    private static final int UPDATE_LIKE_BATCH_SIZE = 100;
     private final RedisDao redisDao;
     private final OotdRepository ootdRepository;
 
@@ -52,21 +53,16 @@ public class OotdScheduler {
     @Scheduled(initialDelay = 30000, fixedDelay = 10000)
     public void updateViewCount() {
         String updateViewKey = RedisKey.UPDATED_VIEWS.getKey();
-        Set<String> keys = redisDao.getValuesSet(updateViewKey);
-        List<Long> ootdIds = new ArrayList<>();
+        List<Long> ootdIds = getOotdIds(updateViewKey);
 
-        for (String key : keys) {
-            Long id = Long.parseLong(key.split("_")[0]); // ootd 의 id 만 가져옴
-            ootdIds.add(id);
-        }
-
-        Slice<Ootd> sliceOotds = ootdRepository.findAllByIds(ootdIds, PageRequest.of(0, UPDATE_VIEW_BATCH_SIZE));
+        Slice<Ootd> sliceOotds;
+        int pageNumber = 0;
 
         do {
+            sliceOotds = ootdRepository.findAllByIds(ootdIds, PageRequest.of(pageNumber, UPDATE_VIEW_BATCH_SIZE));
             sliceOotds.get().forEach(this::updateViewCountRedisToDb);
-            sliceOotds = ootdRepository.findAllByIds(ootdIds, sliceOotds.nextPageable());
+            pageNumber++;
         } while (sliceOotds.hasNext());
-
         redisDao.deleteValues(updateViewKey);
     }
 
@@ -79,5 +75,45 @@ public class OotdScheduler {
 
         String filterKey = RedisKey.VIEW_FILTER.makeKeyWith(ootd.getId());
         redisDao.deleteValues(filterKey);
+    }
+
+    @Transactional
+    @Scheduled(initialDelay = 30000, fixedDelay = 10000)
+    public void updateLikeCount() {
+        String updateViewKey = RedisKey.UPDATED_LIKES.getKey();
+        List<Long> ootdIds = getOotdIds(updateViewKey);
+
+        Slice<Ootd> sliceOotds;
+        int pageNumber = 0;
+
+        do {
+            sliceOotds = ootdRepository.findAllByIds(ootdIds, PageRequest.of(pageNumber, UPDATE_LIKE_BATCH_SIZE));
+            sliceOotds.get().forEach(this::updateLikeCountRedisToDb);
+            pageNumber++;
+        } while (sliceOotds.hasNext());
+
+        redisDao.deleteValues(updateViewKey);
+    }
+
+    private void updateLikeCountRedisToDb(Ootd ootd) {
+        String key = RedisKey.LIKES.makeKeyWith(ootd.getId());
+        int likeCount = Integer.parseInt(redisDao.getValues(key)); // redis 에 저장된 ootd 의 조회수를 가져옴
+
+        ootd.updateLikeCount(likeCount);
+        redisDao.deleteValues(key);
+
+        String userLike = RedisKey.USER_LIKES.makeKeyWith(ootd.getId());
+        redisDao.deleteValues(userLike);
+    }
+
+    private List<Long> getOotdIds(String updateViewKey) {
+        Set<String> keys = redisDao.getValuesSet(updateViewKey);
+        List<Long> ootdIds = new ArrayList<>();
+
+        for (String key : keys) {
+            Long id = Long.parseLong(key.split("_")[0]); // ootd 의 id 만 가져옴
+            ootdIds.add(id);
+        }
+        return ootdIds;
     }
 }

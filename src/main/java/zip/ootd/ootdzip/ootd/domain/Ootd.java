@@ -117,6 +117,10 @@ public class Ootd extends BaseEntity {
         this.viewCount = viewCount;
     }
 
+    public void updateLikeCount(int likeCount) {
+        this.likeCount = likeCount;
+    }
+
     public void addLike(User user) {
         OotdLike ootdLike = getOotdLike(user).orElse(OotdLike.createOotdLikeBy(user));
         addOotdLike(ootdLike);

@@ -9,7 +9,8 @@ public enum RedisKey {
     VIEW_FILTER("viewfilter"),
     UPDATED_VIEWS("updateviews"),
     LIKES("likes"),
-    USER_LIKES("userLikes");
+    USER_LIKES("userLikes"),
+    UPDATED_LIKES("updatelikes");
 
     private final String key;
 

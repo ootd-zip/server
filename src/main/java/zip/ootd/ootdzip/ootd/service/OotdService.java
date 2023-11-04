@@ -269,6 +269,8 @@ public class OotdService {
 
         if (!getUserLike(ootd, user)) {
             redisDao.setValues(likeKey, String.valueOf(getLike(ootd) + 1));
+            String updateKey = RedisKey.UPDATED_LIKES.getKey();
+            redisDao.setValuesSet(updateKey, likeKey);
         }
     }
 
@@ -278,6 +280,8 @@ public class OotdService {
 
         if (getUserLike(ootd, user)) {
             redisDao.setValues(likeKey, String.valueOf(getLike(ootd) - 1));
+            String updateKey = RedisKey.UPDATED_LIKES.getKey();
+            redisDao.setValuesSet(updateKey, likeKey);
         }
     }
 
