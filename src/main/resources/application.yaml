@@ -5,9 +5,15 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create-drop
-    show-sql: true
+    properties:
+      hibernate:
+        show-sql: false # 로그로 sql 구문을 출력하므로 사용안함
+        format_sql: true # sql 보기 편하게 출력
+        jdbc:
+          batch_size: 100 # update문 하이버네이트 배치를 사용하기 위해 추가, (Insert는 적용불가, id 생성방식이 Identity 이기 때문)
+        order_updates: true
   datasource:
-    url: jdbc:mariadb://localhost:3306/ootdzip
+    url: jdbc:mariadb://localhost:3306/ootdzip # mariaDB 쿼리로그가 보고싶을시 ?&profileSQL=true&maxQuerySizeToLog=0
     username: ootdzip
     password: 1234
     driver-class-name: org.mariadb.jdbc.Driver
@@ -22,6 +28,11 @@ spring:
     multipart:
       max-file-size: 10MB # 파일 최대 사이즈
       max-request-size: 20MB # 요청 당 최대 사이즈
+
+logging: #로그 레벨을 정하는 것
+  level:
+    org.hibernate.SQL: debug #JPA 하이버네이트가 생성하는 SQL 로그
+    org.hibernate.type: trace
 
 # for swagger
 springdoc:
