@@ -18,6 +18,7 @@ import zip.ootd.ootdzip.category.domain.Style;
 import zip.ootd.ootdzip.category.repository.CategoryRepository;
 import zip.ootd.ootdzip.category.repository.ColorRepository;
 import zip.ootd.ootdzip.category.repository.StyleRepository;
+import zip.ootd.ootdzip.clothes.data.DeleteClothesByIdRes;
 import zip.ootd.ootdzip.clothes.data.FindClothesByUserReq;
 import zip.ootd.ootdzip.clothes.data.FindClothesRes;
 import zip.ootd.ootdzip.clothes.data.SaveClothesReq;
@@ -53,35 +54,40 @@ public class ClothesServiceImpl implements ClothesService {
         옷 관련 도메인 조회
          */
         Brand brand = brandRepository.findById(saveClothesReq.getBrandId())
-                .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 Brand ID"));
+                .orElseThrow(() -> new CustomException(NOT_FOUND_ERROR));
         User user = userService.getAuthenticatiedUser();
         Category category = categoryRepository.findById(saveClothesReq.getCategoryId())
-                .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 Category ID"));
+                .orElseThrow(() -> new CustomException(NOT_FOUND_ERROR));
         List<Style> styles = styleRepository.findAllById(saveClothesReq.getStyleIds());
         List<Color> colors = colorRepository.findAllById(saveClothesReq.getColorIds());
 
         if (styles.isEmpty()) {
-            throw new IllegalArgumentException("유효하지 않은 Style ID");
+            throw new CustomException(NOT_FOUND_ERROR);
         }
 
         if (colors.isEmpty()) {
-            throw new IllegalArgumentException("유효하지 않은 Color ID");
+            throw new CustomException(NOT_FOUND_ERROR);
         }
 
         List<ClothesStyle> clothesStyles = ClothesStyle.createClothesStylesBy(styles);
         List<ClothesColor> clothesColors = ClothesColor.createClothesColorsBy(colors);
         List<ClothesImage> clothesImages = ClothesImage.createClothesImagesBy(saveClothesReq.getClothesImages());
 
-        return Clothes.createClothes(user, brand, saveClothesReq.getClothesName(), saveClothesReq.getIsOpen(), category,
+        Clothes clothes = Clothes.createClothes(user, brand, saveClothesReq.getClothesName(),
+                saveClothesReq.getIsOpen(),
+                category,
                 saveClothesReq.getSize(), saveClothesReq.getMaterial(), saveClothesReq.getPurchaseStore(),
                 saveClothesReq.getPurchaseDate(), clothesImages, clothesStyles, clothesColors);
+
+        clothesRepository.save(clothes);
+        return clothes;
     }
 
     @Override
     public FindClothesRes findClothesById(Long id) {
 
         Clothes clothes = clothesRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 옷 ID"));
+                .orElseThrow(() -> new CustomException(NOT_FOUND_ERROR));
 
         User findUser = userService.getAuthenticatiedUser();
 
@@ -92,7 +98,7 @@ public class ClothesServiceImpl implements ClothesService {
         DetailCategory detailCategory = categoryRepository.findDetailCategoryById(clothes.getCategory().getId());
 
         if (detailCategory == null) {
-            throw new IllegalArgumentException("유효하지 않은 카테고리 ID");
+            throw new CustomException(NOT_FOUND_ERROR);
         }
 
         return FindClothesRes.createFindClothesRes(clothes, detailCategory);
@@ -106,7 +112,7 @@ public class ClothesServiceImpl implements ClothesService {
         List<Clothes> clothesList;
 
         User user = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 User ID"));
+                .orElseThrow(() -> new CustomException(NOT_FOUND_ERROR));
 
         User loginUser = userService.getAuthenticatiedUser();
 
@@ -114,7 +120,7 @@ public class ClothesServiceImpl implements ClothesService {
          * 본인 옷장은 isOpen 관계없이 모든 옷 리스트 조회
          * 본인 옷장이 아닌경우 isOpen이 true인 옷 리스트 조회
          */
-        if (user.equals(loginUser)) {
+        if (user.getId().equals(loginUser.getId())) {
             clothesList = clothesRepository.findByUser(user);
         } else {
             clothesList = clothesRepository.findByUserAndIsOpenTrue(user);
@@ -127,5 +133,26 @@ public class ClothesServiceImpl implements ClothesService {
         }
 
         return result;
+    }
+
+    @Override
+    @Transactional
+    public DeleteClothesByIdRes deleteClothesById(Long id) {
+
+        Clothes deleteClothes = clothesRepository.findById(id)
+                .orElseThrow(() -> new CustomException(NOT_FOUND_ERROR));
+
+        User loginUser = userService.getAuthenticatiedUser();
+
+        /*
+        로그인한 유저와 옷을 등록한 유저가 다르면 실패
+         */
+        if (!deleteClothes.getUser().getId().equals(loginUser.getId())) {
+            throw new CustomException(UNAUTHORIZED_USER_ERROR);
+        }
+
+        clothesRepository.delete(deleteClothes);
+
+        return new DeleteClothesByIdRes("옷 삭제 성공");
     }
 }
