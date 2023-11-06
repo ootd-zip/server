@@ -10,7 +10,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import zip.ootd.ootdzip.common.response.ApiResponse;
-import zip.ootd.ootdzip.home.data.GetClothesAndOotdsForHomeRes;
+import zip.ootd.ootdzip.home.data.ClothesAndOotdsForHomeRes;
 import zip.ootd.ootdzip.home.service.HomeService;
 
 @RestController
@@ -23,7 +23,7 @@ public class HomeController {
 
     @Operation(summary = "홈 - 유저 프로필 정보 조회", description = "유저 프로필 정보 조회 API")
     @GetMapping("/profile")
-    public ApiResponse<List<GetClothesAndOotdsForHomeRes>> getProfile() {
-        return new ApiResponse<>(homeService.GetClothesAndOotdsForHomeRes());
+    public ApiResponse<List<ClothesAndOotdsForHomeRes>> getProfile() {
+        return new ApiResponse<>(homeService.getClothesAndOotdsForHomeRes());
     }
 }

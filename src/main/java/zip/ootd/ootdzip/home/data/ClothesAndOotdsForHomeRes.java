@@ -7,7 +7,7 @@ import zip.ootd.ootdzip.ootd.domain.Ootd;
 import zip.ootd.ootdzip.ootd.domain.OotdImage;
 
 @Data
-public class GetClothesAndOotdsForHomeRes {
+public class ClothesAndOotdsForHomeRes {
 
     Long id;
 
@@ -19,10 +19,10 @@ public class GetClothesAndOotdsForHomeRes {
 
     String imageUrl;
 
-    private GetClothesAndOotdsForHomeRes() {
+    private ClothesAndOotdsForHomeRes() {
     }
 
-    public GetClothesAndOotdsForHomeRes(Clothes clothes, String message, String detailMessage) {
+    public ClothesAndOotdsForHomeRes(Clothes clothes, String message, String detailMessage) {
         this.id = clothes.getId();
         this.message = message;
         this.detailMessage = detailMessage;
@@ -30,7 +30,7 @@ public class GetClothesAndOotdsForHomeRes {
         this.imageUrl = clothes.getClothesImages().stream().findFirst().orElse(new ClothesImage()).getImageUrl();
     }
 
-    public GetClothesAndOotdsForHomeRes(Ootd ootd, String message, String detailMessage) {
+    public ClothesAndOotdsForHomeRes(Ootd ootd, String message, String detailMessage) {
         this.id = ootd.getId();
         this.message = message;
         this.detailMessage = detailMessage;

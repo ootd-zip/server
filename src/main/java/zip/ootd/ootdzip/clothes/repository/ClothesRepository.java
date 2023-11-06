@@ -1,8 +1,5 @@
 package zip.ootd.ootdzip.clothes.repository;
 
-import java.time.LocalDate;
-import java.util.List;
-
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -11,6 +8,9 @@ import org.springframework.stereotype.Repository;
 
 import zip.ootd.ootdzip.clothes.domain.Clothes;
 import zip.ootd.ootdzip.user.domain.User;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @Repository
 public interface ClothesRepository extends JpaRepository<Clothes, Long> {
@@ -22,13 +22,13 @@ public interface ClothesRepository extends JpaRepository<Clothes, Long> {
     @Query("SELECT COUNT(c) "
             + "FROM Clothes c "
             + "WHERE c.user = :user "
-            + "AND (c.size IS NULL OR c.material IS NULL OR c.purchaseStore IS NULL or c.purchaseDate IS NULL)")
+            + "AND (c.size IS NULL OR c.material IS NULL OR c.purchaseStore IS NULL OR c.purchaseDate IS NULL)")
     Long countByUserAndNoDetailInfo(@Param("user") User user);
 
     @Query("SELECT c "
             + "FROM Clothes c "
             + "WHERE c.user = :user "
-            + "AND (c.size IS NULL OR c.material IS NULL OR c.purchaseStore IS NULL or c.purchaseDate IS NULL)")
+            + "AND (c.size IS NULL OR c.material IS NULL OR c.purchaseStore IS NULL OR c.purchaseDate IS NULL)")
     List<Clothes> findByUserAndNoDetailInfo(@Param("user") User user, Pageable pageable);
 
     @Query("SELECT COUNT(c) "
