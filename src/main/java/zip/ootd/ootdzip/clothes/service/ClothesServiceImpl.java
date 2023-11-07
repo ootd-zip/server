@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import zip.ootd.ootdzip.brand.domain.Brand;
 import zip.ootd.ootdzip.brand.repository.BrandRepository;
@@ -34,6 +34,7 @@ import zip.ootd.ootdzip.user.service.UserService;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ClothesServiceImpl implements ClothesService {
 
     private final BrandRepository brandRepository;

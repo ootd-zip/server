@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +19,7 @@ import zip.ootd.ootdzip.common.exception.code.ErrorCode;
 import zip.ootd.ootdzip.common.response.ApiResponse;
 import zip.ootd.ootdzip.oauth.data.TokenInfo;
 import zip.ootd.ootdzip.user.data.FollowReq;
+import zip.ootd.ootdzip.user.data.ProfileRes;
 import zip.ootd.ootdzip.user.data.UserLoginReq;
 import zip.ootd.ootdzip.user.data.UserRegisterReq;
 import zip.ootd.ootdzip.user.domain.User;
@@ -25,7 +27,7 @@ import zip.ootd.ootdzip.user.service.UserService;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/user")
+@RequestMapping("api/v1/user")
 public class UserController {
 
     private final UserService userService;
@@ -104,4 +106,10 @@ public class UserController {
         }
         return Optional.empty();
     }
+
+    @GetMapping("/profile")
+    public ProfileRes getProfile() {
+        return new ProfileRes(userService.getAuthenticatiedUser());
+    }
+
 }
