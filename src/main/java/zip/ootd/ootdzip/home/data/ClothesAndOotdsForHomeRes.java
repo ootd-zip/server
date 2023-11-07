@@ -9,15 +9,15 @@ import zip.ootd.ootdzip.ootd.domain.OotdImage;
 @Data
 public class ClothesAndOotdsForHomeRes {
 
-    Long id;
+    private Long id;
 
-    String message;
+    private String message;
 
-    String detailMessage;
+    private String detailMessage;
 
-    Type type;
+    private TagType tagType;
 
-    String imageUrl;
+    private String imageUrl;
 
     private ClothesAndOotdsForHomeRes() {
     }
@@ -26,7 +26,7 @@ public class ClothesAndOotdsForHomeRes {
         this.id = clothes.getId();
         this.message = message;
         this.detailMessage = detailMessage;
-        this.type = Type.CLOTHES;
+        this.tagType = TagType.CLOTHES;
         this.imageUrl = clothes.getClothesImages().stream().findFirst().orElse(new ClothesImage()).getImageUrl();
     }
 
@@ -34,7 +34,7 @@ public class ClothesAndOotdsForHomeRes {
         this.id = ootd.getId();
         this.message = message;
         this.detailMessage = detailMessage;
-        this.type = Type.OOTD;
+        this.tagType = TagType.OOTD;
         this.imageUrl = ootd.getOotdImages().stream().findFirst().orElse(new OotdImage()).getImageUrl();
     }
 }

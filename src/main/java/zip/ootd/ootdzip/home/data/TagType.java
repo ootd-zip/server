@@ -1,5 +1,5 @@
 package zip.ootd.ootdzip.home.data;
 
-public enum Type {
+public enum TagType {
     CLOTHES, OOTD
 }
