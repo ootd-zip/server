@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import io.lettuce.core.dynamic.annotation.Param;
+import zip.ootd.ootdzip.category.domain.Category;
 import zip.ootd.ootdzip.ootd.domain.Ootd;
 import zip.ootd.ootdzip.user.domain.User;
 
@@ -27,4 +28,17 @@ public interface OotdRepository extends JpaRepository<Ootd, Long> {
     Long countByWriterAndOotdClothesListIsNull(User writer);
 
     List<Ootd> findByWriterAndOotdClothesListIsNull(User writer, Pageable pageable);
+
+    /**
+     * 주의 : 영속화의 경우 Ootd, ootdClothesList 만 됐으므로 그 이외는 조회만 사용할것
+     * TODO : 내옷, 신고, 차단, 삭제 필터링
+     */
+    @Query("SELECT distinct o from Ootd o "
+            + "join fetch o.ootdClothesList oc "
+            + "join oc.clothes c on c.category = :category "
+            + "join c.clothesColors cc on cc.color.name in (:colorNames)")
+    List<Ootd> findByClothesColorNamesAndClothesCategory(
+            @Param("colorNames") List<String> colorNames,
+            @Param("category") Category category,
+            Pageable pageable);
 }
