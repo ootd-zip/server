@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -42,4 +43,17 @@ public interface ClothesRepository extends JpaRepository<Clothes, Long> {
             + "WHERE FUNCTION('DATE', c.createdAt) = :targetDate "
             + "AND c.user = :user ")
     List<Clothes> findByDate(@Param("targetDate") LocalDate targetDate, @Param("user") User user, Pageable pageable);
+
+    /**
+     * TODO : 내옷, 신고, 차단, 삭제 필터링
+     */
+    @Query("SELECT c FROM Clothes c "
+            + "LEFT JOIN c.clothesColors cc "
+            + "WHERE EXISTS (SELECT so FROM Ootd so "
+            + "LEFT JOIN so.ootdClothesList soc "
+            + "LEFT JOIN soc.clothes sc "
+            + "LEFT JOIN sc.clothesColors scc "
+            + "WHERE sc.category = c.category "
+            + "AND scc.color IN (cc.color))")
+    Slice<Clothes> findExistOotd(Pageable pageable);
 }
