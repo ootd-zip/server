@@ -22,13 +22,13 @@ public interface ClothesRepository extends JpaRepository<Clothes, Long> {
     @Query("SELECT COUNT(c) "
             + "FROM Clothes c "
             + "WHERE c.user = :user "
-            + "AND (c.size IS NULL OR c.material IS NULL OR c.purchaseStore IS NULL or c.purchaseDate IS NULL)")
+            + "AND (c.size IS NULL OR c.material IS NULL OR c.purchaseStore IS NULL OR c.purchaseDate IS NULL)")
     Long countByUserAndNoDetailInfo(@Param("user") User user);
 
     @Query("SELECT c "
             + "FROM Clothes c "
             + "WHERE c.user = :user "
-            + "AND (c.size IS NULL OR c.material IS NULL OR c.purchaseStore IS NULL or c.purchaseDate IS NULL)")
+            + "AND (c.size IS NULL OR c.material IS NULL OR c.purchaseStore IS NULL OR c.purchaseDate IS NULL)")
     List<Clothes> findByUserAndNoDetailInfo(@Param("user") User user, Pageable pageable);
 
     @Query("SELECT COUNT(c) "

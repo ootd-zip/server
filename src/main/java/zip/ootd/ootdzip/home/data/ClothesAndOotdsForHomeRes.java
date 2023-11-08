@@ -7,34 +7,34 @@ import zip.ootd.ootdzip.ootd.domain.Ootd;
 import zip.ootd.ootdzip.ootd.domain.OotdImage;
 
 @Data
-public class GetClothesAndOotdsForHomeRes {
+public class ClothesAndOotdsForHomeRes {
 
-    Long id;
+    private Long id;
 
-    String message;
+    private String message;
 
-    String detailMessage;
+    private String detailMessage;
 
-    Type type;
+    private TagType tagType;
 
-    String imageUrl;
+    private String imageUrl;
 
-    private GetClothesAndOotdsForHomeRes() {
+    private ClothesAndOotdsForHomeRes() {
     }
 
-    public GetClothesAndOotdsForHomeRes(Clothes clothes, String message, String detailMessage) {
+    public ClothesAndOotdsForHomeRes(Clothes clothes, String message, String detailMessage) {
         this.id = clothes.getId();
         this.message = message;
         this.detailMessage = detailMessage;
-        this.type = Type.CLOTHES;
+        this.tagType = TagType.CLOTHES;
         this.imageUrl = clothes.getClothesImages().stream().findFirst().orElse(new ClothesImage()).getImageUrl();
     }
 
-    public GetClothesAndOotdsForHomeRes(Ootd ootd, String message, String detailMessage) {
+    public ClothesAndOotdsForHomeRes(Ootd ootd, String message, String detailMessage) {
         this.id = ootd.getId();
         this.message = message;
         this.detailMessage = detailMessage;
-        this.type = Type.OOTD;
+        this.tagType = TagType.OOTD;
         this.imageUrl = ootd.getOotdImages().stream().findFirst().orElse(new OotdImage()).getImageUrl();
     }
 }
