@@ -7,12 +7,18 @@ import java.util.List;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.AllArgsConstructor;
+import zip.ootd.ootdzip.clothes.domain.Clothes;
 import zip.ootd.ootdzip.clothes.repository.ClothesRepository;
 import zip.ootd.ootdzip.home.data.ClothesAndOotdsForHomeRes;
+import zip.ootd.ootdzip.home.data.SameClothesDifferentFeelRes;
+import zip.ootd.ootdzip.ootd.domain.Ootd;
 import zip.ootd.ootdzip.ootd.repository.OotdRepository;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.service.UserService;
@@ -82,4 +88,37 @@ public class HomeService {
         return result;
     }
 
+    public SliceImpl<SameClothesDifferentFeelRes> getSameClothesDifferentFeel(
+            int page,
+            int size) {
+
+        User user = userService.getAuthenticatiedUser();
+        Pageable clothesPageable = PageRequest.of(page, size, sortClothesByCreatedAt());
+        Slice<Clothes> clothesListSlice = clothesRepository.findExistOotd(clothesPageable);
+        List<SameClothesDifferentFeelRes> result = new ArrayList<>();
+
+        for (Clothes clothes : clothesListSlice.getContent()) {
+            Pageable ootdPageable = PageRequest.of(0, 3, sortOotdByViewCount());
+
+            List<String> colorNames = clothes.getClothesColors().stream()
+                    .map(cc -> cc.getColor().getName())
+                    .toList();
+
+            List<Ootd> ootds = ootdRepository.findByClothesColorNamesAndClothesCategory(
+                    colorNames,
+                    clothes.getCategory(),
+                    ootdPageable);
+
+            result.add(new SameClothesDifferentFeelRes(clothes, ootds));
+        }
+        return new SliceImpl<>(result, clothesPageable, clothesListSlice.hasNext());
+    }
+
+    private Sort sortClothesByCreatedAt() {
+        return Sort.by("createdAt").descending();
+    }
+
+    private Sort sortOotdByViewCount() {
+        return Sort.by("viewCount").descending();
+    }
 }
