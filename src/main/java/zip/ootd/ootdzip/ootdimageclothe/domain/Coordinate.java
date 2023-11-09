@@ -10,10 +10,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Coordinate {
 
+    @SuppressWarnings("checkstyle:MemberName")
     private String x;
 
+    @SuppressWarnings("checkstyle:MemberName")
     private String y;
 
+    @SuppressWarnings("checkstyle:ParameterName")
     public Coordinate(String x, String y) {
         this.x = x;
         this.y = y;
