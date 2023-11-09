@@ -9,7 +9,6 @@ import org.springframework.data.jpa.repository.Query;
 
 import io.lettuce.core.dynamic.annotation.Param;
 import zip.ootd.ootdzip.ootd.domain.Ootd;
-import zip.ootd.ootdzip.user.domain.User;
 
 public interface OotdRepository extends JpaRepository<Ootd, Long> {
 
@@ -24,7 +23,7 @@ public interface OotdRepository extends JpaRepository<Ootd, Long> {
     @Query("SELECT o from Ootd o where o.id in(:ootdIds)")
     Slice<Ootd> findAllByIds(@Param("ootdIds") List<Long> ootdIds, Pageable pageable);
 
-    Long countByWriterAndOotdClothesListIsNull(User writer);
-
-    List<Ootd> findByWriterAndOotdClothesListIsNull(User writer, Pageable pageable);
+    // Long countByWriterAndOotdClothesListIsNull(User writer);
+    //
+    // List<Ootd> findByWriterAndOotdClothesListIsNull(User writer, Pageable pageable);
 }
