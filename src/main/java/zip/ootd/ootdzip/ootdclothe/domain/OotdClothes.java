@@ -28,7 +28,7 @@ public class OotdClothes extends BaseEntity {
     private Ootd ootd;
 
     @ManyToOne
-    @JoinColumn(name = "clothe_id")
+    @JoinColumn(name = "clothes_id")
     private Clothes clothes;
 
     public static OotdClothes createOotdClothesBy(Clothes clothes) {
