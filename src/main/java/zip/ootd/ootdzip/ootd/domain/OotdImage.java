@@ -1,12 +1,14 @@
 package zip.ootd.ootdzip.ootd.domain;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,6 +16,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import zip.ootd.ootdzip.common.entity.BaseEntity;
+import zip.ootd.ootdzip.ootdimageclothe.domain.OotdImageClothes;
 
 @Entity
 @Table(name = "ootd_images")
@@ -31,15 +34,29 @@ public class OotdImage extends BaseEntity {
     @Column(length = 2048)
     private String imageUrl;
 
-    public static OotdImage createOotdImageBy(String imageUrl) {
-        return OotdImage.builder()
+    @Builder.Default
+    @OneToMany(mappedBy = "ootdImage", cascade = CascadeType.ALL)
+    private List<OotdImageClothes> ootdImageClothesList = new ArrayList<>();
+
+    public static OotdImage createOotdImageBy(String imageUrl,
+            List<OotdImageClothes> ootdImageClothesList) {
+
+        OotdImage ootdImage = OotdImage.builder()
                 .imageUrl(imageUrl)
                 .build();
+
+        ootdImage.addOotdImageClothesList(ootdImageClothesList);
+
+        return ootdImage;
     }
 
-    public static List<OotdImage> createOotdImagesBy(List<String> imageUrls) {
-        return imageUrls.stream()
-                .map(OotdImage::createOotdImageBy)
-                .collect(Collectors.toList());
+    //== 연관관계 메서드==//
+    public void addOotdImageClothes(OotdImageClothes ootdImageClothes) {
+        ootdImageClothesList.add(ootdImageClothes);
+        ootdImageClothes.setOotdImage(this);
+    }
+
+    public void addOotdImageClothesList(List<OotdImageClothes> ootdImageClothesList) {
+        ootdImageClothesList.forEach(this::addOotdImageClothes);
     }
 }
