@@ -88,7 +88,7 @@ public class Ootd extends BaseEntity {
     private UserGender gender;
 
     @Builder.Default
-    @OneToMany(mappedBy = "ootd", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "ootd", cascade = CascadeType.ALL)
     private List<OotdClothes> ootdClothesList = new ArrayList<>();
 
     public static Ootd createOotd(User user,
