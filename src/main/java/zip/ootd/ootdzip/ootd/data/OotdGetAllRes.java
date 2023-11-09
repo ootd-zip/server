@@ -100,7 +100,7 @@ public class OotdGetAllRes {
     @Data
     static class OotdClothesListRes {
 
-        private OotdGetRes.OotdClothesListRes.BrandRes brand;
+        private BrandRes brand;
 
         private String name;
 
@@ -116,7 +116,7 @@ public class OotdGetAllRes {
 
         public OotdClothesListRes(OotdClothes ootdClothes) {
             Clothes clothes = ootdClothes.getClothes();
-            this.brand = new OotdGetRes.OotdClothesListRes.BrandRes(clothes.getBrand());
+            this.brand = new BrandRes(clothes.getBrand());
             this.name = clothes.getName();
             this.category = clothes.getCategory();
             this.size = clothes.getSize();
