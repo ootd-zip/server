@@ -32,11 +32,13 @@ public class OotdPostReq {
 
             private Long clothesId;
 
-            @SuppressWarnings("checkstyle:MemberName")
-            private String x;
+            private String xRate;
 
-            @SuppressWarnings("checkstyle:MemberName")
-            private String y;
+            private String yRate;
+
+            private Long deviceWeight;
+
+            private Long deviceHeight;
         }
     }
 }

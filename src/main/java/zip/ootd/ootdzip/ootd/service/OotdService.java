@@ -23,6 +23,7 @@ import zip.ootd.ootdzip.ootd.domain.Ootd;
 import zip.ootd.ootdzip.ootd.domain.OotdImage;
 import zip.ootd.ootdzip.ootd.repository.OotdRepository;
 import zip.ootd.ootdzip.ootdimageclothe.domain.Coordinate;
+import zip.ootd.ootdzip.ootdimageclothe.domain.DeviceSize;
 import zip.ootd.ootdzip.ootdimageclothe.domain.OotdImageClothes;
 import zip.ootd.ootdzip.ootdstyle.domain.OotdStyle;
 import zip.ootd.ootdzip.user.domain.User;
@@ -44,9 +45,10 @@ public class OotdService {
         List<OotdImage> ootdImages = request.getOotdImages().stream().map(ootdImage -> {
             List<OotdImageClothes> ootdImageClothesList = ootdImage.getClothesTags().stream().map(clothesTag -> {
                 Clothes clothes = clothesRepository.findById(clothesTag.getClothesId()).orElseThrow();
-                Coordinate coordinate = new Coordinate(clothesTag.getX(), clothesTag.getY());
+                Coordinate coordinate = new Coordinate(clothesTag.getXRate(), clothesTag.getYRate());
+                DeviceSize deviceSize = new DeviceSize(clothesTag.getDeviceWeight(), clothesTag.getDeviceHeight());
 
-                return OotdImageClothes.createOotdImageClothesBy(clothes, coordinate);
+                return OotdImageClothes.createOotdImageClothesBy(clothes, coordinate, deviceSize);
             }).toList();
 
             return OotdImage.createOotdImageBy(ootdImage.getOotdImage(), ootdImageClothesList);

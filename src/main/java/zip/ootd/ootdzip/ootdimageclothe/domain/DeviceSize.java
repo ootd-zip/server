@@ -8,14 +8,14 @@ import lombok.NoArgsConstructor;
 @Getter
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Coordinate {
+public class DeviceSize {
 
-    private String xRate;
+    private Long deviceWeight;
 
-    private String yRate;
+    private Long deviceHeight;
 
-    public Coordinate(String xRate, String yRate) {
-        this.xRate = xRate;
-        this.yRate = yRate;
+    public DeviceSize(Long deviceWeight, Long deviceHeight) {
+        this.deviceWeight = deviceWeight;
+        this.deviceHeight = deviceHeight;
     }
 }

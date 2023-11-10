@@ -32,12 +32,17 @@ public class OotdImageClothes extends BaseEntity {
     @Embedded
     private Coordinate coordinate;
 
+    @Embedded
+    private DeviceSize deviceSize;
+
     public static OotdImageClothes createOotdImageClothesBy(Clothes clothes,
-            Coordinate coordinate) {
+            Coordinate coordinate,
+            DeviceSize deviceSize) {
 
         return OotdImageClothes.builder()
                 .clothes(clothes)
                 .coordinate(coordinate)
+                .deviceSize(deviceSize)
                 .build();
     }
 }
