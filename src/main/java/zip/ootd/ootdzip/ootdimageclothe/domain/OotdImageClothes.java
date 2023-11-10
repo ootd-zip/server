@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import zip.ootd.ootdzip.clothes.domain.Clothes;
 import zip.ootd.ootdzip.common.entity.BaseEntity;
-import zip.ootd.ootdzip.ootd.domain.OotdImage;
+import zip.ootd.ootdzip.ootdimage.domain.OotdImage;
 
 @Entity
 @Getter
