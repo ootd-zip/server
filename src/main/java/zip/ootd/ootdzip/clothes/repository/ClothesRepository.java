@@ -44,16 +44,18 @@ public interface ClothesRepository extends JpaRepository<Clothes, Long> {
             + "AND c.user = :user ")
     List<Clothes> findByDate(@Param("targetDate") LocalDate targetDate, @Param("user") User user, Pageable pageable);
 
-    /**
-     * TODO : 내옷, 신고, 차단, 삭제 필터링
-     */
     @Query("SELECT c FROM Clothes c "
             + "LEFT JOIN c.clothesColors cc "
             + "WHERE EXISTS (SELECT so FROM Ootd so "
-            + "LEFT JOIN so.ootdClothesList soc "
+            + "LEFT JOIN so.ootdImages soi "
+            + "LEFT JOIN soi.ootdImageClothesList soc "
             + "LEFT JOIN soc.clothes sc "
             + "LEFT JOIN sc.clothesColors scc "
             + "WHERE sc.category = c.category "
-            + "AND scc.color IN (cc.color))")
-    Slice<Clothes> findExistOotd(Pageable pageable);
+            + "AND scc.color IN (cc.color) "
+            + "AND so.writer <> :user "
+            + "AND so.isDeleted = false "
+            + "AND so.isPrivate = false "
+            + "AND so.reportCount < 10)")
+    Slice<Clothes> findExistOotd(@Param("user") User user, Pageable pageable);
 }
