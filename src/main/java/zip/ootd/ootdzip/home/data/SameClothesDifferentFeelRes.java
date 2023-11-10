@@ -4,21 +4,21 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.Data;
-import zip.ootd.ootdzip.category.domain.Category;
+import zip.ootd.ootdzip.category.data.CategoryType;
 import zip.ootd.ootdzip.clothes.domain.Clothes;
-import zip.ootd.ootdzip.ootd.domain.Ootd;
+import zip.ootd.ootdzip.ootdimage.domain.OotdImage;
 
 @Data
 public class SameClothesDifferentFeelRes {
 
     private ClothesForSameClothesDifferentFeelRes clothes;
 
-    private List<OotdForSameClothesDifferentFeelRes> ootds;
+    private List<OotdImageForSameClothesDifferentFeelRes> ootdImages;
 
-    public SameClothesDifferentFeelRes(Clothes clothes, List<Ootd> ootds) {
+    public SameClothesDifferentFeelRes(Clothes clothes, List<OotdImage> ootdImages) {
         this.clothes = new ClothesForSameClothesDifferentFeelRes(clothes);
-        this.ootds = ootds.stream()
-                .map(OotdForSameClothesDifferentFeelRes::new)
+        this.ootdImages = ootdImages.stream()
+                .map(OotdImageForSameClothesDifferentFeelRes::new)
                 .collect(Collectors.toList());
     }
 
@@ -29,29 +29,29 @@ public class SameClothesDifferentFeelRes {
 
         private String name;
 
-        private Category category;
+        private CategoryType categoryType;
 
         private String imageUrl;
 
         public ClothesForSameClothesDifferentFeelRes(Clothes clothes) {
             this.id = clothes.getId();
             this.name = clothes.getName();
-            this.category = clothes.getCategory();
+            this.categoryType = clothes.getCategory().getType();
             this.imageUrl =
                     clothes.getClothesImages().isEmpty() ? "" : clothes.getClothesImages().get(0).getImageUrl();
         }
     }
 
     @Data
-    static class OotdForSameClothesDifferentFeelRes {
+    static class OotdImageForSameClothesDifferentFeelRes {
 
-        private Long id;
+        private Long ootdId;
 
         private String imageUrl;
 
-        public OotdForSameClothesDifferentFeelRes(Ootd ootd) {
-            this.id = ootd.getId();
-            this.imageUrl = ootd.getOotdImages().isEmpty() ? "" : ootd.getOotdImages().get(0).getImageUrl();
+        public OotdImageForSameClothesDifferentFeelRes(OotdImage ootdImage) {
+            this.ootdId = ootdImage.getOotd().getId();
+            this.imageUrl = ootdImage.getImageUrl();
         }
     }
 }
