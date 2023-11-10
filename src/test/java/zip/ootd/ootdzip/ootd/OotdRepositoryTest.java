@@ -14,7 +14,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import zip.ootd.ootdzip.ootd.domain.Ootd;
 import zip.ootd.ootdzip.ootd.domain.OotdImage;
 import zip.ootd.ootdzip.ootd.repository.OotdRepository;
-import zip.ootd.ootdzip.ootdclothe.domain.OotdClothes;
+import zip.ootd.ootdzip.ootdimageclothe.domain.OotdImageClothes;
 import zip.ootd.ootdzip.ootdstyle.domain.OotdStyle;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.domain.UserGender;
@@ -48,11 +48,11 @@ public class OotdRepositoryTest {
 
         String contents = "test contents";
         List<OotdImage> ootdImages = new ArrayList<>();
-        List<OotdClothes> ootdClothes = new ArrayList<>();
+        List<OotdImageClothes> ootdImageClothes = new ArrayList<>();
         List<OotdStyle> ootdStyles = new ArrayList<>();
 
         //when
-        Ootd ootd = Ootd.createOotd(writer, contents, UserGender.MALE, true, ootdImages, ootdClothes,
+        Ootd ootd = Ootd.createOotd(writer, contents, UserGender.MALE, true, ootdImages, ootdImageClothes,
                 ootdStyles);
         Ootd savedOotd = ootdRepository.save(ootd);
         //then

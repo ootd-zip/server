@@ -73,17 +73,18 @@ public class HomeService {
         }
 
         // 등록된 Ootd 중 옷을 태그하지 않은 Ootd
-        Long noClothesOotdCount = ootdRepository.countByWriterAndOotdClothesListIsNull(loginUser);
-
-        if (0 < noClothesOotdCount) {
-            int idx = Double.valueOf(Math.random() * noClothesOotdCount).intValue();
-            Pageable pageable = PageRequest.of(idx, 1);
-            ootdRepository.findByWriterAndOotdClothesListIsNull(loginUser, pageable)
-                    .stream()
-                    .findFirst()
-                    .ifPresent(ootd -> result.add(
-                            new ClothesAndOotdsForHomeRes(ootd, "이 날 어떤 옷을 입었나요?", "OOTD에 의류정보 태그하러 가기")));
-        }
+        // TODO : Ootd 에 여러개의 사진이 들어가고 사진마다 옷이 태그되게 변경되었습니다, 등록된 Ootd 중 옷을 태그하지 않은 Ootd 에 대한 구체적인 조건이 필요합니다.
+        // Long noClothesOotdCount = ootdRepository.countByWriterAndOotdClothesListIsNull(loginUser);
+        //
+        // if (0 < noClothesOotdCount) {
+        //     int idx = Double.valueOf(Math.random() * noClothesOotdCount).intValue();
+        //     Pageable pageable = PageRequest.of(idx, 1);
+        //     ootdRepository.findByWriterAndOotdClothesListIsNull(loginUser, pageable)
+        //             .stream()
+        //             .findFirst()
+        //             .ifPresent(ootd -> result.add(
+        //                     new ClothesAndOotdsForHomeRes(ootd, "이 날 어떤 옷을 입었나요?", "OOTD에 의류정보 태그하러 가기")));
+        // }
 
         return result;
     }

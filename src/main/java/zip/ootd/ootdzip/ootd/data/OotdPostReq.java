@@ -17,8 +17,26 @@ public class OotdPostReq {
 
     private List<Long> styles;
 
-    private List<Long> clotheIds;
+    private List<OotdImageReq> ootdImages;
 
-    @NotEmpty(message = "이미지는 반드시 1장 이상이여야 합니다.")
-    private List<String> ootdImages;
+    @Data
+    public static class OotdImageReq {
+
+        @NotEmpty(message = "이미지는 반드시 1장 이상이여야 합니다.")
+        private String ootdImage;
+
+        private List<ClothesTagReq> clothesTags;
+
+        @Data
+        public static class ClothesTagReq {
+
+            private Long clothesId;
+
+            @SuppressWarnings("checkstyle:MemberName")
+            private String x;
+
+            @SuppressWarnings("checkstyle:MemberName")
+            private String y;
+        }
+    }
 }

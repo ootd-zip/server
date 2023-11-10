@@ -22,7 +22,8 @@ import zip.ootd.ootdzip.ootd.data.OotdPostReq;
 import zip.ootd.ootdzip.ootd.domain.Ootd;
 import zip.ootd.ootdzip.ootd.domain.OotdImage;
 import zip.ootd.ootdzip.ootd.repository.OotdRepository;
-import zip.ootd.ootdzip.ootdclothe.domain.OotdClothes;
+import zip.ootd.ootdzip.ootdimageclothe.domain.Coordinate;
+import zip.ootd.ootdzip.ootdimageclothe.domain.OotdImageClothes;
 import zip.ootd.ootdzip.ootdstyle.domain.OotdStyle;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.service.UserService;
@@ -40,13 +41,18 @@ public class OotdService {
 
     public Ootd postOotd(OotdPostReq request) {
 
-        List<String> images = request.getOotdImages();
-        List<Long> clothesIds = request.getClotheIds();
-        List<Clothes> clothesList = clothesRepository.findAllById(clothesIds);
-        List<Style> styles = styleRepository.findAllById(request.getStyles());
+        List<OotdImage> ootdImages = request.getOotdImages().stream().map(ootdImage -> {
+            List<OotdImageClothes> ootdImageClothesList = ootdImage.getClothesTags().stream().map(clothesTag -> {
+                Clothes clothes = clothesRepository.findById(clothesTag.getClothesId()).orElseThrow();
+                Coordinate coordinate = new Coordinate(clothesTag.getX(), clothesTag.getY());
 
-        List<OotdImage> ootdImages = OotdImage.createOotdImagesBy(images);
-        List<OotdClothes> ootdClothesList = OotdClothes.createOotdClothesListBy(clothesList);
+                return OotdImageClothes.createOotdImageClothesBy(clothes, coordinate);
+            }).toList();
+
+            return OotdImage.createOotdImageBy(ootdImage.getOotdImage(), ootdImageClothesList);
+        }).toList();
+
+        List<Style> styles = styleRepository.findAllById(request.getStyles());
         List<OotdStyle> ootdStyles = OotdStyle.createOotdStylesBy(styles);
 
         Ootd ootd = Ootd.createOotd(userService.getAuthenticatiedUser(),
@@ -54,7 +60,6 @@ public class OotdService {
                 request.getGender(),
                 request.getIsPrivate(),
                 ootdImages,
-                ootdClothesList,
                 ootdStyles);
 
         ootdRepository.save(ootd);
