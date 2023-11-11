@@ -23,7 +23,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import zip.ootd.ootdzip.common.entity.BaseEntity;
 import zip.ootd.ootdzip.ootdbookmark.domain.OotdBookmark;
-import zip.ootd.ootdzip.ootdclothe.domain.OotdClothes;
 import zip.ootd.ootdzip.ootdlike.domain.OotdLike;
 import zip.ootd.ootdzip.ootdstyle.domain.OotdStyle;
 import zip.ootd.ootdzip.user.domain.User;
@@ -87,16 +86,11 @@ public class Ootd extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private UserGender gender;
 
-    @Builder.Default
-    @OneToMany(mappedBy = "ootd", fetch = FetchType.LAZY)
-    private List<OotdClothes> ootdClothesList = new ArrayList<>();
-
     public static Ootd createOotd(User user,
             String contents,
             UserGender gender,
             boolean isPrivate,
             List<OotdImage> ootdImages,
-            List<OotdClothes> ootdClothesList,
             List<OotdStyle> ootdStyles) {
 
         Ootd ootd = Ootd.builder()
@@ -107,7 +101,6 @@ public class Ootd extends BaseEntity {
                 .build();
 
         ootd.addOotdImages(ootdImages);
-        ootd.addOotdClothesList(ootdClothesList);
         ootd.addOotdStyles(ootdStyles);
 
         return ootd;
@@ -171,15 +164,6 @@ public class Ootd extends BaseEntity {
 
     public void addOotdImages(List<OotdImage> ootdImages) {
         ootdImages.forEach(this::addOotdImage);
-    }
-
-    public void addOotdClothes(OotdClothes ootdClothes) {
-        ootdClothesList.add(ootdClothes);
-        ootdClothes.setOotd(this);
-    }
-
-    public void addOotdClothesList(List<OotdClothes> ootdClothesList) {
-        ootdClothesList.forEach(this::addOotdClothes);
     }
 
     public void addOotdStyle(OotdStyle ootdStyle) {
