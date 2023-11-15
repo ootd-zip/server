@@ -89,7 +89,7 @@ public class UserController {
 
     @GetMapping("/check-id")
     public ApiResponse<Boolean> checkId(@RequestBody CheckIdReq request) {
-        if(userService.checkId(request.getNickname())) {
+        if (userService.checkId(request.getNickname())) {
             return new ApiResponse<>(true);
         } else {
             throw new CustomException(ErrorCode.DUPLICATE_NAME_ERROR);
