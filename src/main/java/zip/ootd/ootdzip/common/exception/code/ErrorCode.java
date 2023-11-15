@@ -67,6 +67,8 @@ public enum ErrorCode {
 
     NOT_AUTHENTICATED_ERROR(400, "U002", "인가되지 않은 사용자"),
 
+    DUPLICATE_NAME_ERROR(409, "U003", "중복된 닉네임"),
+
     IMAGE_CONVERT_ERROR(400, "UT001", "이미지 변환 실패"),
 
     FOLLOW_ERROR(409, "F001", "이미 팔로우 상태임"),

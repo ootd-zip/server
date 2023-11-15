@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -12,6 +13,9 @@ import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.web.bind.annotation.ResponseStatus;
+
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.exception.code.ErrorCode;
 import zip.ootd.ootdzip.oauth.data.TokenInfo;
@@ -145,6 +149,10 @@ public class UserService {
     public Set<User> getFollowings(Long userId) {
         User user = userRepository.findById(userId).orElseThrow();
         return user.getFollowings();
+    }
+
+    public boolean checkId(String name) {
+        return userRepository.findByName(name).isPresent();
     }
 
     public User getAuthenticatiedUser() {
