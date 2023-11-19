@@ -26,7 +26,7 @@ public class CategoryService {
         if (request.getCategoryType().equals(CategoryType.LargeCategory)) {
             findCategories = categoryRepository.findCategoriesByType(request.getCategoryType());
             return findCategories.stream()
-                    .map(CategoryRes::createCategoryResBy)
+                    .map(CategoryRes::new)
                     .toList();
         }
 
@@ -41,7 +41,7 @@ public class CategoryService {
         }
 
         return findCategories.stream()
-                .map(CategoryRes::createCategoryResBy)
+                .map(CategoryRes::new)
                 .toList();
     }
 

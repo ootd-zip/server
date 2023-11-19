@@ -18,8 +18,4 @@ public class CategoryRes {
         this.name = category.getName();
         this.type = category.getType();
     }
-
-    public static CategoryRes createCategoryResBy(Category category) {
-        return new CategoryRes(category);
-    }
 }
