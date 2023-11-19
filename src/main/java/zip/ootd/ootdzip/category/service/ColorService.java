@@ -16,6 +16,7 @@ public class ColorService {
     private final ColorRepository colorRepository;
 
     public List<ColorRes> getAllColors() {
+        //TODO : 페이징 OR 검색조건 넣을 지 확인 필요
         List<Color> colors = colorRepository.findAll();
 
         return colors.stream()

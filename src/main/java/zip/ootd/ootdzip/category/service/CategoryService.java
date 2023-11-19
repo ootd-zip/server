@@ -20,7 +20,7 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
 
     public List<CategoryRes> getCategories(CategorySearch request) {
-
+        //TODO : 페이징 넣을 지 확인 필요
         List<Category> findCategories;
 
         if (request.getCategoryType().equals(CategoryType.LargeCategory)) {
