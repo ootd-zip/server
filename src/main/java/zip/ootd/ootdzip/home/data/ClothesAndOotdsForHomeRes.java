@@ -4,7 +4,7 @@ import lombok.Data;
 import zip.ootd.ootdzip.clothes.domain.Clothes;
 import zip.ootd.ootdzip.clothes.domain.ClothesImage;
 import zip.ootd.ootdzip.ootd.domain.Ootd;
-import zip.ootd.ootdzip.ootd.domain.OotdImage;
+import zip.ootd.ootdzip.ootdimage.domain.OotdImage;
 
 @Data
 public class ClothesAndOotdsForHomeRes {

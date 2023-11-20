@@ -1,4 +1,4 @@
-package zip.ootd.ootdzip.ootd.domain;
+package zip.ootd.ootdzip.ootdimage.domain;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +16,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import zip.ootd.ootdzip.common.entity.BaseEntity;
+import zip.ootd.ootdzip.ootd.domain.Ootd;
 import zip.ootd.ootdzip.ootdimageclothe.domain.OotdImageClothes;
 
 @Entity

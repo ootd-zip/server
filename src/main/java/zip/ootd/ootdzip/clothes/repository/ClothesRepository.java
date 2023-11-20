@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -42,4 +43,19 @@ public interface ClothesRepository extends JpaRepository<Clothes, Long> {
             + "WHERE FUNCTION('DATE', c.createdAt) = :targetDate "
             + "AND c.user = :user ")
     List<Clothes> findByDate(@Param("targetDate") LocalDate targetDate, @Param("user") User user, Pageable pageable);
+
+    @Query("SELECT c FROM Clothes c "
+            + "LEFT JOIN c.clothesColors cc "
+            + "WHERE EXISTS (SELECT so FROM Ootd so "
+            + "LEFT JOIN so.ootdImages soi "
+            + "LEFT JOIN soi.ootdImageClothesList soc "
+            + "LEFT JOIN soc.clothes sc "
+            + "LEFT JOIN sc.clothesColors scc "
+            + "WHERE sc.category = c.category "
+            + "AND scc.color IN (cc.color) "
+            + "AND so.writer <> :user "
+            + "AND so.isDeleted = false "
+            + "AND so.isPrivate = false "
+            + "AND so.reportCount < 10)")
+    Slice<Clothes> findExistOotd(@Param("user") User user, Pageable pageable);
 }

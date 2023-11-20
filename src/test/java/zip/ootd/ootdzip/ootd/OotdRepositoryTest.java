@@ -12,8 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import zip.ootd.ootdzip.ootd.domain.Ootd;
-import zip.ootd.ootdzip.ootd.domain.OotdImage;
 import zip.ootd.ootdzip.ootd.repository.OotdRepository;
+import zip.ootd.ootdzip.ootdimage.domain.OotdImage;
 import zip.ootd.ootdzip.ootdimageclothe.domain.OotdImageClothes;
 import zip.ootd.ootdzip.ootdstyle.domain.OotdStyle;
 import zip.ootd.ootdzip.user.domain.User;

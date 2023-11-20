@@ -7,13 +7,20 @@ import java.util.List;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.AllArgsConstructor;
+import zip.ootd.ootdzip.clothes.domain.Clothes;
 import zip.ootd.ootdzip.clothes.repository.ClothesRepository;
 import zip.ootd.ootdzip.home.data.ClothesAndOotdsForHomeRes;
+import zip.ootd.ootdzip.home.data.SameClothesDifferentFeelRes;
 import zip.ootd.ootdzip.ootd.repository.OotdRepository;
+import zip.ootd.ootdzip.ootdimage.domain.OotdImage;
+import zip.ootd.ootdzip.ootdimage.repository.OotdImageRepository;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.service.UserService;
 
@@ -25,6 +32,7 @@ public class HomeService {
     private final UserService userService;
     private final ClothesRepository clothesRepository;
     private final OotdRepository ootdRepository;
+    private final OotdImageRepository ootdImageRepository;
 
     /**
      * 아래 조건에 부합하는 옷 랜덤 1개씩 조회
@@ -83,4 +91,41 @@ public class HomeService {
         return result;
     }
 
+    /**
+     * 같은 옷 다른 느낌
+     * 사용자가 가진 옷장에서 색깔과 카테고리가 일치하는 OotdImage 가 있다면 Ootd 조회수 순으로 해당 Image 를 가져옵니다.
+     * 해당 Ootd 는 삭제되지않고, 비공개가 아니고, 신고수가 특정 수 이하이고, 본인이 작성한 Ootd 가 아닌경우가 해당됩니다.
+     * <p>
+     * 옷의 경우 Slice 적용하여 페이지네이션이 가능하도록 하였습니다.
+     */
+    public SliceImpl<SameClothesDifferentFeelRes> getSameClothesDifferentFeel(
+            int page,
+            int size) {
+
+        User user = userService.getAuthenticatiedUser();
+        Pageable clothesPageable = PageRequest.of(page, size, sortClothesByCreatedAt());
+        Slice<Clothes> clothesListSlice = clothesRepository.findExistOotd(user, clothesPageable);
+        List<SameClothesDifferentFeelRes> result = new ArrayList<>();
+
+        for (Clothes clothes : clothesListSlice.getContent()) {
+            Pageable ootdImagePageable = PageRequest.of(0, 3);
+
+            List<String> colorNames = clothes.getClothesColors().stream()
+                    .map(cc -> cc.getColor().getName())
+                    .toList();
+
+            List<OotdImage> ootdImages = ootdImageRepository.findByClothesColorNamesAndClothesCategory(
+                    colorNames,
+                    clothes.getCategory(),
+                    user,
+                    ootdImagePageable);
+
+            result.add(new SameClothesDifferentFeelRes(clothes, ootdImages));
+        }
+        return new SliceImpl<>(result, clothesPageable, clothesListSlice.hasNext());
+    }
+
+    private Sort sortClothesByCreatedAt() {
+        return Sort.by("createdAt").descending();
+    }
 }

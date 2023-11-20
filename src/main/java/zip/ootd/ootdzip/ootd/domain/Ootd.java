@@ -23,6 +23,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import zip.ootd.ootdzip.common.entity.BaseEntity;
 import zip.ootd.ootdzip.ootdbookmark.domain.OotdBookmark;
+import zip.ootd.ootdzip.ootdimage.domain.OotdImage;
 import zip.ootd.ootdzip.ootdlike.domain.OotdLike;
 import zip.ootd.ootdzip.ootdstyle.domain.OotdStyle;
 import zip.ootd.ootdzip.user.domain.User;
