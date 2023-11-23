@@ -23,6 +23,7 @@ public class CategoryService {
         //TODO : 페이징 넣을 지 확인 필요
         List<Category> findCategories;
 
+        // 대분류 카테고리 조회 시 모든 대분류 카테고리 조회
         if (request.getCategoryType().equals(CategoryType.LargeCategory)) {
             findCategories = categoryRepository.findCategoriesByType(request.getCategoryType());
             return findCategories.stream()
@@ -30,6 +31,7 @@ public class CategoryService {
                     .toList();
         }
 
+        // 중분류 or 소분류 카테고리 조회 시 전달받은 부모 카테고리의 하위 카테고리 조회
         Category parentCategory = categoryRepository.findById(request.getParentCategoryId())
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ERROR));
 

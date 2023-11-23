@@ -21,7 +21,7 @@ public class StyleController {
     private final StyleService styleService;
 
     @GetMapping("/")
-    public ApiResponse<List<StyleRes>> getAllStyles() {
+    public ApiResponse<List<StyleRes>> getStyles() {
         return new ApiResponse<>(styleService.getAllStyles());
     }
 }

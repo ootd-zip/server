@@ -21,7 +21,7 @@ public class ColorController {
     private final ColorService colorService;
 
     @GetMapping("/")
-    public ApiResponse<List<ColorRes>> getAllColors() {
+    public ApiResponse<List<ColorRes>> getColors() {
         return new ApiResponse<>(colorService.getAllColors());
     }
 }
