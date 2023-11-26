@@ -59,7 +59,6 @@ public class OotdService {
 
         Ootd ootd = Ootd.createOotd(userService.getAuthenticatiedUser(),
                 request.getContent(),
-                request.getGender(),
                 request.getIsPrivate(),
                 ootdImages,
                 ootdStyles);
