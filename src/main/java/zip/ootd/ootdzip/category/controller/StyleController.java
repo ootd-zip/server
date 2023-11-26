@@ -15,7 +15,7 @@ import zip.ootd.ootdzip.common.response.ApiResponse;
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "Style 컨트롤러", description = "Style 관련 API입니다.")
-@RequestMapping("/api/v1/color")
+@RequestMapping("/api/v1/style")
 public class StyleController {
 
     private final StyleService styleService;
