@@ -81,7 +81,11 @@ public enum ErrorCode {
 
     BLOCKED(401, "O003", "ootd 글이 차단된 상태"),
 
-    OVER_REPORT(401, "O001", "ootd 글이 신고를 많이 먹은 상태");
+    OVER_REPORT(401, "O001", "ootd 글이 신고를 많이 먹은 상태"),
+
+    NOT_LARGE_CATEGORY(400, "S001", "상위 카테고리가 아닙니다"),
+
+    NOT_REGISTERED_SIZE(400, "S002", "카테고리에 사이즈 등록 필요");
 
     private final Integer status;
 
