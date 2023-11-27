@@ -1,25 +1,19 @@
 package zip.ootd.ootdzip.clothes.domain;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import zip.ootd.ootdzip.brand.domain.Brand;
 import zip.ootd.ootdzip.category.domain.Category;
+import zip.ootd.ootdzip.category.domain.Size;
 import zip.ootd.ootdzip.common.entity.BaseEntity;
 import zip.ootd.ootdzip.ootdimageclothe.domain.OotdImageClothes;
 import zip.ootd.ootdzip.user.domain.User;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "clothes")
@@ -47,7 +41,9 @@ public class Clothes extends BaseEntity {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-    private String size;
+    @OneToOne
+    @JoinColumn(name = "size_id", nullable = false)
+    private Size size;
 
     private String material;
 
@@ -58,10 +54,6 @@ public class Clothes extends BaseEntity {
     @Builder.Default
     @OneToMany(mappedBy = "clothes", fetch = FetchType.LAZY)
     private List<ClothesImage> clothesImages = new ArrayList<>();
-
-    @Builder.Default
-    @OneToMany(mappedBy = "clothes", fetch = FetchType.LAZY)
-    private List<ClothesStyle> clothesStyles = new ArrayList<>();
 
     @Builder.Default
     @OneToMany(mappedBy = "clothes", fetch = FetchType.LAZY)
@@ -76,12 +68,11 @@ public class Clothes extends BaseEntity {
             String name,
             Boolean isOpen,
             Category category,
-            String size,
+            Size size,
             String material,
             String purchaseStore,
             String purchaseDate,
             List<ClothesImage> clothesImages,
-            List<ClothesStyle> clothesStyles,
             List<ClothesColor> clothesColors) {
 
         Clothes clothes = Clothes.builder()
@@ -97,7 +88,6 @@ public class Clothes extends BaseEntity {
                 .build();
 
         clothes.addClothesImages(clothesImages);
-        clothes.addClothesStyles(clothesStyles);
         clothes.addClothesColors(clothesColors);
 
         return clothes;
@@ -110,15 +100,6 @@ public class Clothes extends BaseEntity {
 
     public void addClothesImages(List<ClothesImage> images) {
         images.forEach(this::addClothesImage);
-    }
-
-    public void addClothesStyle(ClothesStyle style) {
-        this.clothesStyles.add(style);
-        style.setClothes(this);
-    }
-
-    public void addClothesStyles(List<ClothesStyle> styles) {
-        styles.forEach(this::addClothesStyle);
     }
 
     public void addClothesColor(ClothesColor color) {

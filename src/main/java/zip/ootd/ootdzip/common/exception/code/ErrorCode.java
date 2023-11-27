@@ -85,7 +85,9 @@ public enum ErrorCode {
 
     NOT_LARGE_CATEGORY(400, "S001", "상위 카테고리가 아닙니다"),
 
-    NOT_REGISTERED_SIZE(400, "S002", "카테고리에 사이즈 등록 필요");
+    NOT_REGISTERED_SIZE(400, "S002", "카테고리에 사이즈 등록 필요"),
+
+    INVALID_CATEGORY_AND_SIZE(400, "C002", "카테고리에 속한 사이즈가 아님");
 
     private final Integer status;
 
