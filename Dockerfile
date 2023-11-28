@@ -1,6 +1,5 @@
 FROM openjdk:17 as builder
 
-RUN apt-get update && apt-get install -y findutils
 COPY gradlew .
 COPY gradle gradle
 COPY build.gradle .
