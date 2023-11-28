@@ -13,7 +13,6 @@ import zip.ootd.ootdzip.ootdimage.domain.OotdImage;
 import zip.ootd.ootdzip.ootdimageclothe.domain.Coordinate;
 import zip.ootd.ootdzip.ootdimageclothe.domain.OotdImageClothes;
 import zip.ootd.ootdzip.ootdstyle.domain.OotdStyle;
-import zip.ootd.ootdzip.user.domain.UserGender;
 
 @Data
 public class OotdGetAllRes {
@@ -38,8 +37,6 @@ public class OotdGetAllRes {
 
     private LocalDateTime createAt;
 
-    private UserGender gender;
-
     private List<OotdImageRes> ootdImages;
 
     private List<OotdStyleRes> styles;
@@ -58,7 +55,6 @@ public class OotdGetAllRes {
         this.isLike = isLike;
         this.reportCount = ootd.getReportCount();
         this.contents = ootd.getContents();
-        this.gender = ootd.getGender();
         this.createAt = ootd.getCreatedAt();
 
         this.name = ootd.getWriter().getName();

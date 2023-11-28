@@ -4,7 +4,6 @@ import java.util.List;
 
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
-import zip.ootd.ootdzip.user.domain.UserGender;
 
 @Data
 public class OotdPostReq {
@@ -12,8 +11,6 @@ public class OotdPostReq {
     private String content;
 
     private Boolean isPrivate;
-
-    private UserGender gender;
 
     private List<Long> styles;
 

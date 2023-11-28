@@ -9,8 +9,6 @@ import java.util.Optional;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -27,7 +25,6 @@ import zip.ootd.ootdzip.ootdimage.domain.OotdImage;
 import zip.ootd.ootdzip.ootdlike.domain.OotdLike;
 import zip.ootd.ootdzip.ootdstyle.domain.OotdStyle;
 import zip.ootd.ootdzip.user.domain.User;
-import zip.ootd.ootdzip.user.domain.UserGender;
 
 @Entity
 @Table(name = "ootds")
@@ -83,20 +80,14 @@ public class Ootd extends BaseEntity {
     @Column(nullable = false)
     private boolean isPrivate;
 
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private UserGender gender;
-
     public static Ootd createOotd(User user,
             String contents,
-            UserGender gender,
             boolean isPrivate,
             List<OotdImage> ootdImages,
             List<OotdStyle> ootdStyles) {
 
         Ootd ootd = Ootd.builder()
                 .writer(user)
-                .gender(gender)
                 .isPrivate(isPrivate)
                 .contents(contents)
                 .build();
