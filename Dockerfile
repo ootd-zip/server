@@ -6,7 +6,7 @@ COPY build.gradle .
 COPY settings.gradle .
 COPY src src
 RUN chmod -R 755 ./gradlew
-RUN ./gradlew clean build -x test -Penv=ci
+RUN ./gradlew bootJar
 
 FROM openjdk:17
 COPY --from=builder build/libs/*.jar app.jar
