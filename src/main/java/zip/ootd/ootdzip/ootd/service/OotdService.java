@@ -18,7 +18,9 @@ import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.exception.code.ErrorCode;
 import zip.ootd.ootdzip.ootd.data.OotdGetAllRes;
 import zip.ootd.ootdzip.ootd.data.OotdGetRes;
+import zip.ootd.ootdzip.ootd.data.OotdPatchReq;
 import zip.ootd.ootdzip.ootd.data.OotdPostReq;
+import zip.ootd.ootdzip.ootd.data.OotdPutReq;
 import zip.ootd.ootdzip.ootd.domain.Ootd;
 import zip.ootd.ootdzip.ootd.repository.OotdRepository;
 import zip.ootd.ootdzip.ootdimage.domain.OotdImage;
@@ -65,6 +67,38 @@ public class OotdService {
 
         ootdRepository.save(ootd);
         return ootd;
+    }
+
+    public void updateContentsAndIsPrivate(Long id, OotdPatchReq request) {
+
+        Ootd ootd = ootdRepository.findById(id).orElseThrow();
+
+        ootd.updateContentsAndIsPrivate(request.getContent(), request.getIsPrivate());
+    }
+
+    public void updateAll(Long id, OotdPutReq request){
+
+        Ootd ootd = ootdRepository.findById(id).orElseThrow();
+
+        List<OotdImage> ootdImages = request.getOotdImages().stream().map(ootdImage -> {
+            List<OotdImageClothes> ootdImageClothesList = ootdImage.getClothesTags().stream().map(clothesTag -> {
+                Clothes clothes = clothesRepository.findById(clothesTag.getClothesId()).orElseThrow();
+                Coordinate coordinate = new Coordinate(clothesTag.getXRate(), clothesTag.getYRate());
+                DeviceSize deviceSize = new DeviceSize(clothesTag.getDeviceWeight(), clothesTag.getDeviceHeight());
+
+                return OotdImageClothes.createOotdImageClothesBy(clothes, coordinate, deviceSize);
+            }).toList();
+
+            return OotdImage.createOotdImageBy(ootdImage.getOotdImage(), ootdImageClothesList);
+        }).toList();
+
+        List<Style> styles = styleRepository.findAllById(request.getStyles());
+        List<OotdStyle> ootdStyles = OotdStyle.createOotdStylesBy(styles);
+
+        ootd.updateAll(request.getContent(),
+                request.getIsPrivate(),
+                ootdImages,
+                ootdStyles);
     }
 
     /**
