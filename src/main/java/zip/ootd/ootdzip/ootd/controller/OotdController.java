@@ -4,8 +4,10 @@ import java.util.List;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,8 +19,10 @@ import lombok.RequiredArgsConstructor;
 import zip.ootd.ootdzip.common.response.ApiResponse;
 import zip.ootd.ootdzip.ootd.data.OotdGetAllRes;
 import zip.ootd.ootdzip.ootd.data.OotdGetRes;
+import zip.ootd.ootdzip.ootd.data.OotdPatchReq;
 import zip.ootd.ootdzip.ootd.data.OotdPostReq;
 import zip.ootd.ootdzip.ootd.data.OotdPostRes;
+import zip.ootd.ootdzip.ootd.data.OotdPutReq;
 import zip.ootd.ootdzip.ootd.service.OotdService;
 
 @RestController
@@ -36,6 +40,26 @@ public class OotdController {
         OotdPostRes response = new OotdPostRes(ootdService.postOotd(request));
 
         return new ApiResponse<>(response);
+    }
+
+    @Operation(summary = "ootd 게시글, 공개/비공개 여부 수정", description = "ootd 글과 공개여부만 수정하는 api, !사진, 옷, 스타일 수정은 전체 수정 api 를 사용해 주세요!")
+    @PatchMapping("/{id}")
+    public ApiResponse<Boolean> updateOotdContentsAndIsPrivate(@PathVariable Long id,
+            @RequestBody OotdPatchReq request) {
+
+        ootdService.updateContentsAndIsPrivate(id, request);
+
+        return new ApiResponse<>(true);
+    }
+
+    @Operation(summary = "ootd 전체 수정", description = "ootd 게시글 전체 수정 api")
+    @PutMapping("/{id}")
+    public ApiResponse<Boolean> updateOotdAll(@PathVariable Long id,
+            @RequestBody @Valid OotdPutReq request) {
+
+        ootdService.updateAll(id, request);
+
+        return new ApiResponse<>(true);
     }
 
     @Operation(summary = "ootd 조회", description = "ootd id 를 주면 해당 id에 해당하는 ootd 반환 api")
