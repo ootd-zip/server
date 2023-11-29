@@ -42,7 +42,7 @@ public class OotdController {
         return new ApiResponse<>(response);
     }
 
-    @Operation(summary = "ootd 게시글, 공개/비공개 여부 수정", description = "ootd 글과 공개여부만 수정하는 api, !사진, 옷, 스타일 수정은 전체 수정 api 를 사용해 주세요!")
+    @Operation(summary = "ootd 내용, 공개/비공개 여부 수정", description = "ootd 글과 공개여부만 수정하는 api")
     @PatchMapping("/{id}")
     public ApiResponse<Boolean> updateOotdContentsAndIsPrivate(@PathVariable Long id,
             @RequestBody OotdPatchReq request) {
