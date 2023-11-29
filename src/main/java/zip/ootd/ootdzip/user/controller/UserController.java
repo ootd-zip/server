@@ -18,7 +18,7 @@ import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.exception.code.ErrorCode;
 import zip.ootd.ootdzip.common.response.ApiResponse;
 import zip.ootd.ootdzip.oauth.data.TokenInfo;
-import zip.ootd.ootdzip.user.data.CheckIdReq;
+import zip.ootd.ootdzip.user.data.CheckNameReq;
 import zip.ootd.ootdzip.user.data.FollowReq;
 import zip.ootd.ootdzip.user.data.ProfileRes;
 import zip.ootd.ootdzip.user.data.UserLoginReq;
@@ -87,13 +87,9 @@ public class UserController {
         }
     }
 
-    @GetMapping("/check-id")
-    public ApiResponse<Boolean> checkId(@RequestBody CheckIdReq request) {
-        if (userService.checkId(request.getNickname())) {
-            return new ApiResponse<>(true);
-        } else {
-            throw new CustomException(ErrorCode.DUPLICATE_NAME_ERROR);
-        }
+    @GetMapping("/check-name")
+    public ApiResponse<Boolean> checkName(@RequestBody CheckNameReq request) {
+        return new ApiResponse<>(userService.checkName(request.getName()));
     }
 
     private Cookie createRefreshTokenCookie(String refreshToken, int maxAge) {

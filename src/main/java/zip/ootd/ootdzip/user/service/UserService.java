@@ -147,8 +147,14 @@ public class UserService {
         return user.getFollowings();
     }
 
-    public boolean checkId(String name) {
-        return userRepository.findByName(name).isPresent();
+    public boolean checkName(String name) {
+        if (name == null || name.isBlank()) {
+            throw new CustomException(ErrorCode.BAD_REQUEST_ERROR);
+        }
+        if (userRepository.findByName(name).isPresent()) {
+            throw new CustomException(ErrorCode.DUPLICATE_NAME_ERROR);
+        }
+        return true;
     }
 
     public User getAuthenticatiedUser() {

@@ -4,8 +4,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class CheckIdReq {
+public class CheckNameReq {
 
     @NotNull
-    private String nickname;
+    private String name;
 }
