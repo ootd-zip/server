@@ -11,6 +11,7 @@ import zip.ootd.ootdzip.clothes.domain.Clothes;
 import zip.ootd.ootdzip.ootd.domain.Ootd;
 import zip.ootd.ootdzip.ootdimage.domain.OotdImage;
 import zip.ootd.ootdzip.ootdimageclothe.domain.Coordinate;
+import zip.ootd.ootdzip.ootdimageclothe.domain.DeviceSize;
 import zip.ootd.ootdzip.ootdimageclothe.domain.OotdImageClothes;
 import zip.ootd.ootdzip.ootdstyle.domain.OotdStyle;
 
@@ -102,8 +103,11 @@ public class OotdGetRes {
 
             private Coordinate coordinate;
 
+            private DeviceSize deviceSize;
+
             public OotdImageClothesRes(OotdImageClothes ootdImageClothes) {
                 this.coordinate = ootdImageClothes.getCoordinate();
+                this.deviceSize = ootdImageClothes.getDeviceSize();
 
                 Clothes clothes = ootdImageClothes.getClothes();
                 this.brand = new BrandRes(clothes.getBrand());
