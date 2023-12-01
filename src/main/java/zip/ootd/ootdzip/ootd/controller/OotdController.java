@@ -62,6 +62,15 @@ public class OotdController {
         return new ApiResponse<>(true);
     }
 
+    @Operation(summary = "ootd 삭제", description = "ootd 게시글 삭제하는 api 입니다.")
+    @DeleteMapping("/{id}")
+    public ApiResponse<Boolean> deleteOotd(@PathVariable Long id) {
+
+        ootdService.deleteOotd(id);
+
+        return new ApiResponse<>(true);
+    }
+
     @Operation(summary = "ootd 조회", description = "ootd id 를 주면 해당 id에 해당하는 ootd 반환 api")
     @GetMapping("/{id}")
     public ApiResponse<OotdGetRes> getOotdPost(@PathVariable Long id) {
