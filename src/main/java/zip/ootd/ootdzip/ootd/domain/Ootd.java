@@ -62,11 +62,11 @@ public class Ootd extends BaseEntity {
     private Integer likeCount = 0;
 
     @Builder.Default
-    @OneToMany(mappedBy = "ootd", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "ootd", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OotdImage> ootdImages = new ArrayList<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "ootd", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "ootd", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OotdStyle> styles = new ArrayList<>();
 
     @Builder.Default
