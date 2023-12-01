@@ -101,6 +101,10 @@ public class OotdService {
                 ootdStyles);
     }
 
+    public void deleteOotd(Long id) {
+        ootdRepository.deleteById(id);
+    }
+
     /**
      * 기본적인 단건조회 API 입니다.
      * 비공개글은 본인글이 아니면 볼 수 없습니다.
