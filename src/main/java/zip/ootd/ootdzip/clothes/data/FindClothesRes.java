@@ -35,8 +35,6 @@ public class FindClothesRes {
 
     private List<ClothesColorDto> colors;
 
-    private List<ClothesStyleDto> styles;
-
     private List<String> images;
 
     public static FindClothesRes createFindClothesRes(Clothes clothes, DetailCategory detailCategory) {
@@ -47,12 +45,11 @@ public class FindClothesRes {
                 .brandName(clothes.getBrand().getName())
                 .isOpen(clothes.getIsOpen())
                 .category(detailCategory)
-                .size(clothes.getSize())
+                .size(clothes.getSize().getName())
                 .material(clothes.getMaterial())
                 .purchaseStore(clothes.getPurchaseStore())
                 .purchaseDate(clothes.getPurchaseDate())
                 .colors(ClothesColorDto.createClothesColorDtosBy(clothes.getClothesColors()))
-                .styles(ClothesStyleDto.clothesStyleDtosBy(clothes.getClothesStyles()))
                 .images(clothes.getClothesImages().stream().map(ClothesImage::getImageUrl)
                         .collect(Collectors.toList()))
                 .build();

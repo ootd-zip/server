@@ -109,7 +109,7 @@ public class OotdGetRes {
                 this.brand = new BrandRes(clothes.getBrand());
                 this.name = clothes.getName();
                 this.category = clothes.getCategory();
-                this.size = clothes.getSize();
+                this.size = clothes.getSize().getName();
                 this.material = clothes.getMaterial();
                 this.purchaseStore = clothes.getPurchaseStore();
                 this.purchaseDate = clothes.getPurchaseDate();

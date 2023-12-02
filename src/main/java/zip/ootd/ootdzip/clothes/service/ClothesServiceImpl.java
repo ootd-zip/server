@@ -14,10 +14,10 @@ import zip.ootd.ootdzip.brand.repository.BrandRepository;
 import zip.ootd.ootdzip.category.data.DetailCategory;
 import zip.ootd.ootdzip.category.domain.Category;
 import zip.ootd.ootdzip.category.domain.Color;
-import zip.ootd.ootdzip.category.domain.Style;
+import zip.ootd.ootdzip.category.domain.Size;
 import zip.ootd.ootdzip.category.repository.CategoryRepository;
 import zip.ootd.ootdzip.category.repository.ColorRepository;
-import zip.ootd.ootdzip.category.repository.StyleRepository;
+import zip.ootd.ootdzip.category.repository.SizeRepository;
 import zip.ootd.ootdzip.clothes.data.DeleteClothesByIdRes;
 import zip.ootd.ootdzip.clothes.data.FindClothesByUserReq;
 import zip.ootd.ootdzip.clothes.data.FindClothesRes;
@@ -25,7 +25,6 @@ import zip.ootd.ootdzip.clothes.data.SaveClothesReq;
 import zip.ootd.ootdzip.clothes.domain.Clothes;
 import zip.ootd.ootdzip.clothes.domain.ClothesColor;
 import zip.ootd.ootdzip.clothes.domain.ClothesImage;
-import zip.ootd.ootdzip.clothes.domain.ClothesStyle;
 import zip.ootd.ootdzip.clothes.repository.ClothesRepository;
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.user.domain.User;
@@ -39,7 +38,7 @@ public class ClothesServiceImpl implements ClothesService {
 
     private final BrandRepository brandRepository;
     private final CategoryRepository categoryRepository;
-    private final StyleRepository styleRepository;
+    private final SizeRepository sizeRepository;
     private final ColorRepository colorRepository;
     private final ClothesRepository clothesRepository;
     private final UserRepository userRepository;
@@ -58,26 +57,31 @@ public class ClothesServiceImpl implements ClothesService {
         User user = userService.getAuthenticatiedUser();
         Category category = categoryRepository.findById(saveClothesReq.getCategoryId())
                 .orElseThrow(() -> new CustomException(NOT_FOUND_ERROR));
-        List<Style> styles = styleRepository.findAllById(saveClothesReq.getStyleIds());
         List<Color> colors = colorRepository.findAllById(saveClothesReq.getColorIds());
-
-        if (styles.isEmpty()) {
-            throw new CustomException(NOT_FOUND_ERROR);
-        }
+        Size size = sizeRepository.findById(saveClothesReq.getSizeId())
+                .orElseThrow(() -> new CustomException(NOT_FOUND_ERROR));
 
         if (colors.isEmpty()) {
             throw new CustomException(NOT_FOUND_ERROR);
         }
 
-        List<ClothesStyle> clothesStyles = ClothesStyle.createClothesStylesBy(styles);
+        if (!size.getCategory().getId().equals(category.getId())) {
+            throw new CustomException(INVALID_CATEGORY_AND_SIZE);
+        }
+
         List<ClothesColor> clothesColors = ClothesColor.createClothesColorsBy(colors);
         List<ClothesImage> clothesImages = ClothesImage.createClothesImagesBy(saveClothesReq.getClothesImages());
 
-        Clothes clothes = Clothes.createClothes(user, brand, saveClothesReq.getClothesName(),
+        Clothes clothes = Clothes.createClothes(user,
+                brand,
+                saveClothesReq.getClothesName(),
                 saveClothesReq.getIsOpen(),
                 category,
-                saveClothesReq.getSize(), saveClothesReq.getMaterial(), saveClothesReq.getPurchaseStore(),
-                saveClothesReq.getPurchaseDate(), clothesImages, clothesStyles, clothesColors);
+                size,
+                saveClothesReq.getMaterial(),
+                saveClothesReq.getPurchaseStore(),
+                saveClothesReq.getPurchaseDate(),
+                clothesImages, clothesColors);
 
         clothesRepository.save(clothes);
         return clothes;

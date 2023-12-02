@@ -27,13 +27,15 @@ public class SaveClothesReq {
     @Positive
     private Long categoryId;
 
-    private List<@Positive Long> styleIds;
-
     private List<@Positive Long> colorIds;
 
+    @NotNull
     private Boolean isOpen;
 
-    private String size;
+    @NotNull
+    private Long sizeId;
+
+    private List<@NotBlank String> clothesImages;
 
     private String material;
 
@@ -41,5 +43,4 @@ public class SaveClothesReq {
 
     private String purchaseDate;
 
-    private List<@NotBlank String> clothesImages;
 }
