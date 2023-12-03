@@ -1,5 +1,4 @@
 #!/bin/bash
 
-JAR=ootdzip-0.0.1-SNAPSHOT.jar
-cd /home/ubuntu/server/build/libs
-nohup java -jar $JAR &
+chmod 755 /home/ubuntu/server/build/libs/ootdzip-0.0.1-SNAPSHOT.jar
+nohup java -jar /home/ubuntu/server/build/libs/ootdzip-0.0.1-SNAPSHOT.jar &
