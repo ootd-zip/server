@@ -1,4 +1,5 @@
 #!/bin/bash
 
-JAR=/home/ubuntu/server/build/libs/ootdzip-0.0.1-SNAPSHOT.jar
+JAR=ootdzip-0.0.1-SNAPSHOT.jar
+cd build/libs
 nohup java -jar $JAR &
