@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 PROJECT_ROOT="/home/ubuntu/server" #코드가 주입되는 경로
-JAR_FILE="$PROJECT_ROOT/ootdzip-0.0.1-SNAPSHOT.jar" #build.gradle에서 설정한 파일명으로 변경
+JAR_FILE="$PROJECT_ROOT/buils/libs/ootdzip-0.0.1-SNAPSHOT.jar" #build.gradle에서 설정한 파일명으로 변경
 
 APP_LOG="$PROJECT_ROOT/application.log"
 ERROR_LOG="$PROJECT_ROOT/error.log"
