@@ -27,9 +27,9 @@ jobs:
     - name: gradlew에 실행 권한 부여
       run: chmod +x ./gradlew
     - name: start.sh 실행 권한 부여
-      run: chmod +x scripts/start.sh
+      run: chmod +x /home/ubuntu/server/scripts/start.sh
     - name: stop.sh 실행 권한 부여
-      run: chmod +x scripts/stop.sh
+      run: chmod +x /home/ubuntu/server/scripts/stop.sh
     - name: 프로젝트 빌드
       run: ./gradlew clean build -x test -Penv=ci
     - name: AWS credential 설정
