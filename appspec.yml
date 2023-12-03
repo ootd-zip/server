@@ -13,7 +13,7 @@ permissions:
 
 hooks:
   AfterInstall:
-    - location: scripts/beforeInstall.bash
+    - location: scripts/afterInstall.bash
       timeout: 300
       runas: root
   ApplicationStop:
