@@ -10,7 +10,11 @@ env:
   AWS_S3_BUCKET: ootdzip-cicd
   AWS_CODE_DEPLOY_APPLICATION: ootdzip-CD
   AWS_CODE_DEPLOY_GROUP: ootdzip-cd-group
-
+  OCCUPY_SECRET: ${{ secrets.OCCUPY_SECRET }}
+  OCCUPY_SECRET_DIR: src/main/resources
+  OCCUPY_SECRET_TEST_DIR: src/test/resources
+  OCCUPY_SECRET_DIR_FILE_NAME: application-secret.yml
+  
 jobs:
   build-with-gradle:
     runs-on: ubuntu-22.04
@@ -25,13 +29,8 @@ jobs:
         java-version: '17'
         distribution: 'corretto'
     - name: Secret 파일 복사
-      env:
-        OCCUPY_SECRET: ${{ secrets.OCCUPY_SECRET }}
-        OCCUPY_SECRET_DIR: src/main/resources
-        OCCUPY_SECRET_TEST_DIR: src/test/resources
-        OCCUPY_SECRET_DIR_FILE_NAME: application-secret.yml
-        run: echo $OCCUPY_SECRET | base64 --decode > $OCCUPY_SECRET_DIR/$OCCUPY_SECRET_DIR_FILE_NAME && 
-             echo $OCCUPY_SECRET | base64 --decode > $OCCUPY_SECRET_TEST_DIR/$OCCUPY_SECRET_DIR_FILE_NAME
+      run: echo $OCCUPY_SECRET | base64 --decode > $OCCUPY_SECRET_DIR/$OCCUPY_SECRET_DIR_FILE_NAME && 
+           echo $OCCUPY_SECRET | base64 --decode > $OCCUPY_SECRET_TEST_DIR/$OCCUPY_SECRET_DIR_FILE_NAME
     - name: gradlew에 실행 권한 부여
       run: chmod +x ./gradlew
     - name: 프로젝트 빌드
