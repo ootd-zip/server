@@ -29,20 +29,11 @@ public class CategoryRepositoryTest {
 
         Category savedLargeCategory = categoryRepository.save(largeCategory);
 
-        Category middleCategory = Category
-                .builder()
-                .name("카테고리2")
-                .type(CategoryType.MiddleCategory)
-                .parentCategory(savedLargeCategory)
-                .build();
-
-        Category savedMiddleCategory = categoryRepository.save(middleCategory);
-
         Category detailCategory = Category
                 .builder()
                 .name("카테고리3")
                 .type(CategoryType.DetailCategory)
-                .parentCategory(savedMiddleCategory)
+                .parentCategory(savedLargeCategory)
                 .build();
 
         Category savedDetailCategory = categoryRepository.save(detailCategory);
@@ -51,6 +42,5 @@ public class CategoryRepositoryTest {
         //Then(검증)
         assertThat(result.getCategoryName()).isEqualTo(savedDetailCategory.getName());
         assertThat(result.getLargeCategoryName()).isEqualTo(savedLargeCategory.getName());
-        assertThat(result.getMiddleCategoryName()).isEqualTo(savedMiddleCategory.getName());
     }
 }
