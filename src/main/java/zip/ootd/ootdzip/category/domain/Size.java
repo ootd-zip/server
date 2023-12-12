@@ -30,4 +30,6 @@ public class Size {
     private Category category;
 
     private String name;
+
+    private Byte lineNo;
 }

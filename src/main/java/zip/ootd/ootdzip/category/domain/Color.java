@@ -24,5 +24,5 @@ public class Color {
 
     private String name;
 
-    private String imageUrl;
+    private String colorCode;
 }

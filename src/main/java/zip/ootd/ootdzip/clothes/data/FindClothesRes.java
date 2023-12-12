@@ -37,14 +37,18 @@ public class FindClothesRes {
 
     private List<String> images;
 
-    public static FindClothesRes createFindClothesRes(Clothes clothes, DetailCategory detailCategory) {
+    public static FindClothesRes createFindClothesRes(Clothes clothes) {
         return FindClothesRes.builder()
                 .id(clothes.getId())
                 .name(clothes.getName())
                 .userName(clothes.getUser().getName())
                 .brandName(clothes.getBrand().getName())
                 .isOpen(clothes.getIsOpen())
-                .category(detailCategory)
+                .category(DetailCategory.builder()
+                        .id(clothes.getCategory().getId())
+                        .categoryName(clothes.getCategory().getName())
+                        .parentCategoryName(clothes.getCategory().getParentCategory().getName())
+                        .build())
                 .size(clothes.getSize().getName())
                 .material(clothes.getMaterial())
                 .purchaseStore(clothes.getPurchaseStore())

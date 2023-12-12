@@ -31,7 +31,7 @@ public class CategoryService {
                     .toList();
         }
 
-        // 중분류 or 소분류 카테고리 조회 시 전달받은 부모 카테고리의 하위 카테고리 조회
+        // 소분류 카테고리 조회 시 전달받은 부모 카테고리의 하위 카테고리 조회
         Category parentCategory = categoryRepository.findById(request.getParentCategoryId())
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ERROR));
 

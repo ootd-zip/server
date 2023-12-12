@@ -10,9 +10,12 @@ public class SizeRes {
 
     private String name;
 
+    private Byte lineNo;
+
     public SizeRes(Size size) {
 
         this.id = size.getId();
         this.name = size.getName();
+        this.lineNo = size.getLineNo();
     }
 }

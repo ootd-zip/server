@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import zip.ootd.ootdzip.brand.domain.Brand;
 import zip.ootd.ootdzip.brand.repository.BrandRepository;
-import zip.ootd.ootdzip.category.data.DetailCategory;
 import zip.ootd.ootdzip.category.domain.Category;
 import zip.ootd.ootdzip.category.domain.Color;
 import zip.ootd.ootdzip.category.domain.Size;
@@ -99,13 +98,7 @@ public class ClothesServiceImpl implements ClothesService {
             throw new CustomException(UNAUTHORIZED_USER_ERROR);
         }
 
-        DetailCategory detailCategory = categoryRepository.findDetailCategoryById(clothes.getCategory().getId());
-
-        if (detailCategory == null) {
-            throw new CustomException(NOT_FOUND_ERROR);
-        }
-
-        return FindClothesRes.createFindClothesRes(clothes, detailCategory);
+        return FindClothesRes.createFindClothesRes(clothes);
     }
 
     @Override
@@ -131,9 +124,7 @@ public class ClothesServiceImpl implements ClothesService {
         }
 
         for (Clothes clothes : clothesList) {
-            DetailCategory detailCategory = categoryRepository.findDetailCategoryById(clothes.getCategory().getId());
-
-            result.add(FindClothesRes.createFindClothesRes(clothes, detailCategory));
+            result.add(FindClothesRes.createFindClothesRes(clothes));
         }
 
         return result;

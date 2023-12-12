@@ -10,12 +10,12 @@ public class ColorRes {
 
     private String name;
 
-    private String imageUrl;
+    private String colorCode;
 
     public ColorRes(Color color) {
 
         this.id = color.getId();
         this.name = color.getName();
-        this.imageUrl = color.getImageUrl();
+        this.colorCode = color.getColorCode();
     }
 }
