@@ -1,9 +1,18 @@
 package zip.ootd.ootdzip.brand.service;
 
+import java.util.List;
+
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
+import zip.ootd.ootdzip.brand.data.BrandDto;
+import zip.ootd.ootdzip.brand.data.BrandSaveReq;
+import zip.ootd.ootdzip.brand.domain.Brand;
 import zip.ootd.ootdzip.brand.repository.BrandRepository;
+import zip.ootd.ootdzip.common.exception.CustomException;
+import zip.ootd.ootdzip.common.exception.code.ErrorCode;
 
 @Service
 @RequiredArgsConstructor
@@ -11,4 +20,27 @@ public class BrandService {
 
     private final BrandRepository brandRepository;
 
+    @Transactional
+    public BrandDto saveBrand(BrandSaveReq request) {
+
+        if (brandRepository.existsByName(request.getName())) {
+            throw new CustomException(ErrorCode.DUPLICATE_BRAND_NAME);
+        }
+
+        Brand brand = Brand.builder().name(request.getName()).build();
+
+        Brand saveBrand = brandRepository.save(brand);
+
+        return new BrandDto(saveBrand);
+    }
+
+    public List<BrandDto> getAllBrands() {
+        List<Brand> brands = brandRepository.findAll(Sort.by(Sort.Direction.ASC, "name"));
+
+        return brands
+                .stream()
+                .map(BrandDto::new)
+                .toList();
+
+    }
 }
