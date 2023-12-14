@@ -147,6 +147,16 @@ public class UserService {
         return user.getFollowings();
     }
 
+    public boolean checkName(String name) {
+        if (name == null || name.isBlank()) {
+            throw new CustomException(ErrorCode.BAD_REQUEST_ERROR);
+        }
+        if (userRepository.findByName(name).isPresent()) {
+            throw new CustomException(ErrorCode.DUPLICATE_NAME_ERROR);
+        }
+        return true;
+    }
+
     public User getAuthenticatiedUser() {
 
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

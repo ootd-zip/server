@@ -10,12 +10,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class DeviceSize {
 
-    private Long deviceWeight;
+    private Long deviceWidth;
 
     private Long deviceHeight;
 
-    public DeviceSize(Long deviceWeight, Long deviceHeight) {
-        this.deviceWeight = deviceWeight;
+    public DeviceSize(Long deviceWidth, Long deviceHeight) {
+        this.deviceWidth = deviceWidth;
         this.deviceHeight = deviceHeight;
     }
 }

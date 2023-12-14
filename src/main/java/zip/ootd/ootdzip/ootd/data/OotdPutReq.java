@@ -35,7 +35,7 @@ public class OotdPutReq {
 
             private String yRate;
 
-            private Long deviceWeight;
+            private Long deviceWidth;
 
             private Long deviceHeight;
         }

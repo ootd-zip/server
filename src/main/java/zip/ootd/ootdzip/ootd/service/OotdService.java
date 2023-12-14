@@ -48,7 +48,7 @@ public class OotdService {
             List<OotdImageClothes> ootdImageClothesList = ootdImage.getClothesTags().stream().map(clothesTag -> {
                 Clothes clothes = clothesRepository.findById(clothesTag.getClothesId()).orElseThrow();
                 Coordinate coordinate = new Coordinate(clothesTag.getXRate(), clothesTag.getYRate());
-                DeviceSize deviceSize = new DeviceSize(clothesTag.getDeviceWeight(), clothesTag.getDeviceHeight());
+                DeviceSize deviceSize = new DeviceSize(clothesTag.getDeviceWidth(), clothesTag.getDeviceHeight());
 
                 return OotdImageClothes.createOotdImageClothesBy(clothes, coordinate, deviceSize);
             }).toList();
@@ -84,7 +84,7 @@ public class OotdService {
             List<OotdImageClothes> ootdImageClothesList = ootdImage.getClothesTags().stream().map(clothesTag -> {
                 Clothes clothes = clothesRepository.findById(clothesTag.getClothesId()).orElseThrow();
                 Coordinate coordinate = new Coordinate(clothesTag.getXRate(), clothesTag.getYRate());
-                DeviceSize deviceSize = new DeviceSize(clothesTag.getDeviceWeight(), clothesTag.getDeviceHeight());
+                DeviceSize deviceSize = new DeviceSize(clothesTag.getDeviceWidth(), clothesTag.getDeviceHeight());
 
                 return OotdImageClothes.createOotdImageClothesBy(clothes, coordinate, deviceSize);
             }).toList();
