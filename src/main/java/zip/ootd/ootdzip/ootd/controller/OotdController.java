@@ -44,20 +44,18 @@ public class OotdController {
 
     @Operation(summary = "ootd 내용, 공개/비공개 여부 수정", description = "ootd 글과 공개여부만 수정하는 api")
     @PatchMapping("/{id}")
-    public ApiResponse<Boolean> updateOotdContentsAndIsPrivate(@PathVariable Long id,
-            @RequestBody OotdPatchReq request) {
+    public ApiResponse<Boolean> updateOotdContentsAndIsPrivate(@RequestBody @Valid OotdPatchReq request) {
 
-        ootdService.updateContentsAndIsPrivate(id, request);
+        ootdService.updateContentsAndIsPrivate(request);
 
         return new ApiResponse<>(true);
     }
 
     @Operation(summary = "ootd 전체 수정", description = "ootd 게시글 전체 수정 api")
     @PutMapping("/{id}")
-    public ApiResponse<Boolean> updateOotdAll(@PathVariable Long id,
-            @RequestBody @Valid OotdPutReq request) {
+    public ApiResponse<Boolean> updateOotdAll(@RequestBody @Valid OotdPutReq request) {
 
-        ootdService.updateAll(id, request);
+        ootdService.updateAll(request);
 
         return new ApiResponse<>(true);
     }
