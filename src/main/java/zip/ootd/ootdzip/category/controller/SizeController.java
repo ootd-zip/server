@@ -22,6 +22,6 @@ public class SizeController {
 
     @GetMapping("/")
     public List<SizeRes> findByCategory(SizeReq request) {
-        return sizeService.findByLargeCategory(request);
+        return sizeService.findByCategory(request);
     }
 }

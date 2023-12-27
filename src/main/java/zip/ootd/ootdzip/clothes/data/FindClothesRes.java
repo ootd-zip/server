@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import lombok.Builder;
 import lombok.Data;
+import zip.ootd.ootdzip.brand.data.BrandDto;
 import zip.ootd.ootdzip.category.data.DetailCategory;
 import zip.ootd.ootdzip.clothes.domain.Clothes;
 import zip.ootd.ootdzip.clothes.domain.ClothesImage;
@@ -19,7 +20,7 @@ public class FindClothesRes {
 
     private String userName;
 
-    private String brandName;
+    private BrandDto brand;
 
     private Boolean isOpen;
 
@@ -42,7 +43,7 @@ public class FindClothesRes {
                 .id(clothes.getId())
                 .alias(clothes.getAlias())
                 .userName(clothes.getUser().getName())
-                .brandName(clothes.getBrand().getName())
+                .brand(new BrandDto(clothes.getBrand()))
                 .isOpen(clothes.getIsOpen())
                 .category(DetailCategory.builder()
                         .id(clothes.getCategory().getId())

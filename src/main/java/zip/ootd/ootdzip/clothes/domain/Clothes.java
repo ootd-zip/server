@@ -10,7 +10,6 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -49,7 +48,7 @@ public class Clothes extends BaseEntity {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "size_id", nullable = false)
     private Size size;
 
@@ -60,11 +59,11 @@ public class Clothes extends BaseEntity {
     private String purchaseDate;
 
     @Builder.Default
-    @OneToMany(mappedBy = "clothes", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "clothes", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ClothesImage> clothesImages = new ArrayList<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "clothes", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "clothes", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ClothesColor> clothesColors = new ArrayList<>();
 
     @Builder.Default
