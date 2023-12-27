@@ -73,12 +73,12 @@ public class ClothesServiceImpl implements ClothesService {
 
         Clothes clothes = Clothes.createClothes(user,
                 brand,
-                saveClothesReq.getClothesName(),
+                saveClothesReq.getPurchaseStore(),
+                saveClothesReq.getAlias(),
                 saveClothesReq.getIsOpen(),
                 category,
                 size,
                 saveClothesReq.getMaterial(),
-                saveClothesReq.getPurchaseStore(),
                 saveClothesReq.getPurchaseDate(),
                 clothesImages, clothesColors);
 

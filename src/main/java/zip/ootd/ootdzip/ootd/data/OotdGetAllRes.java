@@ -98,7 +98,7 @@ public class OotdGetAllRes {
 
             private BrandRes brand;
 
-            private String name;
+            private String alias;
 
             private Category category;
 
@@ -117,7 +117,7 @@ public class OotdGetAllRes {
 
                 Clothes clothes = ootdImageClothes.getClothes();
                 this.brand = new BrandRes(clothes.getBrand());
-                this.name = clothes.getName();
+                this.alias = clothes.getAlias();
                 this.category = clothes.getCategory();
                 this.size = clothes.getSize().getName();
                 this.material = clothes.getMaterial();

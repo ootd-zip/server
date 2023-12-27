@@ -5,7 +5,6 @@ import java.util.List;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,8 +15,7 @@ import lombok.NoArgsConstructor;
 public class SaveClothesReq {
 
     @NotBlank
-    @Size(max = 100)
-    private String clothesName;
+    private String purchaseStore;
 
     @NotNull
     @Positive
@@ -39,7 +37,7 @@ public class SaveClothesReq {
 
     private String material;
 
-    private String purchaseStore;
+    private String alias;
 
     private String purchaseDate;
 

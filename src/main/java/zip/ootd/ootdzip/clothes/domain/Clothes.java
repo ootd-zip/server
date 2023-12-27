@@ -40,7 +40,7 @@ public class Clothes extends BaseEntity {
     private Brand brand;
 
     @Column(nullable = false)
-    private String name;
+    private String purchaseStore;
 
     @Column(nullable = false)
     private Boolean isOpen;
@@ -55,7 +55,7 @@ public class Clothes extends BaseEntity {
 
     private String material;
 
-    private String purchaseStore;
+    private String alias;
 
     private String purchaseDate;
 
@@ -73,12 +73,12 @@ public class Clothes extends BaseEntity {
 
     public static Clothes createClothes(User user,
             Brand brand,
-            String name,
+            String purchaseStore,
+            String alias,
             Boolean isOpen,
             Category category,
             Size size,
             String material,
-            String purchaseStore,
             String purchaseDate,
             List<ClothesImage> clothesImages,
             List<ClothesColor> clothesColors) {
@@ -86,12 +86,12 @@ public class Clothes extends BaseEntity {
         Clothes clothes = Clothes.builder()
                 .user(user)
                 .brand(brand)
-                .name(name)
+                .purchaseStore(purchaseStore)
+                .alias(alias)
                 .isOpen(isOpen)
                 .category(category)
                 .size(size)
                 .material(material)
-                .purchaseStore(purchaseStore)
                 .purchaseDate(purchaseDate)
                 .build();
 

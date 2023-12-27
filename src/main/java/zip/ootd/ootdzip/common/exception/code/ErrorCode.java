@@ -91,7 +91,9 @@ public enum ErrorCode {
 
     INVALID_CATEGORY_AND_SIZE(400, "C002", "카테고리에 속한 사이즈가 아님"),
 
-    DUPLICATE_BRAND_NAME(409, "B001", "브랜드 이름이 중복됩니다.");
+    DUPLICATE_BRAND_NAME(409, "B001", "브랜드 이름이 중복됩니다."),
+
+    REQUIRED_BRAND_NAME(400, "B002", "브랜드 이름을 입력해주세요.");
 
     private final Integer status;
 

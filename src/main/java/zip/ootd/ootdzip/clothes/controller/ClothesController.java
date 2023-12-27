@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -45,8 +46,9 @@ public class ClothesController {
 
     @Operation(summary = "유저 옷 리스트 조회", description = "유저 옷 리스트 조회")
     @GetMapping("")
-    public ApiResponse<List<FindClothesRes>> findClothesByUser(FindClothesByUserReq request) {
-        return new ApiResponse<>(clothesService.findClothesByUser(request));
+    public ApiResponse<List<FindClothesRes>> findClothesByUser(@RequestParam Long userId) {
+        return new ApiResponse<>(
+                clothesService.findClothesByUser(FindClothesByUserReq.builder().userId(userId).build()));
     }
 
     @Operation(summary = "옷 삭제 API", description = "ID로 옷 삭제")

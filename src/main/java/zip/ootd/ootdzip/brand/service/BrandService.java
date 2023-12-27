@@ -23,6 +23,10 @@ public class BrandService {
     @Transactional
     public BrandDto saveBrand(BrandSaveReq request) {
 
+        if (request.getName().isBlank()) {
+            throw new CustomException(ErrorCode.DUPLICATE_BRAND_NAME);
+        }
+
         if (brandRepository.existsByName(request.getName())) {
             throw new CustomException(ErrorCode.DUPLICATE_BRAND_NAME);
         }

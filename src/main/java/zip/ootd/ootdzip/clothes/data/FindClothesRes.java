@@ -15,7 +15,7 @@ public class FindClothesRes {
 
     private Long id;
 
-    private String name;
+    private String alias;
 
     private String userName;
 
@@ -40,7 +40,7 @@ public class FindClothesRes {
     public static FindClothesRes createFindClothesRes(Clothes clothes) {
         return FindClothesRes.builder()
                 .id(clothes.getId())
-                .name(clothes.getName())
+                .alias(clothes.getAlias())
                 .userName(clothes.getUser().getName())
                 .brandName(clothes.getBrand().getName())
                 .isOpen(clothes.getIsOpen())
