@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import zip.ootd.ootdzip.clothes.data.DeleteClothesByIdRes;
 import zip.ootd.ootdzip.clothes.data.FindClothesByUserReq;
@@ -34,7 +35,7 @@ public class ClothesController {
 
     @Operation(summary = "옷 저장", description = "옷 저장 API")
     @PostMapping("")
-    public ApiResponse<SaveClothesRes> saveClothes(@RequestBody SaveClothesReq request) {
+    public ApiResponse<SaveClothesRes> saveClothes(@RequestBody @Valid SaveClothesReq request) {
         return new ApiResponse<>(new SaveClothesRes(clothesService.saveClothes(request)));
     }
 

@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import zip.ootd.ootdzip.brand.domain.Brand;
 import zip.ootd.ootdzip.brand.repository.BrandRepository;
+import zip.ootd.ootdzip.category.data.CategoryType;
 import zip.ootd.ootdzip.category.domain.Category;
 import zip.ootd.ootdzip.category.domain.Color;
 import zip.ootd.ootdzip.category.domain.Size;
@@ -62,6 +63,10 @@ public class ClothesServiceImpl implements ClothesService {
 
         if (colors.isEmpty()) {
             throw new CustomException(NOT_FOUND_ERROR);
+        }
+
+        if (!category.getType().equals(CategoryType.DetailCategory)) {
+            throw new CustomException(REQUIRED_DETAIL_CATEGORY);
         }
 
         if (!size.getCategory().getId().equals(category.getId())) {
