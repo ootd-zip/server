@@ -10,7 +10,6 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -40,7 +39,7 @@ public class Clothes extends BaseEntity {
     private Brand brand;
 
     @Column(nullable = false)
-    private String name;
+    private String purchaseStore;
 
     @Column(nullable = false)
     private Boolean isOpen;
@@ -49,22 +48,22 @@ public class Clothes extends BaseEntity {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "size_id", nullable = false)
     private Size size;
 
     private String material;
 
-    private String purchaseStore;
+    private String alias;
 
     private String purchaseDate;
 
     @Builder.Default
-    @OneToMany(mappedBy = "clothes", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "clothes", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ClothesImage> clothesImages = new ArrayList<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "clothes", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "clothes", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ClothesColor> clothesColors = new ArrayList<>();
 
     @Builder.Default
@@ -73,12 +72,12 @@ public class Clothes extends BaseEntity {
 
     public static Clothes createClothes(User user,
             Brand brand,
-            String name,
+            String purchaseStore,
+            String alias,
             Boolean isOpen,
             Category category,
             Size size,
             String material,
-            String purchaseStore,
             String purchaseDate,
             List<ClothesImage> clothesImages,
             List<ClothesColor> clothesColors) {
@@ -86,12 +85,12 @@ public class Clothes extends BaseEntity {
         Clothes clothes = Clothes.builder()
                 .user(user)
                 .brand(brand)
-                .name(name)
+                .purchaseStore(purchaseStore)
+                .alias(alias)
                 .isOpen(isOpen)
                 .category(category)
                 .size(size)
                 .material(material)
-                .purchaseStore(purchaseStore)
                 .purchaseDate(purchaseDate)
                 .build();
 

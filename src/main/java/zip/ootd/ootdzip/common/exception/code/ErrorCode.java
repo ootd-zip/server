@@ -89,7 +89,12 @@ public enum ErrorCode {
 
     NOT_REGISTERED_SIZE(400, "S002", "카테고리에 사이즈 등록 필요"),
 
-    INVALID_CATEGORY_AND_SIZE(400, "C002", "카테고리에 속한 사이즈가 아님");
+    INVALID_CATEGORY_AND_SIZE(400, "C002", "카테고리에 속한 사이즈가 아님"),
+
+    DUPLICATE_BRAND_NAME(409, "B001", "브랜드 이름이 중복됩니다."),
+
+    REQUIRED_BRAND_NAME(400, "B002", "브랜드 이름을 입력해주세요."),
+    REQUIRED_DETAIL_CATEGORY(404, "C003", "하위 카테고리를 선택해주세요.");
 
     private final Integer status;
 

@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
-import zip.ootd.ootdzip.category.data.CategoryType;
 import zip.ootd.ootdzip.category.data.SizeReq;
 import zip.ootd.ootdzip.category.data.SizeRes;
 import zip.ootd.ootdzip.category.domain.Category;
@@ -22,13 +21,9 @@ public class SizeService {
     private final SizeRepository sizeRepository;
     private final CategoryRepository categoryRepository;
 
-    public List<SizeRes> findByLargeCategory(SizeReq request) {
+    public List<SizeRes> findByCategory(SizeReq request) {
         Category findCategory = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 카테고리 ID"));
-
-        if (!findCategory.getType().equals(CategoryType.LargeCategory)) {
-            throw new CustomException(ErrorCode.NOT_LARGE_CATEGORY);
-        }
 
         List<Size> sizes = sizeRepository.findByCategory(findCategory);
 

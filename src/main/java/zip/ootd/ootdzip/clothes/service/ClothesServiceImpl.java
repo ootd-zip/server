@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import zip.ootd.ootdzip.brand.domain.Brand;
 import zip.ootd.ootdzip.brand.repository.BrandRepository;
+import zip.ootd.ootdzip.category.data.CategoryType;
 import zip.ootd.ootdzip.category.domain.Category;
 import zip.ootd.ootdzip.category.domain.Color;
 import zip.ootd.ootdzip.category.domain.Size;
@@ -64,6 +65,10 @@ public class ClothesServiceImpl implements ClothesService {
             throw new CustomException(NOT_FOUND_ERROR);
         }
 
+        if (!category.getType().equals(CategoryType.DetailCategory)) {
+            throw new CustomException(REQUIRED_DETAIL_CATEGORY);
+        }
+
         if (!size.getCategory().getId().equals(category.getId())) {
             throw new CustomException(INVALID_CATEGORY_AND_SIZE);
         }
@@ -73,12 +78,12 @@ public class ClothesServiceImpl implements ClothesService {
 
         Clothes clothes = Clothes.createClothes(user,
                 brand,
-                saveClothesReq.getClothesName(),
+                saveClothesReq.getPurchaseStore(),
+                saveClothesReq.getAlias(),
                 saveClothesReq.getIsOpen(),
                 category,
                 size,
                 saveClothesReq.getMaterial(),
-                saveClothesReq.getPurchaseStore(),
                 saveClothesReq.getPurchaseDate(),
                 clothesImages, clothesColors);
 
