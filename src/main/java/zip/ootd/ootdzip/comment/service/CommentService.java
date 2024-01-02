@@ -43,6 +43,7 @@ public class CommentService {
                     .depth(parentDepth + 1)
                     .contents(request.getContent())
                     .build();
+            ootd.addComment(comment); // 대댓글이 아닌 댓글만 ootd 에 저장
         } else {
             User taggedUser = userRepository.findByName(request.getTaggedUserName()).orElseThrow();
             Comment parentComment = commentRepository.findById(request.getCommentParentId()).orElseThrow();

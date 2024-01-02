@@ -8,6 +8,7 @@ import lombok.Data;
 import zip.ootd.ootdzip.brand.domain.Brand;
 import zip.ootd.ootdzip.category.domain.Category;
 import zip.ootd.ootdzip.clothes.domain.Clothes;
+import zip.ootd.ootdzip.comment.domain.Comment;
 import zip.ootd.ootdzip.ootd.domain.Ootd;
 import zip.ootd.ootdzip.ootdimage.domain.OotdImage;
 import zip.ootd.ootdzip.ootdimageclothe.domain.Coordinate;
@@ -17,6 +18,8 @@ import zip.ootd.ootdzip.ootdstyle.domain.OotdStyle;
 
 @Data
 public class OotdGetRes {
+
+    private Long id;
 
     private String contents;
 
@@ -30,11 +33,17 @@ public class OotdGetRes {
 
     private boolean isBookmark;
 
+    private String userName;
+
+    private String userImage;
+
     private LocalDateTime createAt;
 
     private List<OotdImageRes> ootdImages;
 
     private List<OotdStyleRes> styles;
+
+    private List<OotdComment> comment;
 
     public OotdGetRes(Ootd ootd,
             boolean isLike,
@@ -47,6 +56,9 @@ public class OotdGetRes {
         this.likeCount = likeCount;
         this.isBookmark = isBookmark;
 
+        this.id = ootd.getId();
+        this.userName = ootd.getWriter().getName();
+        this.userImage = ootd.getWriter().getProfileImage();
         this.reportCount = ootd.getReportCount();
         this.contents = ootd.getContents();
         this.createAt = ootd.getCreatedAt();
@@ -57,6 +69,10 @@ public class OotdGetRes {
 
         this.ootdImages = ootd.getOotdImages().stream()
                 .map(OotdImageRes::new)
+                .collect(Collectors.toList());
+
+        this.comment = ootd.getComments().stream()
+                .map(OotdComment::new)
                 .collect(Collectors.toList());
     }
 
@@ -127,6 +143,58 @@ public class OotdGetRes {
                 public BrandRes(Brand brand) {
                     this.name = brand.getName();
                 }
+            }
+        }
+    }
+
+    @Data
+    static class OotdComment {
+
+        private Long id;
+
+        private String userName;
+
+        private String userImage;
+
+        private String content;
+
+        private LocalDateTime creatAt;
+
+        List<ChildComment> childComment;
+
+        public OotdComment(Comment comment) {
+            this.id = comment.getId();
+            this.userName = comment.getWriter().getName();
+            this.content = comment.getContents();
+            this.userImage = comment.getWriter().getProfileImage();
+            this.creatAt = comment.getCreatedAt();
+            this.childComment = comment.getChildComments().stream()
+                    .map(ChildComment::new)
+                    .collect(Collectors.toList());
+        }
+
+        @Data
+        static class ChildComment {
+
+            private Long id;
+
+            private String userName;
+
+            private String userImage;
+
+            private String content;
+
+            private LocalDateTime createAt;
+
+            private String taggedUserName;
+
+            public ChildComment(Comment comment) {
+                this.id = comment.getId();
+                this.userName = comment.getWriter().getName();
+                this.content = comment.getContents();
+                this.userImage = comment.getWriter().getProfileImage();
+                this.createAt = comment.getCreatedAt();
+                this.taggedUserName = comment.getTaggedUser().getName();
             }
         }
     }
