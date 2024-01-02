@@ -20,7 +20,7 @@ import zip.ootd.ootdzip.ootd.domain.Ootd;
 import zip.ootd.ootdzip.user.domain.User;
 
 @Entity
-@Table(name = "Comments")
+@Table(name = "comments")
 @Getter
 @Setter
 @Builder
