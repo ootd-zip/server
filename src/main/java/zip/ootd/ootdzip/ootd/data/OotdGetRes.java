@@ -158,7 +158,7 @@ public class OotdGetRes {
 
         private String content;
 
-        private LocalDateTime creatAt;
+        private String timeStamp;
 
         List<ChildComment> childComment;
 
@@ -167,7 +167,7 @@ public class OotdGetRes {
             this.userName = comment.getWriter().getName();
             this.content = comment.getContents();
             this.userImage = comment.getWriter().getProfileImage();
-            this.creatAt = comment.getCreatedAt();
+            this.timeStamp = comment.compareCreatedTimeAndNow();
             this.childComment = comment.getChildComments().stream()
                     .map(ChildComment::new)
                     .collect(Collectors.toList());
@@ -184,7 +184,7 @@ public class OotdGetRes {
 
             private String content;
 
-            private LocalDateTime createAt;
+            private String timeStamp;
 
             private String taggedUserName;
 
@@ -193,7 +193,7 @@ public class OotdGetRes {
                 this.userName = comment.getWriter().getName();
                 this.content = comment.getContents();
                 this.userImage = comment.getWriter().getProfileImage();
-                this.createAt = comment.getCreatedAt();
+                this.timeStamp = comment.compareCreatedTimeAndNow();
                 this.taggedUserName = comment.getTaggedUser().getName();
             }
         }
