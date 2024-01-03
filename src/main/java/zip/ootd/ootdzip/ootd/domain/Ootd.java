@@ -19,6 +19,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import zip.ootd.ootdzip.comment.domain.Comment;
 import zip.ootd.ootdzip.common.entity.BaseEntity;
 import zip.ootd.ootdzip.ootdbookmark.domain.OotdBookmark;
 import zip.ootd.ootdzip.ootdimage.domain.OotdImage;
@@ -76,6 +77,10 @@ public class Ootd extends BaseEntity {
     @Builder.Default
     @OneToMany(mappedBy = "ootd", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OotdBookmark> ootdBookmarks = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "ootd", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
 
     @Column(nullable = false)
     private boolean isPrivate;
@@ -201,5 +206,10 @@ public class Ootd extends BaseEntity {
 
     public void deleteOotdBookmark(OotdBookmark ootdBookmark) {
         ootdBookmarks.remove(ootdBookmark);
+    }
+
+    public void addComment(Comment comment) {
+        comments.add(comment);
+        comment.setOotd(this);
     }
 }
