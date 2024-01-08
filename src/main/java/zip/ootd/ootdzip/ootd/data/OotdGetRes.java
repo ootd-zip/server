@@ -109,6 +109,8 @@ public class OotdGetRes {
 
             private CategoryRes category;
 
+            private Long clothesId;
+
             private String size;
 
             private Coordinate coordinate;
@@ -120,6 +122,7 @@ public class OotdGetRes {
                 this.deviceSize = ootdImageClothes.getDeviceSize();
 
                 Clothes clothes = ootdImageClothes.getClothes();
+                this.clothesId = clothes.getId();
                 this.clothesName = clothes.getAlias();
                 this.brand = new BrandRes(clothes.getBrand());
                 this.category = new CategoryRes(clothes.getCategory());
