@@ -105,17 +105,11 @@ public class OotdGetRes {
 
             private BrandRes brand;
 
-            private String alias;
+            private String clothesName;
 
-            private Category category;
+            private CategoryRes category;
 
             private String size;
-
-            private String material;
-
-            private String purchaseStore;
-
-            private String purchaseDate;
 
             private Coordinate coordinate;
 
@@ -126,13 +120,22 @@ public class OotdGetRes {
                 this.deviceSize = ootdImageClothes.getDeviceSize();
 
                 Clothes clothes = ootdImageClothes.getClothes();
+                this.clothesName = clothes.getAlias();
                 this.brand = new BrandRes(clothes.getBrand());
-                this.alias = clothes.getAlias();
-                this.category = clothes.getCategory();
+                this.category = new CategoryRes(clothes.getCategory());
                 this.size = clothes.getSize().getName();
-                this.material = clothes.getMaterial();
-                this.purchaseStore = clothes.getPurchaseStore();
-                this.purchaseDate = clothes.getPurchaseDate();
+            }
+
+            @Data
+            static class CategoryRes {
+
+                private String smallCategory;
+                private String bigCategory;
+
+                public CategoryRes(Category category) {
+                    this.smallCategory = category.getName();
+                    this.bigCategory = category.getParentCategory().getName();
+                }
             }
 
             @Data
