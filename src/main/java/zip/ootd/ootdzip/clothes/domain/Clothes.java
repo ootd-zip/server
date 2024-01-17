@@ -100,21 +100,21 @@ public class Clothes extends BaseEntity {
         return clothes;
     }
 
-    public void addClothesImage(ClothesImage image) {
+    private void addClothesImage(ClothesImage image) {
         this.clothesImages.add(image);
         image.setClothes(this);
     }
 
-    public void addClothesImages(List<ClothesImage> images) {
+    private void addClothesImages(List<ClothesImage> images) {
         images.forEach(this::addClothesImage);
     }
 
-    public void addClothesColor(ClothesColor color) {
+    private void addClothesColor(ClothesColor color) {
         this.clothesColors.add(color);
         color.setClothes(this);
     }
 
-    public void addClothesColors(List<ClothesColor> colors) {
+    private void addClothesColors(List<ClothesColor> colors) {
         colors.forEach(this::addClothesColor);
     }
 

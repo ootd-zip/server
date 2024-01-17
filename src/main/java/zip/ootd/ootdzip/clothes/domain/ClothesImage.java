@@ -14,6 +14,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import zip.ootd.ootdzip.common.entity.BaseEntity;
+import zip.ootd.ootdzip.utils.ImageFileUtil;
 
 @Entity
 @Table(name = "clothes_image")
@@ -31,7 +32,12 @@ public class ClothesImage extends BaseEntity {
     @Column(length = 2048)
     private String imageUrl;
 
-    public static ClothesImage createClothesImageBy(String imageUrl) {
+    private static ClothesImage createClothesImageBy(String imageUrl) {
+
+        if (!ImageFileUtil.isValidImageUrl(imageUrl)) {
+            throw new IllegalArgumentException("지원하는 이미지 확장자가 아닙니다.");
+        }
+
         return ClothesImage.builder()
                 .imageUrl(imageUrl)
                 .build();
