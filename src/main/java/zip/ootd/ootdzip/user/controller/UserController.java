@@ -118,4 +118,8 @@ public class UserController {
         return new ProfileRes(userService.getAuthenticatiedUser());
     }
 
+    @GetMapping("/nickname")
+    public String getName() {
+        return userService.getAuthenticatiedUser().getName();
+    }
 }
