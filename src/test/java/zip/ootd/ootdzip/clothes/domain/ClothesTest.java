@@ -52,30 +52,26 @@ class ClothesTest {
                 .colorCode("#fffff")
                 .build();
 
-        List<ClothesImage> clothesImages = ClothesImage.createClothesImagesBy(List.of("image.jpg"));
         List<ClothesColor> clothesColors = ClothesColor.createClothesColorsBy(List.of(color));
 
         // when
         Clothes clothes = Clothes.createClothes(user,
                 brand,
                 "구매처",
-                "별칭",
+                "제품명",
                 true,
                 category,
                 size,
                 "재질",
                 "구매일",
-                clothesImages,
+                "image1.jpg",
                 clothesColors);
 
         //then
         assertThat(clothes)
-                .extracting("user.name", "brand.name", "category.name", "size.name")
-                .contains("유저1", "브랜드1", "카테고리2", "XL");
-
-        assertThat(clothes.getClothesImages()).hasSize(1)
-                .extracting("imageUrl")
-                .contains("image.jpg");
+                .extracting("user.name", "brand.name", "purchaseStore", "name", "isOpen", "category.name", "size.name",
+                        "material", "purchaseDate", "imageUrl")
+                .contains("유저1", "브랜드1", "구매처", "제품명", true, "카테고리2", "XL", "재질", "구매일", "image1.jpg");
 
         assertThat(clothes.getClothesColors()).hasSize(1)
                 .extracting("color.name", "color.colorCode")

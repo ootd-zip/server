@@ -27,7 +27,7 @@ public class SameClothesDifferentFeelRes {
 
         private Long id;
 
-        private String alias;
+        private String name;
 
         private CategoryType categoryType;
 
@@ -35,10 +35,9 @@ public class SameClothesDifferentFeelRes {
 
         public ClothesForSameClothesDifferentFeelRes(Clothes clothes) {
             this.id = clothes.getId();
-            this.alias = clothes.getAlias();
+            this.name = clothes.getName();
             this.categoryType = clothes.getCategory().getType();
-            this.imageUrl =
-                    clothes.getClothesImages().isEmpty() ? "" : clothes.getClothesImages().get(0).getImageUrl();
+            this.imageUrl = clothes.getImageUrl();
         }
     }
 

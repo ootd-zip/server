@@ -1,14 +1,13 @@
 package zip.ootd.ootdzip.clothes.data;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import lombok.Builder;
 import lombok.Data;
 import zip.ootd.ootdzip.brand.data.BrandDto;
 import zip.ootd.ootdzip.category.data.DetailCategory;
+import zip.ootd.ootdzip.category.data.SizeRes;
 import zip.ootd.ootdzip.clothes.domain.Clothes;
-import zip.ootd.ootdzip.clothes.domain.ClothesImage;
 
 @Data
 @Builder
@@ -16,7 +15,7 @@ public class FindClothesRes {
 
     private Long id;
 
-    private String alias;
+    private String name;
 
     private String userName;
 
@@ -26,7 +25,7 @@ public class FindClothesRes {
 
     private DetailCategory category;
 
-    private String size;
+    private SizeRes size;
 
     private String material;
 
@@ -36,12 +35,12 @@ public class FindClothesRes {
 
     private List<ClothesColorDto> colors;
 
-    private List<String> images;
+    private String imageUrl;
 
-    public static FindClothesRes createFindClothesRes(Clothes clothes) {
+    public static FindClothesRes of(Clothes clothes) {
         return FindClothesRes.builder()
                 .id(clothes.getId())
-                .alias(clothes.getAlias())
+                .name(clothes.getName())
                 .userName(clothes.getUser().getName())
                 .brand(new BrandDto(clothes.getBrand()))
                 .isOpen(clothes.getIsOpen())
@@ -50,13 +49,12 @@ public class FindClothesRes {
                         .categoryName(clothes.getCategory().getName())
                         .parentCategoryName(clothes.getCategory().getParentCategory().getName())
                         .build())
-                .size(clothes.getSize().getName())
+                .size(SizeRes.of(clothes.getSize()))
                 .material(clothes.getMaterial())
                 .purchaseStore(clothes.getPurchaseStore())
                 .purchaseDate(clothes.getPurchaseDate())
                 .colors(ClothesColorDto.createClothesColorDtosBy(clothes.getClothesColors()))
-                .images(clothes.getClothesImages().stream().map(ClothesImage::getImageUrl)
-                        .collect(Collectors.toList()))
+                .imageUrl(clothes.getImageUrl())
                 .build();
     }
 }

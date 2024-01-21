@@ -54,11 +54,14 @@ dependencies {
 //    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client:2.7.10' // mariadb jdbc 가 3.0 미만버전에서만 DB쿼리 로그를 지원합니다.
     annotationProcessor 'org.projectlombok:lombok'
 
+    // test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.mockito:mockito-core:3.11.2'
     testImplementation 'org.mockito:mockito-junit-jupiter:3.11.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+
+    // h2
     testRuntimeOnly 'com.h2database:h2'
 }
 
