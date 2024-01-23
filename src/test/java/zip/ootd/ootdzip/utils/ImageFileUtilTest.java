@@ -24,10 +24,10 @@ class ImageFileUtilTest {
     @Test
     void isValidImageUrlWithInvalidImageUrl() {
         // given
-        String InvalidImageUrl = "image.exe";
+        String invalidImageUrl = "image.exe";
 
         // when
-        boolean result = ImageFileUtil.isValidImageUrl(InvalidImageUrl);
+        boolean result = ImageFileUtil.isValidImageUrl(invalidImageUrl);
 
         //then
         assertThat(result).isFalse();
