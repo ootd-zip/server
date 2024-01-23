@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -51,7 +50,7 @@ public class ClothesController {
 
     @Operation(summary = "유저 옷 리스트 조회", description = "유저 옷 리스트 조회")
     @GetMapping("")
-    public ApiResponse<List<FindClothesRes>> findClothesByUser(@Valid @RequestParam FindClothesByUserReq request) {
+    public ApiResponse<List<FindClothesRes>> findClothesByUser(@Valid FindClothesByUserReq request) {
         return new ApiResponse<>(
                 clothesService.findClothesByUser(request.toServiceRequest(),
                         userService.getAuthenticatiedUser()));
