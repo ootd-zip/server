@@ -1,11 +1,13 @@
 package zip.ootd.ootdzip.clothes.controller.request;
 
-import lombok.Data;
+import jakarta.validation.constraints.Positive;
+import lombok.Setter;
 import zip.ootd.ootdzip.clothes.service.request.FindClothesByUserSvcReq;
 
-@Data
+@Setter
 public class FindClothesByUserReq {
 
+    @Positive(message = "유저 ID는 양수여야 합니다.")
     private Long userId;
 
     public FindClothesByUserSvcReq toServiceRequest() {

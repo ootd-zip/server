@@ -4,7 +4,7 @@ import java.util.List;
 
 import zip.ootd.ootdzip.clothes.data.DeleteClothesByIdRes;
 import zip.ootd.ootdzip.clothes.data.FindClothesRes;
-import zip.ootd.ootdzip.clothes.domain.Clothes;
+import zip.ootd.ootdzip.clothes.data.SaveClothesRes;
 import zip.ootd.ootdzip.clothes.service.request.FindClothesByUserSvcReq;
 import zip.ootd.ootdzip.clothes.service.request.SaveClothesSvcReq;
 import zip.ootd.ootdzip.user.domain.User;
@@ -17,7 +17,7 @@ public interface ClothesService {
      * @param loginUser
      * @return
      */
-    Clothes saveClothes(SaveClothesSvcReq request, User loginUser);
+    SaveClothesRes saveClothes(SaveClothesSvcReq request, User loginUser);
 
     /**
      * 옷 id로, 옷을 조회한다.

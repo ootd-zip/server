@@ -4,13 +4,14 @@ import java.util.List;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import zip.ootd.ootdzip.brand.data.BrandDto;
 import zip.ootd.ootdzip.category.data.DetailCategory;
 import zip.ootd.ootdzip.category.data.SizeRes;
 import zip.ootd.ootdzip.clothes.domain.Clothes;
 
 @Data
-@Builder
+@NoArgsConstructor
 public class FindClothesRes {
 
     private Long id;
@@ -36,6 +37,24 @@ public class FindClothesRes {
     private List<ClothesColorDto> colors;
 
     private String imageUrl;
+
+    @Builder
+    private FindClothesRes(Long id, String name, String userName, BrandDto brand, Boolean isOpen,
+            DetailCategory category, SizeRes size, String material, String purchaseStore, String purchaseDate,
+            List<ClothesColorDto> colors, String imageUrl) {
+        this.id = id;
+        this.name = name;
+        this.userName = userName;
+        this.brand = brand;
+        this.isOpen = isOpen;
+        this.category = category;
+        this.size = size;
+        this.material = material;
+        this.purchaseStore = purchaseStore;
+        this.purchaseDate = purchaseDate;
+        this.colors = colors;
+        this.imageUrl = imageUrl;
+    }
 
     public static FindClothesRes of(Clothes clothes) {
         return FindClothesRes.builder()

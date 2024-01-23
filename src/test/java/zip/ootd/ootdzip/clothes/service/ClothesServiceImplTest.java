@@ -21,6 +21,7 @@ import zip.ootd.ootdzip.category.repository.ColorRepository;
 import zip.ootd.ootdzip.category.repository.SizeRepository;
 import zip.ootd.ootdzip.clothes.data.DeleteClothesByIdRes;
 import zip.ootd.ootdzip.clothes.data.FindClothesRes;
+import zip.ootd.ootdzip.clothes.data.SaveClothesRes;
 import zip.ootd.ootdzip.clothes.domain.Clothes;
 import zip.ootd.ootdzip.clothes.domain.ClothesColor;
 import zip.ootd.ootdzip.clothes.repository.ClothesRepository;
@@ -108,16 +109,18 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
                 .purchaseDate("구매시기1")
                 .build();
         // when
-        Clothes result = clothesService.saveClothes(request, user);
+        SaveClothesRes result = clothesService.saveClothes(request, user);
 
         //then
-        assertThat(result)
+        Clothes saveResult = clothesRepository.findById(result.getId()).get();
+
+        assertThat(saveResult)
                 .extracting("id", "name", "user", "brand", "isOpen", "category", "size", "material", "purchaseStore",
                         "purchaseDate", "imageUrl")
                 .contains(result.getId(), "제품명1", user, savedBrand, true, savedCategory, savedSize, "재질1", "구매처1",
                         "구매시기1", "image1.jpg");
 
-        assertThat(result.getClothesColors()).hasSize(1)
+        assertThat(saveResult.getClothesColors()).hasSize(1)
                 .extracting("color.name", "color.colorCode")
                 .containsExactlyInAnyOrder(tuple("색1", "#fffff"));
     }

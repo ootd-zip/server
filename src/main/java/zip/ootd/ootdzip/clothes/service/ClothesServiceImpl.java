@@ -20,6 +20,7 @@ import zip.ootd.ootdzip.category.repository.ColorRepository;
 import zip.ootd.ootdzip.category.repository.SizeRepository;
 import zip.ootd.ootdzip.clothes.data.DeleteClothesByIdRes;
 import zip.ootd.ootdzip.clothes.data.FindClothesRes;
+import zip.ootd.ootdzip.clothes.data.SaveClothesRes;
 import zip.ootd.ootdzip.clothes.domain.Clothes;
 import zip.ootd.ootdzip.clothes.domain.ClothesColor;
 import zip.ootd.ootdzip.clothes.repository.ClothesRepository;
@@ -46,7 +47,7 @@ public class ClothesServiceImpl implements ClothesService {
 
     @Override
     @Transactional
-    public Clothes saveClothes(SaveClothesSvcReq request, User loginUser) {
+    public SaveClothesRes saveClothes(SaveClothesSvcReq request, User loginUser) {
 
         /*
         옷 관련 도메인 조회
@@ -84,8 +85,9 @@ public class ClothesServiceImpl implements ClothesService {
                 request.getPurchaseDate(),
                 request.getClothesImageUrl(),
                 clothesColors);
+        Clothes saveClothes = clothesRepository.save(clothes);
 
-        return clothesRepository.save(clothes);
+        return SaveClothesRes.of(saveClothes);
     }
 
     @Override

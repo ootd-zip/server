@@ -3,40 +3,40 @@ package zip.ootd.ootdzip.clothes.controller.request;
 import java.util.List;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import zip.ootd.ootdzip.clothes.service.request.SaveClothesSvcReq;
 
 @Getter
-@NoArgsConstructor
+@RequiredArgsConstructor
 public class SaveClothesReq {
 
-    @NotBlank
+    @NotBlank(message = "구매처는 필수입니다.")
     private String purchaseStore;
 
-    @NotNull
-    @Positive
+    @Positive(message = "브랜드 ID는 양수여야 합니다.")
     private Long brandId;
 
-    @NotNull
-    @Positive
+    @Positive(message = "카테고리 ID는 양수여야 합니다.")
     private Long categoryId;
 
-    private List<@Positive Long> colorIds;
+    @NotEmpty(message = "색은 필수입니다.")
+    private List<@Positive(message = "색 ID는 양수여야 합니다.") Long> colorIds;
 
-    @NotNull
+    @NotNull(message = "공개여부는 필수입니다.")
     private Boolean isOpen;
 
-    @NotNull
+    @Positive(message = "사이즈 ID는 양수여야 합니다.")
     private Long sizeId;
 
-    @NotBlank
+    @NotBlank(message = "이미지는 필수입니다.")
     private String clothesImageUrl;
 
-    @NotBlank
+    @NotBlank(message = "제품명은 필수입니다.")
     private String name;
 
     private String material;
