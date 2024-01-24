@@ -383,5 +383,4 @@ class ClothesControllerTest extends ControllerTestSupport {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(404))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.reason").exists());
     }
-
 }

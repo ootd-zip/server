@@ -659,5 +659,4 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
         user.setName(userName);
         return userRepository.save(user);
     }
-
 }

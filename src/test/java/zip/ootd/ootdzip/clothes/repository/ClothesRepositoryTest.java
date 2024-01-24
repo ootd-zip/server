@@ -123,5 +123,4 @@ class ClothesRepositoryTest extends IntegrationTestSupport {
 
         return clothes;
     }
-
 }
