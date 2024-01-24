@@ -33,8 +33,7 @@ class ClothesControllerTest extends ControllerTestSupport {
     @Test
     void saveClothes() throws Exception {
         // given
-        SaveClothesReq request = SaveClothesReq
-                .builder()
+        SaveClothesReq request = SaveClothesReq.builder()
                 .purchaseStore("구매처1")
                 .brandId(1L)
                 .categoryId(1L)
@@ -50,11 +49,8 @@ class ClothesControllerTest extends ControllerTestSupport {
         when(clothesService.saveClothes(any(), any())).thenReturn(new SaveClothesRes(1L));
 
         // when & then
-        mockMvc.perform(
-                        post("/api/v1/clothes")
-                                .content(objectMapper.writeValueAsString(request))
-                                .contentType(MediaType.APPLICATION_JSON)
-                )
+        mockMvc.perform(post("/api/v1/clothes").content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(200))
@@ -65,8 +61,7 @@ class ClothesControllerTest extends ControllerTestSupport {
     @Test
     void saveClothesWithoutPurchaseStore() throws Exception {
         // given
-        SaveClothesReq request = SaveClothesReq
-                .builder()
+        SaveClothesReq request = SaveClothesReq.builder()
                 .brandId(1L)
                 .categoryId(1L)
                 .colorIds(List.of(1L))
@@ -79,11 +74,8 @@ class ClothesControllerTest extends ControllerTestSupport {
                 .build();
 
         // when & then
-        mockMvc.perform(
-                        post("/api/v1/clothes")
-                                .content(objectMapper.writeValueAsString(request))
-                                .contentType(MediaType.APPLICATION_JSON)
-                )
+        mockMvc.perform(post("/api/v1/clothes").content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(404))
@@ -94,8 +86,7 @@ class ClothesControllerTest extends ControllerTestSupport {
     @Test
     void saveClothesWithZeroBrandId() throws Exception {
         // given
-        SaveClothesReq request = SaveClothesReq
-                .builder()
+        SaveClothesReq request = SaveClothesReq.builder()
                 .purchaseStore("구매처1")
                 .brandId(0L)
                 .categoryId(1L)
@@ -109,11 +100,8 @@ class ClothesControllerTest extends ControllerTestSupport {
                 .build();
 
         // when & then
-        mockMvc.perform(
-                        post("/api/v1/clothes")
-                                .content(objectMapper.writeValueAsString(request))
-                                .contentType(MediaType.APPLICATION_JSON)
-                )
+        mockMvc.perform(post("/api/v1/clothes").content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(404))
@@ -124,8 +112,7 @@ class ClothesControllerTest extends ControllerTestSupport {
     @Test
     void saveClothesWithZeroCategoryId() throws Exception {
         // given
-        SaveClothesReq request = SaveClothesReq
-                .builder()
+        SaveClothesReq request = SaveClothesReq.builder()
                 .purchaseStore("구매처1")
                 .brandId(1L)
                 .categoryId(0L)
@@ -139,11 +126,8 @@ class ClothesControllerTest extends ControllerTestSupport {
                 .build();
 
         // when & then
-        mockMvc.perform(
-                        post("/api/v1/clothes")
-                                .content(objectMapper.writeValueAsString(request))
-                                .contentType(MediaType.APPLICATION_JSON)
-                )
+        mockMvc.perform(post("/api/v1/clothes").content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(404))
@@ -154,8 +138,7 @@ class ClothesControllerTest extends ControllerTestSupport {
     @Test
     void saveClothesWithBlankColorIds() throws Exception {
         // given
-        SaveClothesReq request = SaveClothesReq
-                .builder()
+        SaveClothesReq request = SaveClothesReq.builder()
                 .purchaseStore("구매처1")
                 .brandId(1L)
                 .categoryId(1L)
@@ -168,11 +151,8 @@ class ClothesControllerTest extends ControllerTestSupport {
                 .build();
 
         // when & then
-        mockMvc.perform(
-                        post("/api/v1/clothes")
-                                .content(objectMapper.writeValueAsString(request))
-                                .contentType(MediaType.APPLICATION_JSON)
-                )
+        mockMvc.perform(post("/api/v1/clothes").content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(404))
@@ -183,8 +163,7 @@ class ClothesControllerTest extends ControllerTestSupport {
     @Test
     void saveClothesWithZeroColorId() throws Exception {
         // given
-        SaveClothesReq request = SaveClothesReq
-                .builder()
+        SaveClothesReq request = SaveClothesReq.builder()
                 .purchaseStore("구매처1")
                 .brandId(1L)
                 .categoryId(1L)
@@ -198,11 +177,8 @@ class ClothesControllerTest extends ControllerTestSupport {
                 .build();
 
         // when & then
-        mockMvc.perform(
-                        post("/api/v1/clothes")
-                                .content(objectMapper.writeValueAsString(request))
-                                .contentType(MediaType.APPLICATION_JSON)
-                )
+        mockMvc.perform(post("/api/v1/clothes").content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(404))
@@ -213,8 +189,7 @@ class ClothesControllerTest extends ControllerTestSupport {
     @Test
     void saveClothesWithoutIsOpen() throws Exception {
         // given
-        SaveClothesReq request = SaveClothesReq
-                .builder()
+        SaveClothesReq request = SaveClothesReq.builder()
                 .purchaseStore("구매처1")
                 .brandId(1L)
                 .categoryId(1L)
@@ -227,11 +202,8 @@ class ClothesControllerTest extends ControllerTestSupport {
                 .build();
 
         // when & then
-        mockMvc.perform(
-                        post("/api/v1/clothes")
-                                .content(objectMapper.writeValueAsString(request))
-                                .contentType(MediaType.APPLICATION_JSON)
-                )
+        mockMvc.perform(post("/api/v1/clothes").content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(404))
@@ -242,8 +214,7 @@ class ClothesControllerTest extends ControllerTestSupport {
     @Test
     void saveClothesWithZeroSizeId() throws Exception {
         // given
-        SaveClothesReq request = SaveClothesReq
-                .builder()
+        SaveClothesReq request = SaveClothesReq.builder()
                 .purchaseStore("구매처1")
                 .brandId(1L)
                 .categoryId(1L)
@@ -257,11 +228,8 @@ class ClothesControllerTest extends ControllerTestSupport {
                 .build();
 
         // when & then
-        mockMvc.perform(
-                        post("/api/v1/clothes")
-                                .content(objectMapper.writeValueAsString(request))
-                                .contentType(MediaType.APPLICATION_JSON)
-                )
+        mockMvc.perform(post("/api/v1/clothes").content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(404))
@@ -272,8 +240,7 @@ class ClothesControllerTest extends ControllerTestSupport {
     @Test
     void saveClothesWithoutClothesImageUrl() throws Exception {
         // given
-        SaveClothesReq request = SaveClothesReq
-                .builder()
+        SaveClothesReq request = SaveClothesReq.builder()
                 .purchaseStore("구매처1")
                 .brandId(1L)
                 .categoryId(1L)
@@ -286,11 +253,8 @@ class ClothesControllerTest extends ControllerTestSupport {
                 .build();
 
         // when & then
-        mockMvc.perform(
-                        post("/api/v1/clothes")
-                                .content(objectMapper.writeValueAsString(request))
-                                .contentType(MediaType.APPLICATION_JSON)
-                )
+        mockMvc.perform(post("/api/v1/clothes").content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(404))
@@ -301,8 +265,7 @@ class ClothesControllerTest extends ControllerTestSupport {
     @Test
     void saveClothesWithoutName() throws Exception {
         // given
-        SaveClothesReq request = SaveClothesReq
-                .builder()
+        SaveClothesReq request = SaveClothesReq.builder()
                 .purchaseStore("구매처1")
                 .brandId(1L)
                 .categoryId(1L)
@@ -315,11 +278,8 @@ class ClothesControllerTest extends ControllerTestSupport {
                 .build();
 
         // when & then
-        mockMvc.perform(
-                        post("/api/v1/clothes")
-                                .content(objectMapper.writeValueAsString(request))
-                                .contentType(MediaType.APPLICATION_JSON)
-                )
+        mockMvc.perform(post("/api/v1/clothes").content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(404))
@@ -335,9 +295,7 @@ class ClothesControllerTest extends ControllerTestSupport {
         when(clothesService.findClothesById(anyLong(), any())).thenReturn(new FindClothesRes());
 
         // when & then
-        mockMvc.perform(
-                        get("/api/v1/clothes/{id}", id)
-                )
+        mockMvc.perform(get("/api/v1/clothes/{id}", id))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(200))
@@ -353,9 +311,7 @@ class ClothesControllerTest extends ControllerTestSupport {
         when(clothesService.findClothesById(anyLong(), any())).thenReturn(new FindClothesRes());
 
         // when & then
-        mockMvc.perform(
-                        get("/api/v1/clothes/{id}", id)
-                )
+        mockMvc.perform(get("/api/v1/clothes/{id}", id))
                 .andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(404))
@@ -372,10 +328,7 @@ class ClothesControllerTest extends ControllerTestSupport {
         requestParam.set("userId", "1");
 
         // when & then
-        mockMvc.perform(
-                        get("/api/v1/clothes")
-                                .params(requestParam)
-                )
+        mockMvc.perform(get("/api/v1/clothes").params(requestParam))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(200))
@@ -392,10 +345,7 @@ class ClothesControllerTest extends ControllerTestSupport {
         requestParam.set("userId", "0");
 
         // when & then
-        mockMvc.perform(
-                        get("/api/v1/clothes")
-                                .params(requestParam)
-                )
+        mockMvc.perform(get("/api/v1/clothes").params(requestParam))
                 .andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(404))
@@ -411,9 +361,7 @@ class ClothesControllerTest extends ControllerTestSupport {
         when(clothesService.deleteClothesById(anyLong(), any())).thenReturn(new DeleteClothesByIdRes());
 
         // when & then
-        mockMvc.perform(
-                        delete("/api/v1/clothes/{id}", clothesId)
-                )
+        mockMvc.perform(delete("/api/v1/clothes/{id}", clothesId))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(200))
@@ -429,9 +377,7 @@ class ClothesControllerTest extends ControllerTestSupport {
         when(clothesService.deleteClothesById(anyLong(), any())).thenReturn(new DeleteClothesByIdRes());
 
         // when & then
-        mockMvc.perform(
-                        delete("/api/v1/clothes/{id}", clothesId)
-                )
+        mockMvc.perform(delete("/api/v1/clothes/{id}", clothesId))
                 .andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(404))

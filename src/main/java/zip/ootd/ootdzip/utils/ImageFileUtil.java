@@ -15,6 +15,5 @@ public class ImageFileUtil {
     public static boolean isValidImageUrl(String imageUrl) {
         String extension = FilenameUtils.getExtension(imageUrl);
         return imageExtensions.contains(extension.toLowerCase());
-
     }
 }

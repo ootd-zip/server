@@ -60,16 +60,11 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
         // given
         User user = createUserBy("유저1");
 
-        Brand brand = Brand.builder()
-                .name("브랜드1")
-                .build();
+        Brand brand = Brand.builder().name("브랜드1").build();
 
         Brand savedBrand = brandRepository.save(brand);
 
-        Category parentCategory = Category.builder()
-                .name("부모 카테고리1")
-                .type(CategoryType.LargeCategory)
-                .build();
+        Category parentCategory = Category.builder().name("부모 카테고리1").type(CategoryType.LargeCategory).build();
 
         Category savedParentCategory = categoryRepository.save(parentCategory);
 
@@ -81,18 +76,11 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
 
         Category savedCategory = categoryRepository.save(category);
 
-        Size size = Size.builder()
-                .category(savedCategory)
-                .name("사이즈1")
-                .lineNo((byte)1)
-                .build();
+        Size size = Size.builder().category(savedCategory).name("사이즈1").lineNo((byte)1).build();
 
         Size savedSize = sizeRepository.save(size);
 
-        Color color = Color.builder()
-                .name("색1")
-                .colorCode("#fffff")
-                .build();
+        Color color = Color.builder().name("색1").colorCode("#fffff").build();
 
         Color savedColor = colorRepository.save(color);
 
@@ -114,9 +102,8 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
         //then
         Clothes saveResult = clothesRepository.findById(result.getId()).get();
 
-        assertThat(saveResult)
-                .extracting("id", "name", "user", "brand", "isOpen", "category", "size", "material", "purchaseStore",
-                        "purchaseDate", "imageUrl")
+        assertThat(saveResult).extracting("id", "name", "user", "brand", "isOpen", "category", "size", "material",
+                        "purchaseStore", "purchaseDate", "imageUrl")
                 .contains(result.getId(), "제품명1", user, savedBrand, true, savedCategory, savedSize, "재질1", "구매처1",
                         "구매시기1", "image1.jpg");
 
@@ -131,16 +118,11 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
         // given
         User user = createUserBy("유저1");
 
-        Brand brand = Brand.builder()
-                .name("브랜드1")
-                .build();
+        Brand brand = Brand.builder().name("브랜드1").build();
 
         Brand savedBrand = brandRepository.save(brand);
 
-        Category parentCategory = Category.builder()
-                .name("부모 카테고리1")
-                .type(CategoryType.LargeCategory)
-                .build();
+        Category parentCategory = Category.builder().name("부모 카테고리1").type(CategoryType.LargeCategory).build();
 
         Category savedParentCategory = categoryRepository.save(parentCategory);
 
@@ -152,18 +134,11 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
 
         Category savedCategory = categoryRepository.save(category);
 
-        Size size = Size.builder()
-                .category(savedCategory)
-                .name("사이즈1")
-                .lineNo((byte)1)
-                .build();
+        Size size = Size.builder().category(savedCategory).name("사이즈1").lineNo((byte)1).build();
 
         Size savedSize = sizeRepository.save(size);
 
-        Color color = Color.builder()
-                .name("색1")
-                .colorCode("#fffff")
-                .build();
+        Color color = Color.builder().name("색1").colorCode("#fffff").build();
 
         Color savedColor = colorRepository.save(color);
 
@@ -180,8 +155,7 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
                 .purchaseDate("구매시기1")
                 .build();
         // when & then
-        assertThatThrownBy(() -> clothesService.saveClothes(request, user))
-                .isInstanceOf(CustomException.class)
+        assertThatThrownBy(() -> clothesService.saveClothes(request, user)).isInstanceOf(CustomException.class)
                 .extracting("errorCode.status", "errorCode.divisionCode", "errorCode.message")
                 .contains(404, "B003", "유효하지 않은 브랜드 ID");
 
@@ -193,16 +167,11 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
         // given
         User user = createUserBy("유저1");
 
-        Brand brand = Brand.builder()
-                .name("브랜드1")
-                .build();
+        Brand brand = Brand.builder().name("브랜드1").build();
 
         Brand savedBrand = brandRepository.save(brand);
 
-        Category parentCategory = Category.builder()
-                .name("부모 카테고리1")
-                .type(CategoryType.LargeCategory)
-                .build();
+        Category parentCategory = Category.builder().name("부모 카테고리1").type(CategoryType.LargeCategory).build();
 
         Category savedParentCategory = categoryRepository.save(parentCategory);
 
@@ -214,18 +183,11 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
 
         Category savedCategory = categoryRepository.save(category);
 
-        Size size = Size.builder()
-                .category(savedCategory)
-                .name("사이즈1")
-                .lineNo((byte)1)
-                .build();
+        Size size = Size.builder().category(savedCategory).name("사이즈1").lineNo((byte)1).build();
 
         Size savedSize = sizeRepository.save(size);
 
-        Color color = Color.builder()
-                .name("색1")
-                .colorCode("#fffff")
-                .build();
+        Color color = Color.builder().name("색1").colorCode("#fffff").build();
 
         Color savedColor = colorRepository.save(color);
 
@@ -242,8 +204,7 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
                 .purchaseDate("구매시기1")
                 .build();
         // when & then
-        assertThatThrownBy(() -> clothesService.saveClothes(request, user))
-                .isInstanceOf(CustomException.class)
+        assertThatThrownBy(() -> clothesService.saveClothes(request, user)).isInstanceOf(CustomException.class)
                 .extracting("errorCode.status", "errorCode.divisionCode", "errorCode.message")
                 .contains(404, "C002", "유효하지 않은 카테고리 ID");
 
@@ -255,16 +216,11 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
         // given
         User user = createUserBy("유저1");
 
-        Brand brand = Brand.builder()
-                .name("브랜드1")
-                .build();
+        Brand brand = Brand.builder().name("브랜드1").build();
 
         Brand savedBrand = brandRepository.save(brand);
 
-        Category parentCategory = Category.builder()
-                .name("부모 카테고리1")
-                .type(CategoryType.LargeCategory)
-                .build();
+        Category parentCategory = Category.builder().name("부모 카테고리1").type(CategoryType.LargeCategory).build();
 
         Category savedParentCategory = categoryRepository.save(parentCategory);
 
@@ -276,18 +232,11 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
 
         Category savedCategory = categoryRepository.save(category);
 
-        Size size = Size.builder()
-                .category(savedCategory)
-                .name("사이즈1")
-                .lineNo((byte)1)
-                .build();
+        Size size = Size.builder().category(savedCategory).name("사이즈1").lineNo((byte)1).build();
 
         Size savedSize = sizeRepository.save(size);
 
-        Color color = Color.builder()
-                .name("색1")
-                .colorCode("#fffff")
-                .build();
+        Color color = Color.builder().name("색1").colorCode("#fffff").build();
 
         Color savedColor = colorRepository.save(color);
 
@@ -305,8 +254,7 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
                 .build();
 
         // when & then
-        assertThatThrownBy(() -> clothesService.saveClothes(request, user))
-                .isInstanceOf(CustomException.class)
+        assertThatThrownBy(() -> clothesService.saveClothes(request, user)).isInstanceOf(CustomException.class)
                 .extracting("errorCode.status", "errorCode.divisionCode", "errorCode.message")
                 .contains(404, "C003", "하위 카테고리를 선택해주세요.");
 
@@ -318,16 +266,11 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
         // given
         User user = createUserBy("유저1");
 
-        Brand brand = Brand.builder()
-                .name("브랜드1")
-                .build();
+        Brand brand = Brand.builder().name("브랜드1").build();
 
         Brand savedBrand = brandRepository.save(brand);
 
-        Category parentCategory = Category.builder()
-                .name("부모 카테고리1")
-                .type(CategoryType.LargeCategory)
-                .build();
+        Category parentCategory = Category.builder().name("부모 카테고리1").type(CategoryType.LargeCategory).build();
 
         Category savedParentCategory = categoryRepository.save(parentCategory);
 
@@ -339,18 +282,11 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
 
         Category savedCategory = categoryRepository.save(category);
 
-        Size size = Size.builder()
-                .category(savedCategory)
-                .name("사이즈1")
-                .lineNo((byte)1)
-                .build();
+        Size size = Size.builder().category(savedCategory).name("사이즈1").lineNo((byte)1).build();
 
         Size savedSize = sizeRepository.save(size);
 
-        Color color = Color.builder()
-                .name("색1")
-                .colorCode("#fffff")
-                .build();
+        Color color = Color.builder().name("색1").colorCode("#fffff").build();
 
         Color savedColor = colorRepository.save(color);
 
@@ -368,8 +304,7 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
                 .build();
 
         // when & then
-        assertThatThrownBy(() -> clothesService.saveClothes(request, user))
-                .isInstanceOf(CustomException.class)
+        assertThatThrownBy(() -> clothesService.saveClothes(request, user)).isInstanceOf(CustomException.class)
                 .extracting("errorCode.status", "errorCode.divisionCode", "errorCode.message")
                 .contains(404, "C003", "유효하지 않은 색 ID");
 
@@ -381,16 +316,11 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
         // given
         User user = createUserBy("유저1");
 
-        Brand brand = Brand.builder()
-                .name("브랜드1")
-                .build();
+        Brand brand = Brand.builder().name("브랜드1").build();
 
         Brand savedBrand = brandRepository.save(brand);
 
-        Category parentCategory = Category.builder()
-                .name("부모 카테고리1")
-                .type(CategoryType.LargeCategory)
-                .build();
+        Category parentCategory = Category.builder().name("부모 카테고리1").type(CategoryType.LargeCategory).build();
 
         Category savedParentCategory = categoryRepository.save(parentCategory);
 
@@ -402,11 +332,7 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
 
         Category savedCategory = categoryRepository.save(category);
 
-        Size size = Size.builder()
-                .category(savedCategory)
-                .name("사이즈1")
-                .lineNo((byte)1)
-                .build();
+        Size size = Size.builder().category(savedCategory).name("사이즈1").lineNo((byte)1).build();
 
         Size savedSize = sizeRepository.save(size);
 
@@ -424,8 +350,7 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
                 .build();
 
         // when & then
-        assertThatThrownBy(() -> clothesService.saveClothes(request, user))
-                .isInstanceOf(CustomException.class)
+        assertThatThrownBy(() -> clothesService.saveClothes(request, user)).isInstanceOf(CustomException.class)
                 .extracting("errorCode.status", "errorCode.divisionCode", "errorCode.message")
                 .contains(404, "C003", "유효하지 않은 색 ID");
 
@@ -437,16 +362,11 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
         // given
         User user = createUserBy("유저1");
 
-        Brand brand = Brand.builder()
-                .name("브랜드1")
-                .build();
+        Brand brand = Brand.builder().name("브랜드1").build();
 
         Brand savedBrand = brandRepository.save(brand);
 
-        Category parentCategory = Category.builder()
-                .name("부모 카테고리1")
-                .type(CategoryType.LargeCategory)
-                .build();
+        Category parentCategory = Category.builder().name("부모 카테고리1").type(CategoryType.LargeCategory).build();
 
         Category savedParentCategory = categoryRepository.save(parentCategory);
 
@@ -458,18 +378,11 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
 
         Category savedCategory = categoryRepository.save(category);
 
-        Size size = Size.builder()
-                .category(savedCategory)
-                .name("사이즈1")
-                .lineNo((byte)1)
-                .build();
+        Size size = Size.builder().category(savedCategory).name("사이즈1").lineNo((byte)1).build();
 
         Size savedSize = sizeRepository.save(size);
 
-        Color color = Color.builder()
-                .name("색1")
-                .colorCode("#fffff")
-                .build();
+        Color color = Color.builder().name("색1").colorCode("#fffff").build();
 
         Color savedColor = colorRepository.save(color);
 
@@ -487,8 +400,7 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
                 .build();
 
         // when & then
-        assertThatThrownBy(() -> clothesService.saveClothes(request, user))
-                .isInstanceOf(CustomException.class)
+        assertThatThrownBy(() -> clothesService.saveClothes(request, user)).isInstanceOf(CustomException.class)
                 .extracting("errorCode.status", "errorCode.divisionCode", "errorCode.message")
                 .contains(404, "S002", "유효하지 않은 사이즈 ID");
 
@@ -500,16 +412,11 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
         // given
         User user = createUserBy("유저1");
 
-        Brand brand = Brand.builder()
-                .name("브랜드1")
-                .build();
+        Brand brand = Brand.builder().name("브랜드1").build();
 
         Brand savedBrand = brandRepository.save(brand);
 
-        Category parentCategory = Category.builder()
-                .name("부모 카테고리1")
-                .type(CategoryType.LargeCategory)
-                .build();
+        Category parentCategory = Category.builder().name("부모 카테고리1").type(CategoryType.LargeCategory).build();
 
         Category savedParentCategory = categoryRepository.save(parentCategory);
 
@@ -528,18 +435,11 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
         Category savedCategory1 = categoryRepository.save(category1);
         Category savedCategory2 = categoryRepository.save(category2);
 
-        Size size = Size.builder()
-                .category(savedCategory1)
-                .name("사이즈1")
-                .lineNo((byte)1)
-                .build();
+        Size size = Size.builder().category(savedCategory1).name("사이즈1").lineNo((byte)1).build();
 
         Size savedSize = sizeRepository.save(size);
 
-        Color color = Color.builder()
-                .name("색1")
-                .colorCode("#fffff")
-                .build();
+        Color color = Color.builder().name("색1").colorCode("#fffff").build();
 
         Color savedColor = colorRepository.save(color);
 
@@ -557,8 +457,7 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
                 .build();
 
         // when & then
-        assertThatThrownBy(() -> clothesService.saveClothes(request, user))
-                .isInstanceOf(CustomException.class)
+        assertThatThrownBy(() -> clothesService.saveClothes(request, user)).isInstanceOf(CustomException.class)
                 .extracting("errorCode.status", "errorCode.divisionCode", "errorCode.message")
                 .contains(400, "C002", "카테고리에 속한 사이즈가 아님");
     }
@@ -574,25 +473,16 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
         FindClothesRes result = clothesService.findClothesById(clothes.getId(), user1);
 
         //then
-        assertThat(result)
-                .extracting("id", "name", "userName", "isOpen", "material", "purchaseStore",
-                        "purchaseDate", "imageUrl")
-                .contains(clothes.getId(), "제품명1", "유저1", true, "재질1", "구매처1", "구매일1", "image1.jpg");
+        assertThat(result).extracting("id", "name", "userName", "isOpen", "material", "purchaseStore", "purchaseDate",
+                "imageUrl").contains(clothes.getId(), "제품명1", "유저1", true, "재질1", "구매처1", "구매일1", "image1.jpg");
 
-        assertThat(result.getBrand().getName())
-                .isEqualTo("브랜드1");
+        assertThat(result.getBrand().getName()).isEqualTo("브랜드1");
 
-        assertThat(result.getCategory())
-                .extracting("categoryName", "parentCategoryName")
-                .contains("카테고리1", "부모 카테고리1");
+        assertThat(result.getCategory()).extracting("categoryName", "parentCategoryName").contains("카테고리1", "부모 카테고리1");
 
-        assertThat(result.getSize())
-                .extracting("name", "lineNo")
-                .contains("사이즈1", (byte)1);
+        assertThat(result.getSize()).extracting("name", "lineNo").contains("사이즈1", (byte)1);
 
-        assertThat(result.getColors()).hasSize(1)
-                .extracting("name")
-                .contains("색1");
+        assertThat(result.getColors()).hasSize(1).extracting("name").contains("색1");
     }
 
     @DisplayName("유효하지 않은 옷 ID로 옷을 조회하면 에러가 발생한다.")
@@ -603,8 +493,8 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
         Clothes clothes = createClothesBy(user1, false, "1");
 
         // when & then
-        assertThatThrownBy(() -> clothesService.findClothesById(clothes.getId() + 1, user1))
-                .isInstanceOf(CustomException.class)
+        assertThatThrownBy(() -> clothesService.findClothesById(clothes.getId() + 1, user1)).isInstanceOf(
+                        CustomException.class)
                 .extracting("errorCode.status", "errorCode.divisionCode", "errorCode.message")
                 .contains(404, "C004", "유효하지 않은 옷 ID");
     }
@@ -618,8 +508,8 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
         Clothes clothes = createClothesBy(user1, false, "1");
 
         // when & then
-        assertThatThrownBy(() -> clothesService.findClothesById(clothes.getId(), user2))
-                .isInstanceOf(CustomException.class)
+        assertThatThrownBy(() -> clothesService.findClothesById(clothes.getId(), user2)).isInstanceOf(
+                        CustomException.class)
                 .extracting("errorCode.status", "errorCode.divisionCode", "errorCode.message")
                 .contains(401, "C001", "해당 데이터에 접근할 수 없는 사용자");
     }
@@ -632,21 +522,17 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
         Clothes clothes1 = createClothesBy(user, false, "1");
         Clothes clothes2 = createClothesBy(user, false, "2");
 
-        FindClothesByUserSvcReq request = FindClothesByUserSvcReq.builder()
-                .userId(user.getId())
-                .build();
+        FindClothesByUserSvcReq request = FindClothesByUserSvcReq.builder().userId(user.getId()).build();
 
         // when
         List<FindClothesRes> result = clothesService.findClothesByUser(request, user);
 
         //then
         assertThat(result).hasSize(2)
-                .extracting("id", "name", "userName", "isOpen", "material", "purchaseStore",
-                        "purchaseDate", "imageUrl")
+                .extracting("id", "name", "userName", "isOpen", "material", "purchaseStore", "purchaseDate", "imageUrl")
                 .containsExactlyInAnyOrder(
                         tuple(clothes1.getId(), "제품명1", "유저1", false, "재질1", "구매처1", "구매일1", "image1.jpg"),
-                        tuple(clothes2.getId(), "제품명2", "유저1", false, "재질2", "구매처2", "구매일2", "image2.jpg")
-                );
+                        tuple(clothes2.getId(), "제품명2", "유저1", false, "재질2", "구매처2", "구매일2", "image2.jpg"));
 
     }
 
@@ -659,20 +545,16 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
         Clothes clothes1 = createClothesBy(user1, false, "1");
         Clothes clothes2 = createClothesBy(user1, true, "2");
 
-        FindClothesByUserSvcReq request = FindClothesByUserSvcReq.builder()
-                .userId(user1.getId())
-                .build();
+        FindClothesByUserSvcReq request = FindClothesByUserSvcReq.builder().userId(user1.getId()).build();
 
         // when
         List<FindClothesRes> result = clothesService.findClothesByUser(request, user2);
 
         //then
         assertThat(result).hasSize(1)
-                .extracting("id", "name", "userName", "isOpen", "material", "purchaseStore",
-                        "purchaseDate", "imageUrl")
+                .extracting("id", "name", "userName", "isOpen", "material", "purchaseStore", "purchaseDate", "imageUrl")
                 .containsExactlyInAnyOrder(
-                        tuple(clothes2.getId(), "제품명2", "유저1", true, "재질2", "구매처2", "구매일2", "image2.jpg")
-                );
+                        tuple(clothes2.getId(), "제품명2", "유저1", true, "재질2", "구매처2", "구매일2", "image2.jpg"));
 
     }
 
@@ -684,13 +566,10 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
         Clothes clothes1 = createClothesBy(user1, false, "1");
         Clothes clothes2 = createClothesBy(user1, true, "2");
 
-        FindClothesByUserSvcReq request = FindClothesByUserSvcReq.builder()
-                .userId(user1.getId() + 1)
-                .build();
+        FindClothesByUserSvcReq request = FindClothesByUserSvcReq.builder().userId(user1.getId() + 1).build();
 
         // when & then
-        assertThatThrownBy(() -> clothesService.findClothesByUser(request, user1))
-                .isInstanceOf(CustomException.class)
+        assertThatThrownBy(() -> clothesService.findClothesByUser(request, user1)).isInstanceOf(CustomException.class)
                 .extracting("errorCode.status", "errorCode.divisionCode", "errorCode.message")
                 .contains(404, "U002", "유효하지 않은 유저 ID");
     }
@@ -706,8 +585,7 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
         DeleteClothesByIdRes result = clothesService.deleteClothesById(clothes1.getId(), user1);
 
         //then
-        assertThat(result.getMessage())
-                .isEqualTo("옷 삭제 성공");
+        assertThat(result.getMessage()).isEqualTo("옷 삭제 성공");
 
     }
 
@@ -719,8 +597,8 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
         Clothes clothes1 = createClothesBy(user1, true, "1");
 
         // when & then
-        assertThatThrownBy(() -> clothesService.deleteClothesById(clothes1.getId() + 1, user1))
-                .isInstanceOf(CustomException.class)
+        assertThatThrownBy(() -> clothesService.deleteClothesById(clothes1.getId() + 1, user1)).isInstanceOf(
+                        CustomException.class)
                 .extracting("errorCode.status", "errorCode.divisionCode", "errorCode.message")
                 .contains(404, "C004", "유효하지 않은 옷 ID");
 
@@ -735,8 +613,8 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
         Clothes clothes1 = createClothesBy(user1, true, "1");
 
         // when & then
-        assertThatThrownBy(() -> clothesService.deleteClothesById(clothes1.getId(), user2))
-                .isInstanceOf(CustomException.class)
+        assertThatThrownBy(() -> clothesService.deleteClothesById(clothes1.getId(), user2)).isInstanceOf(
+                        CustomException.class)
                 .extracting("errorCode.status", "errorCode.divisionCode", "errorCode.message")
                 .contains(401, "C001", "해당 데이터에 접근할 수 없는 사용자");
 
@@ -744,16 +622,11 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
 
     private Clothes createClothesBy(User user, boolean isOpen, String idx) {
 
-        Brand brand = Brand.builder()
-                .name("브랜드" + idx)
-                .build();
+        Brand brand = Brand.builder().name("브랜드" + idx).build();
 
         Brand savedBrand = brandRepository.save(brand);
 
-        Category parentCategory = Category.builder()
-                .name("부모 카테고리" + idx)
-                .type(CategoryType.LargeCategory)
-                .build();
+        Category parentCategory = Category.builder().name("부모 카테고리" + idx).type(CategoryType.LargeCategory).build();
 
         Category savedParentCategory = categoryRepository.save(parentCategory);
 
@@ -765,34 +638,18 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
 
         Category savedCategory = categoryRepository.save(category);
 
-        Size size = Size.builder()
-                .category(savedCategory)
-                .name("사이즈" + idx)
-                .lineNo((byte)1)
-                .build();
+        Size size = Size.builder().category(savedCategory).name("사이즈" + idx).lineNo((byte)1).build();
 
         Size savedSize = sizeRepository.save(size);
 
-        Color color = Color.builder()
-                .name("색" + idx)
-                .colorCode("#fffff")
-                .build();
+        Color color = Color.builder().name("색" + idx).colorCode("#fffff").build();
 
         Color savedColor = colorRepository.save(color);
 
         List<ClothesColor> clothesColors = ClothesColor.createClothesColorsBy(List.of(savedColor));
 
-        Clothes clothes = Clothes.createClothes(user,
-                savedBrand,
-                "구매처" + idx,
-                "제품명" + idx,
-                isOpen,
-                savedCategory,
-                savedSize,
-                "재질" + idx,
-                "구매일" + idx,
-                "image" + idx + ".jpg",
-                clothesColors);
+        Clothes clothes = Clothes.createClothes(user, savedBrand, "구매처" + idx, "제품명" + idx, isOpen, savedCategory,
+                savedSize, "재질" + idx, "구매일" + idx, "image" + idx + ".jpg", clothesColors);
 
         return clothesRepository.save(clothes);
     }

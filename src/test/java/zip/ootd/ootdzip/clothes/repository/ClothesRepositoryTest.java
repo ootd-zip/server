@@ -63,10 +63,8 @@ class ClothesRepositoryTest extends IntegrationTestSupport {
         //then
         assertThat(result).hasSize(2)
                 .extracting("user.id", "id", "isOpen")
-                .containsExactlyInAnyOrder(
-                        tuple(savedUser.getId(), savedClothes1.getId(), true),
-                        tuple(savedUser.getId(), savedClothes2.getId(), false)
-                );
+                .containsExactlyInAnyOrder(tuple(savedUser.getId(), savedClothes1.getId(), true),
+                        tuple(savedUser.getId(), savedClothes2.getId(), false));
     }
 
     @DisplayName("해당 유저의 공개된 옷만 조회한다.")
@@ -89,23 +87,16 @@ class ClothesRepositoryTest extends IntegrationTestSupport {
         //then
         assertThat(result).hasSize(1)
                 .extracting("user.id", "id", "isOpen")
-                .containsExactlyInAnyOrder(
-                        tuple(savedUser.getId(), savedClothes1.getId(), true)
-                );
+                .containsExactlyInAnyOrder(tuple(savedUser.getId(), savedClothes1.getId(), true));
     }
 
     private Clothes createClothesBy(User user, boolean isOpen, String idx) {
 
-        Brand brand = Brand.builder()
-                .name("브랜드" + idx)
-                .build();
+        Brand brand = Brand.builder().name("브랜드" + idx).build();
 
         Brand savedBrand = brandRepository.save(brand);
 
-        Category parentCategory = Category.builder()
-                .name("부모 카테고리" + idx)
-                .type(CategoryType.LargeCategory)
-                .build();
+        Category parentCategory = Category.builder().name("부모 카테고리" + idx).type(CategoryType.LargeCategory).build();
 
         Category savedParentCategory = categoryRepository.save(parentCategory);
 
@@ -117,34 +108,18 @@ class ClothesRepositoryTest extends IntegrationTestSupport {
 
         Category savedCategory = categoryRepository.save(category);
 
-        Size size = Size.builder()
-                .category(savedCategory)
-                .name("사이즈" + idx)
-                .lineNo((byte)1)
-                .build();
+        Size size = Size.builder().category(savedCategory).name("사이즈" + idx).lineNo((byte)1).build();
 
         Size savedSize = sizeRepository.save(size);
 
-        Color color = Color.builder()
-                .name("색" + idx)
-                .colorCode("#fffff")
-                .build();
+        Color color = Color.builder().name("색" + idx).colorCode("#fffff").build();
 
         Color savedColor = colorRepository.save(color);
 
         List<ClothesColor> clothesColors = ClothesColor.createClothesColorsBy(List.of(savedColor));
 
-        Clothes clothes = Clothes.createClothes(user,
-                savedBrand,
-                "구매처" + idx,
-                "제품명" + idx,
-                isOpen,
-                savedCategory,
-                savedSize,
-                "재질" + idx,
-                "구매일" + idx,
-                "image" + idx + ".jpg",
-                clothesColors);
+        Clothes clothes = Clothes.createClothes(user, savedBrand, "구매처" + idx, "제품명" + idx, isOpen, savedCategory,
+                savedSize, "재질" + idx, "구매일" + idx, "image" + idx + ".jpg", clothesColors);
 
         return clothes;
     }

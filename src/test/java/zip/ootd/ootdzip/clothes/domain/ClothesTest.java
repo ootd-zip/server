@@ -21,19 +21,11 @@ class ClothesTest {
     @Test
     void createClothes() {
         // given
-        User user = User.builder()
-                .name("유저1")
-                .gender(UserGender.MALE)
-                .build();
+        User user = User.builder().name("유저1").gender(UserGender.MALE).build();
 
-        Brand brand = Brand.builder()
-                .name("브랜드1")
-                .build();
+        Brand brand = Brand.builder().name("브랜드1").build();
 
-        Category parentCategory = Category.builder()
-                .name("카테고리1")
-                .type(CategoryType.LargeCategory)
-                .build();
+        Category parentCategory = Category.builder().name("카테고리1").type(CategoryType.LargeCategory).build();
 
         Category category = Category.builder()
                 .name("카테고리2")
@@ -41,36 +33,19 @@ class ClothesTest {
                 .type(CategoryType.DetailCategory)
                 .build();
 
-        Size size = Size.builder()
-                .category(category)
-                .name("XL")
-                .lineNo((byte)1)
-                .build();
+        Size size = Size.builder().category(category).name("XL").lineNo((byte)1).build();
 
-        Color color = Color.builder()
-                .name("색1")
-                .colorCode("#fffff")
-                .build();
+        Color color = Color.builder().name("색1").colorCode("#fffff").build();
 
         List<ClothesColor> clothesColors = ClothesColor.createClothesColorsBy(List.of(color));
 
         // when
-        Clothes clothes = Clothes.createClothes(user,
-                brand,
-                "구매처",
-                "제품명",
-                true,
-                category,
-                size,
-                "재질",
-                "구매일",
-                "image1.jpg",
-                clothesColors);
+        Clothes clothes = Clothes.createClothes(user, brand, "구매처", "제품명", true, category, size, "재질", "구매일",
+                "image1.jpg", clothesColors);
 
         //then
-        assertThat(clothes)
-                .extracting("user.name", "brand.name", "purchaseStore", "name", "isOpen", "category.name", "size.name",
-                        "material", "purchaseDate", "imageUrl")
+        assertThat(clothes).extracting("user.name", "brand.name", "purchaseStore", "name", "isOpen", "category.name",
+                        "size.name", "material", "purchaseDate", "imageUrl")
                 .contains("유저1", "브랜드1", "구매처", "제품명", true, "카테고리2", "XL", "재질", "구매일", "image1.jpg");
 
         assertThat(clothes.getClothesColors()).hasSize(1)
