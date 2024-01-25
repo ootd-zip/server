@@ -13,12 +13,14 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import lombok.extern.slf4j.Slf4j;
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.exception.code.ErrorCode;
 import zip.ootd.ootdzip.oauth.data.KakaoAccessTokenInfoRes;
 import zip.ootd.ootdzip.oauth.data.KakaoOauthTokenRes;
 
 @Component
+@Slf4j
 public class KakaoOAuthUtils implements SocialOAuth {
 
     private final String kakaoAppRestApiKey;
@@ -50,6 +52,7 @@ public class KakaoOAuthUtils implements SocialOAuth {
                 throw new CustomException(ErrorCode.KAKAO_LOGIN_ERROR);
             }
         } catch (HttpClientErrorException | HttpServerErrorException exception) {
+            log.error("kakao error message: " + exception);
             throw new CustomException(ErrorCode.KAKAO_LOGIN_ERROR);
         }
     }
