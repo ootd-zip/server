@@ -38,7 +38,7 @@ public class ClothesColor {
     @JoinColumn(name = "color_id")
     private Color color;
 
-    public static ClothesColor createClothesColorBy(Color color) {
+    private static ClothesColor createClothesColorBy(Color color) {
         return ClothesColor.builder()
                 .color(color)
                 .build();

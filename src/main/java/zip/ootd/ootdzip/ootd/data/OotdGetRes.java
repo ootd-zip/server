@@ -123,7 +123,7 @@ public class OotdGetRes {
 
                 Clothes clothes = ootdImageClothes.getClothes();
                 this.clothesId = clothes.getId();
-                this.clothesName = clothes.getAlias();
+                this.clothesName = clothes.getName();
                 this.brand = new BrandRes(clothes.getBrand());
                 this.category = new CategoryRes(clothes.getCategory());
                 this.size = clothes.getSize().getName();

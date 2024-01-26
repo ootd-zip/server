@@ -94,7 +94,20 @@ public enum ErrorCode {
     DUPLICATE_BRAND_NAME(409, "B001", "브랜드 이름이 중복됩니다."),
 
     REQUIRED_BRAND_NAME(400, "B002", "브랜드 이름을 입력해주세요."),
-    REQUIRED_DETAIL_CATEGORY(404, "C003", "하위 카테고리를 선택해주세요.");
+
+    REQUIRED_DETAIL_CATEGORY(404, "C003", "하위 카테고리를 선택해주세요."),
+
+    NOT_FOUND_BRAND_ID(404, "B003", "유효하지 않은 브랜드 ID"),
+
+    NOT_FOUND_CATEGORY_ID(404, "C002", "유효하지 않은 카테고리 ID"),
+
+    NOT_FOUND_SIZE_ID(404, "S002", "유효하지 않은 사이즈 ID"),
+
+    NOT_FOUND_COLOR_ID(404, "C003", "유효하지 않은 색 ID"),
+
+    NOT_FOUND_CLOTHES_ID(404, "C004", "유효하지 않은 옷 ID"),
+
+    NOT_FOUND_USER_ID(404, "U002", "유효하지 않은 유저 ID");
 
     private final Integer status;
 

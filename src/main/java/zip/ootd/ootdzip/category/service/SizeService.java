@@ -32,8 +32,7 @@ public class SizeService {
         }
 
         return sizes.stream()
-                .map(SizeRes::new)
+                .map(SizeRes::of)
                 .toList();
-
     }
 }
