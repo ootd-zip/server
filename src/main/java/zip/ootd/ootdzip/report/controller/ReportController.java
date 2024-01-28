@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,11 +28,13 @@ public class ReportController {
     private final ReportService reportService;
     private final UserService userService;
 
+    @Operation(summary = "신고항목 조회", description = "신고항목 조회하는 API")
     @GetMapping("")
     public ApiResponse<List<ReportRes>> getAllReports() {
         return new ApiResponse<>(reportService.getAllReports());
     }
 
+    @Operation(summary = "ootd 신고", description = "ootd를 신고하는 API")
     @PostMapping("/ootd")
     public ApiResponse<ReportResultRes> reportOotd(@RequestBody @Valid ReportOotdReq request) {
         return new ApiResponse<>(reportService.reportOotd(request.toServiceReq(), userService.getAuthenticatiedUser()));
