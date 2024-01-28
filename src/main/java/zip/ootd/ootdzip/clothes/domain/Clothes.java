@@ -54,13 +54,11 @@ public class Clothes extends BaseEntity {
 
     private String material;
 
-    private String alias;
+    private String name;
 
     private String purchaseDate;
 
-    @Builder.Default
-    @OneToMany(mappedBy = "clothes", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ClothesImage> clothesImages = new ArrayList<>();
+    private String imageUrl;
 
     @Builder.Default
     @OneToMany(mappedBy = "clothes", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -73,48 +71,39 @@ public class Clothes extends BaseEntity {
     public static Clothes createClothes(User user,
             Brand brand,
             String purchaseStore,
-            String alias,
+            String name,
             Boolean isOpen,
             Category category,
             Size size,
             String material,
             String purchaseDate,
-            List<ClothesImage> clothesImages,
+            String imageUrl,
             List<ClothesColor> clothesColors) {
 
         Clothes clothes = Clothes.builder()
                 .user(user)
                 .brand(brand)
                 .purchaseStore(purchaseStore)
-                .alias(alias)
+                .name(name)
                 .isOpen(isOpen)
                 .category(category)
                 .size(size)
                 .material(material)
                 .purchaseDate(purchaseDate)
+                .imageUrl(imageUrl)
                 .build();
 
-        clothes.addClothesImages(clothesImages);
         clothes.addClothesColors(clothesColors);
 
         return clothes;
     }
 
-    public void addClothesImage(ClothesImage image) {
-        this.clothesImages.add(image);
-        image.setClothes(this);
-    }
-
-    public void addClothesImages(List<ClothesImage> images) {
-        images.forEach(this::addClothesImage);
-    }
-
-    public void addClothesColor(ClothesColor color) {
+    private void addClothesColor(ClothesColor color) {
         this.clothesColors.add(color);
         color.setClothes(this);
     }
 
-    public void addClothesColors(List<ClothesColor> colors) {
+    private void addClothesColors(List<ClothesColor> colors) {
         colors.forEach(this::addClothesColor);
     }
 

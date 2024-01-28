@@ -2,7 +2,6 @@ package zip.ootd.ootdzip.home.data;
 
 import lombok.Data;
 import zip.ootd.ootdzip.clothes.domain.Clothes;
-import zip.ootd.ootdzip.clothes.domain.ClothesImage;
 import zip.ootd.ootdzip.ootd.domain.Ootd;
 import zip.ootd.ootdzip.ootdimage.domain.OotdImage;
 
@@ -27,7 +26,7 @@ public class ClothesAndOotdsForHomeRes {
         this.message = message;
         this.detailMessage = detailMessage;
         this.tagType = TagType.CLOTHES;
-        this.imageUrl = clothes.getClothesImages().stream().findFirst().orElse(new ClothesImage()).getImageUrl();
+        this.imageUrl = clothes.getImageUrl();
     }
 
     public ClothesAndOotdsForHomeRes(Ootd ootd, String message, String detailMessage) {

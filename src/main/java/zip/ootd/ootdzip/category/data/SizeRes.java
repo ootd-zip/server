@@ -1,21 +1,30 @@
 package zip.ootd.ootdzip.category.data;
 
-import lombok.Data;
+import lombok.Builder;
+import lombok.Getter;
 import zip.ootd.ootdzip.category.domain.Size;
 
-@Data
+@Getter
 public class SizeRes {
 
-    private Long id;
+    private final Long id;
 
-    private String name;
+    private final String name;
 
-    private Byte lineNo;
+    private final Byte lineNo;
 
-    public SizeRes(Size size) {
+    @Builder
+    private SizeRes(Long id, String name, Byte lineNo) {
+        this.id = id;
+        this.name = name;
+        this.lineNo = lineNo;
+    }
 
-        this.id = size.getId();
-        this.name = size.getName();
-        this.lineNo = size.getLineNo();
+    public static SizeRes of(Size size) {
+        return SizeRes.builder()
+                .id(size.getId())
+                .name(size.getName())
+                .lineNo(size.getLineNo())
+                .build();
     }
 }

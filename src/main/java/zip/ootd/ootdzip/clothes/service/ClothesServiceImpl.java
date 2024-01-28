@@ -19,13 +19,13 @@ import zip.ootd.ootdzip.category.repository.CategoryRepository;
 import zip.ootd.ootdzip.category.repository.ColorRepository;
 import zip.ootd.ootdzip.category.repository.SizeRepository;
 import zip.ootd.ootdzip.clothes.data.DeleteClothesByIdRes;
-import zip.ootd.ootdzip.clothes.data.FindClothesByUserReq;
 import zip.ootd.ootdzip.clothes.data.FindClothesRes;
-import zip.ootd.ootdzip.clothes.data.SaveClothesReq;
+import zip.ootd.ootdzip.clothes.data.SaveClothesRes;
 import zip.ootd.ootdzip.clothes.domain.Clothes;
 import zip.ootd.ootdzip.clothes.domain.ClothesColor;
-import zip.ootd.ootdzip.clothes.domain.ClothesImage;
 import zip.ootd.ootdzip.clothes.repository.ClothesRepository;
+import zip.ootd.ootdzip.clothes.service.request.FindClothesByUserSvcReq;
+import zip.ootd.ootdzip.clothes.service.request.SaveClothesSvcReq;
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.repository.UserRepository;
@@ -47,22 +47,21 @@ public class ClothesServiceImpl implements ClothesService {
 
     @Override
     @Transactional
-    public Clothes saveClothes(SaveClothesReq saveClothesReq) {
+    public SaveClothesRes saveClothes(SaveClothesSvcReq request, User loginUser) {
 
         /*
         옷 관련 도메인 조회
          */
-        Brand brand = brandRepository.findById(saveClothesReq.getBrandId())
-                .orElseThrow(() -> new CustomException(NOT_FOUND_ERROR));
-        User user = userService.getAuthenticatiedUser();
-        Category category = categoryRepository.findById(saveClothesReq.getCategoryId())
-                .orElseThrow(() -> new CustomException(NOT_FOUND_ERROR));
-        List<Color> colors = colorRepository.findAllById(saveClothesReq.getColorIds());
-        Size size = sizeRepository.findById(saveClothesReq.getSizeId())
-                .orElseThrow(() -> new CustomException(NOT_FOUND_ERROR));
+        Brand brand = brandRepository.findById(request.getBrandId())
+                .orElseThrow(() -> new CustomException(NOT_FOUND_BRAND_ID));
+        Category category = categoryRepository.findById(request.getCategoryId())
+                .orElseThrow(() -> new CustomException(NOT_FOUND_CATEGORY_ID));
+        List<Color> colors = colorRepository.findAllById(request.getColorIds());
+        Size size = sizeRepository.findById(request.getSizeId())
+                .orElseThrow(() -> new CustomException(NOT_FOUND_SIZE_ID));
 
         if (colors.isEmpty()) {
-            throw new CustomException(NOT_FOUND_ERROR);
+            throw new CustomException(NOT_FOUND_COLOR_ID);
         }
 
         if (!category.getType().equals(CategoryType.DetailCategory)) {
@@ -74,49 +73,44 @@ public class ClothesServiceImpl implements ClothesService {
         }
 
         List<ClothesColor> clothesColors = ClothesColor.createClothesColorsBy(colors);
-        List<ClothesImage> clothesImages = ClothesImage.createClothesImagesBy(saveClothesReq.getClothesImages());
 
-        Clothes clothes = Clothes.createClothes(user,
+        Clothes clothes = Clothes.createClothes(loginUser,
                 brand,
-                saveClothesReq.getPurchaseStore(),
-                saveClothesReq.getAlias(),
-                saveClothesReq.getIsOpen(),
+                request.getPurchaseStore(),
+                request.getName(),
+                request.getIsOpen(),
                 category,
                 size,
-                saveClothesReq.getMaterial(),
-                saveClothesReq.getPurchaseDate(),
-                clothesImages, clothesColors);
+                request.getMaterial(),
+                request.getPurchaseDate(),
+                request.getClothesImageUrl(),
+                clothesColors);
+        Clothes saveClothes = clothesRepository.save(clothes);
 
-        clothesRepository.save(clothes);
-        return clothes;
+        return SaveClothesRes.of(saveClothes);
     }
 
     @Override
-    public FindClothesRes findClothesById(Long id) {
+    public FindClothesRes findClothesById(Long id, User loginUser) {
 
         Clothes clothes = clothesRepository.findById(id)
-                .orElseThrow(() -> new CustomException(NOT_FOUND_ERROR));
+                .orElseThrow(() -> new CustomException(NOT_FOUND_CLOTHES_ID));
 
-        User findUser = userService.getAuthenticatiedUser();
-
-        if (!clothes.getIsOpen() && !clothes.getUser().getId().equals(findUser.getId())) {
+        if (Boolean.FALSE.equals(clothes.getIsOpen()) && !clothes.getUser().getId().equals(loginUser.getId())) {
             throw new CustomException(UNAUTHORIZED_USER_ERROR);
         }
 
-        return FindClothesRes.createFindClothesRes(clothes);
+        return FindClothesRes.of(clothes);
     }
 
     @Override
-    public List<FindClothesRes> findClothesByUser(FindClothesByUserReq request) {
+    public List<FindClothesRes> findClothesByUser(FindClothesByUserSvcReq request, User loginUser) {
 
-        //TODO : 테스트 케이스 작성 필요
         List<FindClothesRes> result = new ArrayList<>();
         List<Clothes> clothesList;
 
         User user = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new CustomException(NOT_FOUND_ERROR));
-
-        User loginUser = userService.getAuthenticatiedUser();
+                .orElseThrow(() -> new CustomException(NOT_FOUND_USER_ID));
 
         /*
          * 본인 옷장은 isOpen 관계없이 모든 옷 리스트 조회
@@ -129,7 +123,7 @@ public class ClothesServiceImpl implements ClothesService {
         }
 
         for (Clothes clothes : clothesList) {
-            result.add(FindClothesRes.createFindClothesRes(clothes));
+            result.add(FindClothesRes.of(clothes));
         }
 
         return result;
@@ -137,12 +131,10 @@ public class ClothesServiceImpl implements ClothesService {
 
     @Override
     @Transactional
-    public DeleteClothesByIdRes deleteClothesById(Long id) {
+    public DeleteClothesByIdRes deleteClothesById(Long id, User loginUser) {
 
         Clothes deleteClothes = clothesRepository.findById(id)
-                .orElseThrow(() -> new CustomException(NOT_FOUND_ERROR));
-
-        User loginUser = userService.getAuthenticatiedUser();
+                .orElseThrow(() -> new CustomException(NOT_FOUND_CLOTHES_ID));
 
         /*
         로그인한 유저와 옷을 등록한 유저가 다르면 실패
