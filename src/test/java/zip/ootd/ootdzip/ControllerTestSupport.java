@@ -1,21 +1,25 @@
 package zip.ootd.ootdzip;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import zip.ootd.ootdzip.clothes.controller.ClothesController;
 import zip.ootd.ootdzip.clothes.service.ClothesService;
+import zip.ootd.ootdzip.report.controller.ReportController;
+import zip.ootd.ootdzip.report.service.ReportService;
 import zip.ootd.ootdzip.user.service.UserService;
 
 @WebMvcTest(controllers = {
-        ClothesController.class
-}
-)
+        ClothesController.class,
+        ReportController.class
+})
 public abstract class ControllerTestSupport {
 
     @Autowired
@@ -33,4 +37,11 @@ public abstract class ControllerTestSupport {
     @MockBean
     protected UserService userService;
 
+    @MockBean
+    protected ReportService reportService;
+
+    @BeforeEach
+    void setUp() {
+        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+    }
 }
