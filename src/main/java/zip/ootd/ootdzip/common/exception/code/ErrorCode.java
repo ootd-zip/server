@@ -83,7 +83,7 @@ public enum ErrorCode {
 
     BLOCKED(401, "O003", "ootd 글이 차단된 상태"),
 
-    OVER_REPORT(401, "O001", "ootd 글이 신고를 많이 먹은 상태"),
+    OVER_REPORT(401, "O004", "ootd 글이 신고를 많이 먹은 상태"),
 
     NOT_LARGE_CATEGORY(400, "S001", "상위 카테고리가 아닙니다"),
 
@@ -107,7 +107,13 @@ public enum ErrorCode {
 
     NOT_FOUND_CLOTHES_ID(404, "C004", "유효하지 않은 옷 ID"),
 
-    NOT_FOUND_USER_ID(404, "U002", "유효하지 않은 유저 ID");
+    NOT_FOUND_USER_ID(404, "U002", "유효하지 않은 유저 ID"),
+
+    NOT_FOUND_OOTD_ID(404, "O005", "유효하지 않은 ootd ID"),
+
+    NOT_FOUND_REPORT_ID(404, "R001", "유효하지 않은 신고 ID"),
+
+    NOT_DUPLICATE_REPORT(400, "R002", "신고는 한번만 가능합니다.");
 
     private final Integer status;
 
