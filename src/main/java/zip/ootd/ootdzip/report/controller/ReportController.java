@@ -13,7 +13,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import zip.ootd.ootdzip.common.response.ApiResponse;
-import zip.ootd.ootdzip.report.controller.request.ReportOotdReq;
+import zip.ootd.ootdzip.report.controller.request.ReportReq;
 import zip.ootd.ootdzip.report.controller.response.ReportRes;
 import zip.ootd.ootdzip.report.controller.response.ReportResultRes;
 import zip.ootd.ootdzip.report.service.ReportService;
@@ -34,9 +34,9 @@ public class ReportController {
         return new ApiResponse<>(reportService.getAllReports());
     }
 
-    @Operation(summary = "ootd 신고", description = "ootd를 신고하는 API")
-    @PostMapping("/ootd")
-    public ApiResponse<ReportResultRes> reportOotd(@RequestBody @Valid ReportOotdReq request) {
-        return new ApiResponse<>(reportService.reportOotd(request.toServiceReq(), userService.getAuthenticatiedUser()));
+    @Operation(summary = "신고", description = "신고 API")
+    @PostMapping("")
+    public ApiResponse<ReportResultRes> report(@RequestBody @Valid ReportReq request) {
+        return new ApiResponse<>(reportService.report(request.toServiceReq(), userService.getAuthenticatiedUser()));
     }
 }

@@ -10,7 +10,7 @@ import zip.ootd.ootdzip.user.domain.User;
 @Repository
 public interface ReportOotdRepository extends JpaRepository<ReportOotd, Long> {
 
-    boolean existsByOotdAndUser(Ootd ootd, User user);
+    boolean existsByOotdAndReporter(Ootd ootd, User reporter);
 
     Integer countByOotd(Ootd ootd);
 

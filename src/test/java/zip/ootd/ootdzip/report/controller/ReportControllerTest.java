@@ -13,8 +13,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import zip.ootd.ootdzip.ControllerTestSupport;
-import zip.ootd.ootdzip.report.controller.request.ReportOotdReq;
+import zip.ootd.ootdzip.report.controller.request.ReportReq;
 import zip.ootd.ootdzip.report.controller.response.ReportResultRes;
+import zip.ootd.ootdzip.report.service.request.ReportType;
 
 class ReportControllerTest extends ControllerTestSupport {
 
@@ -32,16 +33,16 @@ class ReportControllerTest extends ControllerTestSupport {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result").isArray());
     }
 
-    @DisplayName("ootd를 신고한다.")
+    @DisplayName("신고한다.")
     @Test
-    void reportOotd() throws Exception {
+    void report() throws Exception {
         // given
-        ReportOotdReq request = new ReportOotdReq(1L, 1L);
+        ReportReq request = new ReportReq(1L, 1L, ReportType.OOTD);
 
-        when(reportService.reportOotd(any(), any())).thenReturn(ReportResultRes.of(1L, 1));
+        when(reportService.report(any(), any())).thenReturn(ReportResultRes.of(1L, 1));
 
         // when & then
-        mockMvc.perform(post("/api/v1/report/ootd")
+        mockMvc.perform(post("/api/v1/report")
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON)
                 )
@@ -51,14 +52,14 @@ class ReportControllerTest extends ControllerTestSupport {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result").exists());
     }
 
-    @DisplayName("ootd를 신고할 때 신고 ID는 양수이다.")
+    @DisplayName("신고할 때 신고 ID는 양수이다.")
     @Test
-    void reportOotdWithZeroReportId() throws Exception {
+    void reportWithZeroReportId() throws Exception {
         // given
-        ReportOotdReq request = new ReportOotdReq(0L, 1L);
+        ReportReq request = new ReportReq(0L, 1L, ReportType.OOTD);
 
         // when & then
-        mockMvc.perform(post("/api/v1/report/ootd")
+        mockMvc.perform(post("/api/v1/report")
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON)
                 )
@@ -68,14 +69,31 @@ class ReportControllerTest extends ControllerTestSupport {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.errors").isArray());
     }
 
-    @DisplayName("ootd를 신고할 때 ootd ID는 양수이다.")
+    @DisplayName("신고할 때 target ID는 양수이다.")
     @Test
-    void reportOotdWithZeroOotdId() throws Exception {
+    void reportWithZeroTargetId() throws Exception {
         // given
-        ReportOotdReq request = new ReportOotdReq(1L, 0L);
+        ReportReq request = new ReportReq(1L, 0L, ReportType.OOTD);
 
         // when & then
-        mockMvc.perform(post("/api/v1/report/ootd")
+        mockMvc.perform(post("/api/v1/report")
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isNotFound())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(404))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errors").isArray());
+    }
+
+    @DisplayName("신고할 때 신고유형은 필수이다.")
+    @Test
+    void reportWithoutReportType() throws Exception {
+        // given
+        ReportReq request = new ReportReq(1L, 1L, null);
+
+        // when & then
+        mockMvc.perform(post("/api/v1/report")
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON)
                 )

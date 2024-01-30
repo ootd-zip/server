@@ -49,7 +49,7 @@ class ReportOotdRepositoryTest extends IntegrationTestSupport {
 
         reportOotdRepository.save(reportOotd);
         // when
-        boolean result = reportOotdRepository.existsByOotdAndUser(ootd, reportUser);
+        boolean result = reportOotdRepository.existsByOotdAndReporter(ootd, reportUser);
 
         //then
         assertThat(result).isTrue();
@@ -77,7 +77,7 @@ class ReportOotdRepositoryTest extends IntegrationTestSupport {
 
         reportOotdRepository.save(reportOotd);
         // when
-        boolean result = reportOotdRepository.existsByOotdAndUser(ootd, reportUser2);
+        boolean result = reportOotdRepository.existsByOotdAndReporter(ootd, reportUser2);
 
         //then
         assertThat(result).isFalse();
