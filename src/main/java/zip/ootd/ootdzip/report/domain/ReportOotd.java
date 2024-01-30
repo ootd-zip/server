@@ -28,20 +28,20 @@ public class ReportOotd extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User user;
+    private User reporter;
 
     @Builder
-    private ReportOotd(Report report, Ootd ootd, User user) {
+    private ReportOotd(Report report, Ootd ootd, User reporter) {
         this.report = report;
         this.ootd = ootd;
-        this.user = user;
+        this.reporter = reporter;
     }
 
     public static ReportOotd of(Report report, Ootd ootd, User user) {
         return ReportOotd.builder()
                 .report(report)
                 .ootd(ootd)
-                .user(user)
+                .reporter(user)
                 .build();
     }
 

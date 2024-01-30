@@ -45,15 +45,16 @@ public class ReportService {
         Ootd ootd = ootdRepository.findById(request.getOotdId())
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_OOTD_ID));
 
-        ReportOotd reportOotd = ReportOotd.of(report, ootd, reportUser);
-
         if (reportOotdRepository.existsByOotdAndUser(ootd, reportUser)) {
             throw new CustomException(ErrorCode.NOT_DUPLICATE_REPORT);
         }
 
+        ReportOotd reportOotd = ReportOotd.of(report, ootd, reportUser);
+
         ReportOotd savedReportOotd = reportOotdRepository.save(reportOotd);
 
         Integer countByOotd = reportOotdRepository.countByOotd(savedReportOotd.getOotd());
+        ootd.setReportCount(countByOotd);
 
         return ReportResultRes.of(savedReportOotd.getOotd().getId(), countByOotd);
     }

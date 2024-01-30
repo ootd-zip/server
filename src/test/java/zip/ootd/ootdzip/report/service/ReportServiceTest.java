@@ -77,6 +77,12 @@ class ReportServiceTest extends IntegrationTestSupport {
         assertThat(result)
                 .extracting("id", "reportCount")
                 .contains(savedOotd.getId(), 1);
+
+        Ootd reportedOotd = ootdRepository.findById(savedOotd.getId()).get();
+
+        assertThat(reportedOotd.getReportCount())
+                .isEqualTo(result.getReportCount());
+
     }
 
     @DisplayName("유효하지 않은 ootdId를 신고하면 에러가 발생한다.")
