@@ -115,7 +115,9 @@ public enum ErrorCode {
 
     NOT_DUPLICATE_REPORT(400, "R002", "신고는 한번만 가능합니다."),
 
-    CANT_MY_REPORT(400, "R003", "작성자는 신고가 불가능합니다.");
+    CANT_MY_REPORT(400, "R003", "작성자는 신고가 불가능합니다."),
+
+    NOT_FOUNT_COMMENT_ID(404, "CM001", "유효하지 않은 댓글 ID");
 
     private final Integer status;
 

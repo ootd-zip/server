@@ -83,34 +83,6 @@ class ReportOotdRepositoryTest extends IntegrationTestSupport {
         assertThat(result).isFalse();
     }
 
-    @DisplayName("Ootd가 신고된 회수를 조회한다.")
-    @Test
-    void countByOotd() {
-        // given
-        User writer = createUserBy("작성자1");
-        User reportUser = createUserBy("신고자1");
-
-        Ootd ootd = Ootd.builder()
-                .writer(writer)
-                .isPrivate(false)
-                .contents("내용1")
-                .build();
-
-        Ootd savedOotd = ootdRepository.save(ootd);
-
-        Report report = createReportBy("신고항목1");
-
-        ReportOotd reportOotd = ReportOotd.of(report, ootd, reportUser);
-
-        reportOotdRepository.save(reportOotd);
-
-        // when
-        Integer result = reportOotdRepository.countByOotd(savedOotd);
-
-        //then
-        assertThat(result).isEqualTo(1);
-    }
-
     private User createUserBy(String userName) {
         User user = User.getDefault();
         user.setName(userName);

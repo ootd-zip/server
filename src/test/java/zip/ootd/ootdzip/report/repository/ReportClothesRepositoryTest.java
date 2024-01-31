@@ -91,27 +91,6 @@ class ReportClothesRepositoryTest extends IntegrationTestSupport {
         assertThat(result).isFalse();
     }
 
-    @DisplayName("옷의 신고수를 조회한다.")
-    @Test
-    void countByClothes() {
-        // given
-        Report report = createReportBy("신고항목1");
-
-        User user = createUserBy("유저1");
-        User reporter = createUserBy("신고자1");
-
-        Clothes clothes = createClothesBy(user, true, "1");
-
-        ReportClothes reportClothes = ReportClothes.of(report, clothes, reporter);
-
-        reportClothesRepository.save(reportClothes);
-        // when
-        Integer result = reportClothesRepository.countByClothes(clothes);
-
-        //then
-        assertThat(result).isEqualTo(1);
-    }
-
     private User createUserBy(String userName) {
         User user = User.getDefault();
         user.setName(userName);

@@ -56,7 +56,7 @@ class ReportClothesStrategyTest extends IntegrationTestSupport {
     @Autowired
     private ReportClothesStrategy reportClothesStrategy;
 
-    @DisplayName("옷을 신고한다.")
+    @DisplayName("옷을 신고하면 신고한 옷 Id와 해당 옷의 신고수를 반환한다.")
     @Test
     void reportClothes() {
         // given

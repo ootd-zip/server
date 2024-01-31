@@ -110,8 +110,8 @@ public class Clothes extends BaseEntity {
         colors.forEach(this::addClothesColor);
     }
 
-    public void updateReportCount(Integer reportCount) {
-        this.reportCount = reportCount;
+    public void increaseReportCount() {
+        this.reportCount += 1;
     }
 
 }

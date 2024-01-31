@@ -40,9 +40,8 @@ public class ReportClothesStrategy implements ReportStrategy {
         ReportClothes reportClothes = ReportClothes.of(report, clothes, reporter);
         reportClothesRepository.save(reportClothes);
 
-        Integer clothesReportCount = reportClothesRepository.countByClothes(clothes);
-        clothes.updateReportCount(clothesReportCount);
+        clothes.increaseReportCount();
 
-        return ReportResultRes.of(clothes.getId(), clothesReportCount);
+        return ReportResultRes.of(clothes.getId(), clothes.getReportCount());
     }
 }

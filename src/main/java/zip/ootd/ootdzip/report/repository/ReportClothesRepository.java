@@ -11,6 +11,4 @@ import zip.ootd.ootdzip.user.domain.User;
 public interface ReportClothesRepository extends JpaRepository<ReportClothes, Long> {
 
     boolean existsByClothesAndReporter(Clothes clothes, User reporter);
-
-    Integer countByClothes(Clothes clothes);
 }

@@ -213,7 +213,7 @@ public class Ootd extends BaseEntity {
         comment.setOotd(this);
     }
 
-    public void updateReportCount(Integer reportCount) {
-        this.reportCount = reportCount;
+    public void increaseReportCount() {
+        this.reportCount += 1;
     }
 }

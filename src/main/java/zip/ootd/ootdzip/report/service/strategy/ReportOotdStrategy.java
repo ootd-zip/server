@@ -38,13 +38,11 @@ public class ReportOotdStrategy implements ReportStrategy {
         }
 
         ReportOotd reportOotd = ReportOotd.of(report, ootd, reporter);
-
         reportOotdRepository.save(reportOotd);
 
-        Integer ootdReportCount = reportOotdRepository.countByOotd(ootd);
-        ootd.updateReportCount(ootdReportCount);
+        ootd.increaseReportCount();
 
-        return ReportResultRes.of(ootd.getId(), ootdReportCount);
+        return ReportResultRes.of(ootd.getId(), ootd.getReportCount());
     }
 
 }
