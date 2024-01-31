@@ -122,4 +122,11 @@ public class UserController {
     public String getName() {
         return userService.getAuthenticatiedUser().getName();
     }
+
+    @GetMapping("/complete")
+    public ApiResponse<Boolean> getIsComplete() {
+        User currentUser = userService.getAuthenticatiedUser();
+        return new ApiResponse<>(currentUser.getIsCompleted());
+    }
+
 }
