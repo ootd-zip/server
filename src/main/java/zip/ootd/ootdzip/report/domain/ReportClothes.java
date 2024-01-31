@@ -5,7 +5,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import zip.ootd.ootdzip.clothes.domain.Clothes;
@@ -16,7 +16,6 @@ import zip.ootd.ootdzip.user.domain.User;
 @Table(name = "report_clothes")
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 public class ReportClothes extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -29,6 +28,21 @@ public class ReportClothes extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User user;
+    private User reporter;
+
+    @Builder
+    private ReportClothes(Report report, Clothes clothes, User reporter) {
+        this.report = report;
+        this.clothes = clothes;
+        this.reporter = reporter;
+    }
+
+    public static ReportClothes of(Report report, Clothes clothes, User reporter) {
+        return ReportClothes.builder()
+                .report(report)
+                .clothes(clothes)
+                .reporter(reporter)
+                .build();
+    }
 
 }

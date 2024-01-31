@@ -28,9 +28,9 @@ class ReportOotdRepositoryTest extends IntegrationTestSupport {
     @Autowired
     private ReportOotdRepository reportOotdRepository;
 
-    @DisplayName("사용자가 ootd를 신고한적이 있으면 true를 반환한다.")
+    @DisplayName("신고자가 ootd를 신고한적이 있으면 true를 반환한다.")
     @Test
-    void existsByOotdAndUser() {
+    void existsByOotdAndWriter() {
         // given
         User writer = createUserBy("작성자1");
         User reportUser = createUserBy("신고자1");
@@ -55,9 +55,9 @@ class ReportOotdRepositoryTest extends IntegrationTestSupport {
         assertThat(result).isTrue();
     }
 
-    @DisplayName("사용자가 ootd를 신고한적이 없으면 false를 반환한다.")
+    @DisplayName("신고자가 ootd를 신고한적이 없으면 false를 반환한다.")
     @Test
-    void noExistsByOotdAndUser() {
+    void noExistsByOotdAndWriter() {
         // given
         User writer = createUserBy("작성자1");
         User reportUser1 = createUserBy("신고자1");

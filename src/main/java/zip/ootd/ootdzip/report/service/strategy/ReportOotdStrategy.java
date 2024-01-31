@@ -26,11 +26,12 @@ public class ReportOotdStrategy implements ReportStrategy {
     @Override
     public ReportResultRes report(User reporter, ReportSvcReq request) {
 
-        Report report = reportRepository.findById(request.getReportId())
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_REPORT_ID));
+        Report report = validateReportId(request.getReportId(), reportRepository);
 
         Ootd ootd = ootdRepository.findById(request.getTargetId())
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_OOTD_ID));
+
+        checkReporterAndWriter(reporter, ootd.getWriter());
 
         if (reportOotdRepository.existsByOotdAndReporter(ootd, reporter)) {
             throw new CustomException(ErrorCode.NOT_DUPLICATE_REPORT);
@@ -38,12 +39,12 @@ public class ReportOotdStrategy implements ReportStrategy {
 
         ReportOotd reportOotd = ReportOotd.of(report, ootd, reporter);
 
-        ReportOotd savedReportOotd = reportOotdRepository.save(reportOotd);
+        reportOotdRepository.save(reportOotd);
 
-        Integer ootdReportCount = reportOotdRepository.countByOotd(savedReportOotd.getOotd());
-        ootd.setReportCount(ootdReportCount);
+        Integer ootdReportCount = reportOotdRepository.countByOotd(ootd);
+        ootd.updateReportCount(ootdReportCount);
 
-        return ReportResultRes.of(savedReportOotd.getOotd().getId(), ootdReportCount);
+        return ReportResultRes.of(ootd.getId(), ootdReportCount);
     }
 
 }

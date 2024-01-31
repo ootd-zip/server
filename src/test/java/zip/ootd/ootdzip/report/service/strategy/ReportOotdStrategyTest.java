@@ -39,13 +39,7 @@ class ReportOotdStrategyTest extends IntegrationTestSupport {
         User writer = createUserBy("작성자1");
         User reportUser = createUserBy("신고자1");
 
-        Ootd ootd = Ootd.builder()
-                .writer(writer)
-                .isPrivate(false)
-                .contents("내용1")
-                .build();
-
-        Ootd savedOotd = ootdRepository.save(ootd);
+        Ootd savedOotd = createOotdBy(writer);
 
         Report report = createReportBy("신고항목1");
 
@@ -92,13 +86,7 @@ class ReportOotdStrategyTest extends IntegrationTestSupport {
         User writer = createUserBy("작성자1");
         User reportUser = createUserBy("신고자1");
 
-        Ootd ootd = Ootd.builder()
-                .writer(writer)
-                .isPrivate(false)
-                .contents("내용1")
-                .build();
-
-        Ootd savedOotd = ootdRepository.save(ootd);
+        Ootd savedOotd = createOotdBy(writer);
 
         ReportSvcReq request = ReportSvcReq.of(0L, savedOotd.getId(), ReportType.OOTD);
 
@@ -109,20 +97,14 @@ class ReportOotdStrategyTest extends IntegrationTestSupport {
                 .contains(404, "R001", "유효하지 않은 신고 ID");
     }
 
-    @DisplayName("같은 사람이 같은 ootd를 신고하면 에러가 발생한다.")
+    @DisplayName("같은 사람이 같은 ootd를 2번 이상 신고하면 에러가 발생한다.")
     @Test
     void reportOotdWithDuplicateUserAndOotd() {
         // given
         User writer = createUserBy("작성자1");
         User reportUser = createUserBy("신고자1");
 
-        Ootd ootd = Ootd.builder()
-                .writer(writer)
-                .isPrivate(false)
-                .contents("내용1")
-                .build();
-
-        Ootd savedOotd = ootdRepository.save(ootd);
+        Ootd savedOotd = createOotdBy(writer);
 
         Report report = createReportBy("신고항목1");
 
@@ -137,6 +119,25 @@ class ReportOotdStrategyTest extends IntegrationTestSupport {
                 .contains(400, "R002", "신고는 한번만 가능합니다.");
     }
 
+    @DisplayName("자신이 작성한 ootd를 신고하면 에러가 발생한다.")
+    @Test
+    void reportMyOotd() {
+        // given
+        User writer = createUserBy("작성자1");
+
+        Ootd savedOotd = createOotdBy(writer);
+
+        Report report = createReportBy("신고항목1");
+
+        ReportSvcReq request = ReportSvcReq.of(report.getId(), savedOotd.getId(), ReportType.OOTD);
+
+        // when & then
+        assertThatThrownBy(() -> reportOotdStrategy.report(writer, request))
+                .isInstanceOf(CustomException.class)
+                .extracting("errorCode.status", "errorCode.divisionCode", "errorCode.message")
+                .contains(400, "R003", "작성자는 신고가 불가능합니다.");
+    }
+
     private User createUserBy(String userName) {
         User user = User.getDefault();
         user.setName(userName);
@@ -146,5 +147,15 @@ class ReportOotdStrategyTest extends IntegrationTestSupport {
     private Report createReportBy(String message) {
         Report report = new Report(message);
         return reportRepository.save(report);
+    }
+
+    private Ootd createOotdBy(User writer) {
+        Ootd ootd = Ootd.builder()
+                .writer(writer)
+                .isPrivate(false)
+                .contents("내용1")
+                .build();
+
+        return ootdRepository.save(ootd);
     }
 }
