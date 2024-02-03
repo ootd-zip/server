@@ -60,6 +60,8 @@ public class Clothes extends BaseEntity {
 
     private String imageUrl;
 
+    private Integer reportCount;
+
     @Builder.Default
     @OneToMany(mappedBy = "clothes", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ClothesColor> clothesColors = new ArrayList<>();
@@ -91,6 +93,7 @@ public class Clothes extends BaseEntity {
                 .material(material)
                 .purchaseDate(purchaseDate)
                 .imageUrl(imageUrl)
+                .reportCount(0)
                 .build();
 
         clothes.addClothesColors(clothesColors);
@@ -105,6 +108,10 @@ public class Clothes extends BaseEntity {
 
     private void addClothesColors(List<ClothesColor> colors) {
         colors.forEach(this::addClothesColor);
+    }
+
+    public void increaseReportCount() {
+        this.reportCount += 1;
     }
 
 }

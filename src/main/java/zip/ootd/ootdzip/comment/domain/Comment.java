@@ -47,7 +47,7 @@ public class Comment extends BaseEntity {
     private int depth = 0;
 
     @Builder.Default
-    private int report = 0;
+    private int reportCount = 0;
 
     private String contents;
 
@@ -107,5 +107,9 @@ public class Comment extends BaseEntity {
             long years = ChronoUnit.YEARS.between(createdTimeLD, nowLD);
             return years + "년전";
         }
+    }
+
+    public void increaseReportCount() {
+        this.reportCount += 1;
     }
 }

@@ -128,4 +128,5 @@ public class UserController {
         User currentUser = userService.getAuthenticatiedUser();
         return new ApiResponse<>(currentUser.getIsCompleted());
     }
+
 }
