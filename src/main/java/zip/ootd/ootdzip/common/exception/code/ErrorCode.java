@@ -121,7 +121,6 @@ public enum ErrorCode {
 
     DUPLICATE_DELETE_COMMENT(400, "CM002", "이미 삭제된 댓글 입니다.");
 
-
     private final Integer status;
 
     private final String divisionCode;
