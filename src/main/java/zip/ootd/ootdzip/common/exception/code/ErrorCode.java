@@ -117,7 +117,10 @@ public enum ErrorCode {
 
     CANT_MY_REPORT(400, "R003", "작성자는 신고가 불가능합니다."),
 
-    NOT_FOUNT_COMMENT_ID(404, "CM001", "유효하지 않은 댓글 ID");
+    NOT_FOUNT_COMMENT_ID(404, "CM001", "유효하지 않은 댓글 ID"),
+
+    DUPLICATE_DELETE_COMMENT(400, "CM002", "이미 삭제된 댓글 입니다.");
+
 
     private final Integer status;
 

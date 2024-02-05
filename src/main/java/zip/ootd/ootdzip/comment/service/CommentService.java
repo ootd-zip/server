@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import zip.ootd.ootdzip.comment.data.CommentPostReq;
 import zip.ootd.ootdzip.comment.domain.Comment;
 import zip.ootd.ootdzip.comment.repository.CommentRepository;
+import zip.ootd.ootdzip.common.exception.CustomException;
+import zip.ootd.ootdzip.common.exception.code.ErrorCode;
 import zip.ootd.ootdzip.ootd.domain.Ootd;
 import zip.ootd.ootdzip.ootd.repository.OotdRepository;
 import zip.ootd.ootdzip.user.domain.User;
@@ -59,5 +61,21 @@ public class CommentService {
         }
 
         commentRepository.save(comment);
+    }
+
+    /**
+     * soft_delete 로 삭제합니다.
+     * 삭제여부와 삭제시간을 변경합니다.
+     * 이미 삭제된 댓글인 경우 예외를 반환합니다.
+     */
+    public void deleteOotd(Long id) {
+
+        Comment comment = commentRepository.findById(id).orElseThrow();
+
+        if (comment.getIsDeleted()) {
+            throw new CustomException(ErrorCode.DUPLICATE_DELETE_COMMENT);
+        }
+
+        comment.deleteComment();
     }
 }

@@ -64,6 +64,8 @@ public class Comment extends BaseEntity {
     @Column(nullable = false)
     private Boolean isDeleted = false;
 
+    private LocalDateTime deletedAt;
+
     @Builder.Default
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
@@ -136,5 +138,10 @@ public class Comment extends BaseEntity {
         }
 
         return contents;
+    }
+
+    public void deleteComment() {
+        this.isDeleted = true;
+        this.deletedAt = LocalDateTime.now();
     }
 }
