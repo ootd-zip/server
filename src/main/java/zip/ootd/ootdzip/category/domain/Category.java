@@ -39,4 +39,27 @@ public class Category {
     @JoinColumn(name = "parent_id", nullable = true)
     private Category parentCategory;
 
+    @Builder
+    private Category(String name, CategoryType type, Category parentCategory) {
+        this.name = name;
+        this.type = type;
+        this.parentCategory = parentCategory;
+    }
+
+    public static Category createLargeCategoryBy(String name) {
+        return Category.builder()
+                .name(name)
+                .type(CategoryType.LargeCategory)
+                .parentCategory(null)
+                .build();
+    }
+
+    public static Category createDetailCategoryBy(String name, Category parentCategory) {
+        return Category.builder()
+                .name(name)
+                .type(CategoryType.DetailCategory)
+                .parentCategory(parentCategory)
+                .build();
+    }
+
 }
