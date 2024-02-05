@@ -22,7 +22,7 @@ public class CommentController {
     private final CommentService commentService;
 
     @Operation(summary = "comment 작성", description = "사용자가 작성한 comment 를 저장하는 api")
-    @PostMapping("/")
+    @PostMapping("")
     public ApiResponse<Boolean> saveComment(@RequestBody @Valid CommentPostReq request) {
 
         commentService.saveComment(request);
