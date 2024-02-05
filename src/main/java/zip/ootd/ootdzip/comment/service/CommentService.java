@@ -38,23 +38,24 @@ public class CommentService {
         int parentDepth = request.getParentDepth();
         if (parentDepth == 0) {
             comment = Comment.builder()
-                    .ootd(ootd)
                     .writer(writer)
                     .depth(parentDepth + 1)
                     .contents(request.getContent())
                     .build();
             ootd.addComment(comment); // 대댓글이 아닌 댓글만 ootd 에 저장
         } else {
-            User taggedUser = userRepository.findByName(request.getTaggedUserName()).orElseThrow();
+            User taggedUser = null;
+            if (request.getTaggedUserName() != null && !request.getTaggedUserName().isEmpty()) {
+                taggedUser = userRepository.findByName(request.getTaggedUserName()).orElseThrow();
+            }
             Comment parentComment = commentRepository.findById(request.getCommentParentId()).orElseThrow();
             comment = Comment.builder()
-                    .ootd(ootd)
                     .writer(writer)
                     .depth(parentDepth + 1)
                     .contents(request.getContent())
                     .taggedUser(taggedUser)
                     .build();
-            parentComment.addChildComment(comment);
+            parentComment.addChildComment(comment); // 대댓글의 경우 ootd 정보를 따로 저장하지 않아 ootd 확인시 부모댓글을 조회해서 ootd 를 확인해야함
         }
 
         commentRepository.save(comment);
