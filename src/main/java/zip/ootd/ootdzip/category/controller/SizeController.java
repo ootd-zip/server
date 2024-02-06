@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -23,7 +22,7 @@ public class SizeController {
     private final SizeService sizeService;
 
     @GetMapping("")
-    public List<SizeRes> findByCategory(@Valid @RequestParam SizeReq request) {
+    public List<SizeRes> findByCategory(@Valid SizeReq request) {
         return sizeService.findByCategory(request);
     }
 }
