@@ -32,6 +32,7 @@ public class CategoryRes {
                 .build();
     }
 
+    @Getter
     static class DetailCategory {
 
         private final Long id;
