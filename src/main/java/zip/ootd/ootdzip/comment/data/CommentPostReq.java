@@ -14,9 +14,9 @@ public class CommentPostReq {
 
     private Long commentParentId;
 
-    @NotNull
+    @NotNull(message = "부모댓글인지 자식댓글인지 값을 알려주어야 합니다.")
     private int parentDepth;
 
-    @NotBlank
+    @NotBlank(message = "댓글 내용은 필수입니다.")
     private String content;
 }

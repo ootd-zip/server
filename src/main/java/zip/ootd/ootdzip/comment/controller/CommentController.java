@@ -1,5 +1,7 @@
 package zip.ootd.ootdzip.comment.controller;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,10 +24,19 @@ public class CommentController {
     private final CommentService commentService;
 
     @Operation(summary = "comment 작성", description = "사용자가 작성한 comment 를 저장하는 api")
-    @PostMapping("/")
+    @PostMapping("")
     public ApiResponse<Boolean> saveComment(@RequestBody @Valid CommentPostReq request) {
 
         commentService.saveComment(request);
+
+        return new ApiResponse<>(true);
+    }
+
+    @Operation(summary = "comment 삭제", description = "사용자가 작성한 comment 를 삭제하는 api 로 soft delete 가 적용 됩니다.")
+    @DeleteMapping("/{id}")
+    public ApiResponse<Boolean> deleteComment(@PathVariable Long id) {
+
+        commentService.deleteOotd(id);
 
         return new ApiResponse<>(true);
     }

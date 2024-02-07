@@ -7,6 +7,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.annotations.Where;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -25,6 +27,9 @@ import zip.ootd.ootdzip.user.domain.User;
 
 @Entity
 @Table(name = "comments")
+@Where(clause = "(depth = 1 AND is_deleted = false AND report_count < 5 AND child_count = 0) "
+        + "OR (depth = 1 AND child_count > 0) "
+        + "OR (depth = 2 AND is_deleted = false AND report_count < 5)")
 @Getter
 @Setter
 @Builder
@@ -33,7 +38,7 @@ import zip.ootd.ootdzip.user.domain.User;
 public class Comment extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ootd_id", nullable = false)
+    @JoinColumn(name = "ootd_id")
     private Ootd ootd;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -49,11 +54,16 @@ public class Comment extends BaseEntity {
     @Builder.Default
     private int reportCount = 0;
 
+    @Builder.Default
+    private int childCount = 0;
+
     private String contents;
 
     @Builder.Default
     @Column(nullable = false)
     private Boolean isDeleted = false;
+
+    private LocalDateTime deletedAt;
 
     @Builder.Default
     @ManyToOne(fetch = FetchType.LAZY)
@@ -67,6 +77,8 @@ public class Comment extends BaseEntity {
     public void addChildComment(Comment comment) {
         childComments.add(comment);
         comment.setParent(this);
+
+        this.childCount++;
     }
 
     /**
@@ -111,5 +123,28 @@ public class Comment extends BaseEntity {
 
     public void increaseReportCount() {
         this.reportCount += 1;
+    }
+
+    /**
+     * 댓글 (삭제 또는 신고 수 일정 이상), 대댓글 있을시 "삭제된 댓글입니다" 로 표시
+     * 댓글 (삭제 또는 신고 수 일정 이상), 대댓글 없을시 댓글 삭제
+     * 대댓글 (삭제 또는 신고 수 일정 이상) 시 대댓글 삭제
+     */
+    public String getContents() {
+
+        if (isDeleted || reportCount >= 5) {
+            return "삭제된 댓글입니다.";
+        }
+
+        return contents;
+    }
+
+    public void deleteComment() {
+        this.isDeleted = true;
+        this.deletedAt = LocalDateTime.now();
+
+        if (this.parent != null) {
+            parent.childCount--;
+        }
     }
 }

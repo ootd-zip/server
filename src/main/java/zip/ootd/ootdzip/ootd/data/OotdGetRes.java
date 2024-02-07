@@ -200,7 +200,9 @@ public class OotdGetRes {
                 this.content = comment.getContents();
                 this.userImage = comment.getWriter().getProfileImage();
                 this.timeStamp = comment.compareCreatedTimeAndNow();
-                this.taggedUserName = comment.getTaggedUser().getName();
+                if (comment.getTaggedUser() != null) {
+                    this.taggedUserName = comment.getTaggedUser().getName();
+                }
             }
         }
     }
