@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import zip.ootd.ootdzip.IntegrationTestSupport;
 import zip.ootd.ootdzip.brand.domain.Brand;
 import zip.ootd.ootdzip.brand.repository.BrandRepository;
-import zip.ootd.ootdzip.category.data.CategoryType;
+import zip.ootd.ootdzip.category.data.SizeType;
 import zip.ootd.ootdzip.category.domain.Category;
 import zip.ootd.ootdzip.category.domain.Color;
 import zip.ootd.ootdzip.category.domain.Size;
@@ -64,19 +64,15 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
 
         Brand savedBrand = brandRepository.save(brand);
 
-        Category parentCategory = Category.builder().name("부모 카테고리1").type(CategoryType.LargeCategory).build();
+        Category parentCategory = Category.createLargeCategoryBy("상위카테고리1", SizeType.TOP);
 
         Category savedParentCategory = categoryRepository.save(parentCategory);
 
-        Category category = Category.builder()
-                .name("카테고리1")
-                .parentCategory(savedParentCategory)
-                .type(CategoryType.DetailCategory)
-                .build();
+        Category category = Category.createDetailCategoryBy("카테고리1", savedParentCategory, SizeType.TOP);
 
         Category savedCategory = categoryRepository.save(category);
 
-        Size size = Size.builder().category(savedCategory).name("사이즈1").lineNo((byte)1).build();
+        Size size = Size.builder().sizeType(SizeType.TOP).name("사이즈1").lineNo((byte)1).build();
 
         Size savedSize = sizeRepository.save(size);
 
@@ -122,19 +118,15 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
 
         Brand savedBrand = brandRepository.save(brand);
 
-        Category parentCategory = Category.builder().name("부모 카테고리1").type(CategoryType.LargeCategory).build();
+        Category parentCategory = Category.createLargeCategoryBy("상위카테고리1", SizeType.TOP);
 
         Category savedParentCategory = categoryRepository.save(parentCategory);
 
-        Category category = Category.builder()
-                .name("카테고리1")
-                .parentCategory(savedParentCategory)
-                .type(CategoryType.DetailCategory)
-                .build();
+        Category category = Category.createDetailCategoryBy("카테고리1", savedParentCategory, SizeType.TOP);
 
         Category savedCategory = categoryRepository.save(category);
 
-        Size size = Size.builder().category(savedCategory).name("사이즈1").lineNo((byte)1).build();
+        Size size = Size.builder().sizeType(SizeType.TOP).name("사이즈1").lineNo((byte)1).build();
 
         Size savedSize = sizeRepository.save(size);
 
@@ -171,19 +163,15 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
 
         Brand savedBrand = brandRepository.save(brand);
 
-        Category parentCategory = Category.builder().name("부모 카테고리1").type(CategoryType.LargeCategory).build();
+        Category parentCategory = Category.createLargeCategoryBy("상위카테고리1", SizeType.TOP);
 
         Category savedParentCategory = categoryRepository.save(parentCategory);
 
-        Category category = Category.builder()
-                .name("카테고리1")
-                .parentCategory(savedParentCategory)
-                .type(CategoryType.DetailCategory)
-                .build();
+        Category category = Category.createDetailCategoryBy("카테고리1", savedParentCategory, SizeType.TOP);
 
         Category savedCategory = categoryRepository.save(category);
 
-        Size size = Size.builder().category(savedCategory).name("사이즈1").lineNo((byte)1).build();
+        Size size = Size.builder().sizeType(SizeType.TOP).name("사이즈1").lineNo((byte)1).build();
 
         Size savedSize = sizeRepository.save(size);
 
@@ -220,19 +208,15 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
 
         Brand savedBrand = brandRepository.save(brand);
 
-        Category parentCategory = Category.builder().name("부모 카테고리1").type(CategoryType.LargeCategory).build();
+        Category parentCategory = Category.createLargeCategoryBy("상위카테고리", SizeType.TOP);
 
         Category savedParentCategory = categoryRepository.save(parentCategory);
 
-        Category category = Category.builder()
-                .name("카테고리1")
-                .parentCategory(savedParentCategory)
-                .type(CategoryType.DetailCategory)
-                .build();
+        Category category = Category.createDetailCategoryBy("카테고리", savedParentCategory, SizeType.TOP);
 
         Category savedCategory = categoryRepository.save(category);
 
-        Size size = Size.builder().category(savedCategory).name("사이즈1").lineNo((byte)1).build();
+        Size size = Size.builder().sizeType(SizeType.TOP).name("사이즈1").lineNo((byte)1).build();
 
         Size savedSize = sizeRepository.save(size);
 
@@ -270,19 +254,15 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
 
         Brand savedBrand = brandRepository.save(brand);
 
-        Category parentCategory = Category.builder().name("부모 카테고리1").type(CategoryType.LargeCategory).build();
+        Category parentCategory = Category.createLargeCategoryBy("상위카테고리1", SizeType.TOP);
 
         Category savedParentCategory = categoryRepository.save(parentCategory);
 
-        Category category = Category.builder()
-                .name("카테고리1")
-                .parentCategory(savedParentCategory)
-                .type(CategoryType.DetailCategory)
-                .build();
+        Category category = Category.createDetailCategoryBy("카테고리1", savedParentCategory, SizeType.TOP);
 
         Category savedCategory = categoryRepository.save(category);
 
-        Size size = Size.builder().category(savedCategory).name("사이즈1").lineNo((byte)1).build();
+        Size size = Size.builder().sizeType(SizeType.TOP).name("사이즈1").lineNo((byte)1).build();
 
         Size savedSize = sizeRepository.save(size);
 
@@ -320,19 +300,15 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
 
         Brand savedBrand = brandRepository.save(brand);
 
-        Category parentCategory = Category.builder().name("부모 카테고리1").type(CategoryType.LargeCategory).build();
+        Category parentCategory = Category.createLargeCategoryBy("상위카테고리1", SizeType.TOP);
 
         Category savedParentCategory = categoryRepository.save(parentCategory);
 
-        Category category = Category.builder()
-                .name("카테고리1")
-                .parentCategory(savedParentCategory)
-                .type(CategoryType.DetailCategory)
-                .build();
+        Category category = Category.createDetailCategoryBy("카테고리1", savedParentCategory, SizeType.TOP);
 
         Category savedCategory = categoryRepository.save(category);
 
-        Size size = Size.builder().category(savedCategory).name("사이즈1").lineNo((byte)1).build();
+        Size size = Size.builder().sizeType(SizeType.TOP).name("사이즈1").lineNo((byte)1).build();
 
         Size savedSize = sizeRepository.save(size);
 
@@ -366,19 +342,15 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
 
         Brand savedBrand = brandRepository.save(brand);
 
-        Category parentCategory = Category.builder().name("부모 카테고리1").type(CategoryType.LargeCategory).build();
+        Category parentCategory = Category.createLargeCategoryBy("상위카테고리1", SizeType.TOP);
 
         Category savedParentCategory = categoryRepository.save(parentCategory);
 
-        Category category = Category.builder()
-                .name("카테고리1")
-                .parentCategory(savedParentCategory)
-                .type(CategoryType.DetailCategory)
-                .build();
+        Category category = Category.createDetailCategoryBy("카테고리1", savedParentCategory, SizeType.TOP);
 
         Category savedCategory = categoryRepository.save(category);
 
-        Size size = Size.builder().category(savedCategory).name("사이즈1").lineNo((byte)1).build();
+        Size size = Size.builder().sizeType(SizeType.TOP).name("사이즈1").lineNo((byte)1).build();
 
         Size savedSize = sizeRepository.save(size);
 
@@ -406,7 +378,7 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
 
     }
 
-    @DisplayName("카테고리에 속하지 않은 사이즈 Id로 옷을 저장하면 에러가 발생한다.")
+    @DisplayName("카테고리에 사이즈 타입이 다른 사이즈 Id로 옷을 저장하면 에러가 발생한다.")
     @Test
     void saveClothesWithSizeIdNotIncludedCategory() {
         // given
@@ -416,26 +388,15 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
 
         Brand savedBrand = brandRepository.save(brand);
 
-        Category parentCategory = Category.builder().name("부모 카테고리1").type(CategoryType.LargeCategory).build();
+        Category parentCategory = Category.createLargeCategoryBy("상위카테고리1", SizeType.TOP);
 
         Category savedParentCategory = categoryRepository.save(parentCategory);
 
-        Category category1 = Category.builder()
-                .name("카테고리1")
-                .parentCategory(savedParentCategory)
-                .type(CategoryType.DetailCategory)
-                .build();
-
-        Category category2 = Category.builder()
-                .name("카테고리2")
-                .parentCategory(savedParentCategory)
-                .type(CategoryType.DetailCategory)
-                .build();
+        Category category1 = Category.createDetailCategoryBy("카테고리1", savedParentCategory, SizeType.TOP);
 
         Category savedCategory1 = categoryRepository.save(category1);
-        Category savedCategory2 = categoryRepository.save(category2);
 
-        Size size = Size.builder().category(savedCategory1).name("사이즈1").lineNo((byte)1).build();
+        Size size = Size.builder().sizeType(SizeType.BOTTOM).name("사이즈1").lineNo((byte)1).build();
 
         Size savedSize = sizeRepository.save(size);
 
@@ -446,7 +407,7 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
         SaveClothesSvcReq request = SaveClothesSvcReq.builder()
                 .purchaseStore("구매처1")
                 .brandId(savedBrand.getId())
-                .categoryId(savedCategory2.getId())
+                .categoryId(savedCategory1.getId())
                 .colorIds(List.of(savedColor.getId()))
                 .isOpen(true)
                 .sizeId(savedSize.getId())
@@ -478,7 +439,7 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
 
         assertThat(result.getBrand().getName()).isEqualTo("브랜드1");
 
-        assertThat(result.getCategory()).extracting("categoryName", "parentCategoryName").contains("카테고리1", "부모 카테고리1");
+        assertThat(result.getCategory()).extracting("categoryName", "parentCategoryName").contains("카테고리1", "상위카테고리1");
 
         assertThat(result.getSize()).extracting("name", "lineNo").contains("사이즈1", (byte)1);
 
@@ -626,19 +587,15 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
 
         Brand savedBrand = brandRepository.save(brand);
 
-        Category parentCategory = Category.builder().name("부모 카테고리" + idx).type(CategoryType.LargeCategory).build();
+        Category parentCategory = Category.createLargeCategoryBy("상위카테고리" + idx, SizeType.TOP);
 
         Category savedParentCategory = categoryRepository.save(parentCategory);
 
-        Category category = Category.builder()
-                .name("카테고리" + idx)
-                .parentCategory(savedParentCategory)
-                .type(CategoryType.DetailCategory)
-                .build();
+        Category category = Category.createDetailCategoryBy("카테고리" + idx, savedParentCategory, SizeType.TOP);
 
         Category savedCategory = categoryRepository.save(category);
 
-        Size size = Size.builder().category(savedCategory).name("사이즈" + idx).lineNo((byte)1).build();
+        Size size = Size.builder().sizeType(SizeType.TOP).name("사이즈" + idx).lineNo((byte)1).build();
 
         Size savedSize = sizeRepository.save(size);
 

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import zip.ootd.ootdzip.IntegrationTestSupport;
 import zip.ootd.ootdzip.category.data.CategoryRes;
+import zip.ootd.ootdzip.category.data.SizeType;
 import zip.ootd.ootdzip.category.domain.Category;
 import zip.ootd.ootdzip.category.repository.CategoryRepository;
 
@@ -25,10 +26,10 @@ class CategoryServiceTest extends IntegrationTestSupport {
     @Test
     void getCategories() {
         // given
-        Category parentCategory = Category.createLargeCategoryBy("부모카테고리1");
+        Category parentCategory = Category.createLargeCategoryBy("부모카테고리1", SizeType.TOP);
         Category savedParentCategory = categoryRepository.save(parentCategory);
 
-        Category detailCategory = Category.createDetailCategoryBy("하위카테고리1", savedParentCategory);
+        Category detailCategory = Category.createDetailCategoryBy("하위카테고리1", savedParentCategory, SizeType.TOP);
         Category savedDetailCategory = categoryRepository.save(detailCategory);
 
         // when

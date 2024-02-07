@@ -68,7 +68,7 @@ public class ClothesServiceImpl implements ClothesService {
             throw new CustomException(REQUIRED_DETAIL_CATEGORY);
         }
 
-        if (!size.getCategory().getId().equals(category.getId())) {
+        if (!size.getSizeType().equals(category.getSizeType())) {
             throw new CustomException(INVALID_CATEGORY_AND_SIZE);
         }
 

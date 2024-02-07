@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import zip.ootd.ootdzip.IntegrationTestSupport;
 import zip.ootd.ootdzip.brand.domain.Brand;
 import zip.ootd.ootdzip.brand.repository.BrandRepository;
-import zip.ootd.ootdzip.category.data.CategoryType;
+import zip.ootd.ootdzip.category.data.SizeType;
 import zip.ootd.ootdzip.category.domain.Category;
 import zip.ootd.ootdzip.category.domain.Color;
 import zip.ootd.ootdzip.category.domain.Size;
@@ -96,19 +96,15 @@ class ClothesRepositoryTest extends IntegrationTestSupport {
 
         Brand savedBrand = brandRepository.save(brand);
 
-        Category parentCategory = Category.builder().name("부모 카테고리" + idx).type(CategoryType.LargeCategory).build();
+        Category parentCategory = Category.createLargeCategoryBy("상위카테고리" + idx, SizeType.TOP);
 
         Category savedParentCategory = categoryRepository.save(parentCategory);
 
-        Category category = Category.builder()
-                .name("카테고리" + idx)
-                .parentCategory(savedParentCategory)
-                .type(CategoryType.DetailCategory)
-                .build();
+        Category category = Category.createDetailCategoryBy("카테고리" + idx, savedParentCategory, SizeType.TOP);
 
         Category savedCategory = categoryRepository.save(category);
 
-        Size size = Size.builder().category(savedCategory).name("사이즈" + idx).lineNo((byte)1).build();
+        Size size = Size.builder().sizeType(SizeType.TOP).name("사이즈" + idx).lineNo((byte)1).build();
 
         Size savedSize = sizeRepository.save(size);
 
