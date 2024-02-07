@@ -25,7 +25,7 @@ public class SizeService {
         Category findCategory = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 카테고리 ID"));
 
-        List<Size> sizes = sizeRepository.findByCategory(findCategory);
+        List<Size> sizes = sizeRepository.findBySizeType(findCategory.getSizeType());
 
         if (sizes == null || sizes.isEmpty()) {
             throw new CustomException(ErrorCode.NOT_REGISTERED_SIZE);

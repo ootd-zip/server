@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import zip.ootd.ootdzip.brand.domain.Brand;
 import zip.ootd.ootdzip.category.data.CategoryType;
+import zip.ootd.ootdzip.category.data.SizeType;
 import zip.ootd.ootdzip.category.domain.Category;
 import zip.ootd.ootdzip.category.domain.Color;
 import zip.ootd.ootdzip.category.domain.Size;
@@ -31,9 +32,10 @@ class ClothesTest {
                 .name("카테고리2")
                 .parentCategory(parentCategory)
                 .type(CategoryType.DetailCategory)
+                .sizeType(SizeType.TOP)
                 .build();
 
-        Size size = Size.builder().category(category).name("XL").lineNo((byte)1).build();
+        Size size = Size.builder().sizeType(SizeType.TOP).name("XL").lineNo((byte)1).build();
 
         Color color = Color.builder().name("색1").colorCode("#fffff").build();
 

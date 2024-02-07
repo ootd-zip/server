@@ -15,6 +15,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import zip.ootd.ootdzip.category.data.CategoryType;
+import zip.ootd.ootdzip.category.data.SizeType;
 
 @Entity
 @Table(name = "categories")
@@ -35,6 +36,9 @@ public class Category {
     @Column(nullable = false)
     private CategoryType type;
 
+    @Enumerated(EnumType.STRING)
+    private SizeType sizeType;
+
     @ManyToOne
     @JoinColumn(name = "parent_id", nullable = true)
     private Category parentCategory;
@@ -46,19 +50,21 @@ public class Category {
         this.parentCategory = parentCategory;
     }
 
-    public static Category createLargeCategoryBy(String name) {
+    public static Category createLargeCategoryBy(String name, SizeType sizeType) {
         return Category.builder()
                 .name(name)
                 .type(CategoryType.LargeCategory)
                 .parentCategory(null)
+                .sizeType(sizeType)
                 .build();
     }
 
-    public static Category createDetailCategoryBy(String name, Category parentCategory) {
+    public static Category createDetailCategoryBy(String name, Category parentCategory, SizeType sizeType) {
         return Category.builder()
                 .name(name)
                 .type(CategoryType.DetailCategory)
                 .parentCategory(parentCategory)
+                .sizeType(sizeType)
                 .build();
     }
 
