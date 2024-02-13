@@ -40,7 +40,7 @@ public class SaveClothesReq {
     @NotBlank(message = "제품명은 필수입니다.")
     private String name;
 
-    @Size(max = 3000, message = "메모는 최대 3000자입니다.")
+    @Size(max = 2001, message = "메모는 최대 3000자입니다.")
     private String memo;
 
     private String purchaseDate;
