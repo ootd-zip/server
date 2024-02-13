@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -39,13 +40,14 @@ public class SaveClothesReq {
     @NotBlank(message = "제품명은 필수입니다.")
     private String name;
 
-    private String material;
+    @Size(max = 3000, message = "메모는 최대 3000자입니다.")
+    private String memo;
 
     private String purchaseDate;
 
     @Builder
     private SaveClothesReq(String purchaseStore, Long brandId, Long categoryId, List<Long> colorIds,
-            Boolean isOpen, Long sizeId, String clothesImageUrl, String name, String material, String purchaseDate) {
+            Boolean isOpen, Long sizeId, String clothesImageUrl, String name, String memo, String purchaseDate) {
         this.purchaseStore = purchaseStore;
         this.brandId = brandId;
         this.categoryId = categoryId;
@@ -54,7 +56,7 @@ public class SaveClothesReq {
         this.sizeId = sizeId;
         this.clothesImageUrl = clothesImageUrl;
         this.name = name;
-        this.material = material;
+        this.memo = memo;
         this.purchaseDate = purchaseDate;
     }
 
@@ -67,7 +69,7 @@ public class SaveClothesReq {
                 .isOpen(this.isOpen)
                 .sizeId(this.sizeId)
                 .clothesImageUrl(this.clothesImageUrl)
-                .material(this.material)
+                .memo(this.memo)
                 .name(this.name)
                 .purchaseDate(this.purchaseDate)
                 .build();

@@ -115,7 +115,7 @@ class ClothesRepositoryTest extends IntegrationTestSupport {
         List<ClothesColor> clothesColors = ClothesColor.createClothesColorsBy(List.of(savedColor));
 
         Clothes clothes = Clothes.createClothes(user, savedBrand, "구매처" + idx, "제품명" + idx, isOpen, savedCategory,
-                savedSize, "재질" + idx, "구매일" + idx, "image" + idx + ".jpg", clothesColors);
+                savedSize, "메모입니다." + idx, "구매일" + idx, "image" + idx + ".jpg", clothesColors);
 
         return clothes;
     }

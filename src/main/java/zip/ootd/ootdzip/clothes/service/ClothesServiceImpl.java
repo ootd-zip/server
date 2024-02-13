@@ -81,7 +81,7 @@ public class ClothesServiceImpl implements ClothesService {
                 request.getIsOpen(),
                 category,
                 size,
-                request.getMaterial(),
+                request.getMemo(),
                 request.getPurchaseDate(),
                 request.getClothesImageUrl(),
                 clothesColors);

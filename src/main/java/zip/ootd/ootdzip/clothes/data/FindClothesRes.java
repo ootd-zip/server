@@ -28,7 +28,7 @@ public class FindClothesRes {
 
     private SizeRes size;
 
-    private String material;
+    private String memo;
 
     private String purchaseStore;
 
@@ -40,7 +40,7 @@ public class FindClothesRes {
 
     @Builder
     private FindClothesRes(Long id, String name, String userName, BrandDto brand, Boolean isOpen,
-            DetailCategory category, SizeRes size, String material, String purchaseStore, String purchaseDate,
+            DetailCategory category, SizeRes size, String memo, String purchaseStore, String purchaseDate,
             List<ClothesColorDto> colors, String imageUrl) {
         this.id = id;
         this.name = name;
@@ -49,7 +49,7 @@ public class FindClothesRes {
         this.isOpen = isOpen;
         this.category = category;
         this.size = size;
-        this.material = material;
+        this.memo = memo;
         this.purchaseStore = purchaseStore;
         this.purchaseDate = purchaseDate;
         this.colors = colors;
@@ -69,7 +69,7 @@ public class FindClothesRes {
                         .parentCategoryName(clothes.getCategory().getParentCategory().getName())
                         .build())
                 .size(SizeRes.of(clothes.getSize()))
-                .material(clothes.getMaterial())
+                .memo(clothes.getMemo())
                 .purchaseStore(clothes.getPurchaseStore())
                 .purchaseDate(clothes.getPurchaseDate())
                 .colors(ClothesColorDto.createClothesColorDtosBy(clothes.getClothesColors()))

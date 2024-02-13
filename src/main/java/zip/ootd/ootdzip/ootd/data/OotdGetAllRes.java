@@ -120,7 +120,7 @@ public class OotdGetAllRes {
                 this.alias = clothes.getName();
                 this.category = clothes.getCategory();
                 this.size = clothes.getSize().getName();
-                this.material = clothes.getMaterial();
+                this.material = clothes.getMemo();
                 this.purchaseStore = clothes.getPurchaseStore();
                 this.purchaseDate = clothes.getPurchaseDate();
             }

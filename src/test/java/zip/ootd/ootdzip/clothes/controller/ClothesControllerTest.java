@@ -35,7 +35,7 @@ class ClothesControllerTest extends ControllerTestSupport {
                 .sizeId(1L)
                 .clothesImageUrl("image1.jpg")
                 .name("제품명1")
-                .material("재질1")
+                .memo("메모입니다.")
                 .purchaseDate("구매시기1")
                 .build();
 
@@ -62,7 +62,7 @@ class ClothesControllerTest extends ControllerTestSupport {
                 .sizeId(1L)
                 .clothesImageUrl("image1.jpg")
                 .name("제품명1")
-                .material("재질1")
+                .memo("메모입니다.")
                 .purchaseDate("구매시기1")
                 .build();
 
@@ -88,7 +88,7 @@ class ClothesControllerTest extends ControllerTestSupport {
                 .sizeId(1L)
                 .clothesImageUrl("image1.jpg")
                 .name("제품명1")
-                .material("재질1")
+                .memo("메모입니다.")
                 .purchaseDate("구매시기1")
                 .build();
 
@@ -114,7 +114,7 @@ class ClothesControllerTest extends ControllerTestSupport {
                 .sizeId(1L)
                 .clothesImageUrl("image1.jpg")
                 .name("제품명1")
-                .material("재질1")
+                .memo("메모입니다.")
                 .purchaseDate("구매시기1")
                 .build();
 
@@ -139,7 +139,7 @@ class ClothesControllerTest extends ControllerTestSupport {
                 .sizeId(1L)
                 .clothesImageUrl("image1.jpg")
                 .name("제품명1")
-                .material("재질1")
+                .memo("메모입니다.")
                 .purchaseDate("구매시기1")
                 .build();
 
@@ -165,7 +165,7 @@ class ClothesControllerTest extends ControllerTestSupport {
                 .sizeId(1L)
                 .clothesImageUrl("image1.jpg")
                 .name("제품명1")
-                .material("재질1")
+                .memo("메모입니다.")
                 .purchaseDate("구매시기1")
                 .build();
 
@@ -190,7 +190,7 @@ class ClothesControllerTest extends ControllerTestSupport {
                 .sizeId(1L)
                 .clothesImageUrl("image1.jpg")
                 .name("제품명1")
-                .material("재질1")
+                .memo("메모입니다.")
                 .purchaseDate("구매시기1")
                 .build();
 
@@ -216,7 +216,7 @@ class ClothesControllerTest extends ControllerTestSupport {
                 .sizeId(0L)
                 .clothesImageUrl("image1.jpg")
                 .name("제품명1")
-                .material("재질1")
+                .memo("메모입니다.")
                 .purchaseDate("구매시기1")
                 .build();
 
@@ -241,7 +241,7 @@ class ClothesControllerTest extends ControllerTestSupport {
                 .isOpen(true)
                 .sizeId(1L)
                 .name("제품명1")
-                .material("재질1")
+                .memo("메모입니다.")
                 .purchaseDate("구매시기1")
                 .build();
 
@@ -266,7 +266,43 @@ class ClothesControllerTest extends ControllerTestSupport {
                 .isOpen(true)
                 .sizeId(0L)
                 .clothesImageUrl("image1.jpg")
-                .material("재질1")
+                .memo("메모입니다.")
+                .purchaseDate("구매시기1")
+                .build();
+
+        // when & then
+        mockMvc.perform(post("/api/v1/clothes").content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNotFound())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(404))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errors").isArray());
+    }
+
+    @DisplayName("옷을 저장할 때 제품명은 필수이다.")
+    @Test
+    void saveClothesWithTooLongMemo() throws Exception {
+        // given
+        StringBuilder tooLongMemo = new StringBuilder();
+        // 3000자
+        for (int i = 0; i < 30; i++) {
+            tooLongMemo.append("메모입니다메모입니다메모입니다메모입니다")
+                    .append("메모입니다메모입니다메모입니다메모입니다")
+                    .append("메모입니다메모입니다메모입니다메모입니다")
+                    .append("메모입니다메모입니다메모입니다메모입니다")
+                    .append("메모입니다메모입니다메모입니다메모입니다");
+        }
+
+        SaveClothesReq request = SaveClothesReq.builder()
+                .purchaseStore("구매처1")
+                .brandId(1L)
+                .categoryId(1L)
+                .colorIds(List.of(1L))
+                .isOpen(true)
+                .sizeId(0L)
+                .clothesImageUrl("image1.jpg")
+                .name("제품명")
+                .memo(tooLongMemo.toString())
                 .purchaseDate("구매시기1")
                 .build();
 
