@@ -16,9 +16,9 @@ import zip.ootd.ootdzip.user.domain.User;
 @Repository
 public interface ClothesRepository extends JpaRepository<Clothes, Long> {
 
-    List<Clothes> findByUser(User user);
+    List<Clothes> findByUser(User user, Pageable pageable);
 
-    List<Clothes> findByUserAndIsOpenTrue(User user);
+    List<Clothes> findByUserAndIsOpenTrue(User user, Pageable pageable);
 
     @Query("SELECT COUNT(c) "
             + "FROM Clothes c "
