@@ -1,5 +1,6 @@
 package zip.ootd.ootdzip.clothes.data;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import lombok.Builder;
@@ -38,10 +39,14 @@ public class FindClothesRes {
 
     private String imageUrl;
 
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
+
     @Builder
     private FindClothesRes(Long id, String name, String userName, BrandDto brand, Boolean isOpen,
             DetailCategory category, SizeRes size, String memo, String purchaseStore, String purchaseDate,
-            List<ClothesColorDto> colors, String imageUrl) {
+            List<ClothesColorDto> colors, String imageUrl, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.name = name;
         this.userName = userName;
@@ -54,6 +59,8 @@ public class FindClothesRes {
         this.purchaseDate = purchaseDate;
         this.colors = colors;
         this.imageUrl = imageUrl;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     public static FindClothesRes of(Clothes clothes) {
@@ -74,6 +81,8 @@ public class FindClothesRes {
                 .purchaseDate(clothes.getPurchaseDate())
                 .colors(ClothesColorDto.createClothesColorDtosBy(clothes.getClothesColors()))
                 .imageUrl(clothes.getImageUrl())
+                .createdAt(clothes.getCreatedAt())
+                .updatedAt(clothes.getUpdatedAt())
                 .build();
     }
 }
