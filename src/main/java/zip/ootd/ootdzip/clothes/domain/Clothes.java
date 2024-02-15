@@ -52,7 +52,7 @@ public class Clothes extends BaseEntity {
     @JoinColumn(name = "size_id", nullable = false)
     private Size size;
 
-    private String material;
+    private String memo;
 
     private String name;
 
@@ -77,7 +77,7 @@ public class Clothes extends BaseEntity {
             Boolean isOpen,
             Category category,
             Size size,
-            String material,
+            String memo,
             String purchaseDate,
             String imageUrl,
             List<ClothesColor> clothesColors) {
@@ -90,7 +90,7 @@ public class Clothes extends BaseEntity {
                 .isOpen(isOpen)
                 .category(category)
                 .size(size)
-                .material(material)
+                .memo(memo)
                 .purchaseDate(purchaseDate)
                 .imageUrl(imageUrl)
                 .reportCount(0)

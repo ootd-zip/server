@@ -20,6 +20,7 @@ import zip.ootd.ootdzip.category.repository.ColorRepository;
 import zip.ootd.ootdzip.category.repository.SizeRepository;
 import zip.ootd.ootdzip.clothes.domain.Clothes;
 import zip.ootd.ootdzip.clothes.domain.ClothesColor;
+import zip.ootd.ootdzip.common.request.CommonPageRequest;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.repository.UserRepository;
 
@@ -57,8 +58,10 @@ class ClothesRepositoryTest extends IntegrationTestSupport {
         Clothes savedClothes1 = clothesRepository.save(clothes1);
         Clothes savedClothes2 = clothesRepository.save(clothes2);
 
+        CommonPageRequest pageRequest = new CommonPageRequest();
+
         // when
-        List<Clothes> result = clothesRepository.findByUser(savedUser);
+        List<Clothes> result = clothesRepository.findByUser(savedUser, pageRequest.toPageable());
 
         //then
         assertThat(result).hasSize(2)
@@ -81,8 +84,10 @@ class ClothesRepositoryTest extends IntegrationTestSupport {
         Clothes savedClothes1 = clothesRepository.save(clothes1);
         Clothes savedClothes2 = clothesRepository.save(clothes2);
 
+        CommonPageRequest pageRequest = new CommonPageRequest();
+
         // when
-        List<Clothes> result = clothesRepository.findByUserAndIsOpenTrue(savedUser);
+        List<Clothes> result = clothesRepository.findByUserAndIsOpenTrue(savedUser, pageRequest.toPageable());
 
         //then
         assertThat(result).hasSize(1)
@@ -115,7 +120,7 @@ class ClothesRepositoryTest extends IntegrationTestSupport {
         List<ClothesColor> clothesColors = ClothesColor.createClothesColorsBy(List.of(savedColor));
 
         Clothes clothes = Clothes.createClothes(user, savedBrand, "구매처" + idx, "제품명" + idx, isOpen, savedCategory,
-                savedSize, "재질" + idx, "구매일" + idx, "image" + idx + ".jpg", clothesColors);
+                savedSize, "메모입니다." + idx, "구매일" + idx, "image" + idx + ".jpg", clothesColors);
 
         return clothes;
     }

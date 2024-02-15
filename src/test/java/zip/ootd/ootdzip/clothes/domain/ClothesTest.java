@@ -42,13 +42,13 @@ class ClothesTest {
         List<ClothesColor> clothesColors = ClothesColor.createClothesColorsBy(List.of(color));
 
         // when
-        Clothes clothes = Clothes.createClothes(user, brand, "구매처", "제품명", true, category, size, "재질", "구매일",
+        Clothes clothes = Clothes.createClothes(user, brand, "구매처", "제품명", true, category, size, "메모입니다", "구매일",
                 "image1.jpg", clothesColors);
 
         //then
         assertThat(clothes).extracting("user.name", "brand.name", "purchaseStore", "name", "isOpen", "category.name",
-                        "size.name", "material", "purchaseDate", "imageUrl")
-                .contains("유저1", "브랜드1", "구매처", "제품명", true, "카테고리2", "XL", "재질", "구매일", "image1.jpg");
+                        "size.name", "memo", "purchaseDate", "imageUrl")
+                .contains("유저1", "브랜드1", "구매처", "제품명", true, "카테고리2", "XL", "메모입니다", "구매일", "image1.jpg");
 
         assertThat(clothes.getClothesColors()).hasSize(1)
                 .extracting("color.name", "color.colorCode")

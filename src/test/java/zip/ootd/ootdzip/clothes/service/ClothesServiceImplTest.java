@@ -88,7 +88,7 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
                 .isOpen(true)
                 .sizeId(savedSize.getId())
                 .clothesImageUrl("image1.jpg")
-                .material("재질1")
+                .memo("메모입니다.")
                 .name("제품명1")
                 .purchaseDate("구매시기1")
                 .build();
@@ -98,9 +98,9 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
         //then
         Clothes saveResult = clothesRepository.findById(result.getId()).get();
 
-        assertThat(saveResult).extracting("id", "name", "user", "brand", "isOpen", "category", "size", "material",
+        assertThat(saveResult).extracting("id", "name", "user", "brand", "isOpen", "category", "size", "memo",
                         "purchaseStore", "purchaseDate", "imageUrl")
-                .contains(result.getId(), "제품명1", user, savedBrand, true, savedCategory, savedSize, "재질1", "구매처1",
+                .contains(result.getId(), "제품명1", user, savedBrand, true, savedCategory, savedSize, "메모입니다.", "구매처1",
                         "구매시기1", "image1.jpg");
 
         assertThat(saveResult.getClothesColors()).hasSize(1)
@@ -142,7 +142,7 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
                 .isOpen(true)
                 .sizeId(savedSize.getId())
                 .clothesImageUrl("image1.jpg")
-                .material("재질1")
+                .memo("메모입니다.")
                 .name("제품명1")
                 .purchaseDate("구매시기1")
                 .build();
@@ -187,7 +187,7 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
                 .isOpen(true)
                 .sizeId(savedSize.getId())
                 .clothesImageUrl("image1.jpg")
-                .material("재질1")
+                .memo("메모입니다.")
                 .name("제품명1")
                 .purchaseDate("구매시기1")
                 .build();
@@ -232,7 +232,7 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
                 .isOpen(true)
                 .sizeId(savedSize.getId())
                 .clothesImageUrl("image1.jpg")
-                .material("재질1")
+                .memo("메모입니다.")
                 .name("제품명1")
                 .purchaseDate("구매시기1")
                 .build();
@@ -278,7 +278,7 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
                 .isOpen(true)
                 .sizeId(savedSize.getId())
                 .clothesImageUrl("image1.jpg")
-                .material("재질1")
+                .memo("메모입니다.")
                 .name("제품명1")
                 .purchaseDate("구매시기1")
                 .build();
@@ -320,7 +320,7 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
                 .isOpen(true)
                 .sizeId(savedSize.getId())
                 .clothesImageUrl("image1.jpg")
-                .material("재질1")
+                .memo("메모입니다.")
                 .name("제품명1")
                 .purchaseDate("구매시기1")
                 .build();
@@ -366,7 +366,7 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
                 .isOpen(true)
                 .sizeId(savedSize.getId() + 1)
                 .clothesImageUrl("image1.jpg")
-                .material("재질1")
+                .memo("메모입니다.")
                 .name("제품명1")
                 .purchaseDate("구매시기1")
                 .build();
@@ -412,7 +412,7 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
                 .isOpen(true)
                 .sizeId(savedSize.getId())
                 .clothesImageUrl("image1.jpg")
-                .material("재질1")
+                .memo("메모입니다.")
                 .name("제품명1")
                 .purchaseDate("구매시기1")
                 .build();
@@ -434,8 +434,8 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
         FindClothesRes result = clothesService.findClothesById(clothes.getId(), user1);
 
         //then
-        assertThat(result).extracting("id", "name", "userName", "isOpen", "material", "purchaseStore", "purchaseDate",
-                "imageUrl").contains(clothes.getId(), "제품명1", "유저1", true, "재질1", "구매처1", "구매일1", "image1.jpg");
+        assertThat(result).extracting("id", "name", "userName", "isOpen", "memo", "purchaseStore", "purchaseDate",
+                "imageUrl").contains(clothes.getId(), "제품명1", "유저1", true, "메모입니다1", "구매처1", "구매일1", "image1.jpg");
 
         assertThat(result.getBrand().getName()).isEqualTo("브랜드1");
 
@@ -490,10 +490,10 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
 
         //then
         assertThat(result).hasSize(2)
-                .extracting("id", "name", "userName", "isOpen", "material", "purchaseStore", "purchaseDate", "imageUrl")
+                .extracting("id", "name", "userName", "isOpen", "memo", "purchaseStore", "purchaseDate", "imageUrl")
                 .containsExactlyInAnyOrder(
-                        tuple(clothes1.getId(), "제품명1", "유저1", false, "재질1", "구매처1", "구매일1", "image1.jpg"),
-                        tuple(clothes2.getId(), "제품명2", "유저1", false, "재질2", "구매처2", "구매일2", "image2.jpg"));
+                        tuple(clothes1.getId(), "제품명1", "유저1", false, "메모입니다1", "구매처1", "구매일1", "image1.jpg"),
+                        tuple(clothes2.getId(), "제품명2", "유저1", false, "메모입니다2", "구매처2", "구매일2", "image2.jpg"));
 
     }
 
@@ -513,9 +513,9 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
 
         //then
         assertThat(result).hasSize(1)
-                .extracting("id", "name", "userName", "isOpen", "material", "purchaseStore", "purchaseDate", "imageUrl")
+                .extracting("id", "name", "userName", "isOpen", "memo", "purchaseStore", "purchaseDate", "imageUrl")
                 .containsExactlyInAnyOrder(
-                        tuple(clothes2.getId(), "제품명2", "유저1", true, "재질2", "구매처2", "구매일2", "image2.jpg"));
+                        tuple(clothes2.getId(), "제품명2", "유저1", true, "메모입니다2", "구매처2", "구매일2", "image2.jpg"));
 
     }
 
@@ -606,7 +606,7 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
         List<ClothesColor> clothesColors = ClothesColor.createClothesColorsBy(List.of(savedColor));
 
         Clothes clothes = Clothes.createClothes(user, savedBrand, "구매처" + idx, "제품명" + idx, isOpen, savedCategory,
-                savedSize, "재질" + idx, "구매일" + idx, "image" + idx + ".jpg", clothesColors);
+                savedSize, "메모입니다" + idx, "구매일" + idx, "image" + idx + ".jpg", clothesColors);
 
         return clothesRepository.save(clothes);
     }

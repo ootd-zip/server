@@ -16,7 +16,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
-import zip.ootd.ootdzip.clothes.controller.request.FindClothesByUserReq;
+import zip.ootd.ootdzip.clothes.controller.request.FindClothesByUserRequestCommon;
 import zip.ootd.ootdzip.clothes.controller.request.SaveClothesReq;
 import zip.ootd.ootdzip.clothes.data.DeleteClothesByIdRes;
 import zip.ootd.ootdzip.clothes.data.FindClothesRes;
@@ -50,7 +50,7 @@ public class ClothesController {
 
     @Operation(summary = "유저 옷 리스트 조회", description = "유저 옷 리스트 조회")
     @GetMapping("")
-    public ApiResponse<List<FindClothesRes>> findClothesByUser(@Valid FindClothesByUserReq request) {
+    public ApiResponse<List<FindClothesRes>> findClothesByUser(@Valid FindClothesByUserRequestCommon request) {
         return new ApiResponse<>(
                 clothesService.findClothesByUser(request.toServiceRequest(),
                         userService.getAuthenticatiedUser()));
