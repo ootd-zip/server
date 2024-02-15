@@ -68,7 +68,7 @@ public class FindClothesRes {
                 .id(clothes.getId())
                 .name(clothes.getName())
                 .userName(clothes.getUser().getName())
-                .brand(new BrandDto(clothes.getBrand()))
+                .brand(BrandDto.of(clothes.getBrand()))
                 .isOpen(clothes.getIsOpen())
                 .category(DetailCategory.builder()
                         .id(clothes.getCategory().getId())

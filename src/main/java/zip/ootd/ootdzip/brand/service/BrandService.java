@@ -11,6 +11,7 @@ import zip.ootd.ootdzip.brand.data.BrandDto;
 import zip.ootd.ootdzip.brand.data.BrandSaveReq;
 import zip.ootd.ootdzip.brand.domain.Brand;
 import zip.ootd.ootdzip.brand.repository.BrandRepository;
+import zip.ootd.ootdzip.brand.service.request.BrandSearchSvcReq;
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.exception.code.ErrorCode;
 
@@ -35,15 +36,16 @@ public class BrandService {
 
         Brand saveBrand = brandRepository.save(brand);
 
-        return new BrandDto(saveBrand);
+        return BrandDto.of(brand);
     }
 
-    public List<BrandDto> getAllBrands() {
-        List<Brand> brands = brandRepository.findAll(Sort.by(Sort.Direction.ASC, "name"));
+    public List<BrandDto> getBrands(BrandSearchSvcReq request) {
+        List<Brand> brands = brandRepository.findByNameStartsWith(request.getName(),
+                Sort.by(Sort.Direction.ASC, "name"));
 
         return brands
                 .stream()
-                .map(BrandDto::new)
+                .map(BrandDto::of)
                 .toList();
 
     }
