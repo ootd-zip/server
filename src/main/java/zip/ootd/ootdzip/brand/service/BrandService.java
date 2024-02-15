@@ -36,7 +36,7 @@ public class BrandService {
 
         Brand saveBrand = brandRepository.save(brand);
 
-        return new BrandDto(saveBrand);
+        return BrandDto.of(brand);
     }
 
     public List<BrandDto> getBrands(BrandSearchSvcReq request) {
@@ -45,7 +45,7 @@ public class BrandService {
 
         return brands
                 .stream()
-                .map(BrandDto::new)
+                .map(BrandDto::of)
                 .toList();
 
     }
