@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import zip.ootd.ootdzip.brand.controller.request.BrandSearchReq;
 import zip.ootd.ootdzip.brand.data.BrandDto;
 import zip.ootd.ootdzip.brand.data.BrandSaveReq;
 import zip.ootd.ootdzip.brand.service.BrandService;
@@ -29,8 +30,8 @@ public class BrandController {
     }
 
     @GetMapping
-    public ApiResponse<List<BrandDto>> getAllBrands() {
-        return new ApiResponse<>(brandService.getAllBrands());
+    public ApiResponse<List<BrandDto>> getBrands(BrandSearchReq request) {
+        return new ApiResponse<>(brandService.getBrands(request.toServiceRequest()));
     }
 
 }
