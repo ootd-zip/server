@@ -59,6 +59,9 @@ public class Comment extends BaseEntity {
 
     private String contents;
 
+    @Column(nullable = false)
+    private Long topOotdId;
+
     @Builder.Default
     @Column(nullable = false)
     private Boolean isDeleted = false;

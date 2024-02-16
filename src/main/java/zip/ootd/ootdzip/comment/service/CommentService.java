@@ -43,6 +43,7 @@ public class CommentService {
                     .writer(writer)
                     .depth(parentDepth + 1)
                     .contents(request.getContent())
+                    .topOotdId(ootd.getId())
                     .build();
             ootd.addComment(comment); // 대댓글이 아닌 댓글만 ootd 에 저장
         } else {
@@ -56,6 +57,7 @@ public class CommentService {
                     .depth(parentDepth + 1)
                     .contents(request.getContent())
                     .taggedUser(taggedUser)
+                    .topOotdId(ootd.getId())
                     .build();
             parentComment.addChildComment(comment); // 대댓글의 경우 ootd 정보를 따로 저장하지 않아 ootd 확인시 부모댓글을 조회해서 ootd 를 확인해야함
         }
