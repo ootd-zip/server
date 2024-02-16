@@ -29,7 +29,6 @@ import zip.ootd.ootdzip.ootdimageclothe.domain.DeviceSize;
 import zip.ootd.ootdzip.ootdimageclothe.domain.OotdImageClothes;
 import zip.ootd.ootdzip.ootdstyle.domain.OotdStyle;
 import zip.ootd.ootdzip.user.domain.User;
-import zip.ootd.ootdzip.user.service.UserService;
 
 @Service
 @Transactional
@@ -38,11 +37,10 @@ public class OotdService {
 
     private final OotdRepository ootdRepository;
     private final ClothesRepository clothesRepository;
-    private final UserService userService;
     private final StyleRepository styleRepository;
     private final RedisDao redisDao;
 
-    public Ootd postOotd(OotdPostReq request) {
+    public Ootd postOotd(OotdPostReq request, User loginUser) {
 
         List<OotdImage> ootdImages = request.getOotdImages().stream().map(ootdImage -> {
             List<OotdImageClothes> ootdImageClothesList = ootdImage.getClothesTags().stream().map(clothesTag -> {
@@ -59,7 +57,7 @@ public class OotdService {
         List<Style> styles = styleRepository.findAllById(request.getStyles());
         List<OotdStyle> ootdStyles = OotdStyle.createOotdStylesBy(styles);
 
-        Ootd ootd = Ootd.createOotd(userService.getAuthenticatiedUser(),
+        Ootd ootd = Ootd.createOotd(loginUser,
                 request.getContent(),
                 request.getIsPrivate(),
                 ootdImages,
@@ -109,17 +107,17 @@ public class OotdService {
      * 기본적인 단건조회 API 입니다.
      * 비공개글은 본인글이 아니면 볼 수 없습니다.
      */
-    public OotdGetRes getOotd(Long ootdId) {
-        User user = userService.getAuthenticatiedUser();
+    public OotdGetRes getOotd(Long ootdId, User loginUser) {
+
         Ootd ootd = ootdRepository.findById(ootdId).orElseThrow();
 
-        checkOotd(ootd, user);
+        checkOotd(ootd, loginUser);
 
-        countViewInRedis(ootd);
+        countViewInRedis(ootd, loginUser);
         int view = getView(ootd);
         int like = getLike(ootd);
-        boolean isLike = getUserLike(ootd, user);
-        boolean isBookmark = ootd.isBookmark(user);
+        boolean isLike = getUserLike(ootd, loginUser);
+        boolean isBookmark = ootd.isBookmark(loginUser);
 
         return new OotdGetRes(ootd, isLike, isBookmark, view, like);
     }
@@ -147,12 +145,12 @@ public class OotdService {
      * 삭제된글, 차단된글, 신고수가 특정 수 이상, 비공개글은 가져오지 않습니다.
      * 단, 비공개글이어도 본인 작성글이면 가져옵니다.
      */
-    public List<OotdGetAllRes> getOotds() {
-        User user = userService.getAuthenticatiedUser();
-        List<Ootd> ootds = ootdRepository.findAllByUserId(user.getId());
+    public List<OotdGetAllRes> getOotds(User loginUser) {
+        List<Ootd> ootds = ootdRepository.findAllByUserId(loginUser.getId());
 
         return ootds.stream()
-                .map(b -> new OotdGetAllRes(b, getUserLike(b, user), b.isBookmark(user), getView(b), getLike(b)))
+                .map(b -> new OotdGetAllRes(b, getUserLike(b, loginUser), b.isBookmark(loginUser), getView(b),
+                        getLike(b)))
                 .collect(Collectors.toList());
     }
 
@@ -161,13 +159,13 @@ public class OotdService {
      * ootdFilterKey : 중복된 사용자의 조회수 카운트 막기위한 ootd 필터키
      * updateKey : 추후 스케줄러작업에서 조회수가 변경된 게시판을 가져오기위해, ootdKey 를 저장해두는 키
      */
-    private void countViewInRedis(Ootd ootd) {
+    private void countViewInRedis(Ootd ootd, User loginUser) {
         Long id = ootd.getId();
 
-        if (!isUserViewedInRedis(id)) {
+        if (!isUserViewedInRedis(id, loginUser)) {
             String ootdKey = RedisKey.VIEWS.makeKeyWith(id);
             String ootdFilterKey = RedisKey.VIEW_FILTER.makeKeyWith(id);
-            String userKey = RedisKey.VIEWS.makeKeyWith(userService.getAuthenticatiedUser().getId());
+            String userKey = RedisKey.VIEWS.makeKeyWith(loginUser.getId());
             String updateKey = RedisKey.UPDATED_VIEWS.getKey();
 
             redisDao.setValuesSet(ootdFilterKey, userKey);
@@ -176,9 +174,9 @@ public class OotdService {
         }
     }
 
-    private boolean isUserViewedInRedis(Long id) {
+    private boolean isUserViewedInRedis(Long id, User loginUser) {
         String ootdFilterKey = RedisKey.VIEW_FILTER.makeKeyWith(id);
-        String userKey = RedisKey.VIEWS.makeKeyWith(userService.getAuthenticatiedUser().getId());
+        String userKey = RedisKey.VIEWS.makeKeyWith(loginUser.getId());
 
         return redisDao.getValuesSet(ootdFilterKey).contains(userKey);
     }
@@ -240,24 +238,20 @@ public class OotdService {
     /**
      * 로그인된 사용자 기준으로 좋아요를 추가합니다.
      */
-    public void addLike(Long ootdId) {
+    public void addLike(Long ootdId, User loginUser) {
         Ootd ootd = ootdRepository.findById(ootdId).orElseThrow();
-        User user = userService.getAuthenticatiedUser();
-        Long userId = user.getId();
 
-        increaseLikeInRedis(ootd, user);
-        addUserLikeInRedis(ootdId, userId);
-        ootd.addLike(user);
+        increaseLikeInRedis(ootd, loginUser);
+        addUserLikeInRedis(ootdId, loginUser.getId());
+        ootd.addLike(loginUser);
     }
 
-    public void cancelLike(Long ootdId) {
+    public void cancelLike(Long ootdId, User loginUser) {
         Ootd ootd = ootdRepository.findById(ootdId).orElseThrow();
-        User user = userService.getAuthenticatiedUser();
-        Long userId = user.getId();
 
-        decreaseLikeInRedis(ootd, user);
-        cancelUserLikeInRedis(ootdId, userId);
-        ootd.cancelLike(user);
+        decreaseLikeInRedis(ootd, loginUser);
+        cancelUserLikeInRedis(ootdId, loginUser.getId());
+        ootd.cancelLike(loginUser);
     }
 
     /**
@@ -332,15 +326,13 @@ public class OotdService {
     /**
      * 로그인된 사용자 기준으로 북마크를 추가합니다.
      */
-    public void addBookmark(Long ootdId) {
+    public void addBookmark(Long ootdId, User loginUser) {
         Ootd ootd = ootdRepository.findById(ootdId).orElseThrow();
-        User user = userService.getAuthenticatiedUser();
-        ootd.addBookmark(user);
+        ootd.addBookmark(loginUser);
     }
 
-    public void cancelBookmark(Long ootdId) {
+    public void cancelBookmark(Long ootdId, User loginUser) {
         Ootd ootd = ootdRepository.findById(ootdId).orElseThrow();
-        User user = userService.getAuthenticatiedUser();
-        ootd.cancelBookmark(user);
+        ootd.cancelBookmark(loginUser);
     }
 }

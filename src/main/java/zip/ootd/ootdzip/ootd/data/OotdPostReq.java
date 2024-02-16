@@ -2,6 +2,7 @@ package zip.ootd.ootdzip.ootd.data;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -9,19 +10,21 @@ import lombok.Data;
 @Data
 public class OotdPostReq {
 
+    @Size(max = 3000, message = "메모는 최대 3000자 입니다.")
     private String content;
 
     private Boolean isPrivate;
 
     private List<Long> styles;
 
-    @Size(min = 1, message = "OOTD 게시글에는 반드시 1장 이상의 이미지가 있어야 합니다.")
+    @Valid
+    @NotEmpty(message = "OOTD 게시글에는 반드시 1장 이상의 이미지가 있어야 합니다.")
     private List<OotdImageReq> ootdImages;
 
     @Data
     public static class OotdImageReq {
 
-        @NotEmpty(message = "OOTD 이미지는 반드시 존재해야 합니다.")
+        @NotEmpty(message = "OOTD 이미지 URL 는 반드시 존재해야 합니다.")
         private String ootdImage;
 
         private List<ClothesTagReq> clothesTags;

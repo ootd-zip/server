@@ -24,6 +24,7 @@ import zip.ootd.ootdzip.ootd.data.OotdPostReq;
 import zip.ootd.ootdzip.ootd.data.OotdPostRes;
 import zip.ootd.ootdzip.ootd.data.OotdPutReq;
 import zip.ootd.ootdzip.ootd.service.OotdService;
+import zip.ootd.ootdzip.user.service.UserService;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,17 +34,19 @@ public class OotdController {
 
     private final OotdService ootdService;
 
+    private final UserService userService;
+
     @Operation(summary = "ootd 작성", description = "사용자가 작성한 ootd 글을 저장하는 api")
-    @PostMapping("/")
+    @PostMapping("")
     public ApiResponse<OotdPostRes> saveOotdPost(@RequestBody @Valid OotdPostReq request) {
 
-        OotdPostRes response = new OotdPostRes(ootdService.postOotd(request));
+        OotdPostRes response = new OotdPostRes(ootdService.postOotd(request, userService.getAuthenticatiedUser()));
 
         return new ApiResponse<>(response);
     }
 
     @Operation(summary = "ootd 내용, 공개/비공개 여부 수정", description = "ootd 글과 공개여부만 수정하는 api")
-    @PatchMapping("/{id}")
+    @PatchMapping("")
     public ApiResponse<Boolean> updateOotdContentsAndIsPrivate(@RequestBody @Valid OotdPatchReq request) {
 
         ootdService.updateContentsAndIsPrivate(request);
@@ -52,7 +55,7 @@ public class OotdController {
     }
 
     @Operation(summary = "ootd 전체 수정", description = "ootd 게시글 전체 수정 api")
-    @PutMapping("/{id}")
+    @PutMapping("")
     public ApiResponse<Boolean> updateOotdAll(@RequestBody @Valid OotdPutReq request) {
 
         ootdService.updateAll(request);
@@ -73,7 +76,7 @@ public class OotdController {
     @GetMapping("/{id}")
     public ApiResponse<OotdGetRes> getOotdPost(@PathVariable Long id) {
 
-        OotdGetRes response = ootdService.getOotd(id);
+        OotdGetRes response = ootdService.getOotd(id, userService.getAuthenticatiedUser());
 
         return new ApiResponse<>(response);
     }
@@ -82,7 +85,7 @@ public class OotdController {
     @GetMapping("/all")
     public ApiResponse<List<OotdGetAllRes>> getOotdPosts() {
 
-        List<OotdGetAllRes> response = ootdService.getOotds();
+        List<OotdGetAllRes> response = ootdService.getOotds(userService.getAuthenticatiedUser());
 
         return new ApiResponse<>(response);
     }
@@ -91,7 +94,7 @@ public class OotdController {
     @PostMapping("/like/{id}")
     public ApiResponse<Boolean> addLike(@PathVariable Long id) {
 
-        ootdService.addLike(id);
+        ootdService.addLike(id, userService.getAuthenticatiedUser());
 
         return new ApiResponse<>(true);
     }
@@ -100,7 +103,7 @@ public class OotdController {
     @DeleteMapping("/like/{id}")
     public ApiResponse<Boolean> cancelLike(@PathVariable Long id) {
 
-        ootdService.cancelLike(id);
+        ootdService.cancelLike(id, userService.getAuthenticatiedUser());
 
         return new ApiResponse<>(true);
     }
@@ -109,7 +112,7 @@ public class OotdController {
     @PostMapping("/bookmark/{id}")
     public ApiResponse<Boolean> addBookMark(@PathVariable Long id) {
 
-        ootdService.addBookmark(id);
+        ootdService.addBookmark(id, userService.getAuthenticatiedUser());
 
         return new ApiResponse<>(true);
     }
@@ -118,7 +121,7 @@ public class OotdController {
     @DeleteMapping("/bookmark/{id}")
     public ApiResponse<Boolean> cancelBookMark(@PathVariable Long id) {
 
-        ootdService.cancelBookmark(id);
+        ootdService.cancelBookmark(id, userService.getAuthenticatiedUser());
 
         return new ApiResponse<>(true);
     }
