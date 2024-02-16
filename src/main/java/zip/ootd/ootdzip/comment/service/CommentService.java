@@ -31,7 +31,7 @@ public class CommentService {
      * 대댓글을 반드시 누구에 대한 대댓글인지 태깅이 명시되어야함
      * Depth 의 경우 댓글이 1, 대댓글이 2
      */
-    public void saveComment(CommentPostReq request) {
+    public Comment saveComment(CommentPostReq request) {
 
         User writer = userService.getAuthenticatiedUser();
         Ootd ootd = ootdRepository.findById(request.getOotdId()).orElseThrow();
@@ -62,7 +62,7 @@ public class CommentService {
             parentComment.addChildComment(comment); // 대댓글의 경우 ootd 정보를 따로 저장하지 않아 ootd 확인시 부모댓글을 조회해서 ootd 를 확인해야함
         }
 
-        commentRepository.save(comment);
+        return commentRepository.save(comment);
     }
 
     /**
