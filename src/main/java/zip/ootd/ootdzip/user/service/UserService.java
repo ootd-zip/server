@@ -23,6 +23,7 @@ import zip.ootd.ootdzip.oauth.repository.RefreshTokenRepository;
 import zip.ootd.ootdzip.oauth.repository.UserOauthRepository;
 import zip.ootd.ootdzip.oauth.service.SocialOAuth;
 import zip.ootd.ootdzip.security.JwtUtils;
+import zip.ootd.ootdzip.user.data.TokenUserInfoRes;
 import zip.ootd.ootdzip.user.data.UserLoginReq;
 import zip.ootd.ootdzip.user.data.UserRegisterReq;
 import zip.ootd.ootdzip.user.domain.User;
@@ -76,6 +77,10 @@ public class UserService {
                 .filter(s -> s.type() == oAuthProvider)
                 .findFirst()
                 .orElseThrow(() -> new CustomException(ErrorCode.NONE_SOCIAL_ERROR));
+    }
+
+    public TokenUserInfoRes getUserInfo(User user) {
+        return TokenUserInfoRes.of(user);
     }
 
     @Transactional

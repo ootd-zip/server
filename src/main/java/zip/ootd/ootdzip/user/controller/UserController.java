@@ -21,6 +21,7 @@ import zip.ootd.ootdzip.oauth.data.TokenInfo;
 import zip.ootd.ootdzip.user.data.CheckNameReq;
 import zip.ootd.ootdzip.user.data.FollowReq;
 import zip.ootd.ootdzip.user.data.ProfileRes;
+import zip.ootd.ootdzip.user.data.TokenUserInfoRes;
 import zip.ootd.ootdzip.user.data.UserLoginReq;
 import zip.ootd.ootdzip.user.data.UserRegisterReq;
 import zip.ootd.ootdzip.user.domain.User;
@@ -65,6 +66,12 @@ public class UserController {
         response.addCookie(cookie);
 
         return new ResponseEntity<>(info, HttpStatus.OK);
+    }
+
+    @GetMapping("/token/info")
+    public ApiResponse<TokenUserInfoRes> userinfo() {
+        User currentUser = userService.getAuthenticatiedUser();
+        return new ApiResponse<>(userService.getUserInfo(currentUser));
     }
 
     @PostMapping("/follow")
