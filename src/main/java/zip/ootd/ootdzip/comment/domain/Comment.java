@@ -2,7 +2,6 @@ package zip.ootd.ootdzip.comment.domain;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +24,12 @@ import zip.ootd.ootdzip.common.entity.BaseEntity;
 import zip.ootd.ootdzip.ootd.domain.Ootd;
 import zip.ootd.ootdzip.user.domain.User;
 
+/**
+ * 댓글 조회시 기본 필터링으로 가져오는 댓글
+ * 1. 부모댓글, 삭제X, 신고수 5 미만, 자식댓글없음
+ * 2. 부모댓글, 자식댓글존재
+ * 3. 자식댓글, 삭제X, 신고수 5 미만
+ */
 @Entity
 @Table(name = "comments")
 @Where(clause = "(depth = 1 AND is_deleted = false AND report_count < 5 AND child_count = 0) "
@@ -94,8 +99,8 @@ public class Comment extends BaseEntity {
      * 일년 이상 : 몇년전
      */
     public String compareCreatedTimeAndNow() {
-        LocalTime createdTimeLT = this.createdAt.toLocalTime();
-        LocalTime nowLT = LocalDateTime.now().toLocalTime();
+        LocalDateTime createdTimeLT = this.createdAt;
+        LocalDateTime nowLT = LocalDateTime.now();
 
         LocalDate createdTimeLD = this.createdAt.toLocalDate();
         LocalDate nowLD = LocalDateTime.now().toLocalDate();
@@ -112,10 +117,10 @@ public class Comment extends BaseEntity {
         } else if (seconds < 604800) { //604800 = 1주일
             long days = ChronoUnit.DAYS.between(createdTimeLD, nowLD);
             return days + "일전";
-        } else if (seconds < 2419200) { //2419200 = 1달
+        } else if (seconds < 3024000 && ChronoUnit.MONTHS.between(createdTimeLD, nowLD) == 0) { //3024000 = 35일
             long weeks = ChronoUnit.WEEKS.between(createdTimeLD, nowLD);
             return weeks + "주전";
-        } else if (seconds < 29030400) { // 29030400 = 1년
+        } else if (seconds < 31536000 && ChronoUnit.YEARS.between(createdTimeLD, nowLD) == 0) { // 31536000 = 365일, 1년이 366일때는 대비해 년도 비교 추가
             long months = ChronoUnit.MONTHS.between(createdTimeLD, nowLD);
             return months + "달전";
         } else {

@@ -12,6 +12,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import zip.ootd.ootdzip.clothes.controller.ClothesController;
 import zip.ootd.ootdzip.clothes.service.ClothesService;
+import zip.ootd.ootdzip.comment.controller.CommentController;
+import zip.ootd.ootdzip.comment.service.CommentService;
 import zip.ootd.ootdzip.ootd.controller.OotdController;
 import zip.ootd.ootdzip.ootd.service.OotdService;
 import zip.ootd.ootdzip.report.controller.ReportController;
@@ -21,7 +23,8 @@ import zip.ootd.ootdzip.user.service.UserService;
 @WebMvcTest(controllers = {
         ClothesController.class,
         ReportController.class,
-        OotdController.class
+        OotdController.class,
+        CommentController.class
 })
 public abstract class ControllerTestSupport {
 
@@ -45,6 +48,9 @@ public abstract class ControllerTestSupport {
 
     @MockBean
     protected OotdService ootdService;
+
+    @MockBean
+    protected CommentService commentService;
 
     @BeforeEach
     void setUp() {
