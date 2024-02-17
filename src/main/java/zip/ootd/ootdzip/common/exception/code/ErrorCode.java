@@ -119,7 +119,9 @@ public enum ErrorCode {
 
     NOT_FOUNT_COMMENT_ID(404, "CM001", "유효하지 않은 댓글 ID"),
 
-    DUPLICATE_DELETE_COMMENT(400, "CM002", "이미 삭제된 댓글 입니다.");
+    DUPLICATE_DELETE_COMMENT(404, "CM002", "이미 삭제된 댓글 입니다."),
+
+    NO_TAGGING_USER(404, "CM003", "대댓글에는 반드시 태깅이 있어야 합니다.");
 
     private final Integer status;
 

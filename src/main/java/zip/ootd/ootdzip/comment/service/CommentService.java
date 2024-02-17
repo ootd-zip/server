@@ -13,7 +13,6 @@ import zip.ootd.ootdzip.ootd.domain.Ootd;
 import zip.ootd.ootdzip.ootd.repository.OotdRepository;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.repository.UserRepository;
-import zip.ootd.ootdzip.user.service.UserService;
 
 @Service
 @Transactional
@@ -21,7 +20,6 @@ import zip.ootd.ootdzip.user.service.UserService;
 public class CommentService {
 
     private final CommentRepository commentRepository;
-    private final UserService userService;
     private final UserRepository userRepository;
     private final OotdRepository ootdRepository;
 
@@ -31,9 +29,8 @@ public class CommentService {
      * 대댓글을 반드시 누구에 대한 대댓글인지 태깅이 명시되어야함
      * Depth 의 경우 댓글이 1, 대댓글이 2
      */
-    public void saveComment(CommentPostReq request) {
+    public Comment saveComment(CommentPostReq request, User writer) {
 
-        User writer = userService.getAuthenticatiedUser();
         Ootd ootd = ootdRepository.findById(request.getOotdId()).orElseThrow();
         Comment comment;
 
@@ -43,12 +40,15 @@ public class CommentService {
                     .writer(writer)
                     .depth(parentDepth + 1)
                     .contents(request.getContent())
+                    .topOotdId(ootd.getId())
                     .build();
             ootd.addComment(comment); // 대댓글이 아닌 댓글만 ootd 에 저장
         } else {
-            User taggedUser = null;
+            User taggedUser;
             if (request.getTaggedUserName() != null && !request.getTaggedUserName().isEmpty()) {
                 taggedUser = userRepository.findByName(request.getTaggedUserName()).orElseThrow();
+            } else {
+                throw new CustomException(ErrorCode.NO_TAGGING_USER);
             }
             Comment parentComment = commentRepository.findById(request.getCommentParentId()).orElseThrow();
             comment = Comment.builder()
@@ -56,11 +56,12 @@ public class CommentService {
                     .depth(parentDepth + 1)
                     .contents(request.getContent())
                     .taggedUser(taggedUser)
+                    .topOotdId(ootd.getId())
                     .build();
             parentComment.addChildComment(comment); // 대댓글의 경우 ootd 정보를 따로 저장하지 않아 ootd 확인시 부모댓글을 조회해서 ootd 를 확인해야함
         }
 
-        commentRepository.save(comment);
+        return commentRepository.save(comment);
     }
 
     /**

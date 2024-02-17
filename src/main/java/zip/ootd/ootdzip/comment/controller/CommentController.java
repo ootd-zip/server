@@ -12,8 +12,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import zip.ootd.ootdzip.comment.data.CommentPostReq;
+import zip.ootd.ootdzip.comment.data.CommentPostRes;
 import zip.ootd.ootdzip.comment.service.CommentService;
 import zip.ootd.ootdzip.common.response.ApiResponse;
+import zip.ootd.ootdzip.user.service.UserService;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,13 +25,16 @@ public class CommentController {
 
     private final CommentService commentService;
 
+    private final UserService userService;
+
     @Operation(summary = "comment 작성", description = "사용자가 작성한 comment 를 저장하는 api")
     @PostMapping("")
-    public ApiResponse<Boolean> saveComment(@RequestBody @Valid CommentPostReq request) {
+    public ApiResponse<CommentPostRes> saveComment(@RequestBody @Valid CommentPostReq request) {
 
-        commentService.saveComment(request);
+        CommentPostRes response = new CommentPostRes(
+                commentService.saveComment(request, userService.getAuthenticatiedUser()));
 
-        return new ApiResponse<>(true);
+        return new ApiResponse<>(response);
     }
 
     @Operation(summary = "comment 삭제", description = "사용자가 작성한 comment 를 삭제하는 api 로 soft delete 가 적용 됩니다.")
