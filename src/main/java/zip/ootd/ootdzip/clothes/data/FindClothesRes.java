@@ -33,6 +33,8 @@ public class FindClothesRes {
 
     private String purchaseStore;
 
+    private PurchaseStoreType purchaseStoreType;
+
     private String purchaseDate;
 
     private List<ClothesColorDto> colors;
@@ -45,8 +47,9 @@ public class FindClothesRes {
 
     @Builder
     private FindClothesRes(Long id, String name, String userName, BrandDto brand, Boolean isOpen,
-            DetailCategory category, SizeRes size, String memo, String purchaseStore, String purchaseDate,
-            List<ClothesColorDto> colors, String imageUrl, LocalDateTime createdAt, LocalDateTime updatedAt) {
+            DetailCategory category, SizeRes size, String memo, String purchaseStore,
+            PurchaseStoreType purchaseStoreType, String purchaseDate, List<ClothesColorDto> colors, String imageUrl,
+            LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.name = name;
         this.userName = userName;
@@ -56,6 +59,7 @@ public class FindClothesRes {
         this.size = size;
         this.memo = memo;
         this.purchaseStore = purchaseStore;
+        this.purchaseStoreType = purchaseStoreType;
         this.purchaseDate = purchaseDate;
         this.colors = colors;
         this.imageUrl = imageUrl;
@@ -78,6 +82,7 @@ public class FindClothesRes {
                 .size(SizeRes.of(clothes.getSize()))
                 .memo(clothes.getMemo())
                 .purchaseStore(clothes.getPurchaseStore())
+                .purchaseStoreType(clothes.getPurchaseStoreType())
                 .purchaseDate(clothes.getPurchaseDate())
                 .colors(ClothesColorDto.createClothesColorDtosBy(clothes.getClothesColors()))
                 .imageUrl(clothes.getImageUrl())
