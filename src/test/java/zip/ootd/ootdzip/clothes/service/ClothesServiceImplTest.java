@@ -28,6 +28,7 @@ import zip.ootd.ootdzip.clothes.domain.ClothesColor;
 import zip.ootd.ootdzip.clothes.repository.ClothesRepository;
 import zip.ootd.ootdzip.clothes.service.request.FindClothesByUserSvcReq;
 import zip.ootd.ootdzip.clothes.service.request.SaveClothesSvcReq;
+import zip.ootd.ootdzip.clothes.service.request.UpdateClothesSvcReq;
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.repository.UserRepository;
@@ -583,6 +584,270 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
                         CustomException.class)
                 .extracting("errorCode.status", "errorCode.divisionCode", "errorCode.message")
                 .contains(401, "C001", "해당 데이터에 접근할 수 없는 사용자");
+
+    }
+
+    @DisplayName("옷 ID에 해당하는 옷 정보를 수정한다.")
+    @Test
+    void updateClothes() {
+        // given
+        User user = createUserBy("작성자1");
+        Clothes updateTarget = createClothesBy(user, true, "1");
+
+        UpdateClothesSvcReq request = UpdateClothesSvcReq.builder()
+                .clothesId(updateTarget.getId())
+                .purchaseStore("구매처1")
+                .brandId(updateTarget.getBrand().getId())
+                .categoryId(updateTarget.getCategory().getId())
+                .colorIds(List.of(updateTarget.getClothesColors().get(0).getColor().getId()))
+                .isOpen(true)
+                .sizeId(updateTarget.getSize().getId())
+                .clothesImageUrl("image1.jpg")
+                .memo("메모입니다.")
+                .name("제품명수정")
+                .purchaseDate("구매시기1")
+                .build();
+
+        // when
+        SaveClothesRes response = clothesService.updateClothes(request, user);
+
+        //then
+        assertThat(response.getId()).isEqualTo(updateTarget.getId());
+
+        Clothes updatedClothes = clothesRepository.findById(updateTarget.getId()).get();
+
+        assertThat(updatedClothes.getName()).isEqualTo("제품명수정");
+    }
+
+    @DisplayName("작성자가 아닌 유저가 옷 정보를 수정하면 에러가 발생한다.")
+    @Test
+    void updateClothesWithDifferentUser() {
+        // given
+        User user = createUserBy("작성자1");
+        Clothes updateTarget = createClothesBy(user, true, "1");
+        User user2 = createUserBy("유저1");
+
+        UpdateClothesSvcReq request = UpdateClothesSvcReq.builder()
+                .clothesId(updateTarget.getId())
+                .purchaseStore("구매처1")
+                .brandId(updateTarget.getBrand().getId())
+                .categoryId(updateTarget.getCategory().getId())
+                .colorIds(List.of(updateTarget.getClothesColors().get(0).getColor().getId()))
+                .isOpen(true)
+                .sizeId(updateTarget.getSize().getId())
+                .clothesImageUrl("image1.jpg")
+                .memo("메모입니다.")
+                .name("제품명수정")
+                .purchaseDate("구매시기1")
+                .build();
+
+        // when & then
+        assertThatThrownBy(() -> clothesService.updateClothes(request, user2)).isInstanceOf(CustomException.class)
+                .extracting("errorCode.status", "errorCode.divisionCode", "errorCode.message")
+                .contains(401, "C001", "해당 데이터에 접근할 수 없는 사용자");
+
+    }
+
+    @DisplayName("유효하지 않은 옷 ID로 수정하면 에러가 발생한다.")
+    @Test
+    void updateClothesWithInvalidClothesId() {
+        // given
+        User user = createUserBy("작성자1");
+        Clothes updateTarget = createClothesBy(user, true, "1");
+
+        UpdateClothesSvcReq request = UpdateClothesSvcReq.builder()
+                .clothesId(updateTarget.getId() + 1)
+                .purchaseStore("구매처1")
+                .brandId(updateTarget.getBrand().getId())
+                .categoryId(updateTarget.getCategory().getId())
+                .colorIds(List.of(updateTarget.getClothesColors().get(0).getColor().getId()))
+                .isOpen(true)
+                .sizeId(updateTarget.getSize().getId())
+                .clothesImageUrl("image1.jpg")
+                .memo("메모입니다.")
+                .name("제품명수정")
+                .purchaseDate("구매시기1")
+                .build();
+
+        // when & then
+        assertThatThrownBy(() -> clothesService.updateClothes(request, user)).isInstanceOf(CustomException.class)
+                .extracting("errorCode.status", "errorCode.divisionCode", "errorCode.message")
+                .contains(404, "C004", "유효하지 않은 옷 ID");
+
+    }
+
+    @DisplayName("유효하지 않은 브랜드 ID로 수정하면 에러가 발생한다.")
+    @Test
+    void updateClothesWithInvalidBrandId() {
+        // given
+        User user = createUserBy("작성자1");
+        Clothes updateTarget = createClothesBy(user, true, "1");
+
+        UpdateClothesSvcReq request = UpdateClothesSvcReq.builder()
+                .clothesId(updateTarget.getId())
+                .purchaseStore("구매처1")
+                .brandId(updateTarget.getBrand().getId() + 1)
+                .categoryId(updateTarget.getCategory().getId())
+                .colorIds(List.of(updateTarget.getClothesColors().get(0).getColor().getId()))
+                .isOpen(true)
+                .sizeId(updateTarget.getSize().getId())
+                .clothesImageUrl("image1.jpg")
+                .memo("메모입니다.")
+                .name("제품명수정")
+                .purchaseDate("구매시기1")
+                .build();
+
+        // when & then
+        assertThatThrownBy(() -> clothesService.updateClothes(request, user)).isInstanceOf(CustomException.class)
+                .extracting("errorCode.status", "errorCode.divisionCode", "errorCode.message")
+                .contains(404, "B003", "유효하지 않은 브랜드 ID");
+
+    }
+
+    @DisplayName("유효하지 않은 카테고리 ID로 수정하면 에러가 발생한다.")
+    @Test
+    void updateClothesWithInvalidCategoryId() {
+        // given
+        User user = createUserBy("작성자1");
+        Clothes updateTarget = createClothesBy(user, true, "1");
+
+        UpdateClothesSvcReq request = UpdateClothesSvcReq.builder()
+                .clothesId(updateTarget.getId())
+                .purchaseStore("구매처1")
+                .brandId(updateTarget.getBrand().getId())
+                .categoryId(updateTarget.getCategory().getId() + 1)
+                .colorIds(List.of(updateTarget.getClothesColors().get(0).getColor().getId()))
+                .isOpen(true)
+                .sizeId(updateTarget.getSize().getId())
+                .clothesImageUrl("image1.jpg")
+                .memo("메모입니다.")
+                .name("제품명수정")
+                .purchaseDate("구매시기1")
+                .build();
+
+        // when & then
+        assertThatThrownBy(() -> clothesService.updateClothes(request, user)).isInstanceOf(CustomException.class)
+                .extracting("errorCode.status", "errorCode.divisionCode", "errorCode.message")
+                .contains(404, "C002", "유효하지 않은 카테고리 ID");
+
+    }
+
+    @DisplayName("유효하지 않은 사이즈 ID로 수정하면 에러가 발생한다.")
+    @Test
+    void updateClothesWithInvalidSizeId() {
+        // given
+        User user = createUserBy("작성자1");
+        Clothes updateTarget = createClothesBy(user, true, "1");
+
+        UpdateClothesSvcReq request = UpdateClothesSvcReq.builder()
+                .clothesId(updateTarget.getId())
+                .purchaseStore("구매처1")
+                .brandId(updateTarget.getBrand().getId())
+                .categoryId(updateTarget.getCategory().getId())
+                .colorIds(List.of(updateTarget.getClothesColors().get(0).getColor().getId()))
+                .isOpen(true)
+                .sizeId(updateTarget.getSize().getId() + 1)
+                .clothesImageUrl("image1.jpg")
+                .memo("메모입니다.")
+                .name("제품명수정")
+                .purchaseDate("구매시기1")
+                .build();
+
+        // when & then
+        assertThatThrownBy(() -> clothesService.updateClothes(request, user)).isInstanceOf(CustomException.class)
+                .extracting("errorCode.status", "errorCode.divisionCode", "errorCode.message")
+                .contains(404, "S002", "유효하지 않은 사이즈 ID");
+
+    }
+
+    @DisplayName("유효하지 않은 색 ID로 수정하면 에러가 발생한다.")
+    @Test
+    void updateClothesWithInvalidColorId() {
+        // given
+        User user = createUserBy("작성자1");
+        Clothes updateTarget = createClothesBy(user, true, "1");
+
+        UpdateClothesSvcReq request = UpdateClothesSvcReq.builder()
+                .clothesId(updateTarget.getId())
+                .purchaseStore("구매처1")
+                .brandId(updateTarget.getBrand().getId())
+                .categoryId(updateTarget.getCategory().getId())
+                .colorIds(List.of(updateTarget.getClothesColors().get(0).getColor().getId() + 1))
+                .isOpen(true)
+                .sizeId(updateTarget.getSize().getId())
+                .clothesImageUrl("image1.jpg")
+                .memo("메모입니다.")
+                .name("제품명수정")
+                .purchaseDate("구매시기1")
+                .build();
+
+        // when & then
+        assertThatThrownBy(() -> clothesService.updateClothes(request, user)).isInstanceOf(CustomException.class)
+                .extracting("errorCode.status", "errorCode.divisionCode", "errorCode.message")
+                .contains(404, "C003", "유효하지 않은 색 ID");
+
+    }
+
+    @DisplayName("부모 카테고리로 수정하면 에러가 발생한다.")
+    @Test
+    void updateClothesWithParentCategory() {
+        // given
+        User user = createUserBy("작성자1");
+        Clothes updateTarget = createClothesBy(user, true, "1");
+
+        Category parentCategory = Category.createLargeCategoryBy("상위카테고리", SizeType.TOP);
+        Category updateParentCategory = categoryRepository.save(parentCategory);
+
+        UpdateClothesSvcReq request = UpdateClothesSvcReq.builder()
+                .clothesId(updateTarget.getId())
+                .purchaseStore("구매처1")
+                .brandId(updateTarget.getBrand().getId())
+                .categoryId(updateParentCategory.getId())
+                .colorIds(List.of(updateTarget.getClothesColors().get(0).getColor().getId()))
+                .isOpen(true)
+                .sizeId(updateTarget.getSize().getId())
+                .clothesImageUrl("image1.jpg")
+                .memo("메모입니다.")
+                .name("제품명수정")
+                .purchaseDate("구매시기1")
+                .build();
+
+        // when & then
+        assertThatThrownBy(() -> clothesService.updateClothes(request, user)).isInstanceOf(CustomException.class)
+                .extracting("errorCode.status", "errorCode.divisionCode", "errorCode.message")
+                .contains(404, "C003", "하위 카테고리를 선택해주세요.");
+
+    }
+
+    @DisplayName("카테고리에 속하지 않은 사이즈로 수정하면 에러가 발생한다.")
+    @Test
+    void updateClothesWithInvalidCategoryAndSize() {
+        // given
+        User user = createUserBy("작성자1");
+        Clothes updateTarget = createClothesBy(user, true, "1");
+
+        Size size = Size.builder().sizeType(SizeType.BOTTOM).name("사이즈").lineNo((byte)1).build();
+
+        Size updateSize = sizeRepository.save(size);
+
+        UpdateClothesSvcReq request = UpdateClothesSvcReq.builder()
+                .clothesId(updateTarget.getId())
+                .purchaseStore("구매처1")
+                .brandId(updateTarget.getBrand().getId())
+                .categoryId(updateTarget.getCategory().getId())
+                .colorIds(List.of(updateTarget.getClothesColors().get(0).getColor().getId()))
+                .isOpen(true)
+                .sizeId(updateSize.getId())
+                .clothesImageUrl("image1.jpg")
+                .memo("메모입니다.")
+                .name("제품명수정")
+                .purchaseDate("구매시기1")
+                .build();
+
+        // when & then
+        assertThatThrownBy(() -> clothesService.updateClothes(request, user)).isInstanceOf(CustomException.class)
+                .extracting("errorCode.status", "errorCode.divisionCode", "errorCode.message")
+                .contains(400, "C002", "카테고리에 속한 사이즈가 아님");
 
     }
 

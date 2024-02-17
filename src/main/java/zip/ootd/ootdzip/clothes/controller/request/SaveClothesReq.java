@@ -9,13 +9,13 @@ import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import zip.ootd.ootdzip.clothes.data.PurchaseStoreType;
 import zip.ootd.ootdzip.clothes.service.request.SaveClothesSvcReq;
 import zip.ootd.ootdzip.common.valid.EnumValid;
 
 @Getter
-@RequiredArgsConstructor
+@NoArgsConstructor
 public class SaveClothesReq {
 
     @NotBlank(message = "구매처는 필수입니다.")
@@ -51,7 +51,7 @@ public class SaveClothesReq {
     private String purchaseDate;
 
     @Builder
-    private SaveClothesReq(String purchaseStore, PurchaseStoreType purchaseStoreType, Long brandId, Long categoryId,
+    public SaveClothesReq(String purchaseStore, PurchaseStoreType purchaseStoreType, Long brandId, Long categoryId,
             List<Long> colorIds, Boolean isOpen, Long sizeId, String clothesImageUrl, String name, String memo,
             String purchaseDate) {
         this.purchaseStore = purchaseStore;

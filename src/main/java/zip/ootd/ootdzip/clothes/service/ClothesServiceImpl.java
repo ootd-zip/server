@@ -26,6 +26,7 @@ import zip.ootd.ootdzip.clothes.domain.ClothesColor;
 import zip.ootd.ootdzip.clothes.repository.ClothesRepository;
 import zip.ootd.ootdzip.clothes.service.request.FindClothesByUserSvcReq;
 import zip.ootd.ootdzip.clothes.service.request.SaveClothesSvcReq;
+import zip.ootd.ootdzip.clothes.service.request.UpdateClothesSvcReq;
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.repository.UserRepository;
@@ -60,7 +61,8 @@ public class ClothesServiceImpl implements ClothesService {
         Size size = sizeRepository.findById(request.getSizeId())
                 .orElseThrow(() -> new CustomException(NOT_FOUND_SIZE_ID));
 
-        if (colors.isEmpty()) {
+        if (colors.size() != request.getColorIds().size()
+                || request.getColorIds().isEmpty()) {
             throw new CustomException(NOT_FOUND_COLOR_ID);
         }
 
@@ -147,5 +149,55 @@ public class ClothesServiceImpl implements ClothesService {
         clothesRepository.delete(deleteClothes);
 
         return new DeleteClothesByIdRes("옷 삭제 성공");
+    }
+
+    @Override
+    @Transactional
+    public SaveClothesRes updateClothes(UpdateClothesSvcReq request, User loginUser) {
+
+        Clothes updateTarget = clothesRepository.findById(request.getClothesId())
+                .orElseThrow(() -> new CustomException(NOT_FOUND_CLOTHES_ID));
+
+        if (!updateTarget.getUser().getId().equals(loginUser.getId())) {
+            throw new CustomException(UNAUTHORIZED_USER_ERROR);
+        }
+
+        Brand brand = brandRepository.findById(request.getBrandId())
+                .orElseThrow(() -> new CustomException(NOT_FOUND_BRAND_ID));
+        Category category = categoryRepository.findById(request.getCategoryId())
+                .orElseThrow(() -> new CustomException(NOT_FOUND_CATEGORY_ID));
+        List<Color> colors = colorRepository.findAllById(request.getColorIds());
+        Size size = sizeRepository.findById(request.getSizeId())
+                .orElseThrow(() -> new CustomException(NOT_FOUND_SIZE_ID));
+
+        if (colors.size() != request.getColorIds().size()
+                || request.getColorIds().isEmpty()) {
+            throw new CustomException(NOT_FOUND_COLOR_ID);
+        }
+
+        if (!category.getType().equals(CategoryType.DetailCategory)) {
+            throw new CustomException(REQUIRED_DETAIL_CATEGORY);
+        }
+
+        if (!size.getSizeType().equals(category.getSizeType())) {
+            throw new CustomException(INVALID_CATEGORY_AND_SIZE);
+        }
+
+        List<ClothesColor> clothesColors = ClothesColor.createClothesColorsBy(colors);
+
+        updateTarget.updateClothes(brand,
+                request.getPurchaseStore(),
+                request.getPurchaseStoreType(),
+                request.getName(),
+                request.getIsOpen(),
+                category,
+                size,
+                request.getMemo(),
+                request.getPurchaseDate(),
+                request.getClothesImageUrl(),
+                clothesColors);
+
+        Clothes updatedClothes = clothesRepository.save(updateTarget);
+        return SaveClothesRes.of(updatedClothes);
     }
 }

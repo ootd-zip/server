@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,6 +19,7 @@ import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import zip.ootd.ootdzip.clothes.controller.request.FindClothesByUserReq;
 import zip.ootd.ootdzip.clothes.controller.request.SaveClothesReq;
+import zip.ootd.ootdzip.clothes.controller.request.UpdateClothesReq;
 import zip.ootd.ootdzip.clothes.data.DeleteClothesByIdRes;
 import zip.ootd.ootdzip.clothes.data.FindClothesRes;
 import zip.ootd.ootdzip.clothes.data.SaveClothesRes;
@@ -44,7 +46,8 @@ public class ClothesController {
 
     @Operation(summary = "옷 ID로 조회", description = "옷 조회 API - 옷 ID로 조회")
     @GetMapping("/{id}")
-    public ApiResponse<FindClothesRes> findClothesById(@PathVariable @Positive(message = "옷 ID는 양수여야 합니다.") Long id) {
+    public ApiResponse<FindClothesRes> findClothesById(
+            @PathVariable(name = "id") @Positive(message = "옷 ID는 양수여야 합니다.") Long id) {
         return new ApiResponse<>(clothesService.findClothesById(id, userService.getAuthenticatiedUser()));
     }
 
@@ -61,5 +64,14 @@ public class ClothesController {
     public ApiResponse<DeleteClothesByIdRes> deleteClothesById(
             @PathVariable @Positive(message = "옷 ID는 양수여야 합니다.") Long id) {
         return new ApiResponse<>(clothesService.deleteClothesById(id, userService.getAuthenticatiedUser()));
+    }
+
+    @Operation(summary = "옷 수정 API", description = "옷 수정")
+    @PutMapping("/{id}")
+    public ApiResponse<SaveClothesRes> updateClothes(
+            @PathVariable(name = "id") @Positive(message = "옷 ID는 양수여야 합니다.") Long id,
+            @RequestBody @Valid UpdateClothesReq request) {
+        return new ApiResponse<>(
+                clothesService.updateClothes(request.toServiceRequest(id), userService.getAuthenticatiedUser()));
     }
 }
