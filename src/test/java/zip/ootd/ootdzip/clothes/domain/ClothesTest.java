@@ -13,6 +13,7 @@ import zip.ootd.ootdzip.category.data.SizeType;
 import zip.ootd.ootdzip.category.domain.Category;
 import zip.ootd.ootdzip.category.domain.Color;
 import zip.ootd.ootdzip.category.domain.Size;
+import zip.ootd.ootdzip.clothes.data.PurchaseStoreType;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.domain.UserGender;
 
@@ -42,8 +43,8 @@ class ClothesTest {
         List<ClothesColor> clothesColors = ClothesColor.createClothesColorsBy(List.of(color));
 
         // when
-        Clothes clothes = Clothes.createClothes(user, brand, "구매처", "제품명", true, category, size, "메모입니다", "구매일",
-                "image1.jpg", clothesColors);
+        Clothes clothes = Clothes.createClothes(user, brand, "구매처", PurchaseStoreType.Write, "제품명", true, category,
+                size, "메모입니다", "구매일", "image1.jpg", clothesColors);
 
         //then
         assertThat(clothes).extracting("user.name", "brand.name", "purchaseStore", "name", "isOpen", "category.name",

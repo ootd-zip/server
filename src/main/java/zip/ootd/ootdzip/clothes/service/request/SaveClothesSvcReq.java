@@ -4,11 +4,14 @@ import java.util.List;
 
 import lombok.Builder;
 import lombok.Getter;
+import zip.ootd.ootdzip.clothes.data.PurchaseStoreType;
 
 @Getter
 public class SaveClothesSvcReq {
 
     private final String purchaseStore;
+
+    private final PurchaseStoreType purchaseStoreType;
 
     private final Long brandId;
 
@@ -29,9 +32,11 @@ public class SaveClothesSvcReq {
     private final String purchaseDate;
 
     @Builder
-    private SaveClothesSvcReq(String purchaseStore, Long brandId, Long categoryId, List<Long> colorIds, Boolean isOpen,
-            Long sizeId, String clothesImageUrl, String memo, String name, String purchaseDate) {
+    private SaveClothesSvcReq(String purchaseStore, PurchaseStoreType purchaseStoreType, Long brandId, Long categoryId,
+            List<Long> colorIds, Boolean isOpen, Long sizeId, String clothesImageUrl, String memo, String name,
+            String purchaseDate) {
         this.purchaseStore = purchaseStore;
+        this.purchaseStoreType = purchaseStoreType;
         this.brandId = brandId;
         this.categoryId = categoryId;
         this.colorIds = colorIds;

@@ -18,6 +18,7 @@ import zip.ootd.ootdzip.category.domain.Size;
 import zip.ootd.ootdzip.category.repository.CategoryRepository;
 import zip.ootd.ootdzip.category.repository.ColorRepository;
 import zip.ootd.ootdzip.category.repository.SizeRepository;
+import zip.ootd.ootdzip.clothes.data.PurchaseStoreType;
 import zip.ootd.ootdzip.clothes.domain.Clothes;
 import zip.ootd.ootdzip.clothes.domain.ClothesColor;
 import zip.ootd.ootdzip.clothes.repository.ClothesRepository;
@@ -126,8 +127,8 @@ class ReportClothesRepositoryTest extends IntegrationTestSupport {
 
         List<ClothesColor> clothesColors = ClothesColor.createClothesColorsBy(List.of(savedColor));
 
-        Clothes clothes = Clothes.createClothes(user, savedBrand, "구매처" + idx, "제품명" + idx, isOpen, savedCategory,
-                savedSize, "재질" + idx, "구매일" + idx, "image" + idx + ".jpg", clothesColors);
+        Clothes clothes = Clothes.createClothes(user, savedBrand, "구매처" + idx, PurchaseStoreType.Write, "제품명" + idx,
+                isOpen, savedCategory, savedSize, "재질" + idx, "구매일" + idx, "image" + idx + ".jpg", clothesColors);
 
         return clothesRepository.save(clothes);
     }
