@@ -10,7 +10,9 @@ import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import zip.ootd.ootdzip.clothes.data.PurchaseStoreType;
 import zip.ootd.ootdzip.clothes.service.request.SaveClothesSvcReq;
+import zip.ootd.ootdzip.common.valid.EnumValid;
 
 @Getter
 @RequiredArgsConstructor
@@ -18,6 +20,9 @@ public class SaveClothesReq {
 
     @NotBlank(message = "구매처는 필수입니다.")
     private String purchaseStore;
+
+    @EnumValid(enumClass = PurchaseStoreType.class, message = "유효하지 않은 구매처 타입입니다.")
+    private PurchaseStoreType purchaseStoreType;
 
     @Positive(message = "브랜드 ID는 양수여야 합니다.")
     private Long brandId;
@@ -40,15 +45,17 @@ public class SaveClothesReq {
     @NotBlank(message = "제품명은 필수입니다.")
     private String name;
 
-    @Size(max = 2001, message = "메모는 최대 3000자입니다.")
+    @Size(max = 2001, message = "메모는 최대 2000자입니다.")
     private String memo;
 
     private String purchaseDate;
 
     @Builder
-    private SaveClothesReq(String purchaseStore, Long brandId, Long categoryId, List<Long> colorIds,
-            Boolean isOpen, Long sizeId, String clothesImageUrl, String name, String memo, String purchaseDate) {
+    private SaveClothesReq(String purchaseStore, PurchaseStoreType purchaseStoreType, Long brandId, Long categoryId,
+            List<Long> colorIds, Boolean isOpen, Long sizeId, String clothesImageUrl, String name, String memo,
+            String purchaseDate) {
         this.purchaseStore = purchaseStore;
+        this.purchaseStoreType = purchaseStoreType;
         this.brandId = brandId;
         this.categoryId = categoryId;
         this.colorIds = colorIds;
@@ -63,6 +70,7 @@ public class SaveClothesReq {
     public SaveClothesSvcReq toServiceRequest() {
         return SaveClothesSvcReq.builder()
                 .purchaseStore(this.purchaseStore)
+                .purchaseStoreType(this.purchaseStoreType)
                 .brandId(this.brandId)
                 .categoryId(this.categoryId)
                 .colorIds(this.colorIds)

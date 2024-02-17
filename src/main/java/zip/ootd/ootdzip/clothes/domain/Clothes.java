@@ -6,6 +6,8 @@ import java.util.List;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -18,6 +20,7 @@ import lombok.NoArgsConstructor;
 import zip.ootd.ootdzip.brand.domain.Brand;
 import zip.ootd.ootdzip.category.domain.Category;
 import zip.ootd.ootdzip.category.domain.Size;
+import zip.ootd.ootdzip.clothes.data.PurchaseStoreType;
 import zip.ootd.ootdzip.common.entity.BaseEntity;
 import zip.ootd.ootdzip.ootdimageclothe.domain.OotdImageClothes;
 import zip.ootd.ootdzip.user.domain.User;
@@ -40,6 +43,9 @@ public class Clothes extends BaseEntity {
 
     @Column(nullable = false)
     private String purchaseStore;
+
+    @Enumerated(EnumType.STRING)
+    private PurchaseStoreType purchaseStoreType;
 
     @Column(nullable = false)
     private Boolean isOpen;
@@ -73,6 +79,7 @@ public class Clothes extends BaseEntity {
     public static Clothes createClothes(User user,
             Brand brand,
             String purchaseStore,
+            PurchaseStoreType purchaseStoreType,
             String name,
             Boolean isOpen,
             Category category,
@@ -86,6 +93,7 @@ public class Clothes extends BaseEntity {
                 .user(user)
                 .brand(brand)
                 .purchaseStore(purchaseStore)
+                .purchaseStoreType(purchaseStoreType)
                 .name(name)
                 .isOpen(isOpen)
                 .category(category)

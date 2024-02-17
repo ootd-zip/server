@@ -96,7 +96,8 @@ class ReportCommentRepositoryTest extends IntegrationTestSupport {
 
     private Comment createCommentBy(User writer, Ootd ootd) {
         Comment comment = Comment.builder()
-                .ootd(ootd)
+                .topOotdId(ootd.getId())
+                .depth(1)
                 .writer(writer)
                 .contents("내용1")
                 .build();

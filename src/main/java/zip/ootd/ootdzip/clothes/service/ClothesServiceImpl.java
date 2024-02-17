@@ -77,6 +77,7 @@ public class ClothesServiceImpl implements ClothesService {
         Clothes clothes = Clothes.createClothes(loginUser,
                 brand,
                 request.getPurchaseStore(),
+                request.getPurchaseStoreType(),
                 request.getName(),
                 request.getIsOpen(),
                 category,

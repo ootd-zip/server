@@ -22,6 +22,7 @@ import zip.ootd.ootdzip.category.repository.CategoryRepository;
 import zip.ootd.ootdzip.category.repository.ColorRepository;
 import zip.ootd.ootdzip.category.repository.SizeRepository;
 import zip.ootd.ootdzip.category.repository.StyleRepository;
+import zip.ootd.ootdzip.clothes.data.PurchaseStoreType;
 import zip.ootd.ootdzip.clothes.domain.Clothes;
 import zip.ootd.ootdzip.clothes.domain.ClothesColor;
 import zip.ootd.ootdzip.clothes.repository.ClothesRepository;
@@ -243,7 +244,6 @@ public class CommentServiceTest extends IntegrationTestSupport {
         return commentRepository.save(comment);
     }
 
-
     private Ootd createOotdBy(User user, String content, boolean isPrivate) {
 
         Clothes clothes = createClothesBy(user, true, "1");
@@ -309,8 +309,8 @@ public class CommentServiceTest extends IntegrationTestSupport {
 
         List<ClothesColor> clothesColors = ClothesColor.createClothesColorsBy(List.of(savedColor));
 
-        Clothes clothes = Clothes.createClothes(user, savedBrand, "구매처" + idx, "제품명" + idx, isOpen, savedCategory,
-                savedSize, "메모입니다" + idx, "구매일" + idx, "image" + idx + ".jpg", clothesColors);
+        Clothes clothes = Clothes.createClothes(user, savedBrand, "구매처" + idx, PurchaseStoreType.Write, "제품명" + idx,
+                isOpen, savedCategory, savedSize, "메모입니다" + idx, "구매일" + idx, "image" + idx + ".jpg", clothesColors);
 
         return clothesRepository.save(clothes);
     }
