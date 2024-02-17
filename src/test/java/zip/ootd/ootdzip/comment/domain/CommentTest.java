@@ -6,60 +6,117 @@ import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 public class CommentTest {
 
-    @DisplayName("댓글 작성시 표기 시간 규칙을 지키는지 확인한다.")
+    @DisplayName("댓글 작성시 표기 시간 규칙(지금)을 지키는지 확인한다.")
     @Test
-    void compareCreatedTimeAndNow() {
+    void compareCreatedTimeAndNowForNow() {
         // given
         Comment comment = new Comment();
         comment.setCreatedAt(LocalDateTime.now());
 
         // when & then
         assertThat(comment.compareCreatedTimeAndNow()).isEqualTo("지금");
+    }
 
-        comment.setCreatedAt(LocalDateTime.now().minusMinutes(1L));
-        assertThat(comment.compareCreatedTimeAndNow()).isEqualTo("1분전");
-        comment.setCreatedAt(LocalDateTime.now().minusMinutes(30L));
-        assertThat(comment.compareCreatedTimeAndNow()).isEqualTo("30분전");
-        comment.setCreatedAt(LocalDateTime.now().minusMinutes(59L));
-        assertThat(comment.compareCreatedTimeAndNow()).isEqualTo("59분전");
+    @DisplayName("댓글 작성시 표기 시간 규칙(~분전)을 지키는지 확인한다.")
+    @ParameterizedTest
+    @CsvSource({
+            "1, '1분전'",
+            "30, '30분전'",
+            "59, '59분전'"
+    })
+    void compareCreatedTimeAndNowForLastMinute(long minutesAgo, String expected) {
+        // given
+        Comment comment = new Comment();
+        comment.setCreatedAt(LocalDateTime.now().minusMinutes(minutesAgo));
 
-        comment.setCreatedAt(LocalDateTime.now().minusHours(1L));
-        assertThat(comment.compareCreatedTimeAndNow()).isEqualTo("1시간전");
-        comment.setCreatedAt(LocalDateTime.now().minusHours(12L));
-        assertThat(comment.compareCreatedTimeAndNow()).isEqualTo("12시간전");
-        comment.setCreatedAt(LocalDateTime.now().minusHours(23L));
-        assertThat(comment.compareCreatedTimeAndNow()).isEqualTo("23시간전");
+        // when & then
+        assertThat(comment.compareCreatedTimeAndNow()).isEqualTo(expected);
+    }
 
-        comment.setCreatedAt(LocalDateTime.now().minusDays(1L));
-        assertThat(comment.compareCreatedTimeAndNow()).isEqualTo("1일전");
-        comment.setCreatedAt(LocalDateTime.now().minusDays(3L));
-        assertThat(comment.compareCreatedTimeAndNow()).isEqualTo("3일전");
-        comment.setCreatedAt(LocalDateTime.now().minusDays(6L));
-        assertThat(comment.compareCreatedTimeAndNow()).isEqualTo("6일전");
+    @DisplayName("댓글 작성시 표기 시간 규칙(~시간전)을 지키는지 확인한다.")
+    @ParameterizedTest
+    @CsvSource({
+            "1, '1시간전'",
+            "12, '12시간전'",
+            "23, '23시간전'"
+    })
+    void compareCreatedTimeAndNowLastHour(long hoursAgo, String expected) {
+        // given
+        Comment comment = new Comment();
+        comment.setCreatedAt(LocalDateTime.now().minusHours(hoursAgo));
 
-        comment.setCreatedAt(LocalDateTime.now().minusDays(7L));
-        assertThat(comment.compareCreatedTimeAndNow()).isEqualTo("1주전");
-        comment.setCreatedAt(LocalDateTime.now().minusDays(10L));
-        assertThat(comment.compareCreatedTimeAndNow()).isEqualTo("1주전");
-        comment.setCreatedAt(LocalDateTime.now().minusDays(15L));
-        assertThat(comment.compareCreatedTimeAndNow()).isEqualTo("2주전");
-        comment.setCreatedAt(LocalDateTime.now().minusDays(27L));
-        assertThat(comment.compareCreatedTimeAndNow()).isEqualTo("3주전");
+        // when & then
+        assertThat(comment.compareCreatedTimeAndNow()).isEqualTo(expected);
+    }
 
-        comment.setCreatedAt(LocalDateTime.now().minusDays(32L));
-        assertThat(comment.compareCreatedTimeAndNow()).isEqualTo("1달전");
-        comment.setCreatedAt(LocalDateTime.now().minusMonths(6L));
-        assertThat(comment.compareCreatedTimeAndNow()).isEqualTo("6달전");
-        comment.setCreatedAt(LocalDateTime.now().minusMonths(11L));
-        assertThat(comment.compareCreatedTimeAndNow()).isEqualTo("11달전");
+    @DisplayName("댓글 작성시 표기 시간 규칙(~일전)을 지키는지 확인한다.")
+    @ParameterizedTest
+    @CsvSource({
+            "1, '1일전'",
+            "3, '3일전'",
+            "6, '6일전'"
+    })
+    void compareCreatedTimeAndNowForLastDay(long daysAgo, String expected) {
+        // given
+        Comment comment = new Comment();
+        comment.setCreatedAt(LocalDateTime.now().minusDays(daysAgo));
 
-        comment.setCreatedAt(LocalDateTime.now().minusYears(1L));
-        assertThat(comment.compareCreatedTimeAndNow()).isEqualTo("1년전");
-        comment.setCreatedAt(LocalDateTime.now().minusYears(100L));
-        assertThat(comment.compareCreatedTimeAndNow()).isEqualTo("100년전");
+        // when & then
+        assertThat(comment.compareCreatedTimeAndNow()).isEqualTo(expected);
+    }
+
+    @DisplayName("댓글 작성시 표기 시간 규칙(~주전)을 지키는지 확인한다.")
+    @ParameterizedTest
+    @CsvSource({
+            "7, '1주전'",
+            "10, '1주전'",
+            "15, '2주전'",
+            "27, '3주전'",
+            "28, '4주전'"
+    })
+    void compareCreatedTimeAndNowForLastWeek(long daysAgo, String expected) {
+        // given
+        Comment comment = new Comment();
+        comment.setCreatedAt(LocalDateTime.now().minusDays(daysAgo));
+
+        // when & then
+        assertThat(comment.compareCreatedTimeAndNow()).isEqualTo(expected);
+    }
+
+    @DisplayName("댓글 작성시 표기 시간 규칙(~달전)을 지키는지 확인한다.")
+    @ParameterizedTest
+    @CsvSource({
+            "1, '1달전'",
+            "6, '6달전'",
+            "11, '11달전'"
+    })
+    void compareCreatedTimeAndNowForLastMonth(long monthsAgo, String expected) {
+        // given
+        Comment comment = new Comment();
+        comment.setCreatedAt(LocalDateTime.now().minusMonths(monthsAgo));
+
+        // when & then
+        assertThat(comment.compareCreatedTimeAndNow()).isEqualTo(expected);
+    }
+
+    @DisplayName("댓글 작성시 표기 시간 규칙(~년전)을 지키는지 확인한다.")
+    @ParameterizedTest
+    @CsvSource({
+            "1, '1년전'",
+            "100, '100년전'"
+    })
+    void compareCreatedTimeAndNowForLastYear(long yearsAgo, String expected) {
+        // given
+        Comment comment = new Comment();
+        comment.setCreatedAt(LocalDateTime.now().minusYears(yearsAgo));
+
+        // when & then
+        assertThat(comment.compareCreatedTimeAndNow()).isEqualTo(expected);
     }
 
     @DisplayName("댓글 조회시 삭제여부에 따라 내용이 변한다.")
