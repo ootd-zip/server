@@ -10,7 +10,7 @@ public class OotdPatchReq {
     @NotNull
     private Long id;
 
-    @Size(max = 3000, message = "메모는 최대 3000자 입니다.")
+    @Size(max = 3000, message = "게시글은 최대 3000자 입니다.")
     private String content;
 
     @NotNull
