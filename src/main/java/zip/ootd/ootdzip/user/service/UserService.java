@@ -45,18 +45,18 @@ public class UserService {
         OauthProvider oAuthProvider = request.getOauthProvider();
         SocialOAuth socialOAuth = findSocialOauthByType(oAuthProvider);
 
-        // request 정보로 카카오 멤버 ID 가져오기
+        // request 정보로 소셜로그인 멤버 ID 가져오기
         String memberId = socialOAuth.getSocialIdBy(request.getAuthorizationCode(),
-                request.getRedirectUri()); // 카카오 멤버 ID
+                request.getRedirectUri()); // 소셜로그인 멤버 ID
         Optional<UserOauth> foundUserOauth = userOAuthRepository.findUserOauthByOauthProviderAndOauthUserId(
-                OauthProvider.KAKAO, memberId);
+                oAuthProvider, memberId);
         User user;
-        if (foundUserOauth.isEmpty()) { // 새로운 멤버 ID일 경우 User 추가, 카카오 로그인 연동
+        if (foundUserOauth.isEmpty()) { // 새로운 멤버 ID일 경우 User 추가
             user = User.getDefault();
             user = userRepository.save(user);
-            UserOauth userOauth = new UserOauth(user, OauthProvider.KAKAO, memberId);
+            UserOauth userOauth = new UserOauth(user, oAuthProvider, memberId);
             userOAuthRepository.save(userOauth);
-        } else { // 카카오 멤버 ID가 이미 존재할 경우 불러오기
+        } else { // 소셜로그인 멤버 ID가 이미 존재할 경우 불러오기
             user = foundUserOauth.get().getUser();
         }
         UserAuthenticationToken authenticationToken = new UserAuthenticationToken(
