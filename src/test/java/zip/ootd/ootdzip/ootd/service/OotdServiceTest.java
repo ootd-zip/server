@@ -4,11 +4,15 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.SliceImpl;
 
 import zip.ootd.ootdzip.IntegrationTestSupport;
 import zip.ootd.ootdzip.brand.domain.Brand;
@@ -26,6 +30,10 @@ import zip.ootd.ootdzip.clothes.data.PurchaseStoreType;
 import zip.ootd.ootdzip.clothes.domain.Clothes;
 import zip.ootd.ootdzip.clothes.domain.ClothesColor;
 import zip.ootd.ootdzip.clothes.repository.ClothesRepository;
+import zip.ootd.ootdzip.common.exception.CustomException;
+import zip.ootd.ootdzip.ootd.data.OotdGetOtherRes;
+import zip.ootd.ootdzip.ootd.data.OotdGetRes;
+import zip.ootd.ootdzip.ootd.data.OotdGetSimilarRes;
 import zip.ootd.ootdzip.ootd.data.OotdPatchReq;
 import zip.ootd.ootdzip.ootd.data.OotdPostReq;
 import zip.ootd.ootdzip.ootd.data.OotdPutReq;
@@ -236,28 +244,6 @@ public class OotdServiceTest extends IntegrationTestSupport {
         assertThat(result.isPresent()).isEqualTo(false);
     }
 
-    @DisplayName("OOTD 를 단건 조회한다.")
-    @Test
-    void findOne() {
-        // given
-
-        // when
-
-        // then
-
-    }
-
-    @DisplayName("OOTD 를 전체 조회한다.")
-    @Test
-    void findAll() {
-        // given
-
-        // when
-
-        // then
-
-    }
-
     @DisplayName("좋아요를 한다.")
     @Test
     void addLike() {
@@ -340,6 +326,146 @@ public class OotdServiceTest extends IntegrationTestSupport {
                 .hasSize(1)
                 .extracting("user.id")
                 .contains(user1.getId());
+    }
+
+    @DisplayName("ootd 를 조회한다.")
+    @ParameterizedTest
+    @CsvSource({
+            "true",
+            "false"
+    })
+    void getOotd(boolean isPrivate) {
+        // given
+        User user = createUserBy("유저");
+        Ootd ootd = createOotdBy(user, "안녕", isPrivate);
+
+        // when
+        OotdGetRes result = ootdService.getOotd(ootd.getId(), user);
+
+        // then
+        assertThat(result.getId()).isEqualTo(ootd.getId());
+    }
+
+    @DisplayName("ootd 를 조회시 존재하는 ootd 이어야 한다.")
+    @Test
+    void getOotdWithoutOotd() {
+        // given
+        User user = createUserBy("유저");
+
+        // when & then
+        assertThatThrownBy(() -> ootdService.getOotd(123456789L, user)).isInstanceOf(
+                NoSuchElementException.class);
+
+    }
+
+    @DisplayName("ootd 를 조회시 다른 사람 비공개글 조회시 조회가 안된다.")
+    @Test
+    void getPrivateOotd() {
+        // given
+        User user = createUserBy("유저");
+        User user1 = createUserBy("유저1");
+        Ootd ootd = createOotdBy(user, "안녕", true);
+
+        // when & then
+        assertThatThrownBy(() -> ootdService.getOotd(ootd.getId(), user1)).isInstanceOf(
+                CustomException.class);
+    }
+
+    @DisplayName("ootd 작성자의 다른 ootd 를 조회한다.")
+    @Test
+    void getOotdOther() {
+        // given
+        User user = createUserBy("유저");
+        Ootd ootd = createOotdBy(user, "안녕", false);
+        Ootd ootd1 = createOotdBy(user, "안녕", false);
+        Ootd ootd2 = createOotdBy(user, "안녕", false);
+        Ootd ootd3 = createOotdBy(user, "안녕", false);
+
+        // when
+        SliceImpl<OotdGetOtherRes> result = ootdService.getOotdOther(user.getId(), ootd.getId(), 0);
+
+        // then
+        // ootd 는 작성시간 내림차순으로 정렬된다.
+        assertThat(result)
+                .hasSize(3)
+                .extracting("id")
+                .containsExactly(ootd3.getId(), ootd2.getId(), ootd1.getId());
+    }
+
+    @DisplayName("ootd 작성자와 비슷한 ootd 를 조회한다.")
+    @Test
+    void getOotdSimilar() {
+        // given
+        Style style1 = createStyleBy("올드머니");
+        Style style2 = createStyleBy("블루코어");
+        Style style3 = createStyleBy("고프코어");
+
+        User user = createUserBy("유저");
+        User user1 = createUserBy("유저1");
+        Ootd ootd = createOotdBy(user, "안녕", false, Arrays.asList(style1, style2));
+        Ootd ootd1 = createOotdBy(user, "안녕1", false, Arrays.asList(style1, style2));
+        Ootd ootd2 = createOotdBy(user, "안녕2", false, Arrays.asList(style1, style2));
+        Ootd ootd3 = createOotdBy(user1, "안녕3", false, Arrays.asList(style1, style2));
+
+        // 한 개라도 동일한 스타일이 있으면 포함
+        Ootd ootd4 = createOotdBy(user1, "안녕4", false, Arrays.asList(style1));
+        Ootd ootd5 = createOotdBy(user1, "안녕5", false, Arrays.asList(style2));
+        Ootd ootd6 = createOotdBy(user1, "안녕6", false, Arrays.asList(style1, style3));
+
+        // 포함되는 스타일이 하나도 없을시 포함하지 않음
+        Ootd ootd7 = createOotdBy(user1, "안녕7", false, Arrays.asList(style3));
+
+        // when
+        SliceImpl<OotdGetSimilarRes> result = ootdService.getOotdSimilar(ootd.getId(), 0);
+
+        // then
+        // ootd 는 작성시간 내림차순으로 정렬된다.
+        assertThat(result)
+                .hasSize(6)
+                .extracting("id")
+                .containsExactly(ootd6.getId(), ootd5.getId(), ootd4.getId(),
+                        ootd3.getId(), ootd2.getId(), ootd1.getId());
+    }
+
+    private Ootd createOotdBy(User user, String content, boolean isPrivate, List<Style> styles) {
+
+        Clothes clothes = createClothesBy(user, true, "1");
+        Clothes clothes1 = createClothesBy(user, true, "2");
+
+        Coordinate coordinate = new Coordinate("22.33", "33.44");
+        Coordinate coordinate1 = new Coordinate("33.44", "44.55");
+
+        DeviceSize deviceSize = new DeviceSize(100L, 50L);
+        DeviceSize deviceSize1 = new DeviceSize(100L, 50L);
+
+        OotdImageClothes ootdImageClothes = OotdImageClothes.builder().clothes(clothes)
+                .coordinate(coordinate)
+                .deviceSize(deviceSize)
+                .build();
+
+        OotdImageClothes ootdImageClothes1 = OotdImageClothes.builder().clothes(clothes1)
+                .coordinate(coordinate1)
+                .deviceSize(deviceSize1)
+                .build();
+
+        OotdImage ootdImage = OotdImage.createOotdImageBy("input_image_url",
+                Arrays.asList(ootdImageClothes, ootdImageClothes1));
+
+        List<OotdStyle> ootdStyles = OotdStyle.createOotdStylesBy(styles);
+
+        Ootd ootd = Ootd.createOotd(user,
+                content,
+                isPrivate,
+                Arrays.asList(ootdImage),
+                ootdStyles);
+
+        return ootdRepository.save(ootd);
+    }
+
+    private Style createStyleBy(String name) {
+
+        Style style = Style.builder().name(name).build();
+        return styleRepository.save(style);
     }
 
     private Ootd createOotdBy(User user, String content, boolean isPrivate) {

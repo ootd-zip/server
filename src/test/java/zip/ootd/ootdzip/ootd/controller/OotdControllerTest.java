@@ -7,13 +7,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import zip.ootd.ootdzip.ControllerTestSupport;
+import zip.ootd.ootdzip.ootd.data.OotdGetRes;
 import zip.ootd.ootdzip.ootd.data.OotdPatchReq;
 import zip.ootd.ootdzip.ootd.data.OotdPostReq;
 import zip.ootd.ootdzip.ootd.data.OotdPutReq;
@@ -482,5 +485,61 @@ public class OotdControllerTest extends ControllerTestSupport {
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(200))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result").isBoolean());
+    }
+
+    @DisplayName("OOTD 게시글 조회")
+    @Test
+    void getOotd() throws Exception {
+        // given
+        Long id = 1L;
+
+        when(ootdService.getOotd(any(), any())).thenReturn(new OotdGetRes());
+
+        // when & then
+        mockMvc.perform(get("/api/v1/ootd/{id}", id))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(200))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result").exists());
+    }
+
+    @DisplayName("다른 OOTD 게시글 조회")
+    @Test
+    void getOotdOther() throws Exception {
+        // given
+        Long userId = 1L;
+        Long ootdId = 1L;
+        Integer page = 0;
+
+        when(ootdService.getOotdOther(any(), any(), any())).thenReturn(new SliceImpl<>(List.of()));
+
+        // when & then
+        mockMvc.perform(get("/api/v1/ootd/other")
+                        .param("user", Long.toString(userId))
+                        .param("ootd", ootdId.toString())
+                        .param("page", page.toString()))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(200))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result").exists());
+    }
+
+    @DisplayName("비슷한 OOTD 게시글 조회")
+    @Test
+    void getOotdSimilar() throws Exception {
+        // given
+        Long ootdId = 1L;
+        Integer page = 0;
+
+        when(ootdService.getOotdSimilar(any(), any())).thenReturn(new SliceImpl<>(List.of()));
+
+        // when & then
+        mockMvc.perform(get("/api/v1/ootd/similar")
+                        .param("ootd", ootdId.toString())
+                        .param("page", page.toString()))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(200))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result").exists());
     }
 }
