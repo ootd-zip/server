@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -19,6 +20,7 @@ import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import zip.ootd.ootdzip.clothes.controller.request.FindClothesByUserReq;
 import zip.ootd.ootdzip.clothes.controller.request.SaveClothesReq;
+import zip.ootd.ootdzip.clothes.controller.request.UpdateClothesIsOpenReq;
 import zip.ootd.ootdzip.clothes.controller.request.UpdateClothesReq;
 import zip.ootd.ootdzip.clothes.data.DeleteClothesByIdRes;
 import zip.ootd.ootdzip.clothes.data.FindClothesRes;
@@ -74,4 +76,13 @@ public class ClothesController {
         return new ApiResponse<>(
                 clothesService.updateClothes(request.toServiceRequest(id), userService.getAuthenticatiedUser()));
     }
+
+    @PatchMapping("/{id}")
+    public ApiResponse<SaveClothesRes> updateClothesIsOpen(
+            @PathVariable(name = "id") @Positive(message = "옷 ID는 양수여야 합니다.") Long id,
+            @RequestBody @Valid UpdateClothesIsOpenReq request) {
+        return new ApiResponse<>(
+                clothesService.updateClothesIsOpen(request.toServiceRequest(id), userService.getAuthenticatiedUser()));
+    }
+
 }

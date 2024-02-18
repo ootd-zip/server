@@ -26,6 +26,7 @@ import zip.ootd.ootdzip.clothes.domain.ClothesColor;
 import zip.ootd.ootdzip.clothes.repository.ClothesRepository;
 import zip.ootd.ootdzip.clothes.service.request.FindClothesByUserSvcReq;
 import zip.ootd.ootdzip.clothes.service.request.SaveClothesSvcReq;
+import zip.ootd.ootdzip.clothes.service.request.UpdateClothesIsOpenSvcReq;
 import zip.ootd.ootdzip.clothes.service.request.UpdateClothesSvcReq;
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.user.domain.User;
@@ -198,6 +199,24 @@ public class ClothesServiceImpl implements ClothesService {
                 clothesColors);
 
         Clothes updatedClothes = clothesRepository.save(updateTarget);
+        return SaveClothesRes.of(updatedClothes);
+    }
+
+    @Override
+    @Transactional
+    public SaveClothesRes updateClothesIsOpen(UpdateClothesIsOpenSvcReq request, User loginUser) {
+
+        Clothes updateTarget = clothesRepository.findById(request.getClothesId())
+                .orElseThrow(() -> new CustomException(NOT_FOUND_CLOTHES_ID));
+
+        if (!updateTarget.getUser().getId().equals(loginUser.getId())) {
+            throw new CustomException(UNAUTHORIZED_USER_ERROR);
+        }
+
+        updateTarget.updateIsOpen(request.getIsOpen());
+
+        Clothes updatedClothes = clothesRepository.save(updateTarget);
+
         return SaveClothesRes.of(updatedClothes);
     }
 }

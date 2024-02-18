@@ -28,6 +28,7 @@ import zip.ootd.ootdzip.clothes.domain.ClothesColor;
 import zip.ootd.ootdzip.clothes.repository.ClothesRepository;
 import zip.ootd.ootdzip.clothes.service.request.FindClothesByUserSvcReq;
 import zip.ootd.ootdzip.clothes.service.request.SaveClothesSvcReq;
+import zip.ootd.ootdzip.clothes.service.request.UpdateClothesIsOpenSvcReq;
 import zip.ootd.ootdzip.clothes.service.request.UpdateClothesSvcReq;
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.user.domain.User;
@@ -848,6 +849,76 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
         assertThatThrownBy(() -> clothesService.updateClothes(request, user)).isInstanceOf(CustomException.class)
                 .extracting("errorCode.status", "errorCode.divisionCode", "errorCode.message")
                 .contains(400, "C002", "카테고리에 속한 사이즈가 아님");
+
+    }
+
+    @DisplayName("옷 공개여부를 수정한다.")
+    @Test
+    void updateClothesIsOpen() {
+        // given
+        User user = createUserBy("작성자1");
+        Clothes updateTarget = createClothesBy(user, true, "1");
+
+        UpdateClothesIsOpenSvcReq request = UpdateClothesIsOpenSvcReq.builder()
+                .clothesId(updateTarget.getId())
+                .isOpen(false)
+                .build();
+
+        // when
+        SaveClothesRes result = clothesService.updateClothesIsOpen(request, user);
+
+        //then
+        Clothes updatedClothes = clothesRepository.findById(result.getId()).get();
+
+        assertThat(updatedClothes)
+                .extracting("id", "name", "user", "brand.name", "isOpen", "category.name", "size.name", "memo",
+                        "purchaseStore", "purchaseDate", "imageUrl", "purchaseStoreType")
+                .contains(result.getId(), "제품명1", user, "브랜드1", false, "카테고리1", "사이즈1", "메모입니다1", "구매처1",
+                        "구매일1", "image1.jpg", Write);
+
+        assertThat(updatedClothes.getClothesColors()).hasSize(1)
+                .extracting("color.name", "color.colorCode")
+                .containsExactlyInAnyOrder(tuple("색1", "#fffff"));
+
+    }
+
+    @DisplayName("유효하지 않은 옷 ID로 공개여부를 수정하면 에러가 발생한다.")
+    @Test
+    void updateClothesIsOpenWithInvalidClothesId() {
+        // given
+        User user = createUserBy("작성자1");
+        Clothes updateTarget = createClothesBy(user, true, "1");
+
+        UpdateClothesIsOpenSvcReq request = UpdateClothesIsOpenSvcReq.builder()
+                .clothesId(updateTarget.getId() + 1)
+                .isOpen(false)
+                .build();
+
+        // when & then
+        assertThatThrownBy(() -> clothesService.updateClothesIsOpen(request, user))
+                .isInstanceOf(CustomException.class)
+                .extracting("errorCode.status", "errorCode.divisionCode", "errorCode.message")
+                .contains(404, "C004", "유효하지 않은 옷 ID");
+    }
+
+    @DisplayName("작성자가 아닌 다른 사람이 공개여부를 수정하면 에러가 발생한다.")
+    @Test
+    void updateClothesIsOpenWithDifferentUser() {
+        // given
+        User user = createUserBy("작성자1");
+        Clothes updateTarget = createClothesBy(user, true, "1");
+        User user2 = createUserBy("유저2");
+
+        UpdateClothesIsOpenSvcReq request = UpdateClothesIsOpenSvcReq.builder()
+                .clothesId(updateTarget.getId())
+                .isOpen(false)
+                .build();
+
+        // when & then
+        assertThatThrownBy(() -> clothesService.updateClothesIsOpen(request, user2))
+                .isInstanceOf(CustomException.class)
+                .extracting("errorCode.status", "errorCode.divisionCode", "errorCode.message")
+                .contains(401, "C001", "해당 데이터에 접근할 수 없는 사용자");
 
     }
 

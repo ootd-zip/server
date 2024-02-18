@@ -19,6 +19,7 @@ import org.springframework.util.MultiValueMap;
 
 import zip.ootd.ootdzip.ControllerTestSupport;
 import zip.ootd.ootdzip.clothes.controller.request.SaveClothesReq;
+import zip.ootd.ootdzip.clothes.controller.request.UpdateClothesIsOpenReq;
 import zip.ootd.ootdzip.clothes.controller.request.UpdateClothesReq;
 import zip.ootd.ootdzip.clothes.data.DeleteClothesByIdRes;
 import zip.ootd.ootdzip.clothes.data.FindClothesRes;
@@ -879,5 +880,67 @@ class ClothesControllerTest extends ControllerTestSupport {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(404))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.errors[0].field").value("purchaseStoreType"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.errors[0].reason").value("유효하지 않은 구매처 타입입니다."));
+    }
+
+    @DisplayName("옷 공개여부를 수정한다")
+    @Test
+    void updateClothesIsOpen() throws Exception {
+        // given
+        UpdateClothesIsOpenReq request = UpdateClothesIsOpenReq.builder()
+                .isOpen(false)
+                .build();
+
+        Long clothesId = 1L;
+
+        when(clothesService.updateClothesIsOpen(any(), any())).thenReturn(new SaveClothesRes(clothesId));
+
+        // when & then
+        mockMvc.perform(patch("/api/v1/clothes/{id}", clothesId)
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(200))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.id").isNumber());
+    }
+
+    @DisplayName("옷을 공개여부를 수정할 때 옷 ID는 양수여야한다.")
+    @Test
+    void updateClothesIsOpenWithZeroClothesId() throws Exception {
+        // given
+        UpdateClothesIsOpenReq request = UpdateClothesIsOpenReq.builder()
+                .isOpen(false)
+                .build();
+
+        Long clothesId = 0L;
+
+        // when & then
+        mockMvc.perform(patch("/api/v1/clothes/{id}", clothesId)
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNotFound())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(404))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.reason").value(containsString("옷 ID는 양수여야 합니다.")));
+    }
+
+    @DisplayName("옷을 공개여부를 수정할 때 공개여부는 필수이다.")
+    @Test
+    void updateClothesIsOpenWithoutIsOpen() throws Exception {
+        // given
+        UpdateClothesIsOpenReq request = UpdateClothesIsOpenReq.builder()
+                .build();
+
+        Long clothesId = 1L;
+
+        // when & then
+        mockMvc.perform(patch("/api/v1/clothes/{id}", clothesId)
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNotFound())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(404))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errors[0].field").value("isOpen"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errors[0].reason").value("공개여부는 필수입니다."));
     }
 }
