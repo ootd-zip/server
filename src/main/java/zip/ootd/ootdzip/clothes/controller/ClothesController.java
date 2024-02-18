@@ -77,6 +77,7 @@ public class ClothesController {
                 clothesService.updateClothes(request.toServiceRequest(id), userService.getAuthenticatiedUser()));
     }
 
+    @Operation(summary = "옷 공개여부 수정 API", description = "옷 공개여부 수정")
     @PatchMapping("/{id}")
     public ApiResponse<SaveClothesRes> updateClothesIsOpen(
             @PathVariable(name = "id") @Positive(message = "옷 ID는 양수여야 합니다.") Long id,
