@@ -4,6 +4,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.math.NumberUtils;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
@@ -117,26 +122,13 @@ public class OotdService {
         int view = getView(ootd);
         int like = getLike(ootd);
         boolean isLike = getUserLike(ootd, loginUser);
-        boolean isBookmark = ootd.isBookmark(loginUser);
 
-        return new OotdGetRes(ootd, isLike, isBookmark, view, like);
+        return new OotdGetRes(ootd, isLike, view, like, loginUser);
     }
 
     private void checkOotd(Ootd ootd, User user) {
         if (ootd.isPrivate() && !ootd.getWriter().getId().equals(user.getId())) {
             throw new CustomException(ErrorCode.PRIVATE);
-        }
-
-        if (ootd.getIsDeleted()) {
-            throw new CustomException(ErrorCode.DELETED);
-        }
-
-        if (ootd.getIsBlocked()) {
-            throw new CustomException(ErrorCode.BLOCKED);
-        }
-
-        if (ootd.getReportCount() >= 10) {
-            throw new CustomException(ErrorCode.OVER_REPORT);
         }
     }
 
@@ -145,13 +137,25 @@ public class OotdService {
      * 삭제된글, 차단된글, 신고수가 특정 수 이상, 비공개글은 가져오지 않습니다.
      * 단, 비공개글이어도 본인 작성글이면 가져옵니다.
      */
-    public List<OotdGetAllRes> getOotds(User loginUser) {
-        List<Ootd> ootds = ootdRepository.findAllByUserId(loginUser.getId());
+    public SliceImpl<OotdGetAllRes> getOotds(User loginUser, int page) {
 
-        return ootds.stream()
-                .map(b -> new OotdGetAllRes(b, getUserLike(b, loginUser), b.isBookmark(loginUser), getView(b),
-                        getLike(b)))
+        int size = 20;
+        Sort sort = Sort.by("createdAt").descending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Slice<Ootd> ootds = ootdRepository.findAllByUserId(loginUser.getId(), pageable);
+
+        List<OotdGetAllRes> ootdGetAllResList = ootds.stream()
+                .map(ootd -> new OotdGetAllRes(
+                        ootd,
+                        getUserLike(ootd, loginUser),
+                        getView(ootd),
+                        getLike(ootd),
+                        loginUser))
                 .collect(Collectors.toList());
+
+        return new SliceImpl<>(ootdGetAllResList, pageable, ootds.hasNext());
     }
 
     /**

@@ -1,7 +1,6 @@
 package zip.ootd.ootdzip.ootd.controller;
 
-import java.util.List;
-
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -10,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -83,9 +83,9 @@ public class OotdController {
 
     @Operation(summary = "ootd 전체 조회", description = "최신순으로 ootd를 조회 api")
     @GetMapping("/all")
-    public ApiResponse<List<OotdGetAllRes>> getOotdPosts() {
+    public ApiResponse<SliceImpl<OotdGetAllRes>> getOotdPosts(@RequestParam("page") Integer page) {
 
-        List<OotdGetAllRes> response = ootdService.getOotds(userService.getAuthenticatiedUser());
+        SliceImpl<OotdGetAllRes> response = ootdService.getOotds(userService.getAuthenticatiedUser(), page);
 
         return new ApiResponse<>(response);
     }

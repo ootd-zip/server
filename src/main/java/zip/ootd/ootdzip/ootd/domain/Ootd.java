@@ -6,6 +6,8 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.hibernate.annotations.Where;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -27,8 +29,15 @@ import zip.ootd.ootdzip.ootdlike.domain.OotdLike;
 import zip.ootd.ootdzip.ootdstyle.domain.OotdStyle;
 import zip.ootd.ootdzip.user.domain.User;
 
+/**
+ * 기본적으로 조회시
+ * 신고수 5미만, 차단X, 삭제X 된것을 조회합니다.
+ */
 @Entity
 @Table(name = "ootds")
+@Where(clause = "report_count < 5 "
+        + "AND is_blocked = false "
+        + "AND is_deleted = false ")
 @Getter
 @Setter
 @Builder

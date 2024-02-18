@@ -15,6 +15,7 @@ import zip.ootd.ootdzip.ootdimageclothe.domain.Coordinate;
 import zip.ootd.ootdzip.ootdimageclothe.domain.DeviceSize;
 import zip.ootd.ootdzip.ootdimageclothe.domain.OotdImageClothes;
 import zip.ootd.ootdzip.ootdstyle.domain.OotdStyle;
+import zip.ootd.ootdzip.user.domain.User;
 
 @Data
 public class OotdGetRes {
@@ -37,7 +38,13 @@ public class OotdGetRes {
 
     private String userImage;
 
+    private String userHeight;
+
+    private String userWeight;
+
     private LocalDateTime createAt;
+
+    private boolean isFollower;
 
     private List<OotdImageRes> ootdImages;
 
@@ -47,21 +54,25 @@ public class OotdGetRes {
 
     public OotdGetRes(Ootd ootd,
             boolean isLike,
-            boolean isBookmark,
             int viewCount,
-            int likeCount) {
+            int likeCount,
+            User loginUser) {
 
         this.isLike = isLike;
         this.viewCount = viewCount;
         this.likeCount = likeCount;
-        this.isBookmark = isBookmark;
+        this.isBookmark = ootd.isBookmark(loginUser);
+        this.isFollower = loginUser.isFollower(ootd.getWriter());
 
         this.id = ootd.getId();
-        this.userName = ootd.getWriter().getName();
-        this.userImage = ootd.getWriter().getProfileImage();
         this.reportCount = ootd.getReportCount();
         this.contents = ootd.getContents();
         this.createAt = ootd.getCreatedAt();
+
+        this.userName = ootd.getWriter().getName();
+        this.userImage = ootd.getWriter().getProfileImage();
+        this.userHeight = ootd.getWriter().getProfileHeight();
+        this.userWeight = ootd.getWriter().getProfileWeight();
 
         this.styles = ootd.getStyles().stream()
                 .map(OotdStyleRes::new)
