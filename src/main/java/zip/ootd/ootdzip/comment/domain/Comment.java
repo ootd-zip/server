@@ -46,8 +46,9 @@ public class Comment extends BaseEntity {
     @JoinColumn(name = "ootd_id")
     private Ootd ootd;
 
+    // 댓글의 경우 탈퇴된 유저의 부모 댓글은 "삭제된 댓글입니다." 로 표시해야하므로 db 에서 지울 수 없어, writer 가 nullable 해야한다.
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id")
     private User writer;
 
     @ManyToOne(fetch = FetchType.LAZY)
