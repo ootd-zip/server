@@ -163,13 +163,12 @@ public class OotdControllerTest extends ControllerTestSupport {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.errors").isArray());
     }
 
-    @DisplayName("OOTD 게시글과 공개여부 수정")
+    @DisplayName("OOTD 공개여부 수정")
     @Test
     void updateContentAndIsPrivate() throws Exception {
         // given
         OotdPatchReq ootdPatchReq = new OotdPatchReq();
         ootdPatchReq.setId(1L);
-        ootdPatchReq.setContent("hi");
         ootdPatchReq.setIsPrivate(true);
 
         // when & then
@@ -181,12 +180,11 @@ public class OotdControllerTest extends ControllerTestSupport {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result").isBoolean());
     }
 
-    @DisplayName("OOTD 게시글과 공개여부 수정시 id 는 필수입니다.")
+    @DisplayName("OOTD 공개여부 수정시 id 는 필수입니다.")
     @Test
     void updateContentAndIsPrivateWithoutId() throws Exception {
         // given
         OotdPatchReq ootdPatchReq = new OotdPatchReq();
-        ootdPatchReq.setContent("hi");
         ootdPatchReq.setIsPrivate(true);
 
         // when & then
@@ -198,41 +196,12 @@ public class OotdControllerTest extends ControllerTestSupport {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.errors").isArray());
     }
 
-    @DisplayName("OOTD 게시글과 공개여부 수정시 게시글은 3000자 이하 입니다.")
-    @Test
-    void updateContentAndIsPrivateWithTooLongContent() throws Exception {
-        // given
-        OotdPatchReq ootdPatchReq = new OotdPatchReq();
-        ootdPatchReq.setId(1L);
-        ootdPatchReq.setIsPrivate(true);
-
-        StringBuilder content = new StringBuilder();
-        for (int i = 0; i < 30; i++) {
-            content.append("메모입니다메모입니다메모입니다메모입니다")
-                    .append("메모입니다메모입니다메모입니다메모입니다")
-                    .append("메모입니다메모입니다메모입니다메모입니다")
-                    .append("메모입니다메모입니다메모입니다메모입니다")
-                    .append("메모입니다메모입니다메모입니다메모입니다");
-        }
-        content.append("메");
-        ootdPatchReq.setContent(content.toString());
-
-        // when & then
-        mockMvc.perform(patch("/api/v1/ootd").content(objectMapper.writeValueAsString(ootdPatchReq))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isNotFound())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(404))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.errors").isArray());
-    }
-
-    @DisplayName("OOTD 게시글과 공개여부 수정시 공개여부는 필수입니다.")
+    @DisplayName("OOTD 공개여부 수정시 공개여부는 필수입니다.")
     @Test
     void updateContentAndIsPrivateWithoutIsPrivate() throws Exception {
         // given
         OotdPatchReq ootdPatchReq = new OotdPatchReq();
         ootdPatchReq.setId(1L);
-        ootdPatchReq.setContent("hi");
 
         // when & then
         mockMvc.perform(patch("/api/v1/ootd").content(objectMapper.writeValueAsString(ootdPatchReq))

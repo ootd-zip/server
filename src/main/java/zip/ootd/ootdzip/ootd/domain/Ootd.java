@@ -112,8 +112,7 @@ public class Ootd extends BaseEntity {
         return ootd;
     }
 
-    public void updateContentsAndIsPrivate(String contents, boolean isPrivate) {
-        this.contents = contents;
+    public void updateIsPrivate(boolean isPrivate) {
         this.isPrivate = isPrivate;
     }
 
@@ -122,7 +121,8 @@ public class Ootd extends BaseEntity {
             List<OotdImage> ootdImages,
             List<OotdStyle> ootdStyles) {
 
-        updateContentsAndIsPrivate(contents, isPrivate);
+        this.contents = contents;
+        this.isPrivate = isPrivate;
 
         this.ootdImages.clear();
         this.addOotdImages(ootdImages);

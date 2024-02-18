@@ -134,7 +134,7 @@ public class OotdServiceTest extends IntegrationTestSupport {
                 );
     }
 
-    @DisplayName("OOTD 게시글과 공개여부를 변경한다.")
+    @DisplayName("OOTD 공개여부를 변경한다.")
     @Test
     void updateContentsAndIsPrivate() {
         // given
@@ -142,7 +142,6 @@ public class OotdServiceTest extends IntegrationTestSupport {
         Ootd ootd = createOotdBy(user, "안녕", false);
 
         OotdPatchReq ootdPatchReq = new OotdPatchReq();
-        ootdPatchReq.setContent("잘가");
         ootdPatchReq.setIsPrivate(true);
         ootdPatchReq.setId(ootd.getId());
 
@@ -150,8 +149,8 @@ public class OotdServiceTest extends IntegrationTestSupport {
         ootdService.updateContentsAndIsPrivate(ootdPatchReq);
 
         // then
-        assertThat(ootd).extracting("id", "isPrivate", "contents")
-                .contains(ootd.getId(), true, "잘가");
+        assertThat(ootd).extracting("id", "isPrivate")
+                .contains(ootd.getId(), true);
     }
 
     @DisplayName("OOTD 전체 업데이트를 한다")

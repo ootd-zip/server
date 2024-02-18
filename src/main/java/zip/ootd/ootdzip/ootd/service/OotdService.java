@@ -76,7 +76,7 @@ public class OotdService {
 
         Ootd ootd = ootdRepository.findById(request.getId()).orElseThrow();
 
-        ootd.updateContentsAndIsPrivate(request.getContent(), request.getIsPrivate());
+        ootd.updateIsPrivate(request.getIsPrivate());
     }
 
     public void updateAll(OotdPutReq request) {

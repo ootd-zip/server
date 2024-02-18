@@ -45,7 +45,7 @@ public class OotdController {
         return new ApiResponse<>(response);
     }
 
-    @Operation(summary = "ootd 내용, 공개/비공개 여부 수정", description = "ootd 글과 공개여부만 수정하는 api")
+    @Operation(summary = "ootd 공개/비공개 여부 수정", description = "ootd 공개여부만 수정하는 api")
     @PatchMapping("")
     public ApiResponse<Boolean> updateOotdContentsAndIsPrivate(@RequestBody @Valid OotdPatchReq request) {
 
