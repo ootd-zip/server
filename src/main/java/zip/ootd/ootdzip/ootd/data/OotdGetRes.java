@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import zip.ootd.ootdzip.brand.domain.Brand;
 import zip.ootd.ootdzip.category.domain.Category;
 import zip.ootd.ootdzip.clothes.domain.Clothes;
@@ -18,6 +19,7 @@ import zip.ootd.ootdzip.ootdstyle.domain.OotdStyle;
 import zip.ootd.ootdzip.user.domain.User;
 
 @Data
+@NoArgsConstructor
 public class OotdGetRes {
 
     private Long id;
@@ -41,6 +43,8 @@ public class OotdGetRes {
     private String userHeight;
 
     private String userWeight;
+
+    private Long userId;
 
     private LocalDateTime createAt;
 
@@ -69,6 +73,7 @@ public class OotdGetRes {
         this.contents = ootd.getContents();
         this.createAt = ootd.getCreatedAt();
 
+        this.userId = ootd.getWriter().getId();
         this.userName = ootd.getWriter().getName();
         this.userImage = ootd.getWriter().getProfileImage();
         this.userHeight = ootd.getWriter().getProfileHeight();

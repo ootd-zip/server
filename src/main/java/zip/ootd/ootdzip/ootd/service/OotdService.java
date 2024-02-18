@@ -22,13 +22,16 @@ import zip.ootd.ootdzip.common.dao.RedisDao;
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.exception.code.ErrorCode;
 import zip.ootd.ootdzip.ootd.data.OotdGetAllRes;
+import zip.ootd.ootdzip.ootd.data.OotdGetOtherRes;
 import zip.ootd.ootdzip.ootd.data.OotdGetRes;
+import zip.ootd.ootdzip.ootd.data.OotdGetSimilarRes;
 import zip.ootd.ootdzip.ootd.data.OotdPatchReq;
 import zip.ootd.ootdzip.ootd.data.OotdPostReq;
 import zip.ootd.ootdzip.ootd.data.OotdPutReq;
 import zip.ootd.ootdzip.ootd.domain.Ootd;
 import zip.ootd.ootdzip.ootd.repository.OotdRepository;
 import zip.ootd.ootdzip.ootdimage.domain.OotdImage;
+import zip.ootd.ootdzip.ootdimage.repository.OotdImageRepository;
 import zip.ootd.ootdzip.ootdimageclothe.domain.Coordinate;
 import zip.ootd.ootdzip.ootdimageclothe.domain.DeviceSize;
 import zip.ootd.ootdzip.ootdimageclothe.domain.OotdImageClothes;
@@ -44,6 +47,7 @@ public class OotdService {
     private final ClothesRepository clothesRepository;
     private final StyleRepository styleRepository;
     private final RedisDao redisDao;
+    private final OotdImageRepository ootdImageRepository;
 
     public Ootd postOotd(OotdPostReq request, User loginUser) {
 
@@ -338,5 +342,48 @@ public class OotdService {
     public void cancelBookmark(Long ootdId, User loginUser) {
         Ootd ootd = ootdRepository.findById(ootdId).orElseThrow();
         ootd.cancelBookmark(loginUser);
+    }
+
+    /**
+     * OOTD 상세 조회시, 현재 OOTD 작성자의 다른 OOTD 정보를 제공한다.
+     */
+    public SliceImpl<OotdGetOtherRes> getOotdOther(Long writerId, Long ootdId, Integer page) {
+
+        int size = 10;
+        Sort sort = Sort.by("createdAt").descending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Slice<Ootd> ootds = ootdRepository.findAllByUserIdAndOotdId(writerId, ootdId, pageable);
+
+        List<OotdGetOtherRes> ootdGetOtherResList = ootds.stream()
+                .map(OotdGetOtherRes::new)
+                .collect(Collectors.toList());
+
+        return new SliceImpl<>(ootdGetOtherResList, pageable, ootds.hasNext());
+    }
+
+    /**
+     * OOTD 상세 조회시, 현재 OOTD 와 동일한 스타일의 다른 OOTD 를 제공합니다.
+     */
+    public SliceImpl<OotdGetSimilarRes> getOotdSimilar(Long ootdId, Integer page) {
+
+        int size = 10;
+        Sort sort = Sort.by("createdAt").descending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Ootd nowOotd = ootdRepository.findById(ootdId).orElseThrow();
+        List<Style> styles = nowOotd.getStyles().stream()
+                .map(OotdStyle::getStyle)
+                .collect(Collectors.toList());
+
+        Slice<OotdImage> ootdImages = ootdImageRepository.findByStyles(ootdId, styles, pageable);
+
+        List<OotdGetSimilarRes> ootdGetSimilarResList = ootdImages.stream()
+                .map(OotdGetSimilarRes::new)
+                .collect(Collectors.toList());
+
+        return new SliceImpl<>(ootdGetSimilarResList, pageable, ootdImages.hasNext());
     }
 }
