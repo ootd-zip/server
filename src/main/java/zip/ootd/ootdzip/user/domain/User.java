@@ -81,4 +81,24 @@ public class User extends BaseEntity {
         return followers.remove(user)
                 && user.followings.remove(this);
     }
+
+    public boolean isFollower(User user) {
+        return this.followers.contains(user);
+    }
+
+    public String getProfileHeight() {
+        if (showHeight) {
+            return "비공개";
+        }
+
+        return height + "cm";
+    }
+
+    public String getProfileWeight() {
+        if (showWeight) {
+            return "비공개";
+        }
+
+        return weight + "kg";
+    }
 }
