@@ -1,10 +1,10 @@
 package zip.ootd.ootdzip.common.response;
 
-import lombok.Data;
+import java.util.List;
 
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
+import lombok.Data;
 
 @Data
 public class CommonSliceResponse<T> {
