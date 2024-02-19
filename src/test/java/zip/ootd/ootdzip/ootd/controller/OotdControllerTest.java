@@ -7,13 +7,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import zip.ootd.ootdzip.ControllerTestSupport;
+import zip.ootd.ootdzip.common.response.CommonSliceResponse;
+import zip.ootd.ootdzip.ootd.data.OotdGetRes;
 import zip.ootd.ootdzip.ootd.data.OotdPatchReq;
 import zip.ootd.ootdzip.ootd.data.OotdPostReq;
 import zip.ootd.ootdzip.ootd.data.OotdPutReq;
@@ -163,13 +168,12 @@ public class OotdControllerTest extends ControllerTestSupport {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.errors").isArray());
     }
 
-    @DisplayName("OOTD 게시글과 공개여부 수정")
+    @DisplayName("OOTD 공개여부 수정")
     @Test
     void updateContentAndIsPrivate() throws Exception {
         // given
         OotdPatchReq ootdPatchReq = new OotdPatchReq();
         ootdPatchReq.setId(1L);
-        ootdPatchReq.setContent("hi");
         ootdPatchReq.setIsPrivate(true);
 
         // when & then
@@ -181,12 +185,11 @@ public class OotdControllerTest extends ControllerTestSupport {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result").isBoolean());
     }
 
-    @DisplayName("OOTD 게시글과 공개여부 수정시 id 는 필수입니다.")
+    @DisplayName("OOTD 공개여부 수정시 id 는 필수입니다.")
     @Test
     void updateContentAndIsPrivateWithoutId() throws Exception {
         // given
         OotdPatchReq ootdPatchReq = new OotdPatchReq();
-        ootdPatchReq.setContent("hi");
         ootdPatchReq.setIsPrivate(true);
 
         // when & then
@@ -198,41 +201,12 @@ public class OotdControllerTest extends ControllerTestSupport {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.errors").isArray());
     }
 
-    @DisplayName("OOTD 게시글과 공개여부 수정시 게시글은 3000자 이하 입니다.")
-    @Test
-    void updateContentAndIsPrivateWithTooLongContent() throws Exception {
-        // given
-        OotdPatchReq ootdPatchReq = new OotdPatchReq();
-        ootdPatchReq.setId(1L);
-        ootdPatchReq.setIsPrivate(true);
-
-        StringBuilder content = new StringBuilder();
-        for (int i = 0; i < 30; i++) {
-            content.append("메모입니다메모입니다메모입니다메모입니다")
-                    .append("메모입니다메모입니다메모입니다메모입니다")
-                    .append("메모입니다메모입니다메모입니다메모입니다")
-                    .append("메모입니다메모입니다메모입니다메모입니다")
-                    .append("메모입니다메모입니다메모입니다메모입니다");
-        }
-        content.append("메");
-        ootdPatchReq.setContent(content.toString());
-
-        // when & then
-        mockMvc.perform(patch("/api/v1/ootd").content(objectMapper.writeValueAsString(ootdPatchReq))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isNotFound())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(404))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.errors").isArray());
-    }
-
-    @DisplayName("OOTD 게시글과 공개여부 수정시 공개여부는 필수입니다.")
+    @DisplayName("OOTD 공개여부 수정시 공개여부는 필수입니다.")
     @Test
     void updateContentAndIsPrivateWithoutIsPrivate() throws Exception {
         // given
         OotdPatchReq ootdPatchReq = new OotdPatchReq();
         ootdPatchReq.setId(1L);
-        ootdPatchReq.setContent("hi");
 
         // when & then
         mockMvc.perform(patch("/api/v1/ootd").content(objectMapper.writeValueAsString(ootdPatchReq))
@@ -513,5 +487,61 @@ public class OotdControllerTest extends ControllerTestSupport {
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(200))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result").isBoolean());
+    }
+
+    @DisplayName("OOTD 게시글 조회")
+    @Test
+    void getOotd() throws Exception {
+        // given
+        Long id = 1L;
+
+        when(ootdService.getOotd(any(), any())).thenReturn(new OotdGetRes());
+
+        // when & then
+        mockMvc.perform(get("/api/v1/ootd/{id}", id))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(200))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result").exists());
+    }
+
+    @DisplayName("다른 OOTD 게시글 조회")
+    @Test
+    void getOotdOther() throws Exception {
+        // given
+        Long userId = 1L;
+        Long ootdId = 1L;
+        Pageable pageable = PageRequest.of(0, 10);
+
+        when(ootdService.getOotdOther(any()))
+                .thenReturn(new CommonSliceResponse<>(List.of(), pageable, true));
+
+        // when & then
+        mockMvc.perform(get("/api/v1/ootd/other")
+                        .param("userId", Long.toString(userId))
+                        .param("ootdId", ootdId.toString()))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(200))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result").exists());
+    }
+
+    @DisplayName("비슷한 OOTD 게시글 조회")
+    @Test
+    void getOotdSimilar() throws Exception {
+        // given
+        Long ootdId = 1L;
+        Pageable pageable = PageRequest.of(0, 10);
+
+        when(ootdService.getOotdSimilar(any()))
+                .thenReturn(new CommonSliceResponse<>(List.of(), pageable, false));
+
+        // when & then
+        mockMvc.perform(get("/api/v1/ootd/similar")
+                        .param("ootdId", ootdId.toString()))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(200))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result").exists());
     }
 }

@@ -1,7 +1,6 @@
 package zip.ootd.ootdzip.ootd.controller;
 
-import java.util.List;
-
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -10,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,8 +17,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import zip.ootd.ootdzip.common.response.ApiResponse;
+import zip.ootd.ootdzip.common.response.CommonSliceResponse;
 import zip.ootd.ootdzip.ootd.data.OotdGetAllRes;
+import zip.ootd.ootdzip.ootd.data.OotdGetOtherReq;
+import zip.ootd.ootdzip.ootd.data.OotdGetOtherRes;
 import zip.ootd.ootdzip.ootd.data.OotdGetRes;
+import zip.ootd.ootdzip.ootd.data.OotdGetSimilarReq;
+import zip.ootd.ootdzip.ootd.data.OotdGetSimilarRes;
 import zip.ootd.ootdzip.ootd.data.OotdPatchReq;
 import zip.ootd.ootdzip.ootd.data.OotdPostReq;
 import zip.ootd.ootdzip.ootd.data.OotdPostRes;
@@ -45,7 +50,7 @@ public class OotdController {
         return new ApiResponse<>(response);
     }
 
-    @Operation(summary = "ootd 내용, 공개/비공개 여부 수정", description = "ootd 글과 공개여부만 수정하는 api")
+    @Operation(summary = "ootd 공개/비공개 여부 수정", description = "ootd 공개여부만 수정하는 api")
     @PatchMapping("")
     public ApiResponse<Boolean> updateOotdContentsAndIsPrivate(@RequestBody @Valid OotdPatchReq request) {
 
@@ -83,9 +88,9 @@ public class OotdController {
 
     @Operation(summary = "ootd 전체 조회", description = "최신순으로 ootd를 조회 api")
     @GetMapping("/all")
-    public ApiResponse<List<OotdGetAllRes>> getOotdPosts() {
+    public ApiResponse<SliceImpl<OotdGetAllRes>> getOotdPosts(@RequestParam("page") Integer page) {
 
-        List<OotdGetAllRes> response = ootdService.getOotds(userService.getAuthenticatiedUser());
+        SliceImpl<OotdGetAllRes> response = ootdService.getOotds(userService.getAuthenticatiedUser(), page);
 
         return new ApiResponse<>(response);
     }
@@ -124,5 +129,25 @@ public class OotdController {
         ootdService.cancelBookmark(id, userService.getAuthenticatiedUser());
 
         return new ApiResponse<>(true);
+    }
+
+    @Operation(summary = "ootd 작성자의 다른 ootd",
+            description = "상세페이지에서 ootdId 와 writerId 를 주면 해당 작성자의 다른 ootd 사진을 제공합니다.")
+    @GetMapping("/other")
+    public ApiResponse<CommonSliceResponse<OotdGetOtherRes>> getOtherOotd(@Valid OotdGetOtherReq request) {
+
+        CommonSliceResponse<OotdGetOtherRes> response = ootdService.getOotdOther(request);
+
+        return new ApiResponse<>(response);
+    }
+
+    @Operation(summary = "현재 ootd 와 비슷한 ootd",
+            description = "ootd 상세페이지와 동일한 스타일의 ootd 사진 정보 제공합니다.")
+    @GetMapping("/similar")
+    public ApiResponse<CommonSliceResponse<OotdGetSimilarRes>> getSimilarOotd(@Valid OotdGetSimilarReq request) {
+
+        CommonSliceResponse<OotdGetSimilarRes> response = ootdService.getOotdSimilar(request);
+
+        return new ApiResponse<>(response);
     }
 }

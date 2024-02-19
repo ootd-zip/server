@@ -10,9 +10,6 @@ public class OotdPatchReq {
     @NotNull
     private Long id;
 
-    @Size(max = 3000, message = "게시글은 최대 3000자 입니다.")
-    private String content;
-
     @NotNull
     private Boolean isPrivate;
 }

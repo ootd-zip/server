@@ -4,6 +4,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.math.NumberUtils;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
@@ -16,14 +21,20 @@ import zip.ootd.ootdzip.common.constant.RedisKey;
 import zip.ootd.ootdzip.common.dao.RedisDao;
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.exception.code.ErrorCode;
+import zip.ootd.ootdzip.common.response.CommonSliceResponse;
 import zip.ootd.ootdzip.ootd.data.OotdGetAllRes;
+import zip.ootd.ootdzip.ootd.data.OotdGetOtherReq;
+import zip.ootd.ootdzip.ootd.data.OotdGetOtherRes;
 import zip.ootd.ootdzip.ootd.data.OotdGetRes;
+import zip.ootd.ootdzip.ootd.data.OotdGetSimilarReq;
+import zip.ootd.ootdzip.ootd.data.OotdGetSimilarRes;
 import zip.ootd.ootdzip.ootd.data.OotdPatchReq;
 import zip.ootd.ootdzip.ootd.data.OotdPostReq;
 import zip.ootd.ootdzip.ootd.data.OotdPutReq;
 import zip.ootd.ootdzip.ootd.domain.Ootd;
 import zip.ootd.ootdzip.ootd.repository.OotdRepository;
 import zip.ootd.ootdzip.ootdimage.domain.OotdImage;
+import zip.ootd.ootdzip.ootdimage.repository.OotdImageRepository;
 import zip.ootd.ootdzip.ootdimageclothe.domain.Coordinate;
 import zip.ootd.ootdzip.ootdimageclothe.domain.DeviceSize;
 import zip.ootd.ootdzip.ootdimageclothe.domain.OotdImageClothes;
@@ -39,6 +50,7 @@ public class OotdService {
     private final ClothesRepository clothesRepository;
     private final StyleRepository styleRepository;
     private final RedisDao redisDao;
+    private final OotdImageRepository ootdImageRepository;
 
     public Ootd postOotd(OotdPostReq request, User loginUser) {
 
@@ -71,7 +83,7 @@ public class OotdService {
 
         Ootd ootd = ootdRepository.findById(request.getId()).orElseThrow();
 
-        ootd.updateContentsAndIsPrivate(request.getContent(), request.getIsPrivate());
+        ootd.updateIsPrivate(request.getIsPrivate());
     }
 
     public void updateAll(OotdPutReq request) {
@@ -117,26 +129,13 @@ public class OotdService {
         int view = getView(ootd);
         int like = getLike(ootd);
         boolean isLike = getUserLike(ootd, loginUser);
-        boolean isBookmark = ootd.isBookmark(loginUser);
 
-        return new OotdGetRes(ootd, isLike, isBookmark, view, like);
+        return new OotdGetRes(ootd, isLike, view, like, loginUser);
     }
 
     private void checkOotd(Ootd ootd, User user) {
         if (ootd.isPrivate() && !ootd.getWriter().getId().equals(user.getId())) {
             throw new CustomException(ErrorCode.PRIVATE);
-        }
-
-        if (ootd.getIsDeleted()) {
-            throw new CustomException(ErrorCode.DELETED);
-        }
-
-        if (ootd.getIsBlocked()) {
-            throw new CustomException(ErrorCode.BLOCKED);
-        }
-
-        if (ootd.getReportCount() >= 10) {
-            throw new CustomException(ErrorCode.OVER_REPORT);
         }
     }
 
@@ -145,13 +144,25 @@ public class OotdService {
      * 삭제된글, 차단된글, 신고수가 특정 수 이상, 비공개글은 가져오지 않습니다.
      * 단, 비공개글이어도 본인 작성글이면 가져옵니다.
      */
-    public List<OotdGetAllRes> getOotds(User loginUser) {
-        List<Ootd> ootds = ootdRepository.findAllByUserId(loginUser.getId());
+    public SliceImpl<OotdGetAllRes> getOotds(User loginUser, int page) {
 
-        return ootds.stream()
-                .map(b -> new OotdGetAllRes(b, getUserLike(b, loginUser), b.isBookmark(loginUser), getView(b),
-                        getLike(b)))
+        int size = 20;
+        Sort sort = Sort.by("createdAt").descending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Slice<Ootd> ootds = ootdRepository.findAllByUserId(loginUser.getId(), pageable);
+
+        List<OotdGetAllRes> ootdGetAllResList = ootds.stream()
+                .map(ootd -> new OotdGetAllRes(
+                        ootd,
+                        getUserLike(ootd, loginUser),
+                        getView(ootd),
+                        getLike(ootd),
+                        loginUser))
                 .collect(Collectors.toList());
+
+        return new SliceImpl<>(ootdGetAllResList, pageable, ootds.hasNext());
     }
 
     /**
@@ -334,5 +345,45 @@ public class OotdService {
     public void cancelBookmark(Long ootdId, User loginUser) {
         Ootd ootd = ootdRepository.findById(ootdId).orElseThrow();
         ootd.cancelBookmark(loginUser);
+    }
+
+    /**
+     * OOTD 상세 조회시, 현재 OOTD 작성자의 다른 OOTD 정보를 제공한다.
+     */
+    public CommonSliceResponse<OotdGetOtherRes> getOotdOther(OotdGetOtherReq request) {
+
+        Long writerId = request.getUserId();
+        Long ootdId = request.getOotdId();
+        Pageable pageable = request.toPageable();
+
+        Slice<Ootd> ootds = ootdRepository.findAllByUserIdAndOotdId(writerId, ootdId, pageable);
+
+        List<OotdGetOtherRes> ootdGetOtherResList = ootds.stream()
+                .map(OotdGetOtherRes::new)
+                .collect(Collectors.toList());
+
+        return new CommonSliceResponse<>(ootdGetOtherResList, pageable, ootds.hasNext());
+    }
+
+    /**
+     * OOTD 상세 조회시, 현재 OOTD 와 동일한 스타일의 다른 OOTD 를 제공합니다.
+     */
+    public CommonSliceResponse<OotdGetSimilarRes> getOotdSimilar(OotdGetSimilarReq request) {
+
+        Long ootdId = request.getOotdId();
+        Pageable pageable = request.toPageable();
+
+        Ootd nowOotd = ootdRepository.findById(ootdId).orElseThrow();
+        List<Style> styles = nowOotd.getStyles().stream()
+                .map(OotdStyle::getStyle)
+                .collect(Collectors.toList());
+
+        Slice<OotdImage> ootdImages = ootdImageRepository.findByStyles(ootdId, styles, pageable);
+
+        List<OotdGetSimilarRes> ootdGetSimilarResList = ootdImages.stream()
+                .map(OotdGetSimilarRes::new)
+                .collect(Collectors.toList());
+
+        return new CommonSliceResponse<>(ootdGetSimilarResList, pageable, ootdImages.hasNext());
     }
 }
