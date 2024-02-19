@@ -11,11 +11,13 @@ import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.data.domain.SliceImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import zip.ootd.ootdzip.ControllerTestSupport;
+import zip.ootd.ootdzip.common.response.CommonSliceResponse;
 import zip.ootd.ootdzip.ootd.data.OotdGetRes;
 import zip.ootd.ootdzip.ootd.data.OotdPatchReq;
 import zip.ootd.ootdzip.ootd.data.OotdPostReq;
@@ -509,15 +511,15 @@ public class OotdControllerTest extends ControllerTestSupport {
         // given
         Long userId = 1L;
         Long ootdId = 1L;
-        Integer page = 0;
+        Pageable pageable = PageRequest.of(0, 10);
 
-        when(ootdService.getOotdOther(any(), any(), any())).thenReturn(new SliceImpl<>(List.of()));
+        when(ootdService.getOotdOther(any()))
+                .thenReturn(new CommonSliceResponse<>(List.of(), pageable, true));
 
         // when & then
         mockMvc.perform(get("/api/v1/ootd/other")
-                        .param("user", Long.toString(userId))
-                        .param("ootd", ootdId.toString())
-                        .param("page", page.toString()))
+                        .param("userId", Long.toString(userId))
+                        .param("ootdId", ootdId.toString()))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(200))
@@ -529,14 +531,14 @@ public class OotdControllerTest extends ControllerTestSupport {
     void getOotdSimilar() throws Exception {
         // given
         Long ootdId = 1L;
-        Integer page = 0;
+        Pageable pageable = PageRequest.of(0, 10);
 
-        when(ootdService.getOotdSimilar(any(), any())).thenReturn(new SliceImpl<>(List.of()));
+        when(ootdService.getOotdSimilar(any()))
+                .thenReturn(new CommonSliceResponse<>(List.of(), pageable, false));
 
         // when & then
         mockMvc.perform(get("/api/v1/ootd/similar")
-                        .param("ootd", ootdId.toString())
-                        .param("page", page.toString()))
+                        .param("ootdId", ootdId.toString()))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(200))

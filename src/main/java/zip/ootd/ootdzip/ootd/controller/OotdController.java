@@ -17,9 +17,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import zip.ootd.ootdzip.common.response.ApiResponse;
+import zip.ootd.ootdzip.common.response.CommonSliceResponse;
 import zip.ootd.ootdzip.ootd.data.OotdGetAllRes;
+import zip.ootd.ootdzip.ootd.data.OotdGetOtherReq;
 import zip.ootd.ootdzip.ootd.data.OotdGetOtherRes;
 import zip.ootd.ootdzip.ootd.data.OotdGetRes;
+import zip.ootd.ootdzip.ootd.data.OotdGetSimilarReq;
 import zip.ootd.ootdzip.ootd.data.OotdGetSimilarRes;
 import zip.ootd.ootdzip.ootd.data.OotdPatchReq;
 import zip.ootd.ootdzip.ootd.data.OotdPostReq;
@@ -131,11 +134,9 @@ public class OotdController {
     @Operation(summary = "ootd 작성자의 다른 ootd",
             description = "상세페이지에서 ootdId 와 writerId 를 주면 해당 작성자의 다른 ootd 사진을 제공합니다.")
     @GetMapping("/other")
-    public ApiResponse<SliceImpl<OotdGetOtherRes>> getOtherOotd(@RequestParam("user") Long userId,
-            @RequestParam("ootd") Long ootdId,
-            @RequestParam("page") Integer page) {
+    public ApiResponse<CommonSliceResponse<OotdGetOtherRes>> getOtherOotd(@Valid OotdGetOtherReq request) {
 
-        SliceImpl<OotdGetOtherRes> response = ootdService.getOotdOther(userId, ootdId, page);
+        CommonSliceResponse<OotdGetOtherRes> response = ootdService.getOotdOther(request);
 
         return new ApiResponse<>(response);
     }
@@ -143,10 +144,9 @@ public class OotdController {
     @Operation(summary = "현재 ootd 와 비슷한 ootd",
             description = "ootd 상세페이지와 동일한 스타일의 ootd 사진 정보 제공합니다.")
     @GetMapping("/similar")
-    public ApiResponse<SliceImpl<OotdGetSimilarRes>> getSimilarOotd(@RequestParam("ootd") Long ootdId,
-            @RequestParam("page") Integer page) {
+    public ApiResponse<CommonSliceResponse<OotdGetSimilarRes>> getSimilarOotd(@Valid OotdGetSimilarReq request) {
 
-        SliceImpl<OotdGetSimilarRes> response = ootdService.getOotdSimilar(ootdId, page);
+        CommonSliceResponse<OotdGetSimilarRes> response = ootdService.getOotdSimilar(request);
 
         return new ApiResponse<>(response);
     }

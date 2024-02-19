@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.SliceImpl;
+import org.springframework.data.domain.Sort;
 
 import zip.ootd.ootdzip.IntegrationTestSupport;
 import zip.ootd.ootdzip.brand.domain.Brand;
@@ -31,8 +31,11 @@ import zip.ootd.ootdzip.clothes.domain.Clothes;
 import zip.ootd.ootdzip.clothes.domain.ClothesColor;
 import zip.ootd.ootdzip.clothes.repository.ClothesRepository;
 import zip.ootd.ootdzip.common.exception.CustomException;
+import zip.ootd.ootdzip.common.response.CommonSliceResponse;
+import zip.ootd.ootdzip.ootd.data.OotdGetOtherReq;
 import zip.ootd.ootdzip.ootd.data.OotdGetOtherRes;
 import zip.ootd.ootdzip.ootd.data.OotdGetRes;
+import zip.ootd.ootdzip.ootd.data.OotdGetSimilarReq;
 import zip.ootd.ootdzip.ootd.data.OotdGetSimilarRes;
 import zip.ootd.ootdzip.ootd.data.OotdPatchReq;
 import zip.ootd.ootdzip.ootd.data.OotdPostReq;
@@ -381,12 +384,20 @@ public class OotdServiceTest extends IntegrationTestSupport {
         Ootd ootd2 = createOotdBy(user, "안녕", false);
         Ootd ootd3 = createOotdBy(user, "안녕", false);
 
+        OotdGetOtherReq ootdGetOtherReq = new OotdGetOtherReq();
+        ootdGetOtherReq.setOotdId(ootd.getId());
+        ootdGetOtherReq.setUserId(user.getId());
+        ootdGetOtherReq.setPage(0);
+        ootdGetOtherReq.setSize(10);
+        ootdGetOtherReq.setSortCriteria("createdAt");
+        ootdGetOtherReq.setSortDirection(Sort.Direction.DESC);
+
         // when
-        SliceImpl<OotdGetOtherRes> result = ootdService.getOotdOther(user.getId(), ootd.getId(), 0);
+        CommonSliceResponse<OotdGetOtherRes> result = ootdService.getOotdOther(ootdGetOtherReq);
 
         // then
         // ootd 는 작성시간 내림차순으로 정렬된다.
-        assertThat(result)
+        assertThat(result.getContent())
                 .hasSize(3)
                 .extracting("id")
                 .containsExactly(ootd3.getId(), ootd2.getId(), ootd1.getId());
@@ -415,12 +426,19 @@ public class OotdServiceTest extends IntegrationTestSupport {
         // 포함되는 스타일이 하나도 없을시 포함하지 않음
         Ootd ootd7 = createOotdBy(user1, "안녕7", false, Arrays.asList(style3));
 
+        OotdGetSimilarReq ootdGetSimilarReq = new OotdGetSimilarReq();
+        ootdGetSimilarReq.setOotdId(ootd.getId());
+        ootdGetSimilarReq.setPage(0);
+        ootdGetSimilarReq.setSize(10);
+        ootdGetSimilarReq.setSortCriteria("createdAt");
+        ootdGetSimilarReq.setSortDirection(Sort.Direction.DESC);
+
         // when
-        SliceImpl<OotdGetSimilarRes> result = ootdService.getOotdSimilar(ootd.getId(), 0);
+        CommonSliceResponse<OotdGetSimilarRes> result = ootdService.getOotdSimilar(ootdGetSimilarReq);
 
         // then
         // ootd 는 작성시간 내림차순으로 정렬된다.
-        assertThat(result)
+        assertThat(result.getContent())
                 .hasSize(6)
                 .extracting("id")
                 .containsExactly(ootd6.getId(), ootd5.getId(), ootd4.getId(),
