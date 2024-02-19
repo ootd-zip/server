@@ -109,6 +109,35 @@ public class Clothes extends BaseEntity {
         return clothes;
     }
 
+    public void updateClothes(Brand brand,
+            String purchaseStore,
+            PurchaseStoreType purchaseStoreType,
+            String name,
+            Boolean isOpen,
+            Category category,
+            Size size,
+            String memo,
+            String purchaseDate,
+            String clothesImageUrl,
+            List<ClothesColor> clothesColors) {
+        this.brand = brand;
+        this.purchaseStore = purchaseStore;
+        this.purchaseStoreType = purchaseStoreType;
+        this.name = name;
+        this.isOpen = isOpen;
+        this.category = category;
+        this.size = size;
+        this.memo = memo;
+        this.purchaseDate = purchaseDate;
+        this.imageUrl = clothesImageUrl;
+        this.updateClothesColor(clothesColors);
+    }
+
+    private void updateClothesColor(List<ClothesColor> clothesColors) {
+        this.clothesColors.clear();
+        this.addClothesColors(clothesColors);
+    }
+
     private void addClothesColor(ClothesColor color) {
         this.clothesColors.add(color);
         color.setClothes(this);
@@ -120,6 +149,10 @@ public class Clothes extends BaseEntity {
 
     public void increaseReportCount() {
         this.reportCount += 1;
+    }
+
+    public void updateIsOpen(Boolean isOpen) {
+        this.isOpen = isOpen;
     }
 
 }

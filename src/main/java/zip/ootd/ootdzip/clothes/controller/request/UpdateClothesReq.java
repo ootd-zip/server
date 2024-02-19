@@ -11,12 +11,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import zip.ootd.ootdzip.clothes.data.PurchaseStoreType;
-import zip.ootd.ootdzip.clothes.service.request.SaveClothesSvcReq;
+import zip.ootd.ootdzip.clothes.service.request.UpdateClothesSvcReq;
 import zip.ootd.ootdzip.common.valid.EnumValid;
 
 @Getter
 @NoArgsConstructor
-public class SaveClothesReq {
+public class UpdateClothesReq {
 
     @NotBlank(message = "구매처는 필수입니다.")
     private String purchaseStore;
@@ -42,17 +42,17 @@ public class SaveClothesReq {
     @NotBlank(message = "이미지는 필수입니다.")
     private String clothesImageUrl;
 
-    @NotBlank(message = "제품명은 필수입니다.")
-    private String name;
-
     @Size(max = 2001, message = "메모는 최대 2000자입니다.")
     private String memo;
+
+    @NotBlank(message = "제품명은 필수입니다.")
+    private String name;
 
     private String purchaseDate;
 
     @Builder
-    public SaveClothesReq(String purchaseStore, PurchaseStoreType purchaseStoreType, Long brandId, Long categoryId,
-            List<Long> colorIds, Boolean isOpen, Long sizeId, String clothesImageUrl, String name, String memo,
+    private UpdateClothesReq(String purchaseStore, PurchaseStoreType purchaseStoreType, Long brandId, Long categoryId,
+            List<Long> colorIds, Boolean isOpen, Long sizeId, String clothesImageUrl, String memo, String name,
             String purchaseDate) {
         this.purchaseStore = purchaseStore;
         this.purchaseStoreType = purchaseStoreType;
@@ -62,13 +62,14 @@ public class SaveClothesReq {
         this.isOpen = isOpen;
         this.sizeId = sizeId;
         this.clothesImageUrl = clothesImageUrl;
-        this.name = name;
         this.memo = memo;
+        this.name = name;
         this.purchaseDate = purchaseDate;
     }
 
-    public SaveClothesSvcReq toServiceRequest() {
-        return SaveClothesSvcReq.builder()
+    public UpdateClothesSvcReq toServiceRequest(Long clothesId) {
+        return UpdateClothesSvcReq.builder()
+                .clothesId(clothesId)
                 .purchaseStore(this.purchaseStore)
                 .purchaseStoreType(this.purchaseStoreType)
                 .brandId(this.brandId)
