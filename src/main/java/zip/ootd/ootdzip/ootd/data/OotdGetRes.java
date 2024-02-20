@@ -6,8 +6,8 @@ import java.util.stream.Collectors;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import zip.ootd.ootdzip.brand.domain.Brand;
-import zip.ootd.ootdzip.category.domain.Category;
+import zip.ootd.ootdzip.brand.data.BrandDto;
+import zip.ootd.ootdzip.category.data.DetailCategory;
 import zip.ootd.ootdzip.clothes.domain.Clothes;
 import zip.ootd.ootdzip.comment.domain.Comment;
 import zip.ootd.ootdzip.ootd.domain.Ootd;
@@ -119,11 +119,11 @@ public class OotdGetRes {
         @Data
         static class OotdImageClothesRes {
 
-            private BrandRes brand;
+            private BrandDto brand;
 
             private String clothesName;
 
-            private CategoryRes category;
+            private DetailCategory category;
 
             private Long clothesId;
 
@@ -140,31 +140,13 @@ public class OotdGetRes {
                 Clothes clothes = ootdImageClothes.getClothes();
                 this.clothesId = clothes.getId();
                 this.clothesName = clothes.getName();
-                this.brand = new BrandRes(clothes.getBrand());
-                this.category = new CategoryRes(clothes.getCategory());
+                this.brand = BrandDto.of(clothes.getBrand());
+                this.category = DetailCategory.builder()
+                        .id(clothes.getCategory().getId())
+                        .categoryName(clothes.getCategory().getName())
+                        .parentCategoryName(clothes.getCategory().getParentCategory().getName())
+                        .build();
                 this.size = clothes.getSize().getName();
-            }
-
-            @Data
-            static class CategoryRes {
-
-                private String smallCategory;
-                private String bigCategory;
-
-                public CategoryRes(Category category) {
-                    this.smallCategory = category.getName();
-                    this.bigCategory = category.getParentCategory().getName();
-                }
-            }
-
-            @Data
-            static class BrandRes {
-
-                private String name;
-
-                public BrandRes(Brand brand) {
-                    this.name = brand.getName();
-                }
             }
         }
     }
