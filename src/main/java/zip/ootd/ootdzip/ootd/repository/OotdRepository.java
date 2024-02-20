@@ -6,10 +6,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import io.lettuce.core.dynamic.annotation.Param;
 import zip.ootd.ootdzip.ootd.domain.Ootd;
 
+@Repository
 public interface OotdRepository extends JpaRepository<Ootd, Long> {
 
     @Query("SELECT o from Ootd o where (o.isPrivate = false or o.writer.id = :userId) ")

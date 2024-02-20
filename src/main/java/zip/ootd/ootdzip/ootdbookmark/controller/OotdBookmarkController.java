@@ -14,7 +14,6 @@ import zip.ootd.ootdzip.common.response.ApiResponse;
 import zip.ootd.ootdzip.common.response.CommonSliceResponse;
 import zip.ootd.ootdzip.ootdbookmark.data.OotdBookmarkDeleteReq;
 import zip.ootd.ootdzip.ootdbookmark.data.OotdBookmarkGetAllRes;
-import zip.ootd.ootdzip.ootdbookmark.repository.OotdBookmarkRepository;
 import zip.ootd.ootdzip.ootdbookmark.service.OotdBookmarkService;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.service.UserService;
@@ -22,11 +21,10 @@ import zip.ootd.ootdzip.user.service.UserService;
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "OotdBookmark 컨트롤러", description = "ootdBookmark 관련 api")
-@RequestMapping("/api/v1/")
+@RequestMapping("/api/v1")
 public class OotdBookmarkController {
 
     private final OotdBookmarkService ootdBookmarkService;
-    private final OotdBookmarkRepository ootdBookmarkRepository;
     private final UserService userService;
 
     @Operation(summary = "bookmark 전체조회", description = "사용자 기준 북마크 전체조회 기능")
@@ -44,7 +42,7 @@ public class OotdBookmarkController {
     @DeleteMapping("/bookmarks")
     public ApiResponse<Boolean> getBookmarks(@Valid OotdBookmarkDeleteReq request) {
 
-        ootdBookmarkRepository.deleteAllById(request.getOotdBookmarkIds());
+        ootdBookmarkService.deleteOotdBookmarks(request);
 
         return new ApiResponse<>(true);
     }

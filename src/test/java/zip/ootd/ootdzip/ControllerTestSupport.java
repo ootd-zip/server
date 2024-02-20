@@ -16,6 +16,8 @@ import zip.ootd.ootdzip.comment.controller.CommentController;
 import zip.ootd.ootdzip.comment.service.CommentService;
 import zip.ootd.ootdzip.ootd.controller.OotdController;
 import zip.ootd.ootdzip.ootd.service.OotdService;
+import zip.ootd.ootdzip.ootdbookmark.controller.OotdBookmarkController;
+import zip.ootd.ootdzip.ootdbookmark.service.OotdBookmarkService;
 import zip.ootd.ootdzip.report.controller.ReportController;
 import zip.ootd.ootdzip.report.service.ReportService;
 import zip.ootd.ootdzip.user.service.UserService;
@@ -24,7 +26,8 @@ import zip.ootd.ootdzip.user.service.UserService;
         ClothesController.class,
         ReportController.class,
         OotdController.class,
-        CommentController.class
+        CommentController.class,
+        OotdBookmarkController.class
 })
 public abstract class ControllerTestSupport {
 
@@ -51,6 +54,9 @@ public abstract class ControllerTestSupport {
 
     @MockBean
     protected CommentService commentService;
+
+    @MockBean
+    protected OotdBookmarkService ootdBookmarkService;
 
     @BeforeEach
     void setUp() {

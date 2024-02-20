@@ -11,6 +11,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import zip.ootd.ootdzip.common.request.CommonPageRequest;
 import zip.ootd.ootdzip.common.response.CommonSliceResponse;
+import zip.ootd.ootdzip.ootdbookmark.data.OotdBookmarkDeleteReq;
 import zip.ootd.ootdzip.ootdbookmark.data.OotdBookmarkGetAllRes;
 import zip.ootd.ootdzip.ootdbookmark.domain.OotdBookmark;
 import zip.ootd.ootdzip.ootdbookmark.repository.OotdBookmarkRepository;
@@ -32,6 +33,11 @@ public class OotdBookmarkService {
                 .collect(Collectors.toList());
 
         return new CommonSliceResponse<>(ootdBookmarkGetAllResListd, pageable, ootdBookmarks.hasNext());
+    }
+
+    public void deleteOotdBookmarks(OotdBookmarkDeleteReq request) {
+
+        ootdBookmarkRepository.deleteAllById(request.getOotdBookmarkIds());
     }
 
 }
