@@ -90,11 +90,12 @@ public class OotdBookmarkServiceTest extends IntegrationTestSupport {
         ootd2.addBookmark(user);
         ootd3.addBookmark(user);
 
-        OotdBookmarkDeleteReq ootdBookmarkDeleteReq = new OotdBookmarkDeleteReq();
-        ootdBookmarkDeleteReq.setOotdBookmarkIds(Arrays.asList(ootd3.getId(), ootd2.getId()));
-
         em.flush();
         em.clear();
+
+        OotdBookmarkDeleteReq ootdBookmarkDeleteReq = new OotdBookmarkDeleteReq();
+        ootdBookmarkDeleteReq.setOotdBookmarkIds(Arrays.asList(ootd3.getOotdBookmarks().get(0).getId(),
+                ootd2.getOotdBookmarks().get(0).getId()));
 
         // when
         ootdBookmarkService.deleteOotdBookmarks(ootdBookmarkDeleteReq);
