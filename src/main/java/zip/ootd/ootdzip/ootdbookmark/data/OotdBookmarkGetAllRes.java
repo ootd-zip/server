@@ -1,9 +1,13 @@
 package zip.ootd.ootdzip.ootdbookmark.data;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import zip.ootd.ootdzip.ootdbookmark.domain.OotdBookmark;
 
 @Data
+@Builder
+@AllArgsConstructor
 public class OotdBookmarkGetAllRes {
 
     private Long ootdId;
@@ -12,9 +16,11 @@ public class OotdBookmarkGetAllRes {
 
     private String ootdImage;
 
-    public OotdBookmarkGetAllRes(OotdBookmark ootdBookmark) {
-        this.ootdId = ootdBookmark.getOotd().getId();
-        this.ootdBookmarkId = ootdBookmark.getId();
-        this.ootdImage = ootdBookmark.getOotd().getOotdImages().get(0).getImageUrl();
+    public static OotdBookmarkGetAllRes of(OotdBookmark ootdBookmark) {
+        return OotdBookmarkGetAllRes.builder()
+                .ootdId(ootdBookmark.getOotd().getId())
+                .ootdBookmarkId(ootdBookmark.getId())
+                .ootdImage(ootdBookmark.getOotd().getOotdImages().get(0).getImageUrl())
+                .build();
     }
 }

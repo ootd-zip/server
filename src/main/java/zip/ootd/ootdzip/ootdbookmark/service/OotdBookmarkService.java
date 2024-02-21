@@ -29,7 +29,7 @@ public class OotdBookmarkService {
         Pageable pageable = request.toPageable();
         Slice<OotdBookmark> ootdBookmarks = ootdBookmarkRepository.findAllByUserId(loginUser.getId(), pageable);
         List<OotdBookmarkGetAllRes> ootdBookmarkGetAllResListd = ootdBookmarks.stream()
-                .map(OotdBookmarkGetAllRes::new)
+                .map(OotdBookmarkGetAllRes::of)
                 .collect(Collectors.toList());
 
         return new CommonSliceResponse<>(ootdBookmarkGetAllResListd, pageable, ootdBookmarks.hasNext());
