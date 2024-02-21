@@ -50,6 +50,8 @@ public class OotdGetRes {
 
     private boolean isFollower;
 
+    private boolean isPrivate;
+
     private List<OotdImageRes> ootdImages;
 
     private List<OotdStyleRes> styles;
@@ -72,6 +74,7 @@ public class OotdGetRes {
         this.reportCount = ootd.getReportCount();
         this.contents = ootd.getContents();
         this.createAt = ootd.getCreatedAt();
+        this.isPrivate = ootd.isPrivate();
 
         this.userId = ootd.getWriter().getId();
         this.userName = ootd.getWriter().getName();
@@ -123,6 +126,8 @@ public class OotdGetRes {
 
             private String clothesName;
 
+            private String clothesImage;
+
             private DetailCategory category;
 
             private Long clothesId;
@@ -136,10 +141,10 @@ public class OotdGetRes {
             public OotdImageClothesRes(OotdImageClothes ootdImageClothes) {
                 this.coordinate = ootdImageClothes.getCoordinate();
                 this.deviceSize = ootdImageClothes.getDeviceSize();
-
                 Clothes clothes = ootdImageClothes.getClothes();
                 this.clothesId = clothes.getId();
                 this.clothesName = clothes.getName();
+                this.clothesImage = clothes.getImageUrl();
                 this.brand = BrandDto.of(clothes.getBrand());
                 this.category = DetailCategory.builder()
                         .id(clothes.getCategory().getId())
