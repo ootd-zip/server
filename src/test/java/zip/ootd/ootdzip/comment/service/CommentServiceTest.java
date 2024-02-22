@@ -142,13 +142,13 @@ public class CommentServiceTest extends IntegrationTestSupport {
 
         // then
         Comment savedResult = commentRepository.findById(result.getId()).get();
-        assertThat(savedResult).extracting("ootd.id", "contents", "depth"
-                        , "taggedUser.id", "parent.id", "groupId", "groupOrder")
+        assertThat(savedResult).extracting("ootd.id", "contents", "depth",
+                        "taggedUser.id", "parent.id", "groupId", "groupOrder")
                 .contains(ootd.getId(), "안녕하세요1", 2, user1.getId(), comment.getId(), comment.getGroupId(), 1L);
 
         Comment savedResult1 = commentRepository.findById(result1.getId()).get();
-        assertThat(savedResult1).extracting("ootd.id", "contents", "depth"
-                        , "taggedUser.id", "parent.id", "groupId", "groupOrder")
+        assertThat(savedResult1).extracting("ootd.id", "contents", "depth",
+                        "taggedUser.id", "parent.id", "groupId", "groupOrder")
                 .contains(ootd.getId(), "안녕하세요2", 2, user1.getId(), comment1.getId(), comment1.getGroupId(), 1L);
     }
 
