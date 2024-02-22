@@ -103,15 +103,67 @@ public class CommentRepositoryTest extends IntegrationTestSupport {
                 .contains(comment2.getId(), comment5.getId());
     }
 
-    private Comment createChildCommentBy(Comment parentComment, Ootd ootd, User taggedUser, User user, String content) {
+    @DisplayName("선택된 ootd 에서 최대 그룹 id 값 찾기")
+    @Test
+    void findByMaxGroupId() {
+        // given
+        User user = createUserBy("유저");
+        Ootd ootd = createOotdBy(user, "안녕", false);
+        Comment comment = createParentCommentBy(ootd, user, "hi1", 0L);
+        Comment comment1 = createParentCommentBy(ootd, user, "hi2", 1L);
+        Comment comment2 = createParentCommentBy(ootd, user, "hi3", 2L);
+
+        // when
+        Long result = commentRepository.findByMaxGroupId(ootd.getId());
+
+        // then
+        assertThat(result).isEqualTo(2L);
+    }
+
+    @DisplayName("선택된 ootd 에서 최대 그룹 id 값 찾을때 댓글이 없을시 0 반환")
+    @Test
+    void findByMaxGroupIdInNoComment() {
+        // given
+        User user = createUserBy("유저");
+        Ootd ootd = createOotdBy(user, "안녕", false);
+
+        // when
+        Long result = commentRepository.findByMaxGroupId(ootd.getId());
+
+        // then
+        assertThat(result).isEqualTo(0L);
+    }
+
+    @DisplayName("선택된 ootd 에서 최대 그룹 정렬 순서 값 찾기")
+    @Test
+    void findByMaxGroupOrder() {
+        // given
+        User user = createUserBy("유저");
+        User user1 = createUserBy("유저1");
+        Ootd ootd = createOotdBy(user, "안녕", false);
+        Comment comment = createParentCommentBy(ootd, user, "hi1", 0L);
+        Comment comment1 = createChildCommentBy(comment, ootd, user, user1, "hi2", 0L, 1L);
+        Comment comment2 = createChildCommentBy(comment, ootd, user, user1, "hi3", 0L, 2L);
+
+        // when
+        Long result = commentRepository.findByMaxGroupOrder(ootd.getId(), 0L);
+
+        // then
+        assertThat(result).isEqualTo(2L);
+    }
+
+    private Comment createChildCommentBy(Comment parentComment, Ootd ootd, User taggedUser, User user, String content,
+            Long groupId, Long groupOrder) {
 
         Comment comment = Comment.builder()
-                .topOotdId(ootd.getId())
+                .ootd(ootd)
                 .depth(1)
                 .writer(user)
                 .contents(content)
                 .parent(parentComment)
                 .taggedUser(taggedUser)
+                .groupId(groupId)
+                .groupOrder(groupOrder)
                 .build();
 
         parentComment.setChildCount(parentComment.getChildCount() + 1);
@@ -119,13 +171,47 @@ public class CommentRepositoryTest extends IntegrationTestSupport {
         return commentRepository.save(comment);
     }
 
-    private Comment createParentCommentBy(Ootd ootd, User user, String content) {
+    private Comment createChildCommentBy(Comment parentComment, Ootd ootd, User taggedUser, User user, String content) {
 
         Comment comment = Comment.builder()
-                .topOotdId(ootd.getId())
+                .ootd(ootd)
                 .depth(1)
                 .writer(user)
                 .contents(content)
+                .parent(parentComment)
+                .taggedUser(taggedUser)
+                .groupId(0L)
+                .groupOrder(1L)
+                .build();
+
+        parentComment.setChildCount(parentComment.getChildCount() + 1);
+
+        return commentRepository.save(comment);
+    }
+
+    private Comment createParentCommentBy(Ootd ootd, User user, String content, Long groupId) {
+
+        Comment comment = Comment.builder()
+                .ootd(ootd)
+                .depth(1)
+                .writer(user)
+                .contents(content)
+                .groupId(groupId)
+                .groupOrder(0L)
+                .build();
+
+        return commentRepository.save(comment);
+    }
+
+    private Comment createParentCommentBy(Ootd ootd, User user, String content) {
+
+        Comment comment = Comment.builder()
+                .ootd(ootd)
+                .depth(1)
+                .writer(user)
+                .contents(content)
+                .groupId(0L)
+                .groupOrder(0L)
                 .build();
 
         return commentRepository.save(comment);

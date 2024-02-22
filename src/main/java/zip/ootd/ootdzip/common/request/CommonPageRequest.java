@@ -2,6 +2,7 @@ package zip.ootd.ootdzip.common.request;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 
 import lombok.NoArgsConstructor;
@@ -26,7 +27,16 @@ public class CommonPageRequest {
         this.sortDirection = sortDirection;
     }
 
+    public CommonPageRequest(Integer page, Integer size) {
+        this.page = page;
+        this.size = size;
+    }
+
     public Pageable toPageable() {
         return PageRequest.of(this.page, this.size, sortDirection, sortCriteria);
+    }
+
+    public Pageable toPageableWithSort(Sort sort) {
+        return PageRequest.of(this.page, this.size, sort);
     }
 }

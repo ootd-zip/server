@@ -6,14 +6,19 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.util.List;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import zip.ootd.ootdzip.ControllerTestSupport;
 import zip.ootd.ootdzip.comment.data.CommentPostReq;
 import zip.ootd.ootdzip.comment.domain.Comment;
+import zip.ootd.ootdzip.common.response.CommonSliceResponse;
 
 public class CommentControllerTest extends ControllerTestSupport {
 
@@ -167,5 +172,41 @@ public class CommentControllerTest extends ControllerTestSupport {
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(200))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result").isBoolean());
+    }
+
+    @DisplayName("댓글 전체 조회")
+    @Test
+    void getComments() throws Exception {
+        // given
+        Long ootdId = 1L;
+        Pageable pageable = PageRequest.of(0, 10);
+
+        when(commentService.getComments(any()))
+                .thenReturn(new CommonSliceResponse<>(List.of(), pageable, false));
+
+        // when & then
+        mockMvc.perform(get("/api/v1/comments")
+                        .param("ootdId", ootdId.toString()))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(200))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result").exists());
+    }
+
+    @DisplayName("댓글 전체 조회시 Ootd id 는 필수입니다.")
+    @Test
+    void getCommentsNoOotdId() throws Exception {
+        // given
+        Pageable pageable = PageRequest.of(0, 10);
+
+        when(commentService.getComments(any()))
+                .thenReturn(new CommonSliceResponse<>(List.of(), pageable, false));
+
+        // when & then
+        mockMvc.perform(get("/api/v1/comments"))
+                .andDo(print())
+                .andExpect(status().isNotFound())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(404))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errors").isArray());
     }
 }
