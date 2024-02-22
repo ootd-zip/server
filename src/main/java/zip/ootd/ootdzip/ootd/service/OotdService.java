@@ -362,7 +362,7 @@ public class OotdService {
                 .map(OotdGetOtherRes::new)
                 .collect(Collectors.toList());
 
-        return new CommonSliceResponse<>(ootdGetOtherResList, pageable, ootds.hasNext());
+        return new CommonSliceResponse<>(ootdGetOtherResList, pageable, ootds.isLast());
     }
 
     /**
@@ -384,6 +384,6 @@ public class OotdService {
                 .map(OotdGetSimilarRes::new)
                 .collect(Collectors.toList());
 
-        return new CommonSliceResponse<>(ootdGetSimilarResList, pageable, ootdImages.hasNext());
+        return new CommonSliceResponse<>(ootdGetSimilarResList, pageable, ootdImages.isLast());
     }
 }

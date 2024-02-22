@@ -28,11 +28,11 @@ public class OotdBookmarkService {
 
         Pageable pageable = request.toPageable();
         Slice<OotdBookmark> ootdBookmarks = ootdBookmarkRepository.findAllByUserId(loginUser.getId(), pageable);
-        List<OotdBookmarkGetAllRes> ootdBookmarkGetAllResListd = ootdBookmarks.stream()
+        List<OotdBookmarkGetAllRes> ootdBookmarkGetAllResList = ootdBookmarks.stream()
                 .map(OotdBookmarkGetAllRes::of)
                 .collect(Collectors.toList());
 
-        return new CommonSliceResponse<>(ootdBookmarkGetAllResListd, pageable, ootdBookmarks.hasNext());
+        return new CommonSliceResponse<>(ootdBookmarkGetAllResList, pageable, ootdBookmarks.isLast());
     }
 
     public void deleteOotdBookmarks(OotdBookmarkDeleteReq request) {
