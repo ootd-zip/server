@@ -28,8 +28,6 @@ public class CommentGetAllRes {
 
     private Long groupId;
 
-    private Long groupOrder;
-
     public static CommentGetAllRes of(Comment comment) {
 
         return CommentGetAllRes.builder()
@@ -41,7 +39,6 @@ public class CommentGetAllRes {
                 .taggedUserName(comment.getTaggedUser() == null ? null : comment.getTaggedUser().getName())
                 .depth(comment.getDepth())
                 .groupId(comment.getGroupId())
-                .groupOrder(comment.getGroupOrder())
                 .parentId(comment.getParent() == null ? null : comment.getParent().getId())
                 .build();
     }
