@@ -91,9 +91,12 @@ public class OotdGetRes {
     @Data
     static class OotdStyleRes {
 
+        private Long styleId;
+
         private String name;
 
         public OotdStyleRes(OotdStyle ootdStyle) {
+            this.styleId = ootdStyle.getStyle().getId();
             this.name = ootdStyle.getStyle().getName();
         }
     }
@@ -101,12 +104,12 @@ public class OotdGetRes {
     @Data
     static class OotdImageRes {
 
-        private String url;
+        private String ootdImage;
 
         private List<OotdImageClothesRes> ootdImageClothesList;
 
         public OotdImageRes(OotdImage ootdImage) {
-            this.url = ootdImage.getImageUrl();
+            this.ootdImage = ootdImage.getImageUrl();
             this.ootdImageClothesList = ootdImage.getOotdImageClothesList().stream()
                     .map(OotdImageClothesRes::new)
                     .collect(Collectors.toList());
