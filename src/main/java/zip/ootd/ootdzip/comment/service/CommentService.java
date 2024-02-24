@@ -66,7 +66,8 @@ public class CommentService {
                 throw new CustomException(ErrorCode.NO_TAGGING_USER);
             }
             Comment parentComment = commentRepository.findById(request.getCommentParentId()).orElseThrow();
-            Long maxGroupOrder = commentRepository.findMaxGroupIdByOotdIdAndGroupOrder(ootd.getId(), parentComment.getGroupId());
+            Long maxGroupOrder = commentRepository.findMaxGroupIdByOotdIdAndGroupOrder(ootd.getId(),
+                    parentComment.getGroupId());
             comment = Comment.builder()
                     .writer(writer)
                     .depth(parentDepth + 1)
