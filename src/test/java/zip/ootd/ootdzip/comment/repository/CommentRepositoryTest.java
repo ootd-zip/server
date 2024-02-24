@@ -114,7 +114,7 @@ public class CommentRepositoryTest extends IntegrationTestSupport {
         Comment comment2 = createParentCommentBy(ootd, user, "hi3", 2L);
 
         // when
-        Long result = commentRepository.findByMaxGroupId(ootd.getId());
+        Long result = commentRepository.findMaxGroupIdByOotdId(ootd.getId());
 
         // then
         assertThat(result).isEqualTo(2L);
@@ -128,7 +128,7 @@ public class CommentRepositoryTest extends IntegrationTestSupport {
         Ootd ootd = createOotdBy(user, "안녕", false);
 
         // when
-        Long result = commentRepository.findByMaxGroupId(ootd.getId());
+        Long result = commentRepository.findMaxGroupIdByOotdId(ootd.getId());
 
         // then
         assertThat(result).isEqualTo(0L);
@@ -146,7 +146,7 @@ public class CommentRepositoryTest extends IntegrationTestSupport {
         Comment comment2 = createChildCommentBy(comment, ootd, user, user1, "hi3", 0L, 2L);
 
         // when
-        Long result = commentRepository.findByMaxGroupOrder(ootd.getId(), 0L);
+        Long result = commentRepository.findMaxGroupIdByOotdIdAndGroupOrder(ootd.getId(), 0L);
 
         // then
         assertThat(result).isEqualTo(2L);

@@ -11,12 +11,12 @@ import zip.ootd.ootdzip.comment.domain.Comment;
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     @Query("SELECT COALESCE(MAX(c.groupId), 0) from Comment c where c.ootd.id = :ootdId")
-    Long findByMaxGroupId(@Param("ootdId") Long ootdId);
+    Long findMaxGroupIdByOotdId(@Param("ootdId") Long ootdId);
 
     @Query("SELECT COALESCE(MAX(c.groupOrder), 0) from Comment c where c.ootd.id = :ootdId and c.groupId = :groupId")
-    Long findByMaxGroupOrder(@Param("ootdId") Long ootdId, @Param("groupId") Long groupId);
+    Long findMaxGroupIdByOotdIdAndGroupOrder(@Param("ootdId") Long ootdId, @Param("groupId") Long groupId);
 
     @Query("SELECT c from Comment c where c.ootd.id = :ootdId")
-    Slice<Comment> getCommentByOotdId(@Param("ootdId") Long ootdId, Pageable pageable);
+    Slice<Comment> findAllByOotdId(@Param("ootdId") Long ootdId, Pageable pageable);
 }
 

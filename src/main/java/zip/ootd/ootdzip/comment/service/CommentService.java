@@ -48,7 +48,7 @@ public class CommentService {
         int parentDepth = request.getParentDepth();
 
         if (parentDepth == 0) {
-            Long maxGroupId = commentRepository.findByMaxGroupId(ootd.getId());
+            Long maxGroupId = commentRepository.findMaxGroupIdByOotdId(ootd.getId());
             comment = Comment.builder()
                     .writer(writer)
                     .depth(parentDepth + 1)
@@ -66,7 +66,7 @@ public class CommentService {
                 throw new CustomException(ErrorCode.NO_TAGGING_USER);
             }
             Comment parentComment = commentRepository.findById(request.getCommentParentId()).orElseThrow();
-            Long maxGroupOrder = commentRepository.findByMaxGroupOrder(ootd.getId(), parentComment.getGroupId());
+            Long maxGroupOrder = commentRepository.findMaxGroupIdByOotdIdAndGroupOrder(ootd.getId(), parentComment.getGroupId());
             comment = Comment.builder()
                     .writer(writer)
                     .depth(parentDepth + 1)
@@ -106,7 +106,7 @@ public class CommentService {
         );
         Pageable pageable = request.toPageableWithSort(sort);
 
-        Slice<Comment> comments = commentRepository.getCommentByOotdId(request.getOotdId(), pageable);
+        Slice<Comment> comments = commentRepository.findAllByOotdId(request.getOotdId(), pageable);
 
         List<CommentGetAllRes> commentGetAllResList = comments.stream()
                 .map(CommentGetAllRes::of)
