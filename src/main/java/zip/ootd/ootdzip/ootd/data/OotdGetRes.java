@@ -91,12 +91,12 @@ public class OotdGetRes {
     @Data
     static class OotdStyleRes {
 
-        private Long styleId;
+        private Long id;
 
         private String name;
 
         public OotdStyleRes(OotdStyle ootdStyle) {
-            this.styleId = ootdStyle.getStyle().getId();
+            this.id = ootdStyle.getStyle().getId();
             this.name = ootdStyle.getStyle().getName();
         }
     }
