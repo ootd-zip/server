@@ -157,7 +157,7 @@ public class Comment extends BaseEntity {
         this.deletedAt = LocalDateTime.now();
 
         if (this.parent != null) {
-            parent.childCount--;
+            parent.setChildCount(parent.getChildCount() - 1);
         }
     }
 }
