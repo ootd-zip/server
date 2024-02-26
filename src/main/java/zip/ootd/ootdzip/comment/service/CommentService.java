@@ -1,14 +1,23 @@
 package zip.ootd.ootdzip.comment.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import zip.ootd.ootdzip.comment.data.CommentGetAllReq;
+import zip.ootd.ootdzip.comment.data.CommentGetAllRes;
 import zip.ootd.ootdzip.comment.data.CommentPostReq;
 import zip.ootd.ootdzip.comment.domain.Comment;
 import zip.ootd.ootdzip.comment.repository.CommentRepository;
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.exception.code.ErrorCode;
+import zip.ootd.ootdzip.common.response.CommonSliceResponse;
 import zip.ootd.ootdzip.ootd.domain.Ootd;
 import zip.ootd.ootdzip.ootd.repository.OotdRepository;
 import zip.ootd.ootdzip.user.domain.User;
@@ -28,21 +37,27 @@ public class CommentService {
      * 댓글, 대댓글까지 허용(대대댓글 불가능)
      * 대댓글을 반드시 누구에 대한 대댓글인지 태깅이 명시되어야함
      * Depth 의 경우 댓글이 1, 대댓글이 2
+     * 게시물 마다 부모 댓글 기준으로 댓글 그룹 id 를 가진다.
      */
     public Comment saveComment(CommentPostReq request, User writer) {
 
         Ootd ootd = ootdRepository.findById(request.getOotdId()).orElseThrow();
+
         Comment comment;
 
         int parentDepth = request.getParentDepth();
+
         if (parentDepth == 0) {
+            Long maxGroupId = commentRepository.findMaxGroupIdByOotdId(ootd.getId());
             comment = Comment.builder()
                     .writer(writer)
                     .depth(parentDepth + 1)
                     .contents(request.getContent())
-                    .topOotdId(ootd.getId())
+                    .ootd(ootd)
+                    .groupId(maxGroupId + 1L)
+                    .groupOrder(0L)
                     .build();
-            ootd.addComment(comment); // 대댓글이 아닌 댓글만 ootd 에 저장
+
         } else {
             User taggedUser;
             if (request.getTaggedUserName() != null && !request.getTaggedUserName().isEmpty()) {
@@ -51,14 +66,18 @@ public class CommentService {
                 throw new CustomException(ErrorCode.NO_TAGGING_USER);
             }
             Comment parentComment = commentRepository.findById(request.getCommentParentId()).orElseThrow();
+            Long maxGroupOrder = commentRepository.findMaxGroupIdByOotdIdAndGroupOrder(ootd.getId(),
+                    parentComment.getGroupId());
             comment = Comment.builder()
                     .writer(writer)
                     .depth(parentDepth + 1)
                     .contents(request.getContent())
                     .taggedUser(taggedUser)
-                    .topOotdId(ootd.getId())
+                    .ootd(ootd)
+                    .groupId(parentComment.getGroupId())
+                    .groupOrder(maxGroupOrder + 1L)
                     .build();
-            parentComment.addChildComment(comment); // 대댓글의 경우 ootd 정보를 따로 저장하지 않아 ootd 확인시 부모댓글을 조회해서 ootd 를 확인해야함
+            parentComment.addChildComment(comment);
         }
 
         return commentRepository.save(comment);
@@ -78,5 +97,22 @@ public class CommentService {
         }
 
         comment.deleteComment();
+    }
+
+    public CommonSliceResponse<CommentGetAllRes> getComments(CommentGetAllReq request) {
+
+        Sort sort = Sort.by(
+                Sort.Order.asc("groupId"),
+                Sort.Order.asc("groupOrder")
+        );
+        Pageable pageable = request.toPageableWithSort(sort);
+
+        Slice<Comment> comments = commentRepository.findAllByOotdId(request.getOotdId(), pageable);
+
+        List<CommentGetAllRes> commentGetAllResList = comments.stream()
+                .map(CommentGetAllRes::of)
+                .collect(Collectors.toList());
+
+        return new CommonSliceResponse<>(commentGetAllResList, pageable, comments.isLast());
     }
 }

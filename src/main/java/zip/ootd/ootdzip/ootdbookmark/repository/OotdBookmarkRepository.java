@@ -15,7 +15,7 @@ public interface OotdBookmarkRepository extends JpaRepository<OotdBookmark, Long
     @Query("SELECT ob from OotdBookmark ob "
             + "join fetch ob.ootd o "
             + "join fetch ob.user u "
-            + "where o.isPrivate = false "
+            + "where (o.isPrivate = false or o.writer.id = :userId) "
             + "and u.id = :userId ")
     Slice<OotdBookmark> findAllByUserId(@Param("userId") Long userId, Pageable pageable);
 }

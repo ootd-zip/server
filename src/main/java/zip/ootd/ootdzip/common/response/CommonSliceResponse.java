@@ -17,10 +17,10 @@ public class CommonSliceResponse<T> {
 
     private boolean isLast;
 
-    public CommonSliceResponse(List<T> content, Pageable pageable, boolean hasNext) {
+    public CommonSliceResponse(List<T> content, Pageable pageable, boolean isLast) {
         this.content = content;
         this.page = pageable.getPageNumber();
         this.size = pageable.getPageSize();
-        this.isLast = hasNext;
+        this.isLast = isLast;
     }
 }

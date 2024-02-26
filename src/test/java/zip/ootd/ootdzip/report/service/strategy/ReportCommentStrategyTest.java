@@ -172,10 +172,12 @@ class ReportCommentStrategyTest extends IntegrationTestSupport {
 
     private Comment createCommentBy(User writer, Ootd ootd) {
         Comment comment = Comment.builder()
-                .topOotdId(ootd.getId())
+                .ootd(ootd)
                 .depth(1)
                 .writer(writer)
                 .contents("내용1")
+                .groupOrder(0L)
+                .groupId(0L)
                 .build();
 
         return commentRepository.save(comment);

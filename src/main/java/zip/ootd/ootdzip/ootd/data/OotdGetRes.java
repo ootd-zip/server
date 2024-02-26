@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 import zip.ootd.ootdzip.brand.data.BrandDto;
 import zip.ootd.ootdzip.category.data.DetailCategory;
 import zip.ootd.ootdzip.clothes.domain.Clothes;
-import zip.ootd.ootdzip.comment.domain.Comment;
 import zip.ootd.ootdzip.ootd.domain.Ootd;
 import zip.ootd.ootdzip.ootdimage.domain.OotdImage;
 import zip.ootd.ootdzip.ootdimageclothe.domain.Coordinate;
@@ -56,8 +55,6 @@ public class OotdGetRes {
 
     private List<OotdStyleRes> styles;
 
-    private List<OotdComment> comment;
-
     public OotdGetRes(Ootd ootd,
             boolean isLike,
             int viewCount,
@@ -89,18 +86,17 @@ public class OotdGetRes {
         this.ootdImages = ootd.getOotdImages().stream()
                 .map(OotdImageRes::new)
                 .collect(Collectors.toList());
-
-        this.comment = ootd.getComments().stream()
-                .map(OotdComment::new)
-                .collect(Collectors.toList());
     }
 
     @Data
     static class OotdStyleRes {
 
+        private Long styleId;
+
         private String name;
 
         public OotdStyleRes(OotdStyle ootdStyle) {
+            this.styleId = ootdStyle.getStyle().getId();
             this.name = ootdStyle.getStyle().getName();
         }
     }
@@ -108,12 +104,12 @@ public class OotdGetRes {
     @Data
     static class OotdImageRes {
 
-        private String url;
+        private String ootdImage;
 
         private List<OotdImageClothesRes> ootdImageClothesList;
 
         public OotdImageRes(OotdImage ootdImage) {
-            this.url = ootdImage.getImageUrl();
+            this.ootdImage = ootdImage.getImageUrl();
             this.ootdImageClothesList = ootdImage.getOotdImageClothesList().stream()
                     .map(OotdImageClothesRes::new)
                     .collect(Collectors.toList());
@@ -152,60 +148,6 @@ public class OotdGetRes {
                         .parentCategoryName(clothes.getCategory().getParentCategory().getName())
                         .build();
                 this.size = clothes.getSize().getName();
-            }
-        }
-    }
-
-    @Data
-    static class OotdComment {
-
-        private Long id;
-
-        private String userName;
-
-        private String userImage;
-
-        private String content;
-
-        private String timeStamp;
-
-        List<ChildComment> childComment;
-
-        public OotdComment(Comment comment) {
-            this.id = comment.getId();
-            this.userName = comment.getWriter().getName();
-            this.content = comment.getContents();
-            this.userImage = comment.getWriter().getProfileImage();
-            this.timeStamp = comment.compareCreatedTimeAndNow();
-            this.childComment = comment.getChildComments().stream()
-                    .map(ChildComment::new)
-                    .collect(Collectors.toList());
-        }
-
-        @Data
-        static class ChildComment {
-
-            private Long id;
-
-            private String userName;
-
-            private String userImage;
-
-            private String content;
-
-            private String timeStamp;
-
-            private String taggedUserName;
-
-            public ChildComment(Comment comment) {
-                this.id = comment.getId();
-                this.userName = comment.getWriter().getName();
-                this.content = comment.getContents();
-                this.userImage = comment.getWriter().getProfileImage();
-                this.timeStamp = comment.compareCreatedTimeAndNow();
-                if (comment.getTaggedUser() != null) {
-                    this.taggedUserName = comment.getTaggedUser().getName();
-                }
             }
         }
     }

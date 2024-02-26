@@ -217,11 +217,6 @@ public class Ootd extends BaseEntity {
         ootdBookmarks.remove(ootdBookmark);
     }
 
-    public void addComment(Comment comment) {
-        comments.add(comment);
-        comment.setOotd(this);
-    }
-
     public void increaseReportCount() {
         this.reportCount += 1;
     }

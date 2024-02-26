@@ -65,9 +65,6 @@ public class Comment extends BaseEntity {
 
     private String contents;
 
-    @Column(nullable = false)
-    private Long topOotdId;
-
     @Builder.Default
     @Column(nullable = false)
     private Boolean isDeleted = false;
@@ -82,6 +79,12 @@ public class Comment extends BaseEntity {
     @Builder.Default
     @OneToMany(mappedBy = "parent")
     private List<Comment> childComments = new ArrayList<>();
+
+    @Column(nullable = false)
+    private Long groupId;
+
+    @Column(nullable = false)
+    private Long groupOrder;
 
     public void addChildComment(Comment comment) {
         childComments.add(comment);

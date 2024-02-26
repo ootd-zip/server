@@ -26,10 +26,13 @@ import zip.ootd.ootdzip.clothes.data.PurchaseStoreType;
 import zip.ootd.ootdzip.clothes.domain.Clothes;
 import zip.ootd.ootdzip.clothes.domain.ClothesColor;
 import zip.ootd.ootdzip.clothes.repository.ClothesRepository;
+import zip.ootd.ootdzip.comment.data.CommentGetAllReq;
+import zip.ootd.ootdzip.comment.data.CommentGetAllRes;
 import zip.ootd.ootdzip.comment.data.CommentPostReq;
 import zip.ootd.ootdzip.comment.domain.Comment;
 import zip.ootd.ootdzip.comment.repository.CommentRepository;
 import zip.ootd.ootdzip.common.exception.CustomException;
+import zip.ootd.ootdzip.common.response.CommonSliceResponse;
 import zip.ootd.ootdzip.ootd.domain.Ootd;
 import zip.ootd.ootdzip.ootd.repository.OotdRepository;
 import zip.ootd.ootdzip.ootdimage.domain.OotdImage;
@@ -89,8 +92,8 @@ public class CommentServiceTest extends IntegrationTestSupport {
 
         // then
         Comment savedResult = commentRepository.findById(result.getId()).get();
-        assertThat(savedResult).extracting("topOotdId", "contents", "depth")
-                .contains(ootd.getId(), "안녕하세요", 1);
+        assertThat(savedResult).extracting("ootd.id", "contents", "depth", "groupId", "groupOrder")
+                .contains(ootd.getId(), "안녕하세요", 1, 0L, 0L);
     }
 
     @DisplayName("댓글 작성시 존재하는 ootd id 이어야 한다.")
@@ -116,7 +119,8 @@ public class CommentServiceTest extends IntegrationTestSupport {
         User user = createUserBy("유저1");
         User user1 = createUserBy("유저2");
         Ootd ootd = createOotdBy(user, "안녕", false);
-        Comment comment = createParentCommentBy(ootd, user, "hi1");
+        Comment comment = createParentCommentBy(ootd, user, "hi1", 0L);
+        Comment comment1 = createParentCommentBy(ootd, user, "hi2", 1L);
 
         CommentPostReq commentPostReq = new CommentPostReq();
         commentPostReq.setOotdId(ootd.getId());
@@ -125,13 +129,27 @@ public class CommentServiceTest extends IntegrationTestSupport {
         commentPostReq.setCommentParentId(comment.getId());
         commentPostReq.setTaggedUserName("유저2");
 
+        CommentPostReq commentPostReq1 = new CommentPostReq();
+        commentPostReq1.setOotdId(ootd.getId());
+        commentPostReq1.setContent("안녕하세요2");
+        commentPostReq1.setParentDepth(1);
+        commentPostReq1.setCommentParentId(comment1.getId());
+        commentPostReq1.setTaggedUserName("유저2");
+
         // when
         Comment result = commentService.saveComment(commentPostReq, user);
+        Comment result1 = commentService.saveComment(commentPostReq1, user);
 
         // then
         Comment savedResult = commentRepository.findById(result.getId()).get();
-        assertThat(savedResult).extracting("topOotdId", "contents", "depth", "taggedUser.id", "parent.id")
-                .contains(ootd.getId(), "안녕하세요1", 2, user1.getId(), comment.getId());
+        assertThat(savedResult).extracting("ootd.id", "contents", "depth",
+                        "taggedUser.id", "parent.id", "groupId", "groupOrder")
+                .contains(ootd.getId(), "안녕하세요1", 2, user1.getId(), comment.getId(), comment.getGroupId(), 1L);
+
+        Comment savedResult1 = commentRepository.findById(result1.getId()).get();
+        assertThat(savedResult1).extracting("ootd.id", "contents", "depth",
+                        "taggedUser.id", "parent.id", "groupId", "groupOrder")
+                .contains(ootd.getId(), "안녕하세요2", 2, user1.getId(), comment1.getId(), comment1.getGroupId(), 1L);
     }
 
     @DisplayName("대댓글 작성시 태그된 유저에 대한 값이 있어야 한다.")
@@ -232,13 +250,82 @@ public class CommentServiceTest extends IntegrationTestSupport {
                 CustomException.class);
     }
 
-    private Comment createParentCommentBy(Ootd ootd, User user, String content) {
+    @DisplayName("특정 ootd 에 해당하는 댓글을 조회한다.")
+    @Test
+    void getComments() {
+        // given
+        User user = createUserBy("유저");
+        User user1 = createUserBy("유저1");
+        Ootd ootd = createOotdBy(user, "안녕", false);
+        Comment comment = createParentCommentBy(ootd, user, "hi");
+        Comment comment1 = createParentCommentBy(ootd, user, "hi1", 1L);
+        Comment comment2 = createParentCommentBy(ootd, user, "hi2", 2L);
+
+        Comment comment3 = createChildCommentBy(comment1, ootd, user, user1, "hi3", 1L, 1L);
+        Comment comment4 = createChildCommentBy(comment1, ootd, user, user1, "hi4", 1L, 2L);
+
+        Comment comment5 = createChildCommentBy(comment2, ootd, user, user1, "hi5", 2L, 1L);
+
+        Comment comment6 = createChildCommentBy(comment, ootd, user, user1, "hi6", 0L, 1L);
+
+        CommentGetAllReq commentGetAllReq = new CommentGetAllReq();
+        commentGetAllReq.setOotdId(ootd.getId());
+        commentGetAllReq.setPage(0);
+        commentGetAllReq.setSize(10);
+
+        // when
+        CommonSliceResponse<CommentGetAllRes> results = commentService.getComments(commentGetAllReq);
+
+        // then 댓글이 0->6->1->3->4->2->5 순으로 정렬되어 조회된다.
+        assertThat(results.getContent())
+                .hasSize(7)
+                .extracting("id")
+                .containsExactly(comment.getId(), comment6.getId(), comment1.getId(),
+                        comment3.getId(), comment4.getId(), comment2.getId(), comment5.getId());
+    }
+
+    private Comment createChildCommentBy(Comment parentComment, Ootd ootd, User taggedUser, User user, String content,
+            Long groupId, Long groupOrder) {
 
         Comment comment = Comment.builder()
-                .topOotdId(ootd.getId())
+                .ootd(ootd)
                 .depth(1)
                 .writer(user)
                 .contents(content)
+                .parent(parentComment)
+                .taggedUser(taggedUser)
+                .groupId(groupId)
+                .groupOrder(groupOrder)
+                .build();
+
+        parentComment.setChildCount(parentComment.getChildCount() + 1);
+
+        return commentRepository.save(comment);
+    }
+
+    private Comment createParentCommentBy(Ootd ootd, User user, String content, Long groupId) {
+
+        Comment comment = Comment.builder()
+                .ootd(ootd)
+                .depth(1)
+                .writer(user)
+                .contents(content)
+                .groupId(groupId)
+                .groupOrder(0L)
+                .build();
+
+        return commentRepository.save(comment);
+    }
+
+    private Comment createParentCommentBy(Ootd ootd, User user, String content) {
+
+        Comment comment = Comment.builder()
+                .ootd(ootd)
+                .depth(1)
+                .writer(user)
+                .contents(content)
+                .groupId(0L)
+                .groupOrder(0L)
                 .build();
 
         return commentRepository.save(comment);
