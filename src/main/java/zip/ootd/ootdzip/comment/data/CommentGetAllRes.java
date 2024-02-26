@@ -12,6 +12,8 @@ public class CommentGetAllRes {
 
     private Long id;
 
+    private Long userId;
+
     private String userName;
 
     private String userImage;
@@ -32,6 +34,7 @@ public class CommentGetAllRes {
 
         return CommentGetAllRes.builder()
                 .id(comment.getId())
+                .userId(comment.getWriter().getId())
                 .userName(comment.getWriter().getName())
                 .userImage(comment.getWriter().getProfileImage())
                 .content(comment.getContents())
