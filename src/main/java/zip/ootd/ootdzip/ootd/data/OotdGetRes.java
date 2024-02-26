@@ -47,7 +47,7 @@ public class OotdGetRes {
 
     private LocalDateTime createAt;
 
-    private boolean isFollower;
+    private boolean isFollowing;
 
     private boolean isPrivate;
 
@@ -65,7 +65,7 @@ public class OotdGetRes {
         this.viewCount = viewCount;
         this.likeCount = likeCount;
         this.isBookmark = ootd.isBookmark(loginUser);
-        this.isFollower = loginUser.isFollower(ootd.getWriter());
+        this.isFollowing = loginUser.isFollowing(ootd.getWriter());
 
         this.id = ootd.getId();
         this.reportCount = ootd.getReportCount();

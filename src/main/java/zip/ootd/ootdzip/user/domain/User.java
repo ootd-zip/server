@@ -82,8 +82,8 @@ public class User extends BaseEntity {
                 && user.followings.remove(this);
     }
 
-    public boolean isFollower(User user) {
-        return this.followers.contains(user);
+    public boolean isFollowing(User user) {
+        return this.followings.contains(user);
     }
 
     public String getProfileHeight() {
