@@ -9,8 +9,8 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.exception.code.ErrorCode;
@@ -23,14 +23,16 @@ import zip.ootd.ootdzip.oauth.repository.RefreshTokenRepository;
 import zip.ootd.ootdzip.oauth.repository.UserOauthRepository;
 import zip.ootd.ootdzip.oauth.service.SocialOAuth;
 import zip.ootd.ootdzip.security.JwtUtils;
+import zip.ootd.ootdzip.user.controller.response.UserInfoForMyPageRes;
 import zip.ootd.ootdzip.user.data.TokenUserInfoRes;
 import zip.ootd.ootdzip.user.data.UserLoginReq;
 import zip.ootd.ootdzip.user.data.UserRegisterReq;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.repository.UserRepository;
+import zip.ootd.ootdzip.user.service.request.UserInfoForMyPageSvcReq;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class UserService {
 
@@ -140,13 +142,11 @@ public class UserService {
         return user.removeFollower(follower);
     }
 
-    @Transactional
     public Set<User> getFollowers(Long userId) {
         User user = userRepository.findById(userId).orElseThrow();
         return user.getFollowers();
     }
 
-    @Transactional
     public Set<User> getFollowings(Long userId) {
         User user = userRepository.findById(userId).orElseThrow();
         return user.getFollowings();
@@ -172,4 +172,11 @@ public class UserService {
         Optional<User> user = userRepository.findById(Long.valueOf(authentication.getName()));
         return user.orElseThrow();
     }
+
+    public UserInfoForMyPageRes getUserInfoForMyPage(UserInfoForMyPageSvcReq request, User loginUser) {
+        UserInfoForMyPageRes result = null;
+
+        return result;
+    }
+
 }

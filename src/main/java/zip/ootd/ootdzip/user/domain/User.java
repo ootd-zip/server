@@ -15,21 +15,19 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import zip.ootd.ootdzip.clothes.domain.Clothes;
 import zip.ootd.ootdzip.common.entity.BaseEntity;
+import zip.ootd.ootdzip.ootd.domain.Ootd;
 
 @Entity
 @Table(name = "users")
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class User extends BaseEntity {
 
     @ManyToMany(cascade = CascadeType.ALL, mappedBy = "followings")
@@ -50,26 +48,52 @@ public class User extends BaseEntity {
     private Boolean showWeight;
     @Column(length = 2048)
     private String profileImage;
+    private String description;
     @Column(nullable = false)
     private Boolean isCompleted = false;
     @Column(nullable = false)
     private Boolean isDeleted = false;
     @OneToMany(mappedBy = "user")
     private List<Clothes> clothesList;
+    @OneToMany(mappedBy = "user")
+    private List<Ootd> ootds;
+
+    @Builder
+    private User(String name, UserGender gender, LocalDate birthdate, Integer height, Boolean showHeight,
+            Integer weight,
+            Boolean showWeight, String profileImage, String description, Boolean isCompleted, Boolean isDeleted,
+            List<Clothes> clothesList, List<Ootd> ootds) {
+        this.name = name;
+        this.gender = gender;
+        this.birthdate = birthdate;
+        this.height = height;
+        this.showHeight = showHeight;
+        this.weight = weight;
+        this.showWeight = showWeight;
+        this.profileImage = profileImage;
+        this.description = description;
+        this.isCompleted = isCompleted;
+        this.isDeleted = isDeleted;
+        this.clothesList = clothesList;
+        this.ootds = ootds;
+    }
 
     public static User getDefault() {
-        return new User(
-                null,
-                null,
-                null,
-                0,
-                false,
-                0,
-                false,
-                null,
-                false,
-                false,
-                null);
+        return User.builder()
+                .name(null)
+                .gender(null)
+                .birthdate(null)
+                .height(0)
+                .showHeight(true)
+                .weight(0)
+                .showWeight(true)
+                .profileImage(null)
+                .description(null)
+                .isCompleted(false)
+                .isDeleted(false)
+                .clothesList(null)
+                .ootds(null)
+                .build();
     }
 
     public boolean addFollower(User user) {
@@ -87,7 +111,7 @@ public class User extends BaseEntity {
     }
 
     public String getProfileHeight() {
-        if (showHeight) {
+        if (!showHeight) {
             return "비공개";
         }
 
@@ -95,10 +119,38 @@ public class User extends BaseEntity {
     }
 
     public String getProfileWeight() {
-        if (showWeight) {
+        if (!showWeight) {
             return "비공개";
         }
 
         return weight + "kg";
+    }
+
+    public Long getFollowerCount() {
+        return followers
+                .stream()
+                .filter(x -> !x.getIsDeleted())
+                .count();
+    }
+
+    public Long getFollowingCount() {
+        return followings
+                .stream()
+                .filter(x -> !x.getIsDeleted())
+                .count();
+    }
+
+    public Long getOotdsCount() {
+        return ootds
+                .stream()
+                .filter(x -> !x.getIsDeleted() && !x.getIsBlocked())
+                .count();
+    }
+
+    public Long getClothesCount(User loginUser) {
+        return clothesList
+                .stream()
+                .filter(x -> x.getUser().getId().equals(loginUser.getId()) || x.getIsOpen())
+                .count();
     }
 }
