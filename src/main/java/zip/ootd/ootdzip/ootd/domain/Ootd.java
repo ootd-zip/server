@@ -1,5 +1,6 @@
 package zip.ootd.ootdzip.ootd.domain;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -58,6 +59,8 @@ public class Ootd extends BaseEntity {
     @Builder.Default
     @Column(nullable = false)
     private Boolean isDeleted = false;
+
+    private LocalDateTime deletedAt;
 
     @Builder.Default
     @Column(nullable = false)
@@ -178,6 +181,11 @@ public class Ootd extends BaseEntity {
         return ootdBookmarks.stream()
                 .filter(bb -> Objects.equals(bb.getUser().getId(), user.getId()))
                 .findAny();
+    }
+
+    public void deleteOotd() {
+        this.isDeleted = true;
+        this.deletedAt = LocalDateTime.now();
     }
 
     // == 연관관계 메서드 == //

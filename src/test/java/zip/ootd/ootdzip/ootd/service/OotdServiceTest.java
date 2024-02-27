@@ -241,10 +241,11 @@ public class OotdServiceTest extends IntegrationTestSupport {
 
         // when
         ootdService.deleteOotd(ootd.getId());
-        Optional<Ootd> result = ootdRepository.findById(ootd.getId());
+        Ootd result = ootdRepository.findById(ootd.getId()).get();
 
         // then
-        assertThat(result.isPresent()).isEqualTo(false);
+        assertThat(result.getIsDeleted()).isEqualTo(true);
+        assertThat(result.getDeletedAt()).isNotNull();
     }
 
     @DisplayName("좋아요를 한다.")

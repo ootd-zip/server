@@ -112,7 +112,8 @@ public class OotdService {
     }
 
     public void deleteOotd(Long id) {
-        ootdRepository.deleteById(id);
+        Ootd ootd = ootdRepository.findById(id).orElseThrow();
+        ootd.deleteOotd();
     }
 
     /**
