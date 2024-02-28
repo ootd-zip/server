@@ -491,4 +491,24 @@ public class OotdControllerTest extends ControllerTestSupport {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(200))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result").exists());
     }
+
+    @DisplayName("선택한 유저 OOTD 게시글 조회")
+    @Test
+    void getUserOotd() throws Exception {
+        // given
+        Long userId = 1L;
+        Pageable pageable = PageRequest.of(0, 10);
+
+        when(ootdService.getOotdByUser(any()))
+                .thenReturn(new CommonSliceResponse<>(List.of(), pageable, true));
+
+        // when & then
+        mockMvc.perform(get("/api/v1/ootd")
+                        .param("userId", Long.toString(userId)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(200))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result").exists());
+    }
+
 }

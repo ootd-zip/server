@@ -57,7 +57,7 @@ public class OotdController {
     public ApiResponse<Boolean> updateOotdContentsAndIsPrivate(@PathVariable Long id,
             @RequestBody @Valid OotdPatchReq request) {
 
-        ootdService.updateContentsAndIsPrivate(id ,request);
+        ootdService.updateContentsAndIsPrivate(id, request);
 
         return new ApiResponse<>(true);
     }
@@ -155,4 +155,12 @@ public class OotdController {
         return new ApiResponse<>(response);
     }
 
+    @Operation(summary = "특정 유저 ootd 조회", description = "user id 를 주면 해당 id에 유저 ootd 들을 반환 api")
+    @GetMapping("")
+    public ApiResponse<CommonSliceResponse<OotdGetByUserRes>> getUserOotd(@Valid OotdGetByUserReq request) {
+
+        CommonSliceResponse<OotdGetByUserRes> response = ootdService.getOotdByUser(request);
+
+        return new ApiResponse<>(response);
+    }
 }

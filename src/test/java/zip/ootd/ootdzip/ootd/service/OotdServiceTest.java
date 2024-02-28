@@ -31,6 +31,8 @@ import zip.ootd.ootdzip.clothes.domain.ClothesColor;
 import zip.ootd.ootdzip.clothes.repository.ClothesRepository;
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.response.CommonSliceResponse;
+import zip.ootd.ootdzip.ootd.data.OotdGetByUserReq;
+import zip.ootd.ootdzip.ootd.data.OotdGetByUserRes;
 import zip.ootd.ootdzip.ootd.data.OotdGetOtherReq;
 import zip.ootd.ootdzip.ootd.data.OotdGetOtherRes;
 import zip.ootd.ootdzip.ootd.data.OotdGetRes;
@@ -512,6 +514,63 @@ public class OotdServiceTest extends IntegrationTestSupport {
                 .hasSize(2)
                 .extracting("id")
                 .containsExactly(ootd4.getId(), ootd1.getId());
+    }
+
+    @DisplayName("특정 유저의 ootd 를 전체 조회한다. 본인글은 비공개여도 조회가 가능하다.")
+    @Test
+    void getOotdByUser() {
+        // given
+        User user = createUserBy("유저");
+        Ootd ootd = createOotdBy(user, "안녕", false);
+        Ootd ootd1 = createOotdBy(user, "안녕", false);
+        Ootd ootd2 = createOotdBy(user, "안녕", true);
+        Ootd ootd3 = createOotdBy(user, "안녕", true);
+
+        OotdGetByUserReq ootdGetByUserReq = new OotdGetByUserReq();
+        ootdGetByUserReq.setUserId(user.getId());
+        ootdGetByUserReq.setPage(0);
+        ootdGetByUserReq.setSize(10);
+        ootdGetByUserReq.setSortCriteria("createdAt");
+        ootdGetByUserReq.setSortDirection(Sort.Direction.DESC);
+
+        // when
+        CommonSliceResponse<OotdGetByUserRes> result = ootdService.getOotdByUser(ootdGetByUserReq);
+
+        // then
+        // ootd 는 작성시간 내림차순으로 정렬된다.
+        assertThat(result.getContent())
+                .hasSize(4)
+                .extracting("id")
+                .containsExactly(ootd3.getId(), ootd2.getId(), ootd1.getId(), ootd.getId());
+    }
+
+    @DisplayName("특정 유저의 ootd 를 전체 조회한다. 본인이 아니면 비공개글은 조회가 불가능하다.")
+    @Test
+    void getOotdByUserWithoutIsPrivate() {
+        // given
+        User user = createUserBy("유저");
+        User user1 = createUserBy("유저1");
+        Ootd ootd = createOotdBy(user, "안녕", false);
+        Ootd ootd1 = createOotdBy(user, "안녕", false);
+        Ootd ootd2 = createOotdBy(user, "안녕", true);
+        Ootd ootd3 = createOotdBy(user, "안녕", true);
+
+        OotdGetByUserReq ootdGetByUserReq = new OotdGetByUserReq();
+        ootdGetByUserReq.setUserId(user1.getId());
+        ootdGetByUserReq.setPage(0);
+        ootdGetByUserReq.setSize(10);
+        ootdGetByUserReq.setSortCriteria("createdAt");
+        ootdGetByUserReq.setSortDirection(Sort.Direction.DESC);
+
+        // when
+        CommonSliceResponse<OotdGetByUserRes> result = ootdService.getOotdByUser(ootdGetByUserReq);
+
+        // then
+        // ootd 는 작성시간 내림차순으로 정렬된다.
+        assertThat(result.getContent())
+                .hasSize(2)
+                .extracting("id")
+                .containsExactly(ootd1.getId(), ootd.getId());
     }
 
     private Ootd createOotdBy(User user, String content, boolean isPrivate, List<Style> styles) {

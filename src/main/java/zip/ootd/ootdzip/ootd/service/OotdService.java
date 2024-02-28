@@ -352,6 +352,7 @@ public class OotdService {
 
     /**
      * OOTD 상세 조회시, 현재 OOTD 작성자의 다른 OOTD 정보를 제공한다.
+     * 본인 조회시에도 비공개글은 조회되지 ㅏㅇㄴ흣ㅂ니다.
      */
     public CommonSliceResponse<OotdGetOtherRes> getOotdOther(OotdGetOtherReq request) {
 
@@ -370,6 +371,7 @@ public class OotdService {
 
     /**
      * OOTD 상세 조회시, 현재 OOTD 와 동일한 스타일의 다른 OOTD 를 제공합니다.
+     * 본인 조회시에도 비공개글은 조회되지 않습니다.
      */
     public CommonSliceResponse<OotdGetSimilarRes> getOotdSimilar(OotdGetSimilarReq request) {
 
@@ -390,4 +392,21 @@ public class OotdService {
         return new CommonSliceResponse<>(ootdGetSimilarResList, pageable, ootdImages.isLast());
     }
 
+    /**
+     * 마이페이지에서 OOTD 조회시 해당 유저가 가진 OOTD 정보를 제공합니다.
+     * 본인 조회시, 비공개글 조회가 됩니다.
+     */
+    public CommonSliceResponse<OotdGetByUserRes> getOotdByUser(OotdGetByUserReq request) {
+
+        Long userId = request.getUserId();
+        Pageable pageable = request.toPageable();
+
+        Slice<Ootd> ootds = ootdRepository.findAllByUserId(userId, pageable);
+
+        List<OotdGetByUserRes> ootdGetByUserResList = ootds.stream()
+                .map(OotdGetByUserRes::new)
+                .collect(Collectors.toList());
+
+        return new CommonSliceResponse<>(ootdGetByUserResList, pageable, ootds.isLast());
+    }
 }
