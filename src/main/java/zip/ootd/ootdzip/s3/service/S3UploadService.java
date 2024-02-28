@@ -32,8 +32,10 @@ public class S3UploadService {
     private String bucket;
 
     public List<String> saveImageS3(S3ImageReq request) {
+        List<MultipartFile> images = request.getImages();
+        checkFilesSize(images);
 
-        return request.getImages().stream()
+        return images.stream()
                 .map(this::upload)
                 .collect(Collectors.toList());
     }
@@ -61,5 +63,22 @@ public class S3UploadService {
         String fileExtension = Objects.requireNonNull(originalFileName).substring(originalFileName.lastIndexOf("."));
 
         return UUID.randomUUID() + "_" + LocalDate.now() + fileExtension;
+    }
+
+    private void checkFilesSize(List<MultipartFile> multipartFiles) {
+        long sum = multipartFiles.stream()
+                .mapToLong(this::checkFileSize)
+                .sum();
+        if (sum > 1024 * 1024 * 5) {
+            throw new IllegalArgumentException("사진 총 크기가 50MB 를 넘었습니다. 보낸 사진 총 크기 : " + sum + "bytes");
+        }
+    }
+
+    private Long checkFileSize(MultipartFile multipartFile) {
+        long size = multipartFile.getSize();
+        if (size > 1024 * 1024) {
+            throw new IllegalArgumentException("사진 크기가 10MB 를 넘었습니다. 보낸 사진 크기 : " + size + "bytes");
+        }
+        return size;
     }
 }
