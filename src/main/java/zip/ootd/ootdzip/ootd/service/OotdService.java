@@ -79,16 +79,16 @@ public class OotdService {
         return ootd;
     }
 
-    public void updateContentsAndIsPrivate(OotdPatchReq request) {
+    public void updateContentsAndIsPrivate(Long id, OotdPatchReq request) {
 
-        Ootd ootd = ootdRepository.findById(request.getId()).orElseThrow();
+        Ootd ootd = ootdRepository.findById(id).orElseThrow();
 
         ootd.updateIsPrivate(request.getIsPrivate());
     }
 
-    public void updateAll(OotdPutReq request) {
+    public void updateAll(Long id, OotdPutReq request) {
 
-        Ootd ootd = ootdRepository.findById(request.getId()).orElseThrow();
+        Ootd ootd = ootdRepository.findById(id).orElseThrow();
 
         List<OotdImage> ootdImages = request.getOotdImages().stream().map(ootdImage -> {
             List<OotdImageClothes> ootdImageClothesList = ootdImage.getClothesTags().stream().map(clothesTag -> {

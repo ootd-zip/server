@@ -154,10 +154,9 @@ public class OotdServiceTest extends IntegrationTestSupport {
 
         OotdPatchReq ootdPatchReq = new OotdPatchReq();
         ootdPatchReq.setIsPrivate(true);
-        ootdPatchReq.setId(ootd.getId());
 
         // when
-        ootdService.updateContentsAndIsPrivate(ootdPatchReq);
+        ootdService.updateContentsAndIsPrivate(ootd.getId(), ootdPatchReq);
 
         // then
         assertThat(ootd).extracting("id", "isPrivate")
@@ -199,12 +198,11 @@ public class OotdServiceTest extends IntegrationTestSupport {
         OotdPutReq ootdPutReq = new OotdPutReq();
         ootdPutReq.setContent("잘가");
         ootdPutReq.setIsPrivate(true);
-        ootdPutReq.setId(ootd.getId());
         ootdPutReq.setOotdImages(Arrays.asList(ootdImageReq));
         ootdPutReq.setStyles(Arrays.asList(savedStyle.getId(), savedStyle1.getId()));
 
         // when
-        ootdService.updateAll(ootdPutReq);
+        ootdService.updateAll(ootd.getId(), ootdPutReq);
 
         // then
         Ootd savedResult = ootdRepository.findById(ootd.getId()).get();
