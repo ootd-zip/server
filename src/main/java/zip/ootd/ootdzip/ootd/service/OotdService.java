@@ -23,6 +23,8 @@ import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.exception.code.ErrorCode;
 import zip.ootd.ootdzip.common.response.CommonSliceResponse;
 import zip.ootd.ootdzip.ootd.data.OotdGetAllRes;
+import zip.ootd.ootdzip.ootd.data.OotdGetByUserReq;
+import zip.ootd.ootdzip.ootd.data.OotdGetByUserRes;
 import zip.ootd.ootdzip.ootd.data.OotdGetOtherReq;
 import zip.ootd.ootdzip.ootd.data.OotdGetOtherRes;
 import zip.ootd.ootdzip.ootd.data.OotdGetRes;
@@ -387,4 +389,5 @@ public class OotdService {
 
         return new CommonSliceResponse<>(ootdGetSimilarResList, pageable, ootdImages.isLast());
     }
+
 }

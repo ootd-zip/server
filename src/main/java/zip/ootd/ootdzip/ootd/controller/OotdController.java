@@ -19,6 +19,8 @@ import lombok.RequiredArgsConstructor;
 import zip.ootd.ootdzip.common.response.ApiResponse;
 import zip.ootd.ootdzip.common.response.CommonSliceResponse;
 import zip.ootd.ootdzip.ootd.data.OotdGetAllRes;
+import zip.ootd.ootdzip.ootd.data.OotdGetByUserReq;
+import zip.ootd.ootdzip.ootd.data.OotdGetByUserRes;
 import zip.ootd.ootdzip.ootd.data.OotdGetOtherReq;
 import zip.ootd.ootdzip.ootd.data.OotdGetOtherRes;
 import zip.ootd.ootdzip.ootd.data.OotdGetRes;
@@ -152,4 +154,5 @@ public class OotdController {
 
         return new ApiResponse<>(response);
     }
+
 }
