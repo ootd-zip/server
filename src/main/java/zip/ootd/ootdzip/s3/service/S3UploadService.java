@@ -69,14 +69,14 @@ public class S3UploadService {
         long sum = multipartFiles.stream()
                 .mapToLong(this::checkFileSize)
                 .sum();
-        if (sum > 1024 * 1024 * 5) {
+        if (sum > 1024 * 1024 * 10 * 5) {
             throw new IllegalArgumentException("사진 총 크기가 50MB 를 넘었습니다. 보낸 사진 총 크기 : " + sum + "bytes");
         }
     }
 
     private Long checkFileSize(MultipartFile multipartFile) {
         long size = multipartFile.getSize();
-        if (size > 1024 * 1024) {
+        if (size > 1024 * 1024 * 10) {
             throw new IllegalArgumentException("사진 크기가 10MB 를 넘었습니다. 보낸 사진 크기 : " + size + "bytes");
         }
         return size;
