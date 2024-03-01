@@ -444,7 +444,9 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
 
         assertThat(result.getBrand().getName()).isEqualTo("브랜드1");
 
-        assertThat(result.getCategory()).extracting("categoryName", "parentCategoryName").contains("카테고리1", "상위카테고리1");
+        assertThat(result.getCategory())
+                .extracting("categoryName", "parentCategoryName")
+                .contains("카테고리1", "상위카테고리1");
 
         assertThat(result.getSize()).extracting("name", "lineNo").contains("사이즈1", (byte)1);
 
@@ -459,8 +461,8 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
         Clothes clothes = createClothesBy(user1, false, "1");
 
         // when & then
-        assertThatThrownBy(() -> clothesService.findClothesById(clothes.getId() + 1, user1)).isInstanceOf(
-                        CustomException.class)
+        assertThatThrownBy(() -> clothesService.findClothesById(clothes.getId() + 1, user1))
+                .isInstanceOf(CustomException.class)
                 .extracting("errorCode.status", "errorCode.divisionCode", "errorCode.message")
                 .contains(404, "C004", "유효하지 않은 옷 ID");
     }
@@ -474,8 +476,8 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
         Clothes clothes = createClothesBy(user1, false, "1");
 
         // when & then
-        assertThatThrownBy(() -> clothesService.findClothesById(clothes.getId(), user2)).isInstanceOf(
-                        CustomException.class)
+        assertThatThrownBy(() -> clothesService.findClothesById(clothes.getId(), user2))
+                .isInstanceOf(CustomException.class)
                 .extracting("errorCode.status", "errorCode.divisionCode", "errorCode.message")
                 .contains(401, "C001", "해당 데이터에 접근할 수 없는 사용자");
     }
