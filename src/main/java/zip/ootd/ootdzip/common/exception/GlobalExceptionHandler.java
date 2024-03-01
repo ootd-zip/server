@@ -1,7 +1,10 @@
 package zip.ootd.ootdzip.common.exception;
 
-import java.io.IOException;
-import java.util.NoSuchElementException;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+
+import jakarta.validation.ConstraintViolationException;
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,13 +17,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-
-import jakarta.validation.ConstraintViolationException;
-import lombok.extern.slf4j.Slf4j;
 import zip.ootd.ootdzip.common.exception.code.ErrorCode;
 import zip.ootd.ootdzip.common.response.ErrorResponse;
+
+import java.io.IOException;
+import java.util.NoSuchElementException;
 
 @RestControllerAdvice
 @Slf4j
@@ -187,8 +188,10 @@ public class GlobalExceptionHandler {
     // ======================================Custom Exception===========================================================
 
     @ExceptionHandler(CustomException.class)
-    protected final ErrorResponse handleAllExceptions(CustomException ex) {
+    protected final ResponseEntity<ErrorResponse> handleAllExceptions(CustomException ex) {
         log.error("Custom Exception", ex);
-        return ErrorResponse.of(ex.getErrorCode(), ex.getMessage());
+
+        return new ResponseEntity<>(ErrorResponse.of(ex.getErrorCode(), ex.getMessage()),
+                HttpStatus.valueOf(ex.getErrorCode().getStatus()));
     }
 }
