@@ -173,11 +173,11 @@ public class OotdControllerTest extends ControllerTestSupport {
     void updateContentAndIsPrivate() throws Exception {
         // given
         OotdPatchReq ootdPatchReq = new OotdPatchReq();
-        ootdPatchReq.setId(1L);
         ootdPatchReq.setIsPrivate(true);
 
         // when & then
-        mockMvc.perform(patch("/api/v1/ootd").content(objectMapper.writeValueAsString(ootdPatchReq))
+        mockMvc.perform(patch("/api/v1/ootd/{id}", 1L)
+                        .content(objectMapper.writeValueAsString(ootdPatchReq))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -185,31 +185,15 @@ public class OotdControllerTest extends ControllerTestSupport {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result").isBoolean());
     }
 
-    @DisplayName("OOTD 공개여부 수정시 id 는 필수입니다.")
-    @Test
-    void updateContentAndIsPrivateWithoutId() throws Exception {
-        // given
-        OotdPatchReq ootdPatchReq = new OotdPatchReq();
-        ootdPatchReq.setIsPrivate(true);
-
-        // when & then
-        mockMvc.perform(patch("/api/v1/ootd").content(objectMapper.writeValueAsString(ootdPatchReq))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isNotFound())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(404))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.errors").isArray());
-    }
-
     @DisplayName("OOTD 공개여부 수정시 공개여부는 필수입니다.")
     @Test
     void updateContentAndIsPrivateWithoutIsPrivate() throws Exception {
         // given
         OotdPatchReq ootdPatchReq = new OotdPatchReq();
-        ootdPatchReq.setId(1L);
 
         // when & then
-        mockMvc.perform(patch("/api/v1/ootd").content(objectMapper.writeValueAsString(ootdPatchReq))
+        mockMvc.perform(patch("/api/v1/ootd/{id}", 1L)
+                        .content(objectMapper.writeValueAsString(ootdPatchReq))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isNotFound())
@@ -240,56 +224,19 @@ public class OotdControllerTest extends ControllerTestSupport {
         ootdImageReq.setClothesTags(Arrays.asList(clothesTagReq, clothesTagReq1));
 
         OotdPutReq ootdPutReq = new OotdPutReq();
-        ootdPutReq.setId(1L);
         ootdPutReq.setIsPrivate(false);
         ootdPutReq.setContent("테스트");
         ootdPutReq.setStyles(Arrays.asList(1L, 2L));
         ootdPutReq.setOotdImages(Arrays.asList(ootdImageReq));
 
         // when & then
-        mockMvc.perform(put("/api/v1/ootd").content(objectMapper.writeValueAsString(ootdPutReq))
+        mockMvc.perform(put("/api/v1/ootd/{id}", 1L)
+                        .content(objectMapper.writeValueAsString(ootdPutReq))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(200))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result").isBoolean());
-    }
-
-    @DisplayName("OOTD 게시글 전체수정시 id 는 필수입니다.")
-    @Test
-    void updateAllWithoutId() throws Exception {
-        // given
-        OotdPutReq.OotdImageReq.ClothesTagReq clothesTagReq = new OotdPutReq.OotdImageReq.ClothesTagReq();
-        clothesTagReq.setClothesId(1L);
-        clothesTagReq.setDeviceWidth(100L);
-        clothesTagReq.setDeviceHeight(50L);
-        clothesTagReq.setXRate("22.33");
-        clothesTagReq.setYRate("33.44");
-
-        OotdPutReq.OotdImageReq.ClothesTagReq clothesTagReq1 = new OotdPutReq.OotdImageReq.ClothesTagReq();
-        clothesTagReq1.setClothesId(2L);
-        clothesTagReq1.setDeviceWidth(100L);
-        clothesTagReq1.setDeviceHeight(50L);
-        clothesTagReq1.setXRate("33.44");
-        clothesTagReq1.setYRate("44.55");
-
-        OotdPutReq.OotdImageReq ootdImageReq = new OotdPutReq.OotdImageReq();
-        ootdImageReq.setOotdImage("input_image_url");
-        ootdImageReq.setClothesTags(Arrays.asList(clothesTagReq, clothesTagReq1));
-
-        OotdPutReq ootdPutReq = new OotdPutReq();
-        ootdPutReq.setIsPrivate(false);
-        ootdPutReq.setContent("테스트");
-        ootdPutReq.setStyles(Arrays.asList(1L, 2L));
-        ootdPutReq.setOotdImages(Arrays.asList(ootdImageReq));
-
-        // when & then
-        mockMvc.perform(put("/api/v1/ootd").content(objectMapper.writeValueAsString(ootdPutReq))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isNotFound())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(404))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.errors").isArray());
     }
 
     @DisplayName("OOTD 게시글 전체수정시 공개여부는 필수입니다.")
@@ -315,13 +262,13 @@ public class OotdControllerTest extends ControllerTestSupport {
         ootdImageReq.setClothesTags(Arrays.asList(clothesTagReq, clothesTagReq1));
 
         OotdPutReq ootdPutReq = new OotdPutReq();
-        ootdPutReq.setId(1L);
         ootdPutReq.setContent("테스트");
         ootdPutReq.setStyles(Arrays.asList(1L, 2L));
         ootdPutReq.setOotdImages(Arrays.asList(ootdImageReq));
 
         // when & then
-        mockMvc.perform(put("/api/v1/ootd").content(objectMapper.writeValueAsString(ootdPutReq))
+        mockMvc.perform(put("/api/v1/ootd/{id}", 1L)
+                        .content(objectMapper.writeValueAsString(ootdPutReq))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isNotFound())
@@ -334,13 +281,13 @@ public class OotdControllerTest extends ControllerTestSupport {
     void updateAllWithoutOotdImages() throws Exception {
         // given
         OotdPutReq ootdPutReq = new OotdPutReq();
-        ootdPutReq.setId(1L);
         ootdPutReq.setIsPrivate(false);
         ootdPutReq.setContent("테스트");
         ootdPutReq.setStyles(Arrays.asList(1L, 2L));
 
         // when & then
-        mockMvc.perform(put("/api/v1/ootd").content(objectMapper.writeValueAsString(ootdPutReq))
+        mockMvc.perform(put("/api/v1/ootd/{id}", 1L)
+                        .content(objectMapper.writeValueAsString(ootdPutReq))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isNotFound())
@@ -370,14 +317,14 @@ public class OotdControllerTest extends ControllerTestSupport {
         ootdImageReq.setClothesTags(Arrays.asList(clothesTagReq, clothesTagReq1));
 
         OotdPutReq ootdPutReq = new OotdPutReq();
-        ootdPutReq.setId(1L);
         ootdPutReq.setIsPrivate(false);
         ootdPutReq.setContent("테스트");
         ootdPutReq.setStyles(Arrays.asList(1L, 2L));
         ootdPutReq.setOotdImages(Arrays.asList(ootdImageReq));
 
         // when & then
-        mockMvc.perform(put("/api/v1/ootd").content(objectMapper.writeValueAsString(ootdPutReq))
+        mockMvc.perform(put("/api/v1/ootd/{id}", 1L)
+                        .content(objectMapper.writeValueAsString(ootdPutReq))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isNotFound())
@@ -408,7 +355,6 @@ public class OotdControllerTest extends ControllerTestSupport {
         ootdImageReq.setClothesTags(Arrays.asList(clothesTagReq, clothesTagReq1));
 
         OotdPutReq ootdPutReq = new OotdPutReq();
-        ootdPutReq.setId(1L);
         ootdPutReq.setIsPrivate(false);
 
         StringBuilder content = new StringBuilder();
@@ -425,7 +371,8 @@ public class OotdControllerTest extends ControllerTestSupport {
         ootdPutReq.setOotdImages(Arrays.asList(ootdImageReq));
 
         // when & then
-        mockMvc.perform(put("/api/v1/ootd").content(objectMapper.writeValueAsString(ootdPutReq))
+        mockMvc.perform(put("/api/v1/ootd/{id}", 1L)
+                        .content(objectMapper.writeValueAsString(ootdPutReq))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isNotFound())
@@ -544,4 +491,24 @@ public class OotdControllerTest extends ControllerTestSupport {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(200))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result").exists());
     }
+
+    @DisplayName("선택한 유저 OOTD 게시글 조회")
+    @Test
+    void getUserOotd() throws Exception {
+        // given
+        Long userId = 1L;
+        Pageable pageable = PageRequest.of(0, 10);
+
+        when(ootdService.getOotdByUser(any()))
+                .thenReturn(new CommonSliceResponse<>(List.of(), pageable, true));
+
+        // when & then
+        mockMvc.perform(get("/api/v1/ootd")
+                        .param("userId", Long.toString(userId)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(200))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result").exists());
+    }
+
 }

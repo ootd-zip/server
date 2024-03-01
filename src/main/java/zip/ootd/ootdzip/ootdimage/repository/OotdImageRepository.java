@@ -31,7 +31,8 @@ public interface OotdImageRepository extends JpaRepository<OotdImage, Long> {
     @Query("SELECT DISTINCT oi FROM OotdImage oi "
             + "JOIN FETCH oi.ootd o "
             + "JOIN o.styles os ON os.style IN (:styles) "
-            + "AND o.id <> :ootdId ")
+            + "AND o.id <> :ootdId "
+            + "AND o.isPrivate = false ")
     Slice<OotdImage> findByStyles(
             @Param("ootdId") Long ootdId,
             @Param("styles") List<Style> styles,
