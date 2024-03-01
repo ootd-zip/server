@@ -26,7 +26,7 @@ import zip.ootd.ootdzip.clothes.domain.ClothesColor;
 import zip.ootd.ootdzip.clothes.repository.ClothesRepository;
 import zip.ootd.ootdzip.clothes.service.request.FindClothesByUserSvcReq;
 import zip.ootd.ootdzip.clothes.service.request.SaveClothesSvcReq;
-import zip.ootd.ootdzip.clothes.service.request.UpdateClothesIsOpenSvcReq;
+import zip.ootd.ootdzip.clothes.service.request.UpdateClothesIsPrivateSvcReq;
 import zip.ootd.ootdzip.clothes.service.request.UpdateClothesSvcReq;
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.user.domain.User;
@@ -82,7 +82,7 @@ public class ClothesServiceImpl implements ClothesService {
                 request.getPurchaseStore(),
                 request.getPurchaseStoreType(),
                 request.getName(),
-                request.getIsOpen(),
+                request.getIsPrivate(),
                 category,
                 size,
                 request.getMemo(),
@@ -100,7 +100,7 @@ public class ClothesServiceImpl implements ClothesService {
         Clothes clothes = clothesRepository.findById(id)
                 .orElseThrow(() -> new CustomException(NOT_FOUND_CLOTHES_ID));
 
-        if (Boolean.FALSE.equals(clothes.getIsOpen()) && !clothes.getUser().getId().equals(loginUser.getId())) {
+        if (clothes.getIsPrivate() && !clothes.getUser().getId().equals(loginUser.getId())) {
             throw new CustomException(UNAUTHORIZED_USER_ERROR);
         }
 
@@ -123,7 +123,7 @@ public class ClothesServiceImpl implements ClothesService {
         if (user.getId().equals(loginUser.getId())) {
             clothesList = clothesRepository.findByUser(user, request.getPageable());
         } else {
-            clothesList = clothesRepository.findByUserAndIsOpenTrue(user, request.getPageable());
+            clothesList = clothesRepository.findByUserAndIsPrivateFalse(user, request.getPageable());
         }
 
         for (Clothes clothes : clothesList) {
@@ -190,7 +190,7 @@ public class ClothesServiceImpl implements ClothesService {
                 request.getPurchaseStore(),
                 request.getPurchaseStoreType(),
                 request.getName(),
-                request.getIsOpen(),
+                request.getIsPrivate(),
                 category,
                 size,
                 request.getMemo(),
@@ -204,7 +204,7 @@ public class ClothesServiceImpl implements ClothesService {
 
     @Override
     @Transactional
-    public SaveClothesRes updateClothesIsOpen(UpdateClothesIsOpenSvcReq request, User loginUser) {
+    public SaveClothesRes updateClothesIsPrivate(UpdateClothesIsPrivateSvcReq request, User loginUser) {
 
         Clothes updateTarget = clothesRepository.findById(request.getClothesId())
                 .orElseThrow(() -> new CustomException(NOT_FOUND_CLOTHES_ID));
@@ -213,7 +213,7 @@ public class ClothesServiceImpl implements ClothesService {
             throw new CustomException(UNAUTHORIZED_USER_ERROR);
         }
 
-        updateTarget.updateIsOpen(request.getIsOpen());
+        updateTarget.updateIsPrivate(request.getIsPrivate());
 
         Clothes updatedClothes = clothesRepository.save(updateTarget);
 

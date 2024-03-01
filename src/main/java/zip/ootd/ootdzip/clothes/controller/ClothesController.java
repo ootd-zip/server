@@ -20,7 +20,7 @@ import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import zip.ootd.ootdzip.clothes.controller.request.FindClothesByUserReq;
 import zip.ootd.ootdzip.clothes.controller.request.SaveClothesReq;
-import zip.ootd.ootdzip.clothes.controller.request.UpdateClothesIsOpenReq;
+import zip.ootd.ootdzip.clothes.controller.request.UpdateClothesIsPrivateReq;
 import zip.ootd.ootdzip.clothes.controller.request.UpdateClothesReq;
 import zip.ootd.ootdzip.clothes.data.DeleteClothesByIdRes;
 import zip.ootd.ootdzip.clothes.data.FindClothesRes;
@@ -79,11 +79,12 @@ public class ClothesController {
 
     @Operation(summary = "옷 공개여부 수정 API", description = "옷 공개여부 수정")
     @PatchMapping("/{id}")
-    public ApiResponse<SaveClothesRes> updateClothesIsOpen(
+    public ApiResponse<SaveClothesRes> updateClothesIsPrivate(
             @PathVariable(name = "id") @Positive(message = "옷 ID는 양수여야 합니다.") Long id,
-            @RequestBody @Valid UpdateClothesIsOpenReq request) {
+            @RequestBody @Valid UpdateClothesIsPrivateReq request) {
         return new ApiResponse<>(
-                clothesService.updateClothesIsOpen(request.toServiceRequest(id), userService.getAuthenticatiedUser()));
+                clothesService.updateClothesIsPrivate(request.toServiceRequest(id),
+                        userService.getAuthenticatiedUser()));
     }
 
 }

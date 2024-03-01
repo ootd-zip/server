@@ -66,7 +66,7 @@ class ClothesRepositoryTest extends IntegrationTestSupport {
 
         //then
         assertThat(result).hasSize(2)
-                .extracting("user.id", "id", "isOpen")
+                .extracting("user.id", "id", "isPrivate")
                 .containsExactlyInAnyOrder(tuple(savedUser.getId(), savedClothes1.getId(), true),
                         tuple(savedUser.getId(), savedClothes2.getId(), false));
     }
@@ -79,8 +79,8 @@ class ClothesRepositoryTest extends IntegrationTestSupport {
 
         User savedUser = userRepository.save(user);
 
-        Clothes clothes1 = createClothesBy(savedUser, true, "1");
-        Clothes clothes2 = createClothesBy(savedUser, false, "2");
+        Clothes clothes1 = createClothesBy(savedUser, false, "1");
+        Clothes clothes2 = createClothesBy(savedUser, true, "2");
 
         Clothes savedClothes1 = clothesRepository.save(clothes1);
         Clothes savedClothes2 = clothesRepository.save(clothes2);
@@ -88,15 +88,15 @@ class ClothesRepositoryTest extends IntegrationTestSupport {
         CommonPageRequest pageRequest = new CommonPageRequest();
 
         // when
-        List<Clothes> result = clothesRepository.findByUserAndIsOpenTrue(savedUser, pageRequest.toPageable());
+        List<Clothes> result = clothesRepository.findByUserAndIsPrivateFalse(savedUser, pageRequest.toPageable());
 
         //then
         assertThat(result).hasSize(1)
-                .extracting("user.id", "id", "isOpen")
-                .containsExactlyInAnyOrder(tuple(savedUser.getId(), savedClothes1.getId(), true));
+                .extracting("user.id", "id", "isPrivate")
+                .containsExactlyInAnyOrder(tuple(savedUser.getId(), savedClothes1.getId(), false));
     }
 
-    private Clothes createClothesBy(User user, boolean isOpen, String idx) {
+    private Clothes createClothesBy(User user, boolean isPrivate, String idx) {
 
         Brand brand = Brand.builder().name("브랜드" + idx).build();
 
@@ -121,7 +121,8 @@ class ClothesRepositoryTest extends IntegrationTestSupport {
         List<ClothesColor> clothesColors = ClothesColor.createClothesColorsBy(List.of(savedColor));
 
         Clothes clothes = Clothes.createClothes(user, savedBrand, "구매처" + idx, PurchaseStoreType.Write, "제품명" + idx,
-                isOpen, savedCategory, savedSize, "메모입니다." + idx, "구매일" + idx, "image" + idx + ".jpg", clothesColors);
+                isPrivate, savedCategory, savedSize, "메모입니다." + idx, "구매일" + idx, "image" + idx + ".jpg",
+                clothesColors);
 
         return clothes;
     }

@@ -34,7 +34,7 @@ public class SaveClothesReq {
     private List<@Positive(message = "색 ID는 양수여야 합니다.") Long> colorIds;
 
     @NotNull(message = "공개여부는 필수입니다.")
-    private Boolean isOpen;
+    private Boolean isPrivate;
 
     @Positive(message = "사이즈 ID는 양수여야 합니다.")
     private Long sizeId;
@@ -52,14 +52,14 @@ public class SaveClothesReq {
 
     @Builder
     public SaveClothesReq(String purchaseStore, PurchaseStoreType purchaseStoreType, Long brandId, Long categoryId,
-            List<Long> colorIds, Boolean isOpen, Long sizeId, String clothesImageUrl, String name, String memo,
+            List<Long> colorIds, Boolean isPrivate, Long sizeId, String clothesImageUrl, String name, String memo,
             String purchaseDate) {
         this.purchaseStore = purchaseStore;
         this.purchaseStoreType = purchaseStoreType;
         this.brandId = brandId;
         this.categoryId = categoryId;
         this.colorIds = colorIds;
-        this.isOpen = isOpen;
+        this.isPrivate = isPrivate;
         this.sizeId = sizeId;
         this.clothesImageUrl = clothesImageUrl;
         this.name = name;
@@ -74,7 +74,7 @@ public class SaveClothesReq {
                 .brandId(this.brandId)
                 .categoryId(this.categoryId)
                 .colorIds(this.colorIds)
-                .isOpen(this.isOpen)
+                .isPrivate(this.isPrivate)
                 .sizeId(this.sizeId)
                 .clothesImageUrl(this.clothesImageUrl)
                 .memo(this.memo)
