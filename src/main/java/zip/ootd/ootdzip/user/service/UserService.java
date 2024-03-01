@@ -174,9 +174,11 @@ public class UserService {
     }
 
     public UserInfoForMyPageRes getUserInfoForMyPage(UserInfoForMyPageSvcReq request, User loginUser) {
-        UserInfoForMyPageRes result = null;
 
-        return result;
+        User user = userRepository.findById(request.getUserId())
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER_ID));
+
+        return UserInfoForMyPageRes.of(user, loginUser);
     }
 
 }

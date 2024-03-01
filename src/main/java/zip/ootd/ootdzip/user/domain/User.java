@@ -55,7 +55,7 @@ public class User extends BaseEntity {
     private Boolean isDeleted = false;
     @OneToMany(mappedBy = "user")
     private List<Clothes> clothesList;
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "writer")
     private List<Ootd> ootds;
 
     @Builder
@@ -110,16 +110,16 @@ public class User extends BaseEntity {
         return this.followings.contains(user);
     }
 
-    public String getProfileHeight() {
-        if (!showHeight) {
+    public String getProfileHeight(User loginUser) {
+        if (!showHeight && !loginUser.equals(this)) {
             return "비공개";
         }
 
         return height + "cm";
     }
 
-    public String getProfileWeight() {
-        if (!showWeight) {
+    public String getProfileWeight(User loginUser) {
+        if (!showWeight && !loginUser.equals(this)) {
             return "비공개";
         }
 
@@ -140,17 +140,28 @@ public class User extends BaseEntity {
                 .count();
     }
 
-    public Long getOotdsCount() {
+    public Long getOotdsCount(User loginUser) {
+        if (ootds == null) {
+            return 0L;
+        }
+
         return ootds
                 .stream()
-                .filter(x -> !x.getIsDeleted() && !x.getIsBlocked())
+                .filter(x -> !x.getIsDeleted()
+                        && !x.getIsBlocked()
+                        && (x.getWriter().getId().equals(loginUser.getId()) || !x.isPrivate()))
                 .count();
     }
 
     public Long getClothesCount(User loginUser) {
+        if (clothesList == null) {
+            return 0L;
+        }
+
         return clothesList
                 .stream()
-                .filter(x -> x.getUser().getId().equals(loginUser.getId()) || x.getIsOpen())
+                .filter(x -> x.getUser().getId().equals(loginUser.getId()) || !x.getIsPrivate())
                 .count();
     }
+
 }

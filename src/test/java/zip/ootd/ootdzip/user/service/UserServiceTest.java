@@ -54,12 +54,12 @@ class UserServiceTest extends IntegrationTestSupport {
                         user1.getProfileImage(),
                         user1.getFollowerCount(),
                         user1.getFollowingCount(),
-                        user1.getProfileHeight(),
-                        user1.getProfileWeight(),
+                        user1.getProfileHeight(loginUser),
+                        user1.getProfileWeight(loginUser),
                         user1.getDescription(),
                         false,
                         false,
-                        user1.getOotdsCount(),
+                        user1.getOotdsCount(loginUser),
                         user1.getClothesCount(loginUser));
     }
 
@@ -95,12 +95,12 @@ class UserServiceTest extends IntegrationTestSupport {
                         loginUser.getProfileImage(),
                         loginUser.getFollowerCount(),
                         loginUser.getFollowingCount(),
-                        loginUser.getProfileHeight(),
-                        loginUser.getProfileWeight(),
+                        loginUser.getProfileHeight(loginUser),
+                        loginUser.getProfileWeight(loginUser),
                         loginUser.getDescription(),
                         true,
                         false,
-                        loginUser.getOotdsCount(),
+                        loginUser.getOotdsCount(loginUser),
                         loginUser.getClothesCount(loginUser));
     }
 
@@ -138,12 +138,12 @@ class UserServiceTest extends IntegrationTestSupport {
                         user1.getProfileImage(),
                         user1.getFollowerCount(),
                         user1.getFollowingCount(),
-                        user1.getProfileHeight(),
-                        user1.getProfileWeight(),
+                        user1.getProfileHeight(loginUser),
+                        user1.getProfileWeight(loginUser),
                         user1.getDescription(),
                         false,
                         true,
-                        user1.getOotdsCount(),
+                        user1.getOotdsCount(loginUser),
                         user1.getClothesCount(loginUser));
     }
 

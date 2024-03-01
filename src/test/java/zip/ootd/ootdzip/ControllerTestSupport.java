@@ -20,6 +20,7 @@ import zip.ootd.ootdzip.ootdbookmark.controller.OotdBookmarkController;
 import zip.ootd.ootdzip.ootdbookmark.service.OotdBookmarkService;
 import zip.ootd.ootdzip.report.controller.ReportController;
 import zip.ootd.ootdzip.report.service.ReportService;
+import zip.ootd.ootdzip.user.controller.UserController;
 import zip.ootd.ootdzip.user.service.UserService;
 
 @WebMvcTest(controllers = {
@@ -27,7 +28,8 @@ import zip.ootd.ootdzip.user.service.UserService;
         ReportController.class,
         OotdController.class,
         CommentController.class,
-        OotdBookmarkController.class
+        OotdBookmarkController.class,
+        UserController.class,
 })
 public abstract class ControllerTestSupport {
 

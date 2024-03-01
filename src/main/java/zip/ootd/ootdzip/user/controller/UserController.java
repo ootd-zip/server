@@ -4,20 +4,26 @@ import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.exception.code.ErrorCode;
 import zip.ootd.ootdzip.common.response.ApiResponse;
 import zip.ootd.ootdzip.oauth.data.TokenInfo;
+import zip.ootd.ootdzip.user.controller.response.UserInfoForMyPageRes;
 import zip.ootd.ootdzip.user.data.CheckNameReq;
 import zip.ootd.ootdzip.user.data.FollowReq;
 import zip.ootd.ootdzip.user.data.ProfileRes;
@@ -26,10 +32,13 @@ import zip.ootd.ootdzip.user.data.UserLoginReq;
 import zip.ootd.ootdzip.user.data.UserRegisterReq;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.service.UserService;
+import zip.ootd.ootdzip.user.service.request.UserInfoForMyPageSvcReq;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/v1/user")
+@Tag(name = "User 컨트롤러", description = "유저 관련 API입니다.")
+@Validated
 public class UserController {
 
     private final UserService userService;
@@ -134,6 +143,14 @@ public class UserController {
     public ApiResponse<Boolean> getIsComplete() {
         User currentUser = userService.getAuthenticatiedUser();
         return new ApiResponse<>(currentUser.getIsCompleted());
+    }
+
+    @Operation(summary = "유저 마이페이지 정보 조회", description = "유저 마이페이지 정보 조회")
+    @GetMapping("/{id}/mypage")
+    public ApiResponse<UserInfoForMyPageRes> getUserInfoForMyPage(
+            @PathVariable(name = "id") @Positive(message = "유저 ID는 양수여야 합니다.") Long id) {
+        return new ApiResponse<>(userService.getUserInfoForMyPage(UserInfoForMyPageSvcReq.createBy(id),
+                userService.getAuthenticatiedUser()));
     }
 
 }

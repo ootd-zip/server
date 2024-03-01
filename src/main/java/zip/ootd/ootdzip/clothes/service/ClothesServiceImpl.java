@@ -120,7 +120,7 @@ public class ClothesServiceImpl implements ClothesService {
          * 본인 옷장은 isOpen 관계없이 모든 옷 리스트 조회
          * 본인 옷장이 아닌경우 isOpen이 true인 옷 리스트 조회
          */
-        if (user.getId().equals(loginUser.getId())) {
+        if (user.equals(loginUser)) {
             clothesList = clothesRepository.findByUser(user, request.getPageable());
         } else {
             clothesList = clothesRepository.findByUserAndIsPrivateFalse(user, request.getPageable());

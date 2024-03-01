@@ -62,8 +62,8 @@ public class OotdGetAllRes {
 
         this.userName = ootd.getWriter().getName();
         this.userImage = ootd.getWriter().getProfileImage();
-        this.userHeight = ootd.getWriter().getProfileHeight();
-        this.userWeight = ootd.getWriter().getProfileWeight();
+        this.userHeight = ootd.getWriter().getProfileHeight(loginUser);
+        this.userWeight = ootd.getWriter().getProfileWeight(loginUser);
 
         this.styles = ootd.getStyles().stream()
                 .map(OotdStyleRes::new)
