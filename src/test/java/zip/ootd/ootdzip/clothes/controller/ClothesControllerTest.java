@@ -19,7 +19,7 @@ import org.springframework.util.MultiValueMap;
 
 import zip.ootd.ootdzip.ControllerTestSupport;
 import zip.ootd.ootdzip.clothes.controller.request.SaveClothesReq;
-import zip.ootd.ootdzip.clothes.controller.request.UpdateClothesIsOpenReq;
+import zip.ootd.ootdzip.clothes.controller.request.UpdateClothesIsPrivateReq;
 import zip.ootd.ootdzip.clothes.controller.request.UpdateClothesReq;
 import zip.ootd.ootdzip.clothes.data.DeleteClothesByIdRes;
 import zip.ootd.ootdzip.clothes.data.FindClothesRes;
@@ -38,7 +38,7 @@ class ClothesControllerTest extends ControllerTestSupport {
                 .brandId(1L)
                 .categoryId(1L)
                 .colorIds(List.of(1L))
-                .isOpen(true)
+                .isPrivate(false)
                 .sizeId(1L)
                 .clothesImageUrl("image1.jpg")
                 .name("제품명1")
@@ -66,7 +66,7 @@ class ClothesControllerTest extends ControllerTestSupport {
                 .purchaseStoreType(PurchaseStoreType.Write)
                 .categoryId(1L)
                 .colorIds(List.of(1L))
-                .isOpen(true)
+                .isPrivate(false)
                 .sizeId(1L)
                 .clothesImageUrl("image1.jpg")
                 .name("제품명1")
@@ -94,7 +94,7 @@ class ClothesControllerTest extends ControllerTestSupport {
                 .brandId(0L)
                 .categoryId(1L)
                 .colorIds(List.of(1L))
-                .isOpen(true)
+                .isPrivate(false)
                 .sizeId(1L)
                 .clothesImageUrl("image1.jpg")
                 .name("제품명1")
@@ -122,7 +122,7 @@ class ClothesControllerTest extends ControllerTestSupport {
                 .brandId(1L)
                 .categoryId(0L)
                 .colorIds(List.of(1L))
-                .isOpen(true)
+                .isPrivate(false)
                 .sizeId(1L)
                 .clothesImageUrl("image1.jpg")
                 .name("제품명1")
@@ -149,7 +149,7 @@ class ClothesControllerTest extends ControllerTestSupport {
                 .purchaseStoreType(PurchaseStoreType.Write)
                 .brandId(1L)
                 .categoryId(1L)
-                .isOpen(true)
+                .isPrivate(false)
                 .sizeId(1L)
                 .clothesImageUrl("image1.jpg")
                 .name("제품명1")
@@ -177,7 +177,7 @@ class ClothesControllerTest extends ControllerTestSupport {
                 .brandId(1L)
                 .categoryId(1L)
                 .colorIds(List.of(0L))
-                .isOpen(true)
+                .isPrivate(false)
                 .sizeId(1L)
                 .clothesImageUrl("image1.jpg")
                 .name("제품명1")
@@ -218,7 +218,7 @@ class ClothesControllerTest extends ControllerTestSupport {
                 .andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(404))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.errors[0].field").value("isOpen"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errors[0].field").value("isPrivate"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.errors[0].reason").value("공개여부는 필수입니다."));
     }
 
@@ -232,7 +232,7 @@ class ClothesControllerTest extends ControllerTestSupport {
                 .brandId(1L)
                 .categoryId(1L)
                 .colorIds(List.of(1L))
-                .isOpen(true)
+                .isPrivate(false)
                 .sizeId(0L)
                 .clothesImageUrl("image1.jpg")
                 .name("제품명1")
@@ -260,7 +260,7 @@ class ClothesControllerTest extends ControllerTestSupport {
                 .brandId(1L)
                 .categoryId(1L)
                 .colorIds(List.of(1L))
-                .isOpen(true)
+                .isPrivate(false)
                 .sizeId(1L)
                 .name("제품명1")
                 .memo("메모입니다.")
@@ -287,7 +287,7 @@ class ClothesControllerTest extends ControllerTestSupport {
                 .brandId(1L)
                 .categoryId(1L)
                 .colorIds(List.of(1L))
-                .isOpen(true)
+                .isPrivate(false)
                 .sizeId(1L)
                 .clothesImageUrl("image1.jpg")
                 .memo("메모입니다.")
@@ -325,7 +325,7 @@ class ClothesControllerTest extends ControllerTestSupport {
                 .brandId(1L)
                 .categoryId(1L)
                 .colorIds(List.of(1L))
-                .isOpen(true)
+                .isPrivate(false)
                 .sizeId(1L)
                 .clothesImageUrl("image1.jpg")
                 .name("제품명")
@@ -354,7 +354,7 @@ class ClothesControllerTest extends ControllerTestSupport {
                 .brandId(1L)
                 .categoryId(1L)
                 .colorIds(List.of(1L))
-                .isOpen(true)
+                .isPrivate(false)
                 .sizeId(1L)
                 .clothesImageUrl("image1.jpg")
                 .name("제품명")
@@ -481,7 +481,7 @@ class ClothesControllerTest extends ControllerTestSupport {
                 .brandId(1L)
                 .categoryId(1L)
                 .colorIds(List.of(1L))
-                .isOpen(true)
+                .isPrivate(false)
                 .sizeId(1L)
                 .clothesImageUrl("image1.jpg")
                 .name("제품명1")
@@ -513,7 +513,7 @@ class ClothesControllerTest extends ControllerTestSupport {
                 .brandId(1L)
                 .categoryId(1L)
                 .colorIds(List.of(1L))
-                .isOpen(true)
+                .isPrivate(false)
                 .sizeId(1L)
                 .clothesImageUrl("image1.jpg")
                 .name("제품명1")
@@ -542,7 +542,7 @@ class ClothesControllerTest extends ControllerTestSupport {
                 .brandId(1L)
                 .categoryId(1L)
                 .colorIds(List.of(1L))
-                .isOpen(true)
+                .isPrivate(false)
                 .sizeId(1L)
                 .clothesImageUrl("image1.jpg")
                 .name("제품명1")
@@ -573,7 +573,7 @@ class ClothesControllerTest extends ControllerTestSupport {
                 .brandId(0L)
                 .categoryId(1L)
                 .colorIds(List.of(1L))
-                .isOpen(true)
+                .isPrivate(false)
                 .sizeId(1L)
                 .clothesImageUrl("image1.jpg")
                 .name("제품명1")
@@ -604,7 +604,7 @@ class ClothesControllerTest extends ControllerTestSupport {
                 .brandId(1L)
                 .categoryId(0L)
                 .colorIds(List.of(1L))
-                .isOpen(true)
+                .isPrivate(false)
                 .sizeId(1L)
                 .clothesImageUrl("image1.jpg")
                 .name("제품명1")
@@ -635,7 +635,7 @@ class ClothesControllerTest extends ControllerTestSupport {
                 .brandId(1L)
                 .categoryId(1L)
                 .colorIds(new ArrayList<>())
-                .isOpen(true)
+                .isPrivate(false)
                 .sizeId(1L)
                 .clothesImageUrl("image1.jpg")
                 .name("제품명1")
@@ -666,7 +666,7 @@ class ClothesControllerTest extends ControllerTestSupport {
                 .brandId(1L)
                 .categoryId(1L)
                 .colorIds(List.of(0L))
-                .isOpen(true)
+                .isPrivate(false)
                 .sizeId(1L)
                 .clothesImageUrl("image1.jpg")
                 .name("제품명1")
@@ -713,7 +713,7 @@ class ClothesControllerTest extends ControllerTestSupport {
                 .andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(404))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.errors[0].field").value("isOpen"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errors[0].field").value("isPrivate"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.errors[0].reason").value("공개여부는 필수입니다."));
     }
 
@@ -727,7 +727,7 @@ class ClothesControllerTest extends ControllerTestSupport {
                 .brandId(1L)
                 .categoryId(1L)
                 .colorIds(List.of(1L))
-                .isOpen(true)
+                .isPrivate(false)
                 .sizeId(0L)
                 .clothesImageUrl("image1.jpg")
                 .name("제품명1")
@@ -758,7 +758,7 @@ class ClothesControllerTest extends ControllerTestSupport {
                 .brandId(1L)
                 .categoryId(1L)
                 .colorIds(List.of(1L))
-                .isOpen(true)
+                .isPrivate(false)
                 .sizeId(1L)
                 .name("제품명1")
                 .memo("메모입니다.")
@@ -788,7 +788,7 @@ class ClothesControllerTest extends ControllerTestSupport {
                 .brandId(1L)
                 .categoryId(1L)
                 .colorIds(List.of(1L))
-                .isOpen(true)
+                .isPrivate(false)
                 .sizeId(1L)
                 .clothesImageUrl("image1.jpg")
                 .memo("메모입니다.")
@@ -829,7 +829,7 @@ class ClothesControllerTest extends ControllerTestSupport {
                 .brandId(1L)
                 .categoryId(1L)
                 .colorIds(List.of(1L))
-                .isOpen(true)
+                .isPrivate(false)
                 .sizeId(1L)
                 .clothesImageUrl("image1.jpg")
                 .name("제품명1")
@@ -861,7 +861,7 @@ class ClothesControllerTest extends ControllerTestSupport {
                 .brandId(1L)
                 .categoryId(1L)
                 .colorIds(List.of(1L))
-                .isOpen(true)
+                .isPrivate(false)
                 .sizeId(1L)
                 .clothesImageUrl("image1.jpg")
                 .name("제품명1")
@@ -886,13 +886,13 @@ class ClothesControllerTest extends ControllerTestSupport {
     @Test
     void updateClothesIsOpen() throws Exception {
         // given
-        UpdateClothesIsOpenReq request = UpdateClothesIsOpenReq.builder()
-                .isOpen(false)
+        UpdateClothesIsPrivateReq request = UpdateClothesIsPrivateReq.builder()
+                .isPrivate(false)
                 .build();
 
         Long clothesId = 1L;
 
-        when(clothesService.updateClothesIsOpen(any(), any())).thenReturn(new SaveClothesRes(clothesId));
+        when(clothesService.updateClothesIsPrivate(any(), any())).thenReturn(new SaveClothesRes(clothesId));
 
         // when & then
         mockMvc.perform(patch("/api/v1/clothes/{id}", clothesId)
@@ -908,8 +908,8 @@ class ClothesControllerTest extends ControllerTestSupport {
     @Test
     void updateClothesIsOpenWithZeroClothesId() throws Exception {
         // given
-        UpdateClothesIsOpenReq request = UpdateClothesIsOpenReq.builder()
-                .isOpen(false)
+        UpdateClothesIsPrivateReq request = UpdateClothesIsPrivateReq.builder()
+                .isPrivate(false)
                 .build();
 
         Long clothesId = 0L;
@@ -928,7 +928,7 @@ class ClothesControllerTest extends ControllerTestSupport {
     @Test
     void updateClothesIsOpenWithoutIsOpen() throws Exception {
         // given
-        UpdateClothesIsOpenReq request = UpdateClothesIsOpenReq.builder()
+        UpdateClothesIsPrivateReq request = UpdateClothesIsPrivateReq.builder()
                 .build();
 
         Long clothesId = 1L;
@@ -940,7 +940,7 @@ class ClothesControllerTest extends ControllerTestSupport {
                 .andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(404))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.errors[0].field").value("isOpen"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errors[0].field").value("isPrivate"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.errors[0].reason").value("공개여부는 필수입니다."));
     }
 }

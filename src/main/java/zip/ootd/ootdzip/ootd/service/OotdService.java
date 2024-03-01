@@ -23,6 +23,8 @@ import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.exception.code.ErrorCode;
 import zip.ootd.ootdzip.common.response.CommonSliceResponse;
 import zip.ootd.ootdzip.ootd.data.OotdGetAllRes;
+import zip.ootd.ootdzip.ootd.data.OotdGetByUserReq;
+import zip.ootd.ootdzip.ootd.data.OotdGetByUserRes;
 import zip.ootd.ootdzip.ootd.data.OotdGetOtherReq;
 import zip.ootd.ootdzip.ootd.data.OotdGetOtherRes;
 import zip.ootd.ootdzip.ootd.data.OotdGetRes;
@@ -79,16 +81,16 @@ public class OotdService {
         return ootd;
     }
 
-    public void updateContentsAndIsPrivate(OotdPatchReq request) {
+    public void updateContentsAndIsPrivate(Long id, OotdPatchReq request) {
 
-        Ootd ootd = ootdRepository.findById(request.getId()).orElseThrow();
+        Ootd ootd = ootdRepository.findById(id).orElseThrow();
 
         ootd.updateIsPrivate(request.getIsPrivate());
     }
 
-    public void updateAll(OotdPutReq request) {
+    public void updateAll(Long id, OotdPutReq request) {
 
-        Ootd ootd = ootdRepository.findById(request.getId()).orElseThrow();
+        Ootd ootd = ootdRepository.findById(id).orElseThrow();
 
         List<OotdImage> ootdImages = request.getOotdImages().stream().map(ootdImage -> {
             List<OotdImageClothes> ootdImageClothesList = ootdImage.getClothesTags().stream().map(clothesTag -> {
@@ -350,6 +352,7 @@ public class OotdService {
 
     /**
      * OOTD 상세 조회시, 현재 OOTD 작성자의 다른 OOTD 정보를 제공한다.
+     * 본인 조회시에도 비공개글은 조회되지 ㅏㅇㄴ흣ㅂ니다.
      */
     public CommonSliceResponse<OotdGetOtherRes> getOotdOther(OotdGetOtherReq request) {
 
@@ -368,6 +371,7 @@ public class OotdService {
 
     /**
      * OOTD 상세 조회시, 현재 OOTD 와 동일한 스타일의 다른 OOTD 를 제공합니다.
+     * 본인 조회시에도 비공개글은 조회되지 않습니다.
      */
     public CommonSliceResponse<OotdGetSimilarRes> getOotdSimilar(OotdGetSimilarReq request) {
 
@@ -386,5 +390,23 @@ public class OotdService {
                 .collect(Collectors.toList());
 
         return new CommonSliceResponse<>(ootdGetSimilarResList, pageable, ootdImages.isLast());
+    }
+
+    /**
+     * 마이페이지에서 OOTD 조회시 해당 유저가 가진 OOTD 정보를 제공합니다.
+     * 본인 조회시, 비공개글 조회가 됩니다.
+     */
+    public CommonSliceResponse<OotdGetByUserRes> getOotdByUser(OotdGetByUserReq request) {
+
+        Long userId = request.getUserId();
+        Pageable pageable = request.toPageable();
+
+        Slice<Ootd> ootds = ootdRepository.findAllByUserId(userId, pageable);
+
+        List<OotdGetByUserRes> ootdGetByUserResList = ootds.stream()
+                .map(OotdGetByUserRes::new)
+                .collect(Collectors.toList());
+
+        return new CommonSliceResponse<>(ootdGetByUserResList, pageable, ootds.isLast());
     }
 }

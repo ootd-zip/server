@@ -28,7 +28,7 @@ import zip.ootd.ootdzip.clothes.domain.ClothesColor;
 import zip.ootd.ootdzip.clothes.repository.ClothesRepository;
 import zip.ootd.ootdzip.clothes.service.request.FindClothesByUserSvcReq;
 import zip.ootd.ootdzip.clothes.service.request.SaveClothesSvcReq;
-import zip.ootd.ootdzip.clothes.service.request.UpdateClothesIsOpenSvcReq;
+import zip.ootd.ootdzip.clothes.service.request.UpdateClothesIsPrivateSvcReq;
 import zip.ootd.ootdzip.clothes.service.request.UpdateClothesSvcReq;
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.user.domain.User;
@@ -89,7 +89,7 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
                 .brandId(savedBrand.getId())
                 .categoryId(savedCategory.getId())
                 .colorIds(List.of(savedColor.getId()))
-                .isOpen(true)
+                .isPrivate(false)
                 .sizeId(savedSize.getId())
                 .clothesImageUrl("image1.jpg")
                 .memo("메모입니다.")
@@ -102,9 +102,9 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
         //then
         Clothes saveResult = clothesRepository.findById(result.getId()).get();
 
-        assertThat(saveResult).extracting("id", "name", "user", "brand", "isOpen", "category", "size", "memo",
+        assertThat(saveResult).extracting("id", "name", "user", "brand", "isPrivate", "category", "size", "memo",
                         "purchaseStore", "purchaseDate", "imageUrl", "purchaseStoreType")
-                .contains(result.getId(), "제품명1", user, savedBrand, true, savedCategory, savedSize, "메모입니다.", "구매처1",
+                .contains(result.getId(), "제품명1", user, savedBrand, false, savedCategory, savedSize, "메모입니다.", "구매처1",
                         "구매시기1", "image1.jpg", Write);
 
         assertThat(saveResult.getClothesColors()).hasSize(1)
@@ -143,7 +143,7 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
                 .brandId(savedBrand.getId() + 1)
                 .categoryId(savedCategory.getId())
                 .colorIds(List.of(savedColor.getId()))
-                .isOpen(true)
+                .isPrivate(false)
                 .sizeId(savedSize.getId())
                 .clothesImageUrl("image1.jpg")
                 .memo("메모입니다.")
@@ -188,7 +188,7 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
                 .brandId(savedBrand.getId())
                 .categoryId(savedCategory.getId() + 1)
                 .colorIds(List.of(savedColor.getId()))
-                .isOpen(true)
+                .isPrivate(false)
                 .sizeId(savedSize.getId())
                 .clothesImageUrl("image1.jpg")
                 .memo("메모입니다.")
@@ -233,7 +233,7 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
                 .brandId(savedBrand.getId())
                 .categoryId(parentCategory.getId())
                 .colorIds(List.of(savedColor.getId()))
-                .isOpen(true)
+                .isPrivate(false)
                 .sizeId(savedSize.getId())
                 .clothesImageUrl("image1.jpg")
                 .memo("메모입니다.")
@@ -279,7 +279,7 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
                 .brandId(savedBrand.getId())
                 .categoryId(savedCategory.getId())
                 .colorIds(List.of(savedColor.getId() + 1))
-                .isOpen(true)
+                .isPrivate(false)
                 .sizeId(savedSize.getId())
                 .clothesImageUrl("image1.jpg")
                 .memo("메모입니다.")
@@ -321,7 +321,7 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
                 .brandId(savedBrand.getId())
                 .categoryId(savedCategory.getId())
                 .colorIds(new ArrayList<>())
-                .isOpen(true)
+                .isPrivate(false)
                 .sizeId(savedSize.getId())
                 .clothesImageUrl("image1.jpg")
                 .memo("메모입니다.")
@@ -367,7 +367,7 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
                 .brandId(savedBrand.getId())
                 .categoryId(savedCategory.getId())
                 .colorIds(List.of(savedColor.getId()))
-                .isOpen(true)
+                .isPrivate(false)
                 .sizeId(savedSize.getId() + 1)
                 .clothesImageUrl("image1.jpg")
                 .memo("메모입니다.")
@@ -413,7 +413,7 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
                 .brandId(savedBrand.getId())
                 .categoryId(savedCategory1.getId())
                 .colorIds(List.of(savedColor.getId()))
-                .isOpen(true)
+                .isPrivate(false)
                 .sizeId(savedSize.getId())
                 .clothesImageUrl("image1.jpg")
                 .memo("메모입니다.")
@@ -438,13 +438,15 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
         FindClothesRes result = clothesService.findClothesById(clothes.getId(), user1);
 
         //then
-        assertThat(result).extracting("id", "name", "userName", "isOpen", "memo", "purchaseStore", "purchaseDate",
+        assertThat(result).extracting("id", "name", "userName", "isPrivate", "memo", "purchaseStore", "purchaseDate",
                         "imageUrl", "purchaseStoreType")
                 .contains(clothes.getId(), "제품명1", "유저1", true, "메모입니다1", "구매처1", "구매일1", "image1.jpg", Write);
 
         assertThat(result.getBrand().getName()).isEqualTo("브랜드1");
 
-        assertThat(result.getCategory()).extracting("categoryName", "parentCategoryName").contains("카테고리1", "상위카테고리1");
+        assertThat(result.getCategory())
+                .extracting("categoryName", "parentCategoryName")
+                .contains("카테고리1", "상위카테고리1");
 
         assertThat(result.getSize()).extracting("name", "lineNo").contains("사이즈1", (byte)1);
 
@@ -459,8 +461,8 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
         Clothes clothes = createClothesBy(user1, false, "1");
 
         // when & then
-        assertThatThrownBy(() -> clothesService.findClothesById(clothes.getId() + 1, user1)).isInstanceOf(
-                        CustomException.class)
+        assertThatThrownBy(() -> clothesService.findClothesById(clothes.getId() + 1, user1))
+                .isInstanceOf(CustomException.class)
                 .extracting("errorCode.status", "errorCode.divisionCode", "errorCode.message")
                 .contains(404, "C004", "유효하지 않은 옷 ID");
     }
@@ -471,11 +473,11 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
         // given
         User user1 = createUserBy("유저1");
         User user2 = createUserBy("유저2");
-        Clothes clothes = createClothesBy(user1, false, "1");
+        Clothes clothes = createClothesBy(user1, true, "1");
 
         // when & then
-        assertThatThrownBy(() -> clothesService.findClothesById(clothes.getId(), user2)).isInstanceOf(
-                        CustomException.class)
+        assertThatThrownBy(() -> clothesService.findClothesById(clothes.getId(), user2))
+                .isInstanceOf(CustomException.class)
                 .extracting("errorCode.status", "errorCode.divisionCode", "errorCode.message")
                 .contains(401, "C001", "해당 데이터에 접근할 수 없는 사용자");
     }
@@ -495,7 +497,7 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
 
         //then
         assertThat(result).hasSize(2)
-                .extracting("id", "name", "userName", "isOpen", "memo", "purchaseStore", "purchaseDate", "imageUrl",
+                .extracting("id", "name", "userName", "isPrivate", "memo", "purchaseStore", "purchaseDate", "imageUrl",
                         "purchaseStoreType")
                 .containsExactlyInAnyOrder(
                         tuple(clothes1.getId(), "제품명1", "유저1", false, "메모입니다1", "구매처1", "구매일1", "image1.jpg", Write),
@@ -509,8 +511,8 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
         // given
         User user1 = createUserBy("유저1");
         User user2 = createUserBy("유저2");
-        Clothes clothes1 = createClothesBy(user1, false, "1");
-        Clothes clothes2 = createClothesBy(user1, true, "2");
+        Clothes clothes1 = createClothesBy(user1, true, "1");
+        Clothes clothes2 = createClothesBy(user1, false, "2");
 
         FindClothesByUserSvcReq request = FindClothesByUserSvcReq.builder().userId(user1.getId()).build();
 
@@ -519,10 +521,10 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
 
         //then
         assertThat(result).hasSize(1)
-                .extracting("id", "name", "userName", "isOpen", "memo", "purchaseStore", "purchaseDate", "imageUrl",
+                .extracting("id", "name", "userName", "isPrivate", "memo", "purchaseStore", "purchaseDate", "imageUrl",
                         "purchaseStoreType")
                 .containsExactlyInAnyOrder(
-                        tuple(clothes2.getId(), "제품명2", "유저1", true, "메모입니다2", "구매처2", "구매일2", "image2.jpg", Write));
+                        tuple(clothes2.getId(), "제품명2", "유저1", false, "메모입니다2", "구매처2", "구매일2", "image2.jpg", Write));
 
     }
 
@@ -601,7 +603,7 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
                 .brandId(updateTarget.getBrand().getId())
                 .categoryId(updateTarget.getCategory().getId())
                 .colorIds(List.of(updateTarget.getClothesColors().get(0).getColor().getId()))
-                .isOpen(true)
+                .isPrivate(false)
                 .sizeId(updateTarget.getSize().getId())
                 .clothesImageUrl("image1.jpg")
                 .memo("메모입니다.")
@@ -634,7 +636,7 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
                 .brandId(updateTarget.getBrand().getId())
                 .categoryId(updateTarget.getCategory().getId())
                 .colorIds(List.of(updateTarget.getClothesColors().get(0).getColor().getId()))
-                .isOpen(true)
+                .isPrivate(false)
                 .sizeId(updateTarget.getSize().getId())
                 .clothesImageUrl("image1.jpg")
                 .memo("메모입니다.")
@@ -662,7 +664,7 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
                 .brandId(updateTarget.getBrand().getId())
                 .categoryId(updateTarget.getCategory().getId())
                 .colorIds(List.of(updateTarget.getClothesColors().get(0).getColor().getId()))
-                .isOpen(true)
+                .isPrivate(false)
                 .sizeId(updateTarget.getSize().getId())
                 .clothesImageUrl("image1.jpg")
                 .memo("메모입니다.")
@@ -690,7 +692,7 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
                 .brandId(updateTarget.getBrand().getId() + 1)
                 .categoryId(updateTarget.getCategory().getId())
                 .colorIds(List.of(updateTarget.getClothesColors().get(0).getColor().getId()))
-                .isOpen(true)
+                .isPrivate(false)
                 .sizeId(updateTarget.getSize().getId())
                 .clothesImageUrl("image1.jpg")
                 .memo("메모입니다.")
@@ -718,7 +720,7 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
                 .brandId(updateTarget.getBrand().getId())
                 .categoryId(updateTarget.getCategory().getId() + 1)
                 .colorIds(List.of(updateTarget.getClothesColors().get(0).getColor().getId()))
-                .isOpen(true)
+                .isPrivate(false)
                 .sizeId(updateTarget.getSize().getId())
                 .clothesImageUrl("image1.jpg")
                 .memo("메모입니다.")
@@ -746,7 +748,7 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
                 .brandId(updateTarget.getBrand().getId())
                 .categoryId(updateTarget.getCategory().getId())
                 .colorIds(List.of(updateTarget.getClothesColors().get(0).getColor().getId()))
-                .isOpen(true)
+                .isPrivate(false)
                 .sizeId(updateTarget.getSize().getId() + 1)
                 .clothesImageUrl("image1.jpg")
                 .memo("메모입니다.")
@@ -774,7 +776,7 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
                 .brandId(updateTarget.getBrand().getId())
                 .categoryId(updateTarget.getCategory().getId())
                 .colorIds(List.of(updateTarget.getClothesColors().get(0).getColor().getId() + 1))
-                .isOpen(true)
+                .isPrivate(false)
                 .sizeId(updateTarget.getSize().getId())
                 .clothesImageUrl("image1.jpg")
                 .memo("메모입니다.")
@@ -805,7 +807,7 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
                 .brandId(updateTarget.getBrand().getId())
                 .categoryId(updateParentCategory.getId())
                 .colorIds(List.of(updateTarget.getClothesColors().get(0).getColor().getId()))
-                .isOpen(true)
+                .isPrivate(false)
                 .sizeId(updateTarget.getSize().getId())
                 .clothesImageUrl("image1.jpg")
                 .memo("메모입니다.")
@@ -837,7 +839,7 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
                 .brandId(updateTarget.getBrand().getId())
                 .categoryId(updateTarget.getCategory().getId())
                 .colorIds(List.of(updateTarget.getClothesColors().get(0).getColor().getId()))
-                .isOpen(true)
+                .isPrivate(false)
                 .sizeId(updateSize.getId())
                 .clothesImageUrl("image1.jpg")
                 .memo("메모입니다.")
@@ -857,23 +859,23 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
     void updateClothesIsOpen() {
         // given
         User user = createUserBy("작성자1");
-        Clothes updateTarget = createClothesBy(user, true, "1");
+        Clothes updateTarget = createClothesBy(user, false, "1");
 
-        UpdateClothesIsOpenSvcReq request = UpdateClothesIsOpenSvcReq.builder()
+        UpdateClothesIsPrivateSvcReq request = UpdateClothesIsPrivateSvcReq.builder()
                 .clothesId(updateTarget.getId())
-                .isOpen(false)
+                .isPrivate(true)
                 .build();
 
         // when
-        SaveClothesRes result = clothesService.updateClothesIsOpen(request, user);
+        SaveClothesRes result = clothesService.updateClothesIsPrivate(request, user);
 
         //then
         Clothes updatedClothes = clothesRepository.findById(result.getId()).get();
 
         assertThat(updatedClothes)
-                .extracting("id", "name", "user", "brand.name", "isOpen", "category.name", "size.name", "memo",
+                .extracting("id", "name", "user", "brand.name", "isPrivate", "category.name", "size.name", "memo",
                         "purchaseStore", "purchaseDate", "imageUrl", "purchaseStoreType")
-                .contains(result.getId(), "제품명1", user, "브랜드1", false, "카테고리1", "사이즈1", "메모입니다1", "구매처1",
+                .contains(result.getId(), "제품명1", user, "브랜드1", true, "카테고리1", "사이즈1", "메모입니다1", "구매처1",
                         "구매일1", "image1.jpg", Write);
 
         assertThat(updatedClothes.getClothesColors()).hasSize(1)
@@ -889,13 +891,13 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
         User user = createUserBy("작성자1");
         Clothes updateTarget = createClothesBy(user, true, "1");
 
-        UpdateClothesIsOpenSvcReq request = UpdateClothesIsOpenSvcReq.builder()
+        UpdateClothesIsPrivateSvcReq request = UpdateClothesIsPrivateSvcReq.builder()
                 .clothesId(updateTarget.getId() + 1)
-                .isOpen(false)
+                .isPrivate(false)
                 .build();
 
         // when & then
-        assertThatThrownBy(() -> clothesService.updateClothesIsOpen(request, user))
+        assertThatThrownBy(() -> clothesService.updateClothesIsPrivate(request, user))
                 .isInstanceOf(CustomException.class)
                 .extracting("errorCode.status", "errorCode.divisionCode", "errorCode.message")
                 .contains(404, "C004", "유효하지 않은 옷 ID");
@@ -909,20 +911,20 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
         Clothes updateTarget = createClothesBy(user, true, "1");
         User user2 = createUserBy("유저2");
 
-        UpdateClothesIsOpenSvcReq request = UpdateClothesIsOpenSvcReq.builder()
+        UpdateClothesIsPrivateSvcReq request = UpdateClothesIsPrivateSvcReq.builder()
                 .clothesId(updateTarget.getId())
-                .isOpen(false)
+                .isPrivate(false)
                 .build();
 
         // when & then
-        assertThatThrownBy(() -> clothesService.updateClothesIsOpen(request, user2))
+        assertThatThrownBy(() -> clothesService.updateClothesIsPrivate(request, user2))
                 .isInstanceOf(CustomException.class)
                 .extracting("errorCode.status", "errorCode.divisionCode", "errorCode.message")
                 .contains(401, "C001", "해당 데이터에 접근할 수 없는 사용자");
 
     }
 
-    private Clothes createClothesBy(User user, boolean isOpen, String idx) {
+    private Clothes createClothesBy(User user, boolean isPrivate, String idx) {
 
         Brand brand = Brand.builder().name("브랜드" + idx).build();
 
@@ -947,7 +949,7 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
         List<ClothesColor> clothesColors = ClothesColor.createClothesColorsBy(List.of(savedColor));
 
         Clothes clothes = Clothes.createClothes(user, savedBrand, "구매처" + idx, Write, "제품명" + idx,
-                isOpen, savedCategory, savedSize, "메모입니다" + idx, "구매일" + idx, "image" + idx + ".jpg", clothesColors);
+                isPrivate, savedCategory, savedSize, "메모입니다" + idx, "구매일" + idx, "image" + idx + ".jpg", clothesColors);
 
         return clothesRepository.save(clothes);
     }

@@ -7,7 +7,7 @@ import zip.ootd.ootdzip.clothes.data.FindClothesRes;
 import zip.ootd.ootdzip.clothes.data.SaveClothesRes;
 import zip.ootd.ootdzip.clothes.service.request.FindClothesByUserSvcReq;
 import zip.ootd.ootdzip.clothes.service.request.SaveClothesSvcReq;
-import zip.ootd.ootdzip.clothes.service.request.UpdateClothesIsOpenSvcReq;
+import zip.ootd.ootdzip.clothes.service.request.UpdateClothesIsPrivateSvcReq;
 import zip.ootd.ootdzip.clothes.service.request.UpdateClothesSvcReq;
 import zip.ootd.ootdzip.user.domain.User;
 
@@ -50,5 +50,5 @@ public interface ClothesService {
      */
     SaveClothesRes updateClothes(UpdateClothesSvcReq request, User loginUser);
 
-    SaveClothesRes updateClothesIsOpen(UpdateClothesIsOpenSvcReq request, User loginUser);
+    SaveClothesRes updateClothesIsPrivate(UpdateClothesIsPrivateSvcReq request, User loginUser);
 }

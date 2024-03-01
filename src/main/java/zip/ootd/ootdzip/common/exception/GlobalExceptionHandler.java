@@ -187,8 +187,10 @@ public class GlobalExceptionHandler {
     // ======================================Custom Exception===========================================================
 
     @ExceptionHandler(CustomException.class)
-    protected final ErrorResponse handleAllExceptions(CustomException ex) {
+    protected final ResponseEntity<ErrorResponse> handleAllExceptions(CustomException ex) {
         log.error("Custom Exception", ex);
-        return ErrorResponse.of(ex.getErrorCode(), ex.getMessage());
+
+        return new ResponseEntity<>(ErrorResponse.of(ex.getErrorCode(), ex.getMessage()),
+                HttpStatus.valueOf(ex.getErrorCode().getStatus()));
     }
 }

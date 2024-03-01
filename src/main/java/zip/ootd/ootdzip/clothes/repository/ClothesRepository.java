@@ -18,7 +18,7 @@ public interface ClothesRepository extends JpaRepository<Clothes, Long> {
 
     List<Clothes> findByUser(User user, Pageable pageable);
 
-    List<Clothes> findByUserAndIsOpenTrue(User user, Pageable pageable);
+    List<Clothes> findByUserAndIsPrivateFalse(User user, Pageable pageable);
 
     @Query("SELECT COUNT(c) "
             + "FROM Clothes c "

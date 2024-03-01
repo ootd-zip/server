@@ -8,8 +8,5 @@ import lombok.Data;
 public class OotdPatchReq {
 
     @NotNull
-    private Long id;
-
-    @NotNull
     private Boolean isPrivate;
 }

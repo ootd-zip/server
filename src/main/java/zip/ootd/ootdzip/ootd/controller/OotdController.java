@@ -19,6 +19,8 @@ import lombok.RequiredArgsConstructor;
 import zip.ootd.ootdzip.common.response.ApiResponse;
 import zip.ootd.ootdzip.common.response.CommonSliceResponse;
 import zip.ootd.ootdzip.ootd.data.OotdGetAllRes;
+import zip.ootd.ootdzip.ootd.data.OotdGetByUserReq;
+import zip.ootd.ootdzip.ootd.data.OotdGetByUserRes;
 import zip.ootd.ootdzip.ootd.data.OotdGetOtherReq;
 import zip.ootd.ootdzip.ootd.data.OotdGetOtherRes;
 import zip.ootd.ootdzip.ootd.data.OotdGetRes;
@@ -51,19 +53,21 @@ public class OotdController {
     }
 
     @Operation(summary = "ootd 공개/비공개 여부 수정", description = "ootd 공개여부만 수정하는 api")
-    @PatchMapping("")
-    public ApiResponse<Boolean> updateOotdContentsAndIsPrivate(@RequestBody @Valid OotdPatchReq request) {
+    @PatchMapping("/{id}")
+    public ApiResponse<Boolean> updateOotdContentsAndIsPrivate(@PathVariable Long id,
+            @RequestBody @Valid OotdPatchReq request) {
 
-        ootdService.updateContentsAndIsPrivate(request);
+        ootdService.updateContentsAndIsPrivate(id, request);
 
         return new ApiResponse<>(true);
     }
 
     @Operation(summary = "ootd 전체 수정", description = "ootd 게시글 전체 수정 api")
-    @PutMapping("")
-    public ApiResponse<Boolean> updateOotdAll(@RequestBody @Valid OotdPutReq request) {
+    @PutMapping("/{id}")
+    public ApiResponse<Boolean> updateOotdAll(@PathVariable Long id,
+            @RequestBody @Valid OotdPutReq request) {
 
-        ootdService.updateAll(request);
+        ootdService.updateAll(id, request);
 
         return new ApiResponse<>(true);
     }
@@ -147,6 +151,15 @@ public class OotdController {
     public ApiResponse<CommonSliceResponse<OotdGetSimilarRes>> getSimilarOotd(@Valid OotdGetSimilarReq request) {
 
         CommonSliceResponse<OotdGetSimilarRes> response = ootdService.getOotdSimilar(request);
+
+        return new ApiResponse<>(response);
+    }
+
+    @Operation(summary = "특정 유저 ootd 조회", description = "user id 를 주면 해당 id에 유저 ootd 들을 반환 api")
+    @GetMapping("")
+    public ApiResponse<CommonSliceResponse<OotdGetByUserRes>> getUserOotd(@Valid OotdGetByUserReq request) {
+
+        CommonSliceResponse<OotdGetByUserRes> response = ootdService.getOotdByUser(request);
 
         return new ApiResponse<>(response);
     }
