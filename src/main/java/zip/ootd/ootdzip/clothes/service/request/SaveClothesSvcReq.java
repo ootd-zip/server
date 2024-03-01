@@ -19,7 +19,7 @@ public class SaveClothesSvcReq {
 
     private final List<Long> colorIds;
 
-    private final Boolean isOpen;
+    private final Boolean isPrivate;
 
     private final Long sizeId;
 
@@ -33,14 +33,14 @@ public class SaveClothesSvcReq {
 
     @Builder
     private SaveClothesSvcReq(String purchaseStore, PurchaseStoreType purchaseStoreType, Long brandId, Long categoryId,
-            List<Long> colorIds, Boolean isOpen, Long sizeId, String clothesImageUrl, String memo, String name,
+            List<Long> colorIds, Boolean isPrivate, Long sizeId, String clothesImageUrl, String memo, String name,
             String purchaseDate) {
         this.purchaseStore = purchaseStore;
         this.purchaseStoreType = purchaseStoreType;
         this.brandId = brandId;
         this.categoryId = categoryId;
         this.colorIds = colorIds;
-        this.isOpen = isOpen;
+        this.isPrivate = isPrivate;
         this.sizeId = sizeId;
         this.clothesImageUrl = clothesImageUrl;
         this.memo = memo;

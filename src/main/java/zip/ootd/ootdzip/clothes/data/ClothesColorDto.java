@@ -1,23 +1,33 @@
 package zip.ootd.ootdzip.clothes.data;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import zip.ootd.ootdzip.clothes.domain.ClothesColor;
 
 @Data
-@Builder
+@NoArgsConstructor
 public class ClothesColorDto {
 
     private Long id;
 
+    private String colorCode;
+
     private String name;
+
+    @Builder
+    private ClothesColorDto(Long id, String colorCode, String name) {
+        this.id = id;
+        this.colorCode = colorCode;
+        this.name = name;
+    }
 
     public static ClothesColorDto createClothesColorDtoBy(ClothesColor clothesColor) {
         return ClothesColorDto.builder()
-                .id(clothesColor.getId())
+                .id(clothesColor.getColor().getId())
+                .colorCode(clothesColor.getColor().getColorCode())
                 .name(clothesColor.getColor().getName())
                 .build();
     }
@@ -25,6 +35,6 @@ public class ClothesColorDto {
     public static List<ClothesColorDto> createClothesColorDtosBy(List<ClothesColor> clothesColors) {
         return clothesColors.stream()
                 .map(ClothesColorDto::createClothesColorDtoBy)
-                .collect(Collectors.toList());
+                .toList();
     }
 }

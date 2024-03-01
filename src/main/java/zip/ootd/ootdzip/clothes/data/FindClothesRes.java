@@ -23,7 +23,7 @@ public class FindClothesRes {
 
     private BrandDto brand;
 
-    private Boolean isOpen;
+    private Boolean isPrivate;
 
     private DetailCategory category;
 
@@ -46,7 +46,7 @@ public class FindClothesRes {
     private LocalDateTime updatedAt;
 
     @Builder
-    private FindClothesRes(Long id, String name, String userName, BrandDto brand, Boolean isOpen,
+    private FindClothesRes(Long id, String name, String userName, BrandDto brand, Boolean isPrivate,
             DetailCategory category, SizeRes size, String memo, String purchaseStore,
             PurchaseStoreType purchaseStoreType, String purchaseDate, List<ClothesColorDto> colors, String imageUrl,
             LocalDateTime createdAt, LocalDateTime updatedAt) {
@@ -54,7 +54,7 @@ public class FindClothesRes {
         this.name = name;
         this.userName = userName;
         this.brand = brand;
-        this.isOpen = isOpen;
+        this.isPrivate = isPrivate;
         this.category = category;
         this.size = size;
         this.memo = memo;
@@ -73,12 +73,8 @@ public class FindClothesRes {
                 .name(clothes.getName())
                 .userName(clothes.getUser().getName())
                 .brand(BrandDto.of(clothes.getBrand()))
-                .isOpen(clothes.getIsOpen())
-                .category(DetailCategory.builder()
-                        .id(clothes.getCategory().getId())
-                        .categoryName(clothes.getCategory().getName())
-                        .parentCategoryName(clothes.getCategory().getParentCategory().getName())
-                        .build())
+                .isPrivate(clothes.getIsPrivate())
+                .category(DetailCategory.of(clothes.getCategory()))
                 .size(SizeRes.of(clothes.getSize()))
                 .memo(clothes.getMemo())
                 .purchaseStore(clothes.getPurchaseStore())

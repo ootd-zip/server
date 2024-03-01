@@ -21,7 +21,7 @@ public class UpdateClothesSvcReq {
 
     private final List<Long> colorIds;
 
-    private final Boolean isOpen;
+    private final Boolean isPrivate;
 
     private final Long sizeId;
 
@@ -35,7 +35,7 @@ public class UpdateClothesSvcReq {
 
     @Builder
     private UpdateClothesSvcReq(Long clothesId, String purchaseStore, PurchaseStoreType purchaseStoreType, Long brandId,
-            Long categoryId, List<Long> colorIds, Boolean isOpen, Long sizeId, String clothesImageUrl, String memo,
+            Long categoryId, List<Long> colorIds, Boolean isPrivate, Long sizeId, String clothesImageUrl, String memo,
             String name, String purchaseDate) {
         this.clothesId = clothesId;
         this.purchaseStore = purchaseStore;
@@ -43,7 +43,7 @@ public class UpdateClothesSvcReq {
         this.brandId = brandId;
         this.categoryId = categoryId;
         this.colorIds = colorIds;
-        this.isOpen = isOpen;
+        this.isPrivate = isPrivate;
         this.sizeId = sizeId;
         this.clothesImageUrl = clothesImageUrl;
         this.memo = memo;

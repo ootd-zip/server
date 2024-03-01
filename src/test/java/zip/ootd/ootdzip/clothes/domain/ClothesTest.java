@@ -47,7 +47,7 @@ class ClothesTest {
                 size, "메모입니다", "구매일", "image1.jpg", clothesColors);
 
         //then
-        assertThat(clothes).extracting("user.name", "brand.name", "purchaseStore", "name", "isOpen", "category.name",
+        assertThat(clothes).extracting("user.name", "brand.name", "purchaseStore", "name", "isPrivate", "category.name",
                         "size.name", "memo", "purchaseDate", "imageUrl")
                 .contains("유저1", "브랜드1", "구매처", "제품명", true, "카테고리2", "XL", "메모입니다", "구매일", "image1.jpg");
 

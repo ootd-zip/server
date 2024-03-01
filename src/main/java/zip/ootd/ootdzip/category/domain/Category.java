@@ -68,4 +68,20 @@ public class Category {
                 .build();
     }
 
+    public Long getParentCategoryId() {
+        if (parentCategory == null) {
+            return 0L;
+        }
+
+        return parentCategory.getId();
+    }
+
+    public String getParentCategoryName() {
+        if (parentCategory == null) {
+            return "";
+        }
+
+        return parentCategory.getName();
+    }
+
 }

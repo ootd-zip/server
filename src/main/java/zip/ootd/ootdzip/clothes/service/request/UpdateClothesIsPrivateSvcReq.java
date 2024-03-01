@@ -4,15 +4,15 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class UpdateClothesIsOpenSvcReq {
+public class UpdateClothesIsPrivateSvcReq {
 
     private final Long clothesId;
 
-    private final Boolean isOpen;
+    private final Boolean isPrivate;
 
     @Builder
-    private UpdateClothesIsOpenSvcReq(Long clothesId, Boolean isOpen) {
+    private UpdateClothesIsPrivateSvcReq(Long clothesId, Boolean isPrivate) {
         this.clothesId = clothesId;
-        this.isOpen = isOpen;
+        this.isPrivate = isPrivate;
     }
 }
