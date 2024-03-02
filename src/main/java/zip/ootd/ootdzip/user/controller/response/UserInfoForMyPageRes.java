@@ -14,8 +14,8 @@ public class UserInfoForMyPageRes {
     private String profileImage;
     private Long followerCount;
     private Long followingCount;
-    private String height;
-    private String weight;
+    private Integer height;
+    private Integer weight;
     private String description;
     private Boolean isMyProfile;
     private Boolean isFollow;
@@ -23,8 +23,8 @@ public class UserInfoForMyPageRes {
     private Long clothesCount;
 
     @Builder
-    private UserInfoForMyPageRes(Long userId, String userName, Long followerCount, Long followingCount, String height,
-            String weight, String description, Boolean isMyProfile, Boolean isFollow, Long ootdCount,
+    private UserInfoForMyPageRes(Long userId, String userName, Long followerCount, Long followingCount, Integer height,
+            Integer weight, String description, Boolean isMyProfile, Boolean isFollow, Long ootdCount,
             Long clothesCount) {
         this.userId = userId;
         this.userName = userName;

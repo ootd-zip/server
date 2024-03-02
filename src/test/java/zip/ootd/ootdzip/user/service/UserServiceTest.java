@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import zip.ootd.ootdzip.IntegrationTestSupport;
 import zip.ootd.ootdzip.common.exception.CustomException;
+import zip.ootd.ootdzip.user.controller.response.ProfileRes;
 import zip.ootd.ootdzip.user.controller.response.UserInfoForMyPageRes;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.repository.UserRepository;
@@ -162,6 +163,31 @@ class UserServiceTest extends IntegrationTestSupport {
                 .isInstanceOf(CustomException.class)
                 .extracting("errorCode.status", "errorCode.divisionCode", "errorCode.message")
                 .contains(404, "U002", "유효하지 않은 유저 ID");
+    }
+
+    @DisplayName("유저 프로필 정보를 조회한다.")
+    @Test
+    void getProfile() {
+        // given
+        User user = createUserBy("유저1");
+
+        // when
+        ProfileRes result = userService.getProfile(user);
+
+        //then
+        assertThat(result)
+                .extracting("name",
+                        "profileImage",
+                        "description",
+                        "height",
+                        "weight",
+                        "isBodyPrivate")
+                .contains(user.getName(),
+                        user.getProfileImage(),
+                        user.getDescription(),
+                        user.getHeight(),
+                        user.getWeight(),
+                        user.getIsBodyPrivate());
     }
 
     private User createUserBy(String userName) {

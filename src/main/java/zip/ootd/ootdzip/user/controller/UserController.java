@@ -23,10 +23,10 @@ import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.exception.code.ErrorCode;
 import zip.ootd.ootdzip.common.response.ApiResponse;
 import zip.ootd.ootdzip.oauth.data.TokenInfo;
+import zip.ootd.ootdzip.user.controller.response.ProfileRes;
 import zip.ootd.ootdzip.user.controller.response.UserInfoForMyPageRes;
 import zip.ootd.ootdzip.user.data.CheckNameReq;
 import zip.ootd.ootdzip.user.data.FollowReq;
-import zip.ootd.ootdzip.user.data.ProfileRes;
 import zip.ootd.ootdzip.user.data.TokenUserInfoRes;
 import zip.ootd.ootdzip.user.data.UserLoginReq;
 import zip.ootd.ootdzip.user.data.UserRegisterReq;
@@ -129,9 +129,10 @@ public class UserController {
         return Optional.empty();
     }
 
+    @Operation(summary = "로그인 유저 프로필 정보 조회")
     @GetMapping("/profile")
-    public ProfileRes getProfile() {
-        return new ProfileRes(userService.getAuthenticatiedUser());
+    public ApiResponse<ProfileRes> getProfile() {
+        return new ApiResponse<>(userService.getProfile(userService.getAuthenticatiedUser()));
     }
 
     @GetMapping("/nickname")

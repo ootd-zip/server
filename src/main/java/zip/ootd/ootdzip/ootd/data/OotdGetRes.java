@@ -39,9 +39,9 @@ public class OotdGetRes {
 
     private String userImage;
 
-    private String userHeight;
+    private Integer userHeight;
 
-    private String userWeight;
+    private Integer userWeight;
 
     private Long userId;
 
