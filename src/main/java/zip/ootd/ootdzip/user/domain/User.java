@@ -1,6 +1,5 @@
 package zip.ootd.ootdzip.user.domain;
 
-import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -10,6 +9,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
@@ -41,11 +41,10 @@ public class User extends BaseEntity {
     private String name;
     @Enumerated(EnumType.ORDINAL)
     private UserGender gender = UserGender.UNKNOWN;
-    private LocalDate birthdate;
+    private Integer age;
     private Integer height;
-    private Boolean showHeight;
     private Integer weight;
-    private Boolean showWeight;
+    private Boolean isBodyPrivate = false;
     @Column(length = 2048)
     private String profileImage;
     private String description;
@@ -57,42 +56,43 @@ public class User extends BaseEntity {
     private List<Clothes> clothesList;
     @OneToMany(mappedBy = "writer")
     private List<Ootd> ootds;
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<UserStyle> userStyles;
 
     @Builder
-    private User(String name, UserGender gender, LocalDate birthdate, Integer height, Boolean showHeight,
-            Integer weight,
-            Boolean showWeight, String profileImage, String description, Boolean isCompleted, Boolean isDeleted,
-            List<Clothes> clothesList, List<Ootd> ootds) {
+    private User(String name, UserGender gender, Integer age, Integer height, Integer weight, Boolean isBodyPrivate,
+            String profileImage, String description, Boolean isCompleted, Boolean isDeleted, List<Clothes> clothesList,
+            List<Ootd> ootds, List<UserStyle> userStyles) {
         this.name = name;
         this.gender = gender;
-        this.birthdate = birthdate;
+        this.age = age;
         this.height = height;
-        this.showHeight = showHeight;
         this.weight = weight;
-        this.showWeight = showWeight;
+        this.isBodyPrivate = isBodyPrivate;
         this.profileImage = profileImage;
         this.description = description;
         this.isCompleted = isCompleted;
         this.isDeleted = isDeleted;
         this.clothesList = clothesList;
         this.ootds = ootds;
+        this.userStyles = userStyles;
     }
 
     public static User getDefault() {
         return User.builder()
                 .name(null)
                 .gender(null)
-                .birthdate(null)
+                .age(null)
                 .height(0)
-                .showHeight(true)
+                .isBodyPrivate(false)
                 .weight(0)
-                .showWeight(true)
                 .profileImage(null)
                 .description(null)
                 .isCompleted(false)
                 .isDeleted(false)
                 .clothesList(null)
                 .ootds(null)
+                .userStyles(null)
                 .build();
     }
 
@@ -110,20 +110,20 @@ public class User extends BaseEntity {
         return this.followings.contains(user);
     }
 
-    public String getProfileHeight(User loginUser) {
-        if (!showHeight && !loginUser.equals(this)) {
-            return "비공개";
+    public Integer getProfileHeight(User loginUser) {
+        if (isBodyPrivate && !loginUser.equals(this)) {
+            return 0;
         }
 
-        return height + "cm";
+        return height;
     }
 
-    public String getProfileWeight(User loginUser) {
-        if (!showWeight && !loginUser.equals(this)) {
-            return "비공개";
+    public Integer getProfileWeight(User loginUser) {
+        if (isBodyPrivate && !loginUser.equals(this)) {
+            return 0;
         }
 
-        return weight + "kg";
+        return weight;
     }
 
     public Long getFollowerCount() {
@@ -163,5 +163,4 @@ public class User extends BaseEntity {
                 .filter(x -> x.getUser().getId().equals(loginUser.getId()) || !x.getIsPrivate())
                 .count();
     }
-
 }
