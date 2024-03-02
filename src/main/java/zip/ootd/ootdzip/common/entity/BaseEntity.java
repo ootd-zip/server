@@ -31,16 +31,16 @@ public class BaseEntity {
     protected LocalDateTime updatedAt;
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
 
-        if (!(o instanceof BaseEntity)) {
+        if (!(obj instanceof BaseEntity)) {
             return false;
         }
 
-        BaseEntity that = (BaseEntity)o;
+        BaseEntity that = (BaseEntity)obj;
 
         return getId().equals(that.getId());
     }
