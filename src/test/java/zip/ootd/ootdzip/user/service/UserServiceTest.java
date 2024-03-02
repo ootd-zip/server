@@ -2,17 +2,23 @@ package zip.ootd.ootdzip.user.service;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.util.List;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import zip.ootd.ootdzip.IntegrationTestSupport;
+import zip.ootd.ootdzip.category.domain.Style;
+import zip.ootd.ootdzip.category.repository.StyleRepository;
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.user.controller.response.ProfileRes;
 import zip.ootd.ootdzip.user.controller.response.UserInfoForMyPageRes;
 import zip.ootd.ootdzip.user.domain.User;
+import zip.ootd.ootdzip.user.domain.UserGender;
 import zip.ootd.ootdzip.user.repository.UserRepository;
 import zip.ootd.ootdzip.user.service.request.UserInfoForMyPageSvcReq;
+import zip.ootd.ootdzip.user.service.request.UserRegisterSvcReq;
 
 class UserServiceTest extends IntegrationTestSupport {
 
@@ -21,6 +27,9 @@ class UserServiceTest extends IntegrationTestSupport {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private StyleRepository styleRepository;
 
     @DisplayName("userId로 마이페이지에서 사용하는 유저 정보를 조회한다.")
     @Test
@@ -190,10 +199,132 @@ class UserServiceTest extends IntegrationTestSupport {
                         user.getIsBodyPrivate());
     }
 
+    @DisplayName("유저 정보를 등록한다.")
+    @Test
+    void register() {
+        // given
+        User user = createDefaultUser();
+        Style style1 = createStyleBy("스타일1");
+        Style style2 = createStyleBy("스타일2");
+        Style style3 = createStyleBy("스타일3");
+
+        UserRegisterSvcReq request = UserRegisterSvcReq.builder()
+                .name("유저1")
+                .age(20)
+                .gender(UserGender.MALE)
+                .weight(70)
+                .height(170)
+                .isBodyPrivate(true)
+                .styles(List.of(style1.getId(),
+                        style2.getId(),
+                        style3.getId()))
+                .build();
+
+        // when
+        userService.register(request, user);
+
+        //then
+        User registeredUser = userRepository.findById(user.getId()).get();
+
+        assertThat(registeredUser)
+                .extracting("name",
+                        "age",
+                        "gender",
+                        "weight",
+                        "height",
+                        "isBodyPrivate",
+                        "isCompleted")
+                .contains(user.getName(),
+                        user.getAge(),
+                        user.getGender(),
+                        user.getWeight(),
+                        user.getHeight(),
+                        user.getIsBodyPrivate(),
+                        user.getIsCompleted());
+
+        assertThat(registeredUser.getUserStyles())
+                .hasSize(3)
+                .extracting("style.id", "style.name")
+                .containsExactlyInAnyOrder(
+                        tuple(style1.getId(), style1.getName()),
+                        tuple(style2.getId(), style2.getName()),
+                        tuple(style3.getId(), style3.getName()));
+
+    }
+
+    @DisplayName("이미 등록한 유저가 정보를 등록하면 에러가 발생한다.")
+    @Test
+    void registerWithCompletedUser() {
+        // given
+        User user = createDefaultUser();
+        user.setIsCompleted(true);
+        Style style1 = createStyleBy("스타일1");
+        Style style2 = createStyleBy("스타일2");
+        Style style3 = createStyleBy("스타일3");
+
+        UserRegisterSvcReq request = UserRegisterSvcReq.builder()
+                .name("유저1")
+                .age(20)
+                .gender(UserGender.MALE)
+                .weight(70)
+                .height(170)
+                .isBodyPrivate(true)
+                .styles(List.of(style1.getId(),
+                        style2.getId(),
+                        style3.getId()))
+                .build();
+
+        // when & then
+        assertThatThrownBy(() -> userService.register(request, user))
+                .isInstanceOf(CustomException.class)
+                .extracting("errorCode.status", "errorCode.divisionCode", "errorCode.message")
+                .contains(409, "U003", "회원가입이 완료된 유저입니다.");
+
+    }
+
+    @DisplayName("유효하지 않은 스타일 ID로 등록하면 에러가 발생한다.")
+    @Test
+    void registerWithInvalidStyle() {
+        // given
+        User user = createDefaultUser();
+        Style style1 = createStyleBy("스타일1");
+        Style style2 = createStyleBy("스타일2");
+        Style style3 = createStyleBy("스타일3");
+
+        UserRegisterSvcReq request = UserRegisterSvcReq.builder()
+                .name("유저1")
+                .age(20)
+                .gender(UserGender.MALE)
+                .weight(70)
+                .height(170)
+                .isBodyPrivate(true)
+                .styles(List.of(style1.getId(),
+                        style2.getId(),
+                        style3.getId() + 100L))
+                .build();
+
+        // when & then
+        assertThatThrownBy(() -> userService.register(request, user))
+                .isInstanceOf(CustomException.class)
+                .extracting("errorCode.status", "errorCode.divisionCode", "errorCode.message")
+                .contains(404, "S002", "유효하지 않은 사이즈 ID");
+
+    }
+
+    private User createDefaultUser() {
+        return userRepository.save(User.getDefault());
+    }
+
     private User createUserBy(String userName) {
         User user = User.getDefault();
         user.setName(userName);
         return userRepository.save(user);
     }
 
+    private Style createStyleBy(String styleName) {
+        Style style = Style.builder()
+                .name(styleName)
+                .build();
+        return styleRepository.save(style);
+    }
 }

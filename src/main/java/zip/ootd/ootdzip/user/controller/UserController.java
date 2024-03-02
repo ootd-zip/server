@@ -17,19 +17,20 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.exception.code.ErrorCode;
 import zip.ootd.ootdzip.common.response.ApiResponse;
 import zip.ootd.ootdzip.oauth.data.TokenInfo;
+import zip.ootd.ootdzip.user.controller.request.UserRegisterReq;
 import zip.ootd.ootdzip.user.controller.response.ProfileRes;
 import zip.ootd.ootdzip.user.controller.response.UserInfoForMyPageRes;
 import zip.ootd.ootdzip.user.data.CheckNameReq;
 import zip.ootd.ootdzip.user.data.FollowReq;
 import zip.ootd.ootdzip.user.data.TokenUserInfoRes;
 import zip.ootd.ootdzip.user.data.UserLoginReq;
-import zip.ootd.ootdzip.user.data.UserRegisterReq;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.service.UserService;
 import zip.ootd.ootdzip.user.service.request.UserInfoForMyPageSvcReq;
@@ -56,8 +57,9 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public void register(@RequestBody UserRegisterReq request) {
-        userService.register(request);
+    public ApiResponse<String> register(@RequestBody @Valid UserRegisterReq request) {
+        userService.register(request.toServiceRequest(), userService.getAuthenticatiedUser());
+        return new ApiResponse<>("회원가입 성공");
     }
 
     @PostMapping("/refresh")

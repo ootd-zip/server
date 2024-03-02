@@ -1,5 +1,6 @@
 package zip.ootd.ootdzip.user.domain;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -15,6 +16,8 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,6 +31,8 @@ import zip.ootd.ootdzip.ootd.domain.Ootd;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
 public class User extends BaseEntity {
 
     @ManyToMany(cascade = CascadeType.ALL, mappedBy = "followings")
@@ -59,25 +64,6 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<UserStyle> userStyles;
 
-    @Builder
-    private User(String name, UserGender gender, Integer age, Integer height, Integer weight, Boolean isBodyPrivate,
-            String profileImage, String description, Boolean isCompleted, Boolean isDeleted, List<Clothes> clothesList,
-            List<Ootd> ootds, List<UserStyle> userStyles) {
-        this.name = name;
-        this.gender = gender;
-        this.age = age;
-        this.height = height;
-        this.weight = weight;
-        this.isBodyPrivate = isBodyPrivate;
-        this.profileImage = profileImage;
-        this.description = description;
-        this.isCompleted = isCompleted;
-        this.isDeleted = isDeleted;
-        this.clothesList = clothesList;
-        this.ootds = ootds;
-        this.userStyles = userStyles;
-    }
-
     public static User getDefault() {
         return User.builder()
                 .name(null)
@@ -90,9 +76,9 @@ public class User extends BaseEntity {
                 .description(null)
                 .isCompleted(false)
                 .isDeleted(false)
-                .clothesList(null)
-                .ootds(null)
-                .userStyles(null)
+                .clothesList(new ArrayList<>())
+                .ootds(new ArrayList<>())
+                .userStyles(new ArrayList<>())
                 .build();
     }
 
@@ -163,4 +149,28 @@ public class User extends BaseEntity {
                 .filter(x -> x.getUser().getId().equals(loginUser.getId()) || !x.getIsPrivate())
                 .count();
     }
+
+    public void registerBy(String name,
+            UserGender gender,
+            Integer age,
+            Integer height,
+            Integer weight,
+            Boolean isBodyPrivate,
+            List<UserStyle> userStyles) {
+        this.name = name;
+        this.gender = gender;
+        this.age = age;
+        this.height = height;
+        this.weight = weight;
+        this.isBodyPrivate = isBodyPrivate;
+
+        userStyles.forEach(this::addUserStyle);
+
+        this.isCompleted = true;
+    }
+
+    private void addUserStyle(UserStyle userStyle) {
+        this.userStyles.add(userStyle);
+    }
+
 }
