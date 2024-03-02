@@ -123,7 +123,8 @@ public enum ErrorCode {
 
     NO_TAGGING_USER(404, "CM003", "대댓글에는 반드시 태깅이 있어야 합니다."),
 
-    ALREADY_USER_REGISTER(409, "U003", "회원가입이 완료된 유저입니다.");
+    ALREADY_USER_REGISTER(409, "U003", "회원가입이 완료된 유저입니다."),
+    INVALID_IMAGE_URL(400, "I001", "이미지 URL이 유효하지 않습니다.");
 
     private final Integer status;
 

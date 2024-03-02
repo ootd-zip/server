@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,6 +25,7 @@ import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.exception.code.ErrorCode;
 import zip.ootd.ootdzip.common.response.ApiResponse;
 import zip.ootd.ootdzip.oauth.data.TokenInfo;
+import zip.ootd.ootdzip.user.controller.request.ProfileReq;
 import zip.ootd.ootdzip.user.controller.request.UserRegisterReq;
 import zip.ootd.ootdzip.user.controller.response.ProfileRes;
 import zip.ootd.ootdzip.user.controller.response.UserInfoForMyPageRes;
@@ -135,6 +137,13 @@ public class UserController {
     @GetMapping("/profile")
     public ApiResponse<ProfileRes> getProfile() {
         return new ApiResponse<>(userService.getProfile(userService.getAuthenticatiedUser()));
+    }
+
+    @Operation(summary = "로그인 유저 프로필 정보 업데이트")
+    @PatchMapping("/profile")
+    public ApiResponse<String> updateProfile(@RequestBody @Valid ProfileReq request) {
+        userService.updateProfile(request.toServiceRequest(), userService.getAuthenticatiedUser());
+        return new ApiResponse<>("프로필 정보 업데이트 성공");
     }
 
     @GetMapping("/nickname")

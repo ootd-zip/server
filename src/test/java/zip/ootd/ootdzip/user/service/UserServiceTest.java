@@ -17,6 +17,7 @@ import zip.ootd.ootdzip.user.controller.response.UserInfoForMyPageRes;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.domain.UserGender;
 import zip.ootd.ootdzip.user.repository.UserRepository;
+import zip.ootd.ootdzip.user.service.request.ProfileSvcReq;
 import zip.ootd.ootdzip.user.service.request.UserInfoForMyPageSvcReq;
 import zip.ootd.ootdzip.user.service.request.UserRegisterSvcReq;
 
@@ -308,6 +309,64 @@ class UserServiceTest extends IntegrationTestSupport {
                 .isInstanceOf(CustomException.class)
                 .extracting("errorCode.status", "errorCode.divisionCode", "errorCode.message")
                 .contains(404, "S002", "유효하지 않은 사이즈 ID");
+
+    }
+
+    @DisplayName("유저 프로필 정보를 업데이트한다.")
+    @Test
+    void updateProfile() {
+        // given
+        User user = createDefaultUser();
+        ProfileSvcReq request = ProfileSvcReq.builder()
+                .name("유저1")
+                .profileImage("image.jpg")
+                .description("소개")
+                .height(180)
+                .weight(80)
+                .isBodyPrivate(false)
+                .build();
+
+        // when
+        userService.updateProfile(request, user);
+
+        //then
+        User updatedUser = userRepository.findById(user.getId()).get();
+
+        assertThat(updatedUser)
+                .extracting("name",
+                        "profileImage",
+                        "description",
+                        "height",
+                        "weight",
+                        "isBodyPrivate")
+                .contains("유저1",
+                        "image.jpg",
+                        "소개",
+                        180,
+                        80,
+                        false);
+
+    }
+
+    @DisplayName("프로필 정보를 업데이트할 때 유효하지 않은 이미지로 저장하면 에러가 발생한다.")
+    @Test
+    void updateProfileWithInvalidImage() {
+        // given
+        User user = createDefaultUser();
+        ProfileSvcReq request = ProfileSvcReq.builder()
+                .name("유저1")
+                .profileImage("image.fff")
+                .description("소개")
+                .height(180)
+                .weight(80)
+                .isBodyPrivate(false)
+                .build();
+
+        // when & then
+        assertThatThrownBy(() -> userService.updateProfile(request, user))
+                .isInstanceOf(CustomException.class)
+                .extracting("errorCode.status", "errorCode.divisionCode", "errorCode.message")
+                .contains(400, "I001", "이미지 URL이 유효하지 않습니다.");
 
     }
 

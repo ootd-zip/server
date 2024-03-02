@@ -29,9 +29,11 @@ import zip.ootd.ootdzip.clothes.service.request.SaveClothesSvcReq;
 import zip.ootd.ootdzip.clothes.service.request.UpdateClothesIsPrivateSvcReq;
 import zip.ootd.ootdzip.clothes.service.request.UpdateClothesSvcReq;
 import zip.ootd.ootdzip.common.exception.CustomException;
+import zip.ootd.ootdzip.common.exception.code.ErrorCode;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.repository.UserRepository;
 import zip.ootd.ootdzip.user.service.UserService;
+import zip.ootd.ootdzip.utils.ImageFileUtil;
 
 @Service
 @RequiredArgsConstructor
@@ -73,6 +75,10 @@ public class ClothesServiceImpl implements ClothesService {
 
         if (!size.getSizeType().equals(category.getSizeType())) {
             throw new CustomException(INVALID_CATEGORY_AND_SIZE);
+        }
+
+        if (!ImageFileUtil.isValidImageUrl(request.getClothesImageUrl())) {
+            throw new CustomException(ErrorCode.INVALID_IMAGE_URL);
         }
 
         List<ClothesColor> clothesColors = ClothesColor.createClothesColorsBy(colors);
@@ -182,6 +188,10 @@ public class ClothesServiceImpl implements ClothesService {
 
         if (!size.getSizeType().equals(category.getSizeType())) {
             throw new CustomException(INVALID_CATEGORY_AND_SIZE);
+        }
+
+        if (!ImageFileUtil.isValidImageUrl(request.getClothesImageUrl())) {
+            throw new CustomException(INVALID_IMAGE_URL);
         }
 
         List<ClothesColor> clothesColors = ClothesColor.createClothesColorsBy(colors);

@@ -32,8 +32,10 @@ import zip.ootd.ootdzip.user.data.UserLoginReq;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.domain.UserStyle;
 import zip.ootd.ootdzip.user.repository.UserRepository;
+import zip.ootd.ootdzip.user.service.request.ProfileSvcReq;
 import zip.ootd.ootdzip.user.service.request.UserInfoForMyPageSvcReq;
 import zip.ootd.ootdzip.user.service.request.UserRegisterSvcReq;
+import zip.ootd.ootdzip.utils.ImageFileUtil;
 
 @Service
 @Transactional(readOnly = true)
@@ -192,5 +194,23 @@ public class UserService {
 
     public ProfileRes getProfile(User loginUser) {
         return ProfileRes.of(loginUser);
+    }
+
+    public void updateProfile(ProfileSvcReq request, User loginUser) {
+
+        if (!request.getProfileImage().isBlank()
+                && !ImageFileUtil.isValidImageUrl(request.getProfileImage())) {
+            throw new CustomException(ErrorCode.INVALID_IMAGE_URL);
+        }
+
+        loginUser.updateProfile(request.getName(),
+                request.getProfileImage(),
+                request.getDescription(),
+                request.getHeight(),
+                request.getWeight(),
+                request.getIsBodyPrivate());
+
+        userRepository.save(loginUser);
+
     }
 }

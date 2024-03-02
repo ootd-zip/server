@@ -173,4 +173,19 @@ public class User extends BaseEntity {
         this.userStyles.add(userStyle);
     }
 
+    public void updateProfile(String name,
+            String profileImage,
+            String description,
+            Integer height,
+            Integer weight,
+            Boolean isBodyPrivate) {
+        this.name = name;
+        this.profileImage = profileImage;
+        this.description = description;
+        this.height = height;
+        this.weight = weight;
+        this.isBodyPrivate = isBodyPrivate;
+
+    }
+
 }

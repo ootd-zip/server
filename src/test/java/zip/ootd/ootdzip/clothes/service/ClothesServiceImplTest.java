@@ -427,6 +427,52 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
                 .contains(400, "C002", "카테고리에 속한 사이즈가 아님");
     }
 
+    @DisplayName("유효하지 않은 이미지로 옷을 저장하면 에러가 발생한다.")
+    @Test
+    void saveClothesWithInvalidImage() {
+        // given
+        User user = createUserBy("유저1");
+
+        Brand brand = Brand.builder().name("브랜드1").build();
+
+        Brand savedBrand = brandRepository.save(brand);
+
+        Category parentCategory = Category.createLargeCategoryBy("상위카테고리1", SizeType.TOP);
+
+        Category savedParentCategory = categoryRepository.save(parentCategory);
+
+        Category category = Category.createDetailCategoryBy("카테고리1", savedParentCategory, SizeType.TOP);
+
+        Category savedCategory = categoryRepository.save(category);
+
+        Size size = Size.builder().sizeType(SizeType.TOP).name("사이즈1").lineNo((byte)1).build();
+
+        Size savedSize = sizeRepository.save(size);
+
+        Color color = Color.builder().name("색1").colorCode("#fffff").build();
+
+        Color savedColor = colorRepository.save(color);
+
+        SaveClothesSvcReq request = SaveClothesSvcReq.builder()
+                .purchaseStore("구매처1")
+                .brandId(savedBrand.getId())
+                .categoryId(savedCategory.getId())
+                .colorIds(List.of(savedColor.getId()))
+                .isPrivate(false)
+                .sizeId(savedSize.getId())
+                .clothesImageUrl("image1.jjj")
+                .memo("메모입니다.")
+                .name("제품명1")
+                .purchaseDate("구매시기1")
+                .build();
+
+        // when & then
+        assertThatThrownBy(() -> clothesService.saveClothes(request, user)).isInstanceOf(CustomException.class)
+                .extracting("errorCode.status", "errorCode.divisionCode", "errorCode.message")
+                .contains(400, "I001", "이미지 URL이 유효하지 않습니다.");
+
+    }
+
     @DisplayName("옷 ID로 옷을 조회한다")
     @Test
     void findClothesById() {
@@ -851,6 +897,34 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
         assertThatThrownBy(() -> clothesService.updateClothes(request, user)).isInstanceOf(CustomException.class)
                 .extracting("errorCode.status", "errorCode.divisionCode", "errorCode.message")
                 .contains(400, "C002", "카테고리에 속한 사이즈가 아님");
+
+    }
+
+    @DisplayName("유효하지 않은 이미지로 수정하면 에러가 발생한다.")
+    @Test
+    void updateClothesWithInvalidImage() {
+        // given
+        User user = createUserBy("작성자1");
+        Clothes updateTarget = createClothesBy(user, true, "1");
+
+        UpdateClothesSvcReq request = UpdateClothesSvcReq.builder()
+                .clothesId(updateTarget.getId())
+                .purchaseStore("구매처1")
+                .brandId(updateTarget.getBrand().getId())
+                .categoryId(updateTarget.getCategory().getId())
+                .colorIds(List.of(updateTarget.getClothesColors().get(0).getColor().getId()))
+                .isPrivate(false)
+                .sizeId(updateTarget.getSize().getId())
+                .clothesImageUrl("image1.jjj")
+                .memo("메모입니다.")
+                .name("제품명수정")
+                .purchaseDate("구매시기1")
+                .build();
+
+        // when & then
+        assertThatThrownBy(() -> clothesService.updateClothes(request, user)).isInstanceOf(CustomException.class)
+                .extracting("errorCode.status", "errorCode.divisionCode", "errorCode.message")
+                .contains(400, "I001", "이미지 URL이 유효하지 않습니다.");
 
     }
 
