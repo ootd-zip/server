@@ -24,7 +24,7 @@ public class CommentGetAllRes {
 
     private String taggedUserName;
 
-    private int depth;
+    private Integer depth;
 
     private Long parentId;
 
@@ -39,10 +39,10 @@ public class CommentGetAllRes {
                 .userImage(comment.getWriter().getProfileImage())
                 .content(comment.getContents())
                 .timeStamp(comment.compareCreatedTimeAndNow())
-                .taggedUserName(comment.getTaggedUser() == null ? null : comment.getTaggedUser().getName())
+                .taggedUserName(comment.getTaggedUserName())
                 .depth(comment.getDepth())
                 .groupId(comment.getGroupId())
-                .parentId(comment.getParent() == null ? null : comment.getParent().getId())
+                .parentId(comment.getParentCommentId())
                 .build();
     }
 }

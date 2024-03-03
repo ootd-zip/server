@@ -394,14 +394,15 @@ public class OotdService {
 
     /**
      * 마이페이지에서 OOTD 조회시 해당 유저가 가진 OOTD 정보를 제공합니다.
-     * 본인 조회시, 비공개글 조회가 됩니다.
+     * 본인 조회시, 비공개글 조회가 가능합니다. 그래서 loginUser 정보를 받아 검증할 필요가 있습니다.
      */
-    public CommonSliceResponse<OotdGetByUserRes> getOotdByUser(OotdGetByUserReq request) {
+    public CommonSliceResponse<OotdGetByUserRes> getOotdByUser(User loginUser, OotdGetByUserReq request) {
 
         Long userId = request.getUserId();
+        Long loginUserId = loginUser.getId();
         Pageable pageable = request.toPageable();
 
-        Slice<Ootd> ootds = ootdRepository.findAllByUserId(userId, pageable);
+        Slice<Ootd> ootds = ootdRepository.findAllByUserIdAndLoginUserId(userId, loginUserId, pageable);
 
         List<OotdGetByUserRes> ootdGetByUserResList = ootds.stream()
                 .map(OotdGetByUserRes::new)

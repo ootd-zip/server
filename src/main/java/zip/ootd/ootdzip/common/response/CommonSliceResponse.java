@@ -15,7 +15,7 @@ public class CommonSliceResponse<T> {
 
     private Integer size = 30;
 
-    private boolean isLast;
+    private Boolean isLast;
 
     public CommonSliceResponse(List<T> content, Pageable pageable, boolean isLast) {
         this.content = content;

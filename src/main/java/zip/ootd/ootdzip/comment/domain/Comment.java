@@ -160,4 +160,22 @@ public class Comment extends BaseEntity {
             parent.setChildCount(parent.getChildCount() - 1);
         }
     }
+
+    // == Custom Getter == //
+
+    public String getTaggedUserName() {
+        if (taggedUser == null) {
+            return "";
+        }
+
+        return taggedUser.getName();
+    }
+
+    public Long getParentCommentId() {
+        if (parent == null) {
+            return null;
+        }
+
+        return parent.getId();
+    }
 }

@@ -12,6 +12,6 @@ public class OotdGetByUserRes {
 
     public OotdGetByUserRes(Ootd ootd) {
         this.id = ootd.getId();
-        this.image = ootd.getOotdImages().get(0).getImageUrl();
+        this.image = ootd.getFirstImage();
     }
 }

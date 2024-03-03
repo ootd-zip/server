@@ -499,7 +499,7 @@ public class OotdControllerTest extends ControllerTestSupport {
         Long userId = 1L;
         Pageable pageable = PageRequest.of(0, 10);
 
-        when(ootdService.getOotdByUser(any()))
+        when(ootdService.getOotdByUser(any(), any()))
                 .thenReturn(new CommonSliceResponse<>(List.of(), pageable, true));
 
         // when & then
