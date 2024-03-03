@@ -25,15 +25,15 @@ public class OotdGetRes {
 
     private String contents;
 
-    private boolean isLike;
+    private Boolean isLike;
 
-    private int viewCount;
+    private Integer viewCount;
 
-    private int reportCount;
+    private Integer reportCount;
 
-    private int likeCount;
+    private Integer likeCount;
 
-    private boolean isBookmark;
+    private Boolean isBookmark;
 
     private String userName;
 
@@ -47,18 +47,18 @@ public class OotdGetRes {
 
     private LocalDateTime createAt;
 
-    private boolean isFollowing;
+    private Boolean isFollowing;
 
-    private boolean isPrivate;
+    private Boolean isPrivate;
 
     private List<OotdImageRes> ootdImages;
 
     private List<OotdStyleRes> styles;
 
     public OotdGetRes(Ootd ootd,
-            boolean isLike,
-            int viewCount,
-            int likeCount,
+            Boolean isLike,
+            Integer viewCount,
+            Integer likeCount,
             User loginUser) {
 
         this.isLike = isLike;

@@ -24,7 +24,7 @@ public class CommentGetAllRes {
 
     private String taggedUserName;
 
-    private int depth;
+    private Integer depth;
 
     private Long parentId;
 
