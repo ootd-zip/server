@@ -14,6 +14,6 @@ public class OotdGetOtherRes {
 
     public OotdGetOtherRes(Ootd ootd) {
         this.id = ootd.getId();
-        this.image = ootd.getOotdImages().get(0).getImageUrl();
+        this.image = ootd.getFirstImage();
     }
 }
