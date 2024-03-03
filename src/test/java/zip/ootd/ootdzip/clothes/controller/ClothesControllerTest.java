@@ -309,7 +309,6 @@ class ClothesControllerTest extends ControllerTestSupport {
     void saveClothesWithTooLongMemo() throws Exception {
         // given
         StringBuilder tooLongMemo = new StringBuilder();
-        // 3000자
         for (int i = 0; i < 20; i++) {
             tooLongMemo.append("메모입니다메모입니다메모입니다메모입니다")
                     .append("메모입니다메모입니다메모입니다메모입니다")

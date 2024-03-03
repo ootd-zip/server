@@ -9,9 +9,11 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import zip.ootd.ootdzip.category.domain.Style;
+import zip.ootd.ootdzip.category.repository.StyleRepository;
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.exception.code.ErrorCode;
 import zip.ootd.ootdzip.oauth.data.TokenInfo;
@@ -23,14 +25,20 @@ import zip.ootd.ootdzip.oauth.repository.RefreshTokenRepository;
 import zip.ootd.ootdzip.oauth.repository.UserOauthRepository;
 import zip.ootd.ootdzip.oauth.service.SocialOAuth;
 import zip.ootd.ootdzip.security.JwtUtils;
+import zip.ootd.ootdzip.user.controller.response.ProfileRes;
+import zip.ootd.ootdzip.user.controller.response.UserInfoForMyPageRes;
 import zip.ootd.ootdzip.user.data.TokenUserInfoRes;
 import zip.ootd.ootdzip.user.data.UserLoginReq;
-import zip.ootd.ootdzip.user.data.UserRegisterReq;
 import zip.ootd.ootdzip.user.domain.User;
+import zip.ootd.ootdzip.user.domain.UserStyle;
 import zip.ootd.ootdzip.user.repository.UserRepository;
+import zip.ootd.ootdzip.user.service.request.ProfileSvcReq;
+import zip.ootd.ootdzip.user.service.request.UserInfoForMyPageSvcReq;
+import zip.ootd.ootdzip.user.service.request.UserRegisterSvcReq;
+import zip.ootd.ootdzip.utils.ImageFileUtil;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class UserService {
 
@@ -40,6 +48,7 @@ public class UserService {
     private final JwtUtils jwtUtils;
     private final List<SocialOAuth> socialOAuths;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
+    private final StyleRepository styleRepository;
 
     @Transactional
     public TokenInfo login(UserLoginReq request) {
@@ -84,25 +93,29 @@ public class UserService {
     }
 
     @Transactional
-    public void register(UserRegisterReq request) {
-        String idString = SecurityContextHolder.getContext().getAuthentication().getName();
-        Optional<User> found = userRepository.findById(Long.parseLong(idString));
-        User user = found.orElseThrow(() -> new IllegalStateException("404")); // TODO : 적절한 Exception 정의해서 사용
-        if (user.getIsDeleted()) {
-            throw new IllegalStateException("404"); // TODO : 적절한 Exception 정의해서 사용
+    public void register(UserRegisterSvcReq request, User loginUser) {
+
+        if (loginUser.getIsCompleted()) {
+            throw new CustomException(ErrorCode.ALREADY_USER_REGISTER);
         }
-        if (user.getIsCompleted()) {
-            throw new IllegalStateException("409"); // TODO : 적절한 Exception 정의해서 사용
+
+        List<Style> styles = styleRepository.findAllById(request.getStyles());
+
+        if (styles.size() != request.getStyles().size()) {
+            throw new CustomException(ErrorCode.NOT_FOUND_SIZE_ID);
         }
-        user.setName(request.getName());
-        user.setGender(request.getGender());
-        user.setBirthdate(request.getBirthdate());
-        user.setHeight(request.getHeight());
-        user.setShowHeight(request.getShowHeight());
-        user.setWeight(request.getWeight());
-        user.setShowHeight(request.getShowHeight());
-        user.setIsCompleted(true);
-        userRepository.save(user);
+
+        List<UserStyle> userStyles = UserStyle.createUserStylesBy(styles, loginUser);
+
+        loginUser.registerBy(request.getName(),
+                request.getGender(),
+                request.getAge(),
+                request.getHeight(),
+                request.getWeight(),
+                request.getIsBodyPrivate(),
+                userStyles);
+
+        userRepository.save(loginUser);
     }
 
     @Transactional
@@ -140,13 +153,11 @@ public class UserService {
         return user.removeFollower(follower);
     }
 
-    @Transactional
     public Set<User> getFollowers(Long userId) {
         User user = userRepository.findById(userId).orElseThrow();
         return user.getFollowers();
     }
 
-    @Transactional
     public Set<User> getFollowings(Long userId) {
         User user = userRepository.findById(userId).orElseThrow();
         return user.getFollowings();
@@ -171,5 +182,35 @@ public class UserService {
 
         Optional<User> user = userRepository.findById(Long.valueOf(authentication.getName()));
         return user.orElseThrow();
+    }
+
+    public UserInfoForMyPageRes getUserInfoForMyPage(UserInfoForMyPageSvcReq request, User loginUser) {
+
+        User user = userRepository.findById(request.getUserId())
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER_ID));
+
+        return UserInfoForMyPageRes.of(user, loginUser);
+    }
+
+    public ProfileRes getProfile(User loginUser) {
+        return ProfileRes.of(loginUser);
+    }
+
+    public void updateProfile(ProfileSvcReq request, User loginUser) {
+
+        if (!request.getProfileImage().isBlank()
+                && !ImageFileUtil.isValidImageUrl(request.getProfileImage())) {
+            throw new CustomException(ErrorCode.INVALID_IMAGE_URL);
+        }
+
+        loginUser.updateProfile(request.getName(),
+                request.getProfileImage(),
+                request.getDescription(),
+                request.getHeight(),
+                request.getWeight(),
+                request.getIsBodyPrivate());
+
+        userRepository.save(loginUser);
+
     }
 }

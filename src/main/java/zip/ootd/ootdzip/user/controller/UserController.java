@@ -4,32 +4,44 @@ import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.exception.code.ErrorCode;
 import zip.ootd.ootdzip.common.response.ApiResponse;
 import zip.ootd.ootdzip.oauth.data.TokenInfo;
+import zip.ootd.ootdzip.user.controller.request.ProfileReq;
+import zip.ootd.ootdzip.user.controller.request.UserRegisterReq;
+import zip.ootd.ootdzip.user.controller.response.ProfileRes;
+import zip.ootd.ootdzip.user.controller.response.UserInfoForMyPageRes;
 import zip.ootd.ootdzip.user.data.CheckNameReq;
 import zip.ootd.ootdzip.user.data.FollowReq;
-import zip.ootd.ootdzip.user.data.ProfileRes;
 import zip.ootd.ootdzip.user.data.TokenUserInfoRes;
 import zip.ootd.ootdzip.user.data.UserLoginReq;
-import zip.ootd.ootdzip.user.data.UserRegisterReq;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.service.UserService;
+import zip.ootd.ootdzip.user.service.request.UserInfoForMyPageSvcReq;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/v1/user")
+@Tag(name = "User 컨트롤러", description = "유저 관련 API입니다.")
+@Validated
 public class UserController {
 
     private final UserService userService;
@@ -47,8 +59,9 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public void register(@RequestBody UserRegisterReq request) {
-        userService.register(request);
+    public ApiResponse<String> register(@RequestBody @Valid UserRegisterReq request) {
+        userService.register(request.toServiceRequest(), userService.getAuthenticatiedUser());
+        return new ApiResponse<>("회원가입 성공");
     }
 
     @PostMapping("/refresh")
@@ -120,9 +133,17 @@ public class UserController {
         return Optional.empty();
     }
 
+    @Operation(summary = "로그인 유저 프로필 정보 조회")
     @GetMapping("/profile")
-    public ProfileRes getProfile() {
-        return new ProfileRes(userService.getAuthenticatiedUser());
+    public ApiResponse<ProfileRes> getProfile() {
+        return new ApiResponse<>(userService.getProfile(userService.getAuthenticatiedUser()));
+    }
+
+    @Operation(summary = "로그인 유저 프로필 정보 업데이트")
+    @PatchMapping("/profile")
+    public ApiResponse<String> updateProfile(@RequestBody @Valid ProfileReq request) {
+        userService.updateProfile(request.toServiceRequest(), userService.getAuthenticatiedUser());
+        return new ApiResponse<>("프로필 정보 업데이트 성공");
     }
 
     @GetMapping("/nickname")
@@ -134,6 +155,14 @@ public class UserController {
     public ApiResponse<Boolean> getIsComplete() {
         User currentUser = userService.getAuthenticatiedUser();
         return new ApiResponse<>(currentUser.getIsCompleted());
+    }
+
+    @Operation(summary = "유저 마이페이지 정보 조회", description = "유저 마이페이지 정보 조회")
+    @GetMapping("/{id}/mypage")
+    public ApiResponse<UserInfoForMyPageRes> getUserInfoForMyPage(
+            @PathVariable(name = "id") @Positive(message = "유저 ID는 양수여야 합니다.") Long id) {
+        return new ApiResponse<>(userService.getUserInfoForMyPage(UserInfoForMyPageSvcReq.createBy(id),
+                userService.getAuthenticatiedUser()));
     }
 
 }

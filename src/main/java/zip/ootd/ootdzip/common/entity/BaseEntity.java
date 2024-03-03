@@ -30,4 +30,23 @@ public class BaseEntity {
     @LastModifiedDate
     protected LocalDateTime updatedAt;
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (!(obj instanceof BaseEntity)) {
+            return false;
+        }
+
+        BaseEntity that = (BaseEntity)obj;
+
+        return getId().equals(that.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getId().hashCode();
+    }
 }

@@ -29,9 +29,11 @@ import zip.ootd.ootdzip.clothes.service.request.SaveClothesSvcReq;
 import zip.ootd.ootdzip.clothes.service.request.UpdateClothesIsPrivateSvcReq;
 import zip.ootd.ootdzip.clothes.service.request.UpdateClothesSvcReq;
 import zip.ootd.ootdzip.common.exception.CustomException;
+import zip.ootd.ootdzip.common.exception.code.ErrorCode;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.repository.UserRepository;
 import zip.ootd.ootdzip.user.service.UserService;
+import zip.ootd.ootdzip.utils.ImageFileUtil;
 
 @Service
 @RequiredArgsConstructor
@@ -73,6 +75,10 @@ public class ClothesServiceImpl implements ClothesService {
 
         if (!size.getSizeType().equals(category.getSizeType())) {
             throw new CustomException(INVALID_CATEGORY_AND_SIZE);
+        }
+
+        if (!ImageFileUtil.isValidImageUrl(request.getClothesImageUrl())) {
+            throw new CustomException(ErrorCode.INVALID_IMAGE_URL);
         }
 
         List<ClothesColor> clothesColors = ClothesColor.createClothesColorsBy(colors);
@@ -120,7 +126,7 @@ public class ClothesServiceImpl implements ClothesService {
          * 본인 옷장은 isOpen 관계없이 모든 옷 리스트 조회
          * 본인 옷장이 아닌경우 isOpen이 true인 옷 리스트 조회
          */
-        if (user.getId().equals(loginUser.getId())) {
+        if (user.equals(loginUser)) {
             clothesList = clothesRepository.findByUser(user, request.getPageable());
         } else {
             clothesList = clothesRepository.findByUserAndIsPrivateFalse(user, request.getPageable());
@@ -182,6 +188,10 @@ public class ClothesServiceImpl implements ClothesService {
 
         if (!size.getSizeType().equals(category.getSizeType())) {
             throw new CustomException(INVALID_CATEGORY_AND_SIZE);
+        }
+
+        if (!ImageFileUtil.isValidImageUrl(request.getClothesImageUrl())) {
+            throw new CustomException(INVALID_IMAGE_URL);
         }
 
         List<ClothesColor> clothesColors = ClothesColor.createClothesColorsBy(colors);
