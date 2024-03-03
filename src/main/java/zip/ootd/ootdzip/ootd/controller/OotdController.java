@@ -159,7 +159,8 @@ public class OotdController {
     @GetMapping("")
     public ApiResponse<CommonSliceResponse<OotdGetByUserRes>> getUserOotd(@Valid OotdGetByUserReq request) {
 
-        CommonSliceResponse<OotdGetByUserRes> response = ootdService.getOotdByUser(request);
+        CommonSliceResponse<OotdGetByUserRes> response = ootdService.getOotdByUser(userService.getAuthenticatiedUser(),
+                request);
 
         return new ApiResponse<>(response);
     }

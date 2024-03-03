@@ -17,6 +17,12 @@ public interface OotdRepository extends JpaRepository<Ootd, Long> {
     @Query("SELECT o from Ootd o where (o.isPrivate = false or o.writer.id = :userId) ")
     Slice<Ootd> findAllByUserId(@Param("userId") Long userId, Pageable pageable);
 
+    @Query("SELECT o from Ootd o where o.writer.id = :userId "
+            + "and (o.isPrivate = false or o.writer.id = :loginUserId) ")
+    Slice<Ootd> findAllByUserIdAndLoginUserId(@Param("userId") Long userId,
+            @Param("loginUserId") Long loginUserId,
+            Pageable pageable);
+
     @Query("SELECT o from Ootd o where o.id in(:ootdIds)")
     Slice<Ootd> findAllByIds(@Param("ootdIds") List<Long> ootdIds, Pageable pageable);
 

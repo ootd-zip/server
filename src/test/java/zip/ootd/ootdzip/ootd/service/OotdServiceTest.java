@@ -521,10 +521,13 @@ public class OotdServiceTest extends IntegrationTestSupport {
     void getOotdByUser() {
         // given
         User user = createUserBy("유저");
+        User user1 = createUserBy("유저1");
         Ootd ootd = createOotdBy(user, "안녕", false);
         Ootd ootd1 = createOotdBy(user, "안녕", false);
         Ootd ootd2 = createOotdBy(user, "안녕", true);
         Ootd ootd3 = createOotdBy(user, "안녕", true);
+        Ootd ootd4 = createOotdBy(user1, "안녕", false);
+        Ootd ootd5 = createOotdBy(user1, "안녕", true);
 
         OotdGetByUserReq ootdGetByUserReq = new OotdGetByUserReq();
         ootdGetByUserReq.setUserId(user.getId());
@@ -534,7 +537,7 @@ public class OotdServiceTest extends IntegrationTestSupport {
         ootdGetByUserReq.setSortDirection(Sort.Direction.DESC);
 
         // when
-        CommonSliceResponse<OotdGetByUserRes> result = ootdService.getOotdByUser(ootdGetByUserReq);
+        CommonSliceResponse<OotdGetByUserRes> result = ootdService.getOotdByUser(user, ootdGetByUserReq);
 
         // then
         // ootd 는 작성시간 내림차순으로 정렬된다.
@@ -554,16 +557,18 @@ public class OotdServiceTest extends IntegrationTestSupport {
         Ootd ootd1 = createOotdBy(user, "안녕", false);
         Ootd ootd2 = createOotdBy(user, "안녕", true);
         Ootd ootd3 = createOotdBy(user, "안녕", true);
+        Ootd ootd4 = createOotdBy(user1, "안녕", false);
+        Ootd ootd5 = createOotdBy(user1, "안녕", true);
 
         OotdGetByUserReq ootdGetByUserReq = new OotdGetByUserReq();
-        ootdGetByUserReq.setUserId(user1.getId());
+        ootdGetByUserReq.setUserId(user.getId());
         ootdGetByUserReq.setPage(0);
         ootdGetByUserReq.setSize(10);
         ootdGetByUserReq.setSortCriteria("createdAt");
         ootdGetByUserReq.setSortDirection(Sort.Direction.DESC);
 
         // when
-        CommonSliceResponse<OotdGetByUserRes> result = ootdService.getOotdByUser(ootdGetByUserReq);
+        CommonSliceResponse<OotdGetByUserRes> result = ootdService.getOotdByUser(user1, ootdGetByUserReq);
 
         // then
         // ootd 는 작성시간 내림차순으로 정렬된다.
