@@ -138,6 +138,19 @@ public class Comment extends BaseEntity {
         this.reportCount += 1;
     }
 
+    public void deleteComment() {
+        this.isDeleted = true;
+        this.deletedAt = LocalDateTime.now();
+
+        if (this.parent != null) {
+            parent.setChildCount(parent.getChildCount() - 1);
+        }
+    }
+
+
+
+    // == Custom Getter == //
+
     /**
      * 댓글 (삭제 또는 신고 수 일정 이상), 대댓글 있을시 "삭제된 댓글입니다" 로 표시
      * 댓글 (삭제 또는 신고 수 일정 이상), 대댓글 없을시 댓글 삭제
@@ -151,17 +164,6 @@ public class Comment extends BaseEntity {
 
         return contents;
     }
-
-    public void deleteComment() {
-        this.isDeleted = true;
-        this.deletedAt = LocalDateTime.now();
-
-        if (this.parent != null) {
-            parent.setChildCount(parent.getChildCount() - 1);
-        }
-    }
-
-    // == Custom Getter == //
 
     public String getTaggedUserName() {
         if (taggedUser == null) {
