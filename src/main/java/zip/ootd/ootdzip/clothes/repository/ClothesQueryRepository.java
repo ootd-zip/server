@@ -28,7 +28,8 @@ public class ClothesQueryRepository extends QuerydslRepositorySupport {
         super(Clothes.class);
     }
 
-    public Slice<FindClothesByUserRes> findClothesByUser(Long userId,
+    public Slice<FindClothesByUserRes> findClothesByUser(Long loginUserId,
+            Long userId,
             Boolean isPrivate,
             List<Long> brandIds,
             List<Long> categoryIds,
@@ -39,7 +40,8 @@ public class ClothesQueryRepository extends QuerydslRepositorySupport {
                         clothes.id,
                         clothes.imageUrl))
                 .from(clothes)
-                .where(eqUserId(userId),
+                .where(defaultCondition(loginUserId),
+                        eqUserId(userId),
                         eqIsPrivate(isPrivate),
                         inBrandIds(brandIds),
                         inCategoryIds(categoryIds),
@@ -55,6 +57,11 @@ public class ClothesQueryRepository extends QuerydslRepositorySupport {
         }
 
         return new SliceImpl<>(findClothes, pageable, hasNext);
+    }
+
+    private BooleanExpression defaultCondition(Long loginUserId) {
+        return clothes.reportCount.lt(5)
+                .or(clothes.user.id.eq(loginUserId));
     }
 
     private BooleanExpression eqUserId(Long userId) {
