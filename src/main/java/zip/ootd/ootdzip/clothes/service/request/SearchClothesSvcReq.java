@@ -12,7 +12,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
-public class FindClothesByUserSvcReq {
+public class SearchClothesSvcReq {
 
     private final Long userId;
 

@@ -14,7 +14,7 @@ import zip.ootd.ootdzip.clothes.domain.Clothes;
 import zip.ootd.ootdzip.user.domain.User;
 
 @Repository
-public interface ClothesRepository extends JpaRepository<Clothes, Long> {
+public interface ClothesRepository extends JpaRepository<Clothes, Long>, ClothesRepositoryCustom {
 
     List<Clothes> findByUser(User user, Pageable pageable);
 

@@ -24,8 +24,8 @@ import zip.ootd.ootdzip.clothes.data.SaveClothesRes;
 import zip.ootd.ootdzip.clothes.domain.Clothes;
 import zip.ootd.ootdzip.clothes.domain.ClothesColor;
 import zip.ootd.ootdzip.clothes.repository.ClothesRepository;
-import zip.ootd.ootdzip.clothes.service.request.FindClothesByUserSvcReq;
 import zip.ootd.ootdzip.clothes.service.request.SaveClothesSvcReq;
+import zip.ootd.ootdzip.clothes.service.request.SearchClothesSvcReq;
 import zip.ootd.ootdzip.clothes.service.request.UpdateClothesIsPrivateSvcReq;
 import zip.ootd.ootdzip.clothes.service.request.UpdateClothesSvcReq;
 import zip.ootd.ootdzip.common.exception.CustomException;
@@ -114,7 +114,7 @@ public class ClothesServiceImpl implements ClothesService {
     }
 
     @Override
-    public List<FindClothesRes> findClothesByUser(FindClothesByUserSvcReq request, User loginUser) {
+    public List<FindClothesRes> findClothesByUser(SearchClothesSvcReq request, User loginUser) {
 
         List<FindClothesRes> result = new ArrayList<>();
         List<Clothes> clothesList;

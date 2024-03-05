@@ -26,8 +26,8 @@ import zip.ootd.ootdzip.clothes.data.SaveClothesRes;
 import zip.ootd.ootdzip.clothes.domain.Clothes;
 import zip.ootd.ootdzip.clothes.domain.ClothesColor;
 import zip.ootd.ootdzip.clothes.repository.ClothesRepository;
-import zip.ootd.ootdzip.clothes.service.request.FindClothesByUserSvcReq;
 import zip.ootd.ootdzip.clothes.service.request.SaveClothesSvcReq;
+import zip.ootd.ootdzip.clothes.service.request.SearchClothesSvcReq;
 import zip.ootd.ootdzip.clothes.service.request.UpdateClothesIsPrivateSvcReq;
 import zip.ootd.ootdzip.clothes.service.request.UpdateClothesSvcReq;
 import zip.ootd.ootdzip.common.exception.CustomException;
@@ -536,7 +536,7 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
         Clothes clothes1 = createClothesBy(user, false, "1");
         Clothes clothes2 = createClothesBy(user, false, "2");
 
-        FindClothesByUserSvcReq request = FindClothesByUserSvcReq.builder().userId(user.getId()).build();
+        SearchClothesSvcReq request = SearchClothesSvcReq.builder().userId(user.getId()).build();
 
         // when
         List<FindClothesRes> result = clothesService.findClothesByUser(request, user);
@@ -560,7 +560,7 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
         Clothes clothes1 = createClothesBy(user1, true, "1");
         Clothes clothes2 = createClothesBy(user1, false, "2");
 
-        FindClothesByUserSvcReq request = FindClothesByUserSvcReq.builder().userId(user1.getId()).build();
+        SearchClothesSvcReq request = SearchClothesSvcReq.builder().userId(user1.getId()).build();
 
         // when
         List<FindClothesRes> result = clothesService.findClothesByUser(request, user2);
@@ -582,7 +582,7 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
         Clothes clothes1 = createClothesBy(user1, false, "1");
         Clothes clothes2 = createClothesBy(user1, true, "2");
 
-        FindClothesByUserSvcReq request = FindClothesByUserSvcReq.builder().userId(user1.getId() + 1).build();
+        SearchClothesSvcReq request = SearchClothesSvcReq.builder().userId(user1.getId() + 1).build();
 
         // when & then
         assertThatThrownBy(() -> clothesService.findClothesByUser(request, user1)).isInstanceOf(CustomException.class)
