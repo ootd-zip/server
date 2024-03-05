@@ -1,7 +1,8 @@
 package zip.ootd.ootdzip.clothes.repository;
 
-import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.jpa.impl.JPAQueryFactory;
+import static zip.ootd.ootdzip.clothes.domain.QClothes.*;
+
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -10,11 +11,12 @@ import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
 
+import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+
+import zip.ootd.ootdzip.clothes.controller.response.FindClothesByUserRes;
 import zip.ootd.ootdzip.clothes.domain.Clothes;
-
-import java.util.List;
-
-import static zip.ootd.ootdzip.clothes.domain.QClothes.clothes;
 
 @Repository
 public class ClothesQueryRepository extends QuerydslRepositorySupport {
@@ -26,14 +28,17 @@ public class ClothesQueryRepository extends QuerydslRepositorySupport {
         super(Clothes.class);
     }
 
-    public Slice<Clothes> findClothesByUser(Long userId,
+    public Slice<FindClothesByUserRes> findClothesByUser(Long userId,
             Boolean isPrivate,
             List<Long> brandIds,
             List<Long> categoryIds,
             List<Long> colorIds,
             Pageable pageable) {
         int pageSize = pageable.getPageSize();
-        List<Clothes> findClothes = queryFactory.selectFrom(clothes)
+        List<FindClothesByUserRes> findClothes = queryFactory.select(Projections.constructor(FindClothesByUserRes.class,
+                        clothes.id,
+                        clothes.imageUrl))
+                .from(clothes)
                 .where(eqUserId(userId),
                         eqIsPrivate(isPrivate),
                         inBrandIds(brandIds),
