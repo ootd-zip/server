@@ -1,21 +1,28 @@
 package zip.ootd.ootdzip.clothes.service.request;
 
+import java.util.List;
+
 import org.springframework.data.domain.Pageable;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import zip.ootd.ootdzip.common.request.CommonPageRequest;
 
 @Getter
-public class FindClothesByUserSvcReq extends CommonPageRequest {
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
+public class FindClothesByUserSvcReq {
 
     private final Long userId;
 
-    private final Pageable pageable;
+    private Boolean isPrivate;
 
-    @Builder
-    public FindClothesByUserSvcReq(Long userId, Pageable pageable) {
-        this.userId = userId;
-        this.pageable = pageable;
-    }
+    private List<Long> brandIds;
+
+    private List<Long> categoryIds;
+
+    private List<Long> colorIds;
+
+    private final Pageable pageable;
 }

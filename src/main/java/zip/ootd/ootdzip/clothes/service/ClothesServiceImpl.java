@@ -122,10 +122,6 @@ public class ClothesServiceImpl implements ClothesService {
         User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new CustomException(NOT_FOUND_USER_ID));
 
-        /*
-         * 본인 옷장은 isOpen 관계없이 모든 옷 리스트 조회
-         * 본인 옷장이 아닌경우 isOpen이 true인 옷 리스트 조회
-         */
         if (user.equals(loginUser)) {
             clothesList = clothesRepository.findByUser(user, request.getPageable());
         } else {
