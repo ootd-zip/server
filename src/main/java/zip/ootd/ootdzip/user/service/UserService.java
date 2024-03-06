@@ -147,7 +147,7 @@ public class UserService {
     public boolean follow(Long userId, Long followerId) {
         User user = userRepository.findById(userId).orElseThrow();
         User follower = userRepository.findById(followerId).orElseThrow();
-        notifyFollow(follower, user, user.getId());
+        notifyFollow(user, follower, follower.getId());
         return user.addFollower(follower);
     }
 
