@@ -108,7 +108,7 @@ public class UserController {
     }
 
     @GetMapping("/check-name")
-    public ApiResponse<Boolean> checkName(@RequestBody CheckNameReq request) {
+    public ApiResponse<Boolean> checkName(CheckNameReq request) {
         return new ApiResponse<>(userService.checkName(request.getName()));
     }
 
