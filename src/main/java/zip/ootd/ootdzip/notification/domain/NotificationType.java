@@ -1,5 +1,8 @@
 package zip.ootd.ootdzip.notification.domain;
 
+import lombok.Getter;
+
+@Getter
 public enum NotificationType {
     FOLLOW("님이 회원님을 팔로우합니다."),
     OOTD_COMMENT("님이 회원님의 ootd에 댓글을 남겼습니다."),
@@ -10,9 +13,5 @@ public enum NotificationType {
 
     NotificationType(String baseMessage) {
         this.baseMessage = baseMessage;
-    }
-
-    public String makeMessageByUserName(String userName) {
-        return userName + this.baseMessage;
     }
 }

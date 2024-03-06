@@ -243,7 +243,7 @@ public class NotificationAsyncServiceTest {
         assertThat(results)
                 .hasSize(1)
                 .extracting("receiver.id", "sender.id")
-                .containsExactlyInAnyOrder(tuple(user1.getId(), user.getId()));
+                .containsExactlyInAnyOrder(tuple(user.getId(), user1.getId()));
     }
 
     private Comment createChildCommentBy(Comment parentComment, Ootd ootd, User taggedUser, User user, String content,
@@ -273,20 +273,6 @@ public class NotificationAsyncServiceTest {
                 .writer(user)
                 .contents(content)
                 .groupId(groupId)
-                .groupOrder(0L)
-                .build();
-
-        return commentRepository.save(comment);
-    }
-
-    private Comment createParentCommentBy(Ootd ootd, User user, String content) {
-
-        Comment comment = Comment.builder()
-                .ootd(ootd)
-                .depth(1)
-                .writer(user)
-                .contents(content)
-                .groupId(0L)
                 .groupOrder(0L)
                 .build();
 

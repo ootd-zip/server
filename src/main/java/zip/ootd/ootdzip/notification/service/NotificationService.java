@@ -1,13 +1,21 @@
 package zip.ootd.ootdzip.notification.service;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import lombok.RequiredArgsConstructor;
+import zip.ootd.ootdzip.common.response.CommonSliceResponse;
+import zip.ootd.ootdzip.notification.data.NotificationGetAllReq;
+import zip.ootd.ootdzip.notification.data.NotificationGetAllRes;
+import zip.ootd.ootdzip.notification.data.NotificationPatchReq;
 import zip.ootd.ootdzip.notification.domain.Notification;
 import zip.ootd.ootdzip.notification.domain.NotificationType;
 import zip.ootd.ootdzip.notification.repository.EmitterRepository;
@@ -102,5 +110,33 @@ public class NotificationService {
                     sendNotification(emitter, eventId, key, new Notification());
                 }
         );
+    }
+
+    public CommonSliceResponse<NotificationGetAllRes> getNotifications(User loginUesr, NotificationGetAllReq request) {
+
+        Pageable pageable = request.toPageable();
+
+        Slice<Notification> notifications = notificationRepository.findByUserIdAndIsRead(
+                loginUesr.getId(), request.getIsRead(), pageable);
+
+        List<NotificationGetAllRes> notificationGetAllResList = notifications.stream()
+                .map(NotificationGetAllRes::of)
+                .collect(Collectors.toList());
+
+        return new CommonSliceResponse<>(notificationGetAllResList, pageable, notifications.isLast());
+    }
+
+    public void updateIsRead(User loginUser, Long id) {
+
+        Notification notification = notificationRepository.findById(id).orElseThrow();
+        checkValidUser(loginUser, notification.getReceiver());
+
+        notification.readNotification();
+    }
+
+    private void checkValidUser(User loginUser, User target) {
+        if (!loginUser.equals(target)) {
+            throw new IllegalArgumentException("접근하려는 자원의 계정과 현재 로그인 계정이 일치하지 않습니다.");
+        }
     }
 }
