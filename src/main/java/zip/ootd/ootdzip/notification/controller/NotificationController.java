@@ -3,7 +3,6 @@ package zip.ootd.ootdzip.notification.controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,7 +17,6 @@ import zip.ootd.ootdzip.common.response.ApiResponse;
 import zip.ootd.ootdzip.common.response.CommonSliceResponse;
 import zip.ootd.ootdzip.notification.data.NotificationGetAllReq;
 import zip.ootd.ootdzip.notification.data.NotificationGetAllRes;
-import zip.ootd.ootdzip.notification.data.NotificationPatchReq;
 import zip.ootd.ootdzip.notification.service.NotificationService;
 import zip.ootd.ootdzip.user.service.UserService;
 

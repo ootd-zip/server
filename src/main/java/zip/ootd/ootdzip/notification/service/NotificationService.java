@@ -15,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import zip.ootd.ootdzip.common.response.CommonSliceResponse;
 import zip.ootd.ootdzip.notification.data.NotificationGetAllReq;
 import zip.ootd.ootdzip.notification.data.NotificationGetAllRes;
-import zip.ootd.ootdzip.notification.data.NotificationPatchReq;
 import zip.ootd.ootdzip.notification.domain.Notification;
 import zip.ootd.ootdzip.notification.domain.NotificationType;
 import zip.ootd.ootdzip.notification.repository.EmitterRepository;
