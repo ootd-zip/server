@@ -87,7 +87,7 @@ public class OotdRepositoryTest extends IntegrationTestSupport {
         assertThat(result.isPresent()).isEqualTo(false);
     }
 
-    @DisplayName("단건 조회시 삭제되지 않은 댓글이어야 한다.")
+    @DisplayName("단건 조회시 삭제되지 않은 OOTD 이어야 한다.")
     @Test
     void findByIdNotDeleted() {
         // given
@@ -104,7 +104,7 @@ public class OotdRepositoryTest extends IntegrationTestSupport {
         assertThat(result.isPresent()).isEqualTo(false);
     }
 
-    @DisplayName("단건 조회시 차단되지 않은 댓글이어야 한다.")
+    @DisplayName("단건 조회시 차단되지 않은 OOTD 이어야 한다.")
     @Test
     void findByIdNotBlocked() {
         // given
