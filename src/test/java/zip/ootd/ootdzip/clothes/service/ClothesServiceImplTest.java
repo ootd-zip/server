@@ -20,8 +20,8 @@ import zip.ootd.ootdzip.category.domain.Size;
 import zip.ootd.ootdzip.category.repository.CategoryRepository;
 import zip.ootd.ootdzip.category.repository.ColorRepository;
 import zip.ootd.ootdzip.category.repository.SizeRepository;
+import zip.ootd.ootdzip.clothes.controller.response.FindClothesRes;
 import zip.ootd.ootdzip.clothes.data.DeleteClothesByIdRes;
-import zip.ootd.ootdzip.clothes.data.FindClothesRes;
 import zip.ootd.ootdzip.clothes.data.SaveClothesRes;
 import zip.ootd.ootdzip.clothes.domain.Clothes;
 import zip.ootd.ootdzip.clothes.domain.ClothesColor;
@@ -484,9 +484,11 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
         FindClothesRes result = clothesService.findClothesById(clothes.getId(), user1);
 
         //then
-        assertThat(result).extracting("id", "name", "userName", "isPrivate", "memo", "purchaseStore", "purchaseDate",
+        assertThat(result).extracting("id", "name", "userId", "userName", "isPrivate", "memo", "purchaseStore",
+                        "purchaseDate",
                         "imageUrl", "purchaseStoreType")
-                .contains(clothes.getId(), "제품명1", "유저1", true, "메모입니다1", "구매처1", "구매일1", "image1.jpg", Write);
+                .contains(clothes.getId(), "제품명1", user1.getId(), user1.getName(), true, "메모입니다1", "구매처1", "구매일1",
+                        "image1.jpg", Write);
 
         assertThat(result.getBrand().getName()).isEqualTo("브랜드1");
 

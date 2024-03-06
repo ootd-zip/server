@@ -2,8 +2,8 @@ package zip.ootd.ootdzip.clothes.service;
 
 import java.util.List;
 
+import zip.ootd.ootdzip.clothes.controller.response.FindClothesRes;
 import zip.ootd.ootdzip.clothes.data.DeleteClothesByIdRes;
-import zip.ootd.ootdzip.clothes.data.FindClothesRes;
 import zip.ootd.ootdzip.clothes.data.SaveClothesRes;
 import zip.ootd.ootdzip.clothes.service.request.FindClothesByUserSvcReq;
 import zip.ootd.ootdzip.clothes.service.request.SaveClothesSvcReq;

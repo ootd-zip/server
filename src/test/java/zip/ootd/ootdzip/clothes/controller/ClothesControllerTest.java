@@ -21,8 +21,8 @@ import zip.ootd.ootdzip.ControllerTestSupport;
 import zip.ootd.ootdzip.clothes.controller.request.SaveClothesReq;
 import zip.ootd.ootdzip.clothes.controller.request.UpdateClothesIsPrivateReq;
 import zip.ootd.ootdzip.clothes.controller.request.UpdateClothesReq;
+import zip.ootd.ootdzip.clothes.controller.response.FindClothesRes;
 import zip.ootd.ootdzip.clothes.data.DeleteClothesByIdRes;
-import zip.ootd.ootdzip.clothes.data.FindClothesRes;
 import zip.ootd.ootdzip.clothes.data.PurchaseStoreType;
 import zip.ootd.ootdzip.clothes.data.SaveClothesRes;
 
