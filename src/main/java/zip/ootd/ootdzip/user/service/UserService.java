@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,6 +17,8 @@ import zip.ootd.ootdzip.category.domain.Style;
 import zip.ootd.ootdzip.category.repository.StyleRepository;
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.exception.code.ErrorCode;
+import zip.ootd.ootdzip.notification.domain.NotificationType;
+import zip.ootd.ootdzip.notification.event.NotificationEvent;
 import zip.ootd.ootdzip.oauth.data.TokenInfo;
 import zip.ootd.ootdzip.oauth.domain.OauthProvider;
 import zip.ootd.ootdzip.oauth.domain.RefreshToken;
@@ -49,6 +52,7 @@ public class UserService {
     private final List<SocialOAuth> socialOAuths;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final StyleRepository styleRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public TokenInfo login(UserLoginReq request) {
@@ -143,7 +147,18 @@ public class UserService {
     public boolean follow(Long userId, Long followerId) {
         User user = userRepository.findById(userId).orElseThrow();
         User follower = userRepository.findById(followerId).orElseThrow();
+        notifyFollow(follower, user, user.getId());
         return user.addFollower(follower);
+    }
+
+    private void notifyFollow(User receiver, User sender, Long id) {
+
+        eventPublisher.publishEvent(NotificationEvent.builder()
+                .receiver(receiver)
+                .sender(sender)
+                .notificationType(NotificationType.FOLLOW)
+                .goUrl("/api/v1/" + id + "/mypage")
+                .build());
     }
 
     @Transactional

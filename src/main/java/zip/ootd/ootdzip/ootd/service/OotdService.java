@@ -4,14 +4,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.math.NumberUtils;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import zip.ootd.ootdzip.category.domain.Style;
 import zip.ootd.ootdzip.category.repository.StyleRepository;
@@ -22,6 +23,8 @@ import zip.ootd.ootdzip.common.dao.RedisDao;
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.exception.code.ErrorCode;
 import zip.ootd.ootdzip.common.response.CommonSliceResponse;
+import zip.ootd.ootdzip.notification.domain.NotificationType;
+import zip.ootd.ootdzip.notification.event.NotificationEvent;
 import zip.ootd.ootdzip.ootd.data.OotdGetAllRes;
 import zip.ootd.ootdzip.ootd.data.OotdGetByUserReq;
 import zip.ootd.ootdzip.ootd.data.OotdGetByUserRes;
@@ -53,6 +56,7 @@ public class OotdService {
     private final StyleRepository styleRepository;
     private final RedisDao redisDao;
     private final OotdImageRepository ootdImageRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     public Ootd postOotd(OotdPostReq request, User loginUser) {
 
@@ -258,6 +262,22 @@ public class OotdService {
         increaseLikeInRedis(ootd, loginUser);
         addUserLikeInRedis(ootdId, loginUser.getId());
         ootd.addLike(loginUser);
+        notifyOotdLike(ootd.getWriter(), loginUser, ootd.getFirstImage(), ootd.getId());
+    }
+
+    private void notifyOotdLike(User receiver, User sender, String imageUrl, Long id) {
+
+        if (receiver.getId().equals(sender.getId())) { // OOTD 작성자와 댓글 작성자가 같으면 알람 X
+            return;
+        }
+
+        eventPublisher.publishEvent(NotificationEvent.builder()
+                .receiver(receiver)
+                .sender(sender)
+                .notificationType(NotificationType.LIKE)
+                .goUrl("/api/v1/ootd/" + id)
+                .imageUrl(imageUrl)
+                .build());
     }
 
     public void cancelLike(Long ootdId, User loginUser) {
