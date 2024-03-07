@@ -91,7 +91,7 @@ public class CommentService {
 
     private void notifyOotdComment(User receiver, User sender, String content, String imageUrl, Long id) {
 
-        if (receiver.getId().equals(sender.getId())) { // OOTD 작성자와 댓글 작성자가 같으면 알람 X
+        if (receiver.equals(sender)) { // OOTD 작성자와 댓글 작성자가 같으면 알람 X
             return;
         }
 
@@ -107,7 +107,7 @@ public class CommentService {
 
     private void notifyTagComment(User receiver, User sender, String content, String imageUrl, Long id) {
 
-        if (receiver.getId().equals(sender.getId())) { // 댓글 작성자와 태깅된 유저가 같으면 알람 X
+        if (receiver.equals(sender)) { // 댓글 작성자와 태깅된 유저가 같으면 알람 X
             return;
         }
 

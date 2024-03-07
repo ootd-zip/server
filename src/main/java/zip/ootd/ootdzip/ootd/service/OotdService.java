@@ -141,7 +141,7 @@ public class OotdService {
     }
 
     private void checkOotd(Ootd ootd, User user) {
-        if (ootd.isPrivate() && !ootd.getWriter().getId().equals(user.getId())) {
+        if (ootd.isPrivate() && !ootd.getWriter().equals(user)) {
             throw new CustomException(ErrorCode.PRIVATE);
         }
     }
@@ -267,7 +267,7 @@ public class OotdService {
 
     private void notifyOotdLike(User receiver, User sender, String imageUrl, Long id) {
 
-        if (receiver.getId().equals(sender.getId())) { // OOTD 작성자와 댓글 작성자가 같으면 알람 X
+        if (receiver.equals(sender)) { // OOTD 작성자와 댓글 작성자가 같으면 알람 X
             return;
         }
 

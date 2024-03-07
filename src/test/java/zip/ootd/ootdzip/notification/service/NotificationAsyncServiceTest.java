@@ -145,6 +145,11 @@ public class NotificationAsyncServiceTest {
         // then
         Thread.sleep(100L); // 비동기 처리 대기시간
         List<Notification> results = notificationRepository.findAll();
+
+        // r.getSender().equals(user)) 사용시 g선etSender() 의 equals() 함수를 사용하는데 이때 이미 트랜잭션은 종료되어있고,
+        // getSender() 의 User 는 영속되지 않은 상태라 해당 함수를 가져올 수 없음(해당 비동기테스트는 트랜잭션을 메소드단위로 적용하지않기때문)
+        // 그럼 이 테스트 메소드도 트랜잭션이 닫힌 상태인데 어떻게 r.getSender().getId() 가 가능한가?
+        // notification 을 조회할때 sender.id 는 가져오기때문에 에러가 안남. 그래서 다른 필드 ex)sender.name 조회시는 에러가 발생함
         assertEquals(3,
                 results.stream()
                         .filter(r -> r.getSender().getId().equals(user.getId()))
@@ -172,7 +177,7 @@ public class NotificationAsyncServiceTest {
         List<Notification> results = notificationRepository.findAll();
         assertEquals(0,
                 results.stream()
-                        .filter(r -> r.getSender().getId().equals(user.getId()))
+                        .filter(r -> r.getSender().equals(user))
                         .count());
     }
 
