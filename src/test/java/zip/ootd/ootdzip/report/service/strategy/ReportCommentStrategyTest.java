@@ -2,6 +2,8 @@ package zip.ootd.ootdzip.report.service.strategy;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.util.List;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +52,7 @@ class ReportCommentStrategyTest extends IntegrationTestSupport {
 
         Comment comment = createCommentBy(writer, ootd);
 
-        ReportSvcReq request = ReportSvcReq.of(report.getId(), comment.getId(), ReportType.COMMENT);
+        ReportSvcReq request = ReportSvcReq.of(List.of(report.getId()), comment.getId(), ReportType.COMMENT);
 
         // when
         ReportResultRes result = reportCommentStrategy.report(reporter, request);
@@ -75,7 +77,7 @@ class ReportCommentStrategyTest extends IntegrationTestSupport {
         User writer = createUserBy("작성자1");
         User reporter = createUserBy("신고자1");
 
-        ReportSvcReq request = ReportSvcReq.of(report.getId(), 1L, ReportType.COMMENT);
+        ReportSvcReq request = ReportSvcReq.of(List.of(report.getId()), 1L, ReportType.COMMENT);
 
         //when & then
         assertThatThrownBy(() -> reportCommentStrategy.report(reporter, request))
@@ -95,7 +97,7 @@ class ReportCommentStrategyTest extends IntegrationTestSupport {
 
         Comment comment = createCommentBy(writer, ootd);
 
-        ReportSvcReq request = ReportSvcReq.of(1L, comment.getId(), ReportType.COMMENT);
+        ReportSvcReq request = ReportSvcReq.of(List.of(1L), comment.getId(), ReportType.COMMENT);
 
         //when & then
         assertThatThrownBy(() -> reportCommentStrategy.report(reporter, request))
@@ -117,7 +119,7 @@ class ReportCommentStrategyTest extends IntegrationTestSupport {
 
         Comment comment = createCommentBy(writer, ootd);
 
-        ReportSvcReq request = ReportSvcReq.of(report.getId(), comment.getId(), ReportType.COMMENT);
+        ReportSvcReq request = ReportSvcReq.of(List.of(report.getId()), comment.getId(), ReportType.COMMENT);
 
         ReportResultRes result = reportCommentStrategy.report(reporter, request);
 
@@ -140,7 +142,7 @@ class ReportCommentStrategyTest extends IntegrationTestSupport {
 
         Comment comment = createCommentBy(writer, ootd);
 
-        ReportSvcReq request = ReportSvcReq.of(report.getId(), comment.getId(), ReportType.COMMENT);
+        ReportSvcReq request = ReportSvcReq.of(List.of(report.getId()), comment.getId(), ReportType.COMMENT);
 
         // when&then
         assertThatThrownBy(() -> reportCommentStrategy.report(writer, request))

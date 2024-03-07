@@ -68,7 +68,7 @@ class ReportServiceTest extends IntegrationTestSupport {
 
         Report report = createReportBy("신고항목1");
 
-        ReportSvcReq request = ReportSvcReq.of(report.getId(), savedOotd.getId(), ReportType.OOTD);
+        ReportSvcReq request = ReportSvcReq.of(List.of(report.getId()), savedOotd.getId(), ReportType.OOTD);
 
         // when & then
         ReportResultRes result = reportService.report(request, reportUser);

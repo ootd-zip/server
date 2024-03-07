@@ -2,6 +2,8 @@ package zip.ootd.ootdzip.report.service.strategy;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.util.List;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +45,7 @@ class ReportOotdStrategyTest extends IntegrationTestSupport {
 
         Report report = createReportBy("신고항목1");
 
-        ReportSvcReq request = ReportSvcReq.of(report.getId(), savedOotd.getId(), ReportType.OOTD);
+        ReportSvcReq request = ReportSvcReq.of(List.of(report.getId()), savedOotd.getId(), ReportType.OOTD);
 
         // when & then
         ReportResultRes result = reportOotdStrategy.report(reportUser, request);
@@ -69,7 +71,7 @@ class ReportOotdStrategyTest extends IntegrationTestSupport {
 
         Report report = createReportBy("신고항목1");
 
-        ReportSvcReq request = ReportSvcReq.of(report.getId(), 0L, ReportType.OOTD);
+        ReportSvcReq request = ReportSvcReq.of(List.of(report.getId()), 0L, ReportType.OOTD);
 
         // when & then
         assertThatThrownBy(() -> reportOotdStrategy.report(reportUser, request))
@@ -88,7 +90,7 @@ class ReportOotdStrategyTest extends IntegrationTestSupport {
 
         Ootd savedOotd = createOotdBy(writer);
 
-        ReportSvcReq request = ReportSvcReq.of(0L, savedOotd.getId(), ReportType.OOTD);
+        ReportSvcReq request = ReportSvcReq.of(List.of(0L), savedOotd.getId(), ReportType.OOTD);
 
         // when & then
         assertThatThrownBy(() -> reportOotdStrategy.report(reportUser, request))
@@ -108,7 +110,7 @@ class ReportOotdStrategyTest extends IntegrationTestSupport {
 
         Report report = createReportBy("신고항목1");
 
-        ReportSvcReq request = ReportSvcReq.of(report.getId(), savedOotd.getId(), ReportType.OOTD);
+        ReportSvcReq request = ReportSvcReq.of(List.of(report.getId()), savedOotd.getId(), ReportType.OOTD);
 
         ReportResultRes result = reportOotdStrategy.report(reportUser, request);
 
@@ -129,7 +131,7 @@ class ReportOotdStrategyTest extends IntegrationTestSupport {
 
         Report report = createReportBy("신고항목1");
 
-        ReportSvcReq request = ReportSvcReq.of(report.getId(), savedOotd.getId(), ReportType.OOTD);
+        ReportSvcReq request = ReportSvcReq.of(List.of(report.getId()), savedOotd.getId(), ReportType.OOTD);
 
         // when & then
         assertThatThrownBy(() -> reportOotdStrategy.report(writer, request))
