@@ -3,6 +3,7 @@ package zip.ootd.ootdzip.notification.data;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import zip.ootd.ootdzip.common.util.TimeUtil;
 import zip.ootd.ootdzip.notification.domain.Notification;
 import zip.ootd.ootdzip.user.domain.User;
 
@@ -41,7 +42,7 @@ public class NotificationGetAllRes {
                 .message(notification.getNotificationType().getBaseMessage())
                 .content(notification.getContent())
                 .alarmImage(notification.getImageUrl())
-                .timeStamp(notification.compareCreatedTimeAndNow())
+                .timeStamp(TimeUtil.compareCreatedTimeAndNow(notification.getCreatedAt()))
                 .timeType(notification.compareSimpleCreatedTimeAndNow())
                 .build();
     }
