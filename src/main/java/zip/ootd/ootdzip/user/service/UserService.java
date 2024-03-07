@@ -27,6 +27,7 @@ import zip.ootd.ootdzip.oauth.service.SocialOAuth;
 import zip.ootd.ootdzip.security.JwtUtils;
 import zip.ootd.ootdzip.user.controller.response.ProfileRes;
 import zip.ootd.ootdzip.user.controller.response.UserInfoForMyPageRes;
+import zip.ootd.ootdzip.user.data.CheckNameReq;
 import zip.ootd.ootdzip.user.data.TokenUserInfoRes;
 import zip.ootd.ootdzip.user.data.UserLoginReq;
 import zip.ootd.ootdzip.user.domain.User;
@@ -163,14 +164,8 @@ public class UserService {
         return user.getFollowings();
     }
 
-    public boolean checkName(String name) {
-        if (name == null || name.isBlank()) {
-            throw new CustomException(ErrorCode.BAD_REQUEST_ERROR);
-        }
-        if (userRepository.findByName(name).isPresent()) {
-            throw new CustomException(ErrorCode.DUPLICATE_NAME_ERROR);
-        }
-        return true;
+    public boolean checkName(CheckNameReq req) {
+        return userRepository.findByName(req.getName()).isEmpty();
     }
 
     public User getAuthenticatiedUser() {
