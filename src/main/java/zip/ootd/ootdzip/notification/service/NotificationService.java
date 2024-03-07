@@ -133,6 +133,11 @@ public class NotificationService {
         notification.readNotification();
     }
 
+    public Boolean getIsReadExist(User loginUser) {
+        Long isReadCount = notificationRepository.findCountByUserIdAndIsRead(loginUser.getId(), false);
+        return isReadCount > 0;
+    }
+
     private void checkValidUser(User loginUser, User target) {
         if (!loginUser.equals(target)) {
             throw new IllegalArgumentException("접근하려는 자원의 계정과 현재 로그인 계정이 일치하지 않습니다.");

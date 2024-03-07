@@ -91,6 +91,30 @@ public class NotificationRepositoryTest extends IntegrationTestSupport {
                 .containsExactly(noti7.getId(), noti6.getId(), noti5.getId(), noti4.getId());
     }
 
+    @DisplayName("유저와 읽음처리에 해당하는 알림의 개수를 반환합니다.")
+    @Transactional
+    @Test
+    void findCountByUserIdAndIsRead() {
+        // given
+        User user = createUserBy("알람수신자");
+        User user1 = createUserBy("알람받는자");
+        Notification noti = createNotification(user, user1, NotificationType.OOTD_COMMENT, false);
+        Notification noti1 = createNotification(user, user1, NotificationType.TAG_COMMENT, false);
+        Notification noti2 = createNotification(user, user1, NotificationType.LIKE, false);
+        Notification noti3 = createNotification(user, user1, NotificationType.FOLLOW, false);
+        Notification noti4 = createNotification(user, user1, NotificationType.OOTD_COMMENT, true);
+        Notification noti5 = createNotification(user, user1, NotificationType.TAG_COMMENT, true);
+        Notification noti6 = createNotification(user, user1, NotificationType.LIKE, true);
+        Notification noti7 = createNotification(user, user1, NotificationType.FOLLOW, true);
+        Notification noti8 = createNotification(user1, user, NotificationType.OOTD_COMMENT, false);
+
+        // when
+        Long result = notificationRepository.findCountByUserIdAndIsRead(user.getId(), true);
+
+        // then
+        assertThat(result).isEqualTo(4L);
+    }
+
     private Notification createNotification(User receiver, User sender, NotificationType notificationType,
             Boolean isRead) {
 
