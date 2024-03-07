@@ -20,6 +20,7 @@ import zip.ootd.ootdzip.notification.domain.NotificationType;
 import zip.ootd.ootdzip.notification.repository.EmitterRepository;
 import zip.ootd.ootdzip.notification.repository.NotificationRepository;
 import zip.ootd.ootdzip.user.domain.User;
+import zip.ootd.ootdzip.user.service.UserService;
 
 @Service
 @Transactional
@@ -29,6 +30,7 @@ public class NotificationService {
 
     private final EmitterRepository emitterRepository;
     private final NotificationRepository notificationRepository;
+    private final UserService userService;
 
     public SseEmitter subscribe(User loginUser, String lastEventId) {
         Long userId = loginUser.getId();
@@ -128,14 +130,8 @@ public class NotificationService {
     public void updateIsRead(User loginUser, Long id) {
 
         Notification notification = notificationRepository.findById(id).orElseThrow();
-        checkValidUser(loginUser, notification.getReceiver());
+        userService.checkValidUser(loginUser, notification.getReceiver());
 
         notification.readNotification();
-    }
-
-    private void checkValidUser(User loginUser, User target) {
-        if (!loginUser.equals(target)) {
-            throw new IllegalArgumentException("접근하려는 자원의 계정과 현재 로그인 계정이 일치하지 않습니다.");
-        }
     }
 }

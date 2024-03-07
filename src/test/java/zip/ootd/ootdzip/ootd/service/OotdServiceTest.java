@@ -12,6 +12,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import zip.ootd.ootdzip.IntegrationTestSupport;
 import zip.ootd.ootdzip.brand.domain.Brand;
@@ -31,6 +34,7 @@ import zip.ootd.ootdzip.clothes.domain.ClothesColor;
 import zip.ootd.ootdzip.clothes.repository.ClothesRepository;
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.response.CommonSliceResponse;
+import zip.ootd.ootdzip.oauth.domain.UserAuthenticationToken;
 import zip.ootd.ootdzip.ootd.data.OotdGetByUserReq;
 import zip.ootd.ootdzip.ootd.data.OotdGetByUserRes;
 import zip.ootd.ootdzip.ootd.data.OotdGetOtherReq;
@@ -151,6 +155,7 @@ public class OotdServiceTest extends IntegrationTestSupport {
     void updateContentsAndIsPrivate() {
         // given
         User user = createUserBy("유저1");
+        makeAuthenticatedUserBy(user);
         Ootd ootd = createOotdBy(user, "안녕", false);
 
         OotdPatchReq ootdPatchReq = new OotdPatchReq();
@@ -169,6 +174,7 @@ public class OotdServiceTest extends IntegrationTestSupport {
     void updateAll() {
         // given
         User user = createUserBy("유저1");
+        makeAuthenticatedUserBy(user);
         Ootd ootd = createOotdBy(user, "안녕", false);
         Clothes clothes = createClothesBy(user, true, "3");
         Clothes clothes1 = createClothesBy(user, true, "4");
@@ -236,6 +242,7 @@ public class OotdServiceTest extends IntegrationTestSupport {
     void delete() {
         // given
         User user = createUserBy("유저1");
+        makeAuthenticatedUserBy(user);
         Ootd ootd = createOotdBy(user, "안녕", false);
 
         // when
@@ -688,6 +695,14 @@ public class OotdServiceTest extends IntegrationTestSupport {
                 isOpen, savedCategory, savedSize, "메모입니다" + idx, "구매일" + idx, "image" + idx + ".jpg", clothesColors);
 
         return clothesRepository.save(clothes);
+    }
+
+    private void makeAuthenticatedUserBy(User user) {
+        UserAuthenticationToken.UserDetails principal = new UserAuthenticationToken.UserDetails(user.getId());
+        SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+        Authentication authentication = new UserAuthenticationToken(principal);
+        securityContext.setAuthentication(authentication);
+        SecurityContextHolder.setContext(securityContext);
     }
 
     private User createUserBy(String userName) {

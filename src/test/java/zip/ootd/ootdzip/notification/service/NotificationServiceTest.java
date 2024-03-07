@@ -9,6 +9,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
 import zip.ootd.ootdzip.IntegrationTestSupport;
+import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.response.CommonSliceResponse;
 import zip.ootd.ootdzip.notification.data.NotificationGetAllReq;
 import zip.ootd.ootdzip.notification.data.NotificationGetAllRes;
@@ -150,7 +151,7 @@ public class NotificationServiceTest extends IntegrationTestSupport {
 
         // when & then
         assertThatThrownBy(() -> notificationService.updateIsRead(user1, noti.getId()))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(CustomException.class);
     }
 
     private Notification createNotification(User receiver, User sender, NotificationType notificationType,

@@ -45,6 +45,7 @@ import zip.ootd.ootdzip.ootdimageclothe.domain.DeviceSize;
 import zip.ootd.ootdzip.ootdimageclothe.domain.OotdImageClothes;
 import zip.ootd.ootdzip.ootdstyle.domain.OotdStyle;
 import zip.ootd.ootdzip.user.domain.User;
+import zip.ootd.ootdzip.user.service.UserService;
 
 @Service
 @Transactional
@@ -52,6 +53,7 @@ import zip.ootd.ootdzip.user.domain.User;
 public class OotdService {
 
     private final OotdRepository ootdRepository;
+    private final UserService userService;
     private final ClothesRepository clothesRepository;
     private final StyleRepository styleRepository;
     private final RedisDao redisDao;
@@ -89,12 +91,16 @@ public class OotdService {
 
         Ootd ootd = ootdRepository.findById(id).orElseThrow();
 
+        userService.checkValidUser(ootd.getWriter());
+
         ootd.updateIsPrivate(request.getIsPrivate());
     }
 
     public void updateAll(Long id, OotdPutReq request) {
 
         Ootd ootd = ootdRepository.findById(id).orElseThrow();
+
+        userService.checkValidUser(ootd.getWriter());
 
         List<OotdImage> ootdImages = request.getOotdImages().stream().map(ootdImage -> {
             List<OotdImageClothes> ootdImageClothesList = ootdImage.getClothesTags().stream().map(clothesTag -> {
@@ -119,6 +125,7 @@ public class OotdService {
 
     public void deleteOotd(Long id) {
         Ootd ootd = ootdRepository.findById(id).orElseThrow();
+        userService.checkValidUser(ootd.getWriter());
         ootd.deleteOotd();
     }
 

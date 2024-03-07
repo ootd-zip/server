@@ -8,6 +8,9 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import jakarta.persistence.EntityManager;
 import zip.ootd.ootdzip.IntegrationTestSupport;
@@ -26,6 +29,7 @@ import zip.ootd.ootdzip.clothes.data.PurchaseStoreType;
 import zip.ootd.ootdzip.clothes.domain.Clothes;
 import zip.ootd.ootdzip.clothes.domain.ClothesColor;
 import zip.ootd.ootdzip.clothes.repository.ClothesRepository;
+import zip.ootd.ootdzip.oauth.domain.UserAuthenticationToken;
 import zip.ootd.ootdzip.ootd.domain.Ootd;
 import zip.ootd.ootdzip.ootd.repository.OotdRepository;
 import zip.ootd.ootdzip.ootdbookmark.data.OotdBookmarkDeleteReq;
@@ -79,6 +83,8 @@ public class OotdBookmarkServiceTest extends IntegrationTestSupport {
     void deleteOotdBookmarks() {
         // given
         User user = createUserBy("유저");
+        makeAuthenticatedUserBy(user);
+
         User user1 = createUserBy("유저1");
         Ootd ootd = createOotdBy(user1, "안녕", false);
         Ootd ootd1 = createOotdBy(user1, "안녕", false);
@@ -179,6 +185,14 @@ public class OotdBookmarkServiceTest extends IntegrationTestSupport {
                 isOpen, savedCategory, savedSize, "메모입니다" + idx, "구매일" + idx, "image" + idx + ".jpg", clothesColors);
 
         return clothesRepository.save(clothes);
+    }
+
+    private void makeAuthenticatedUserBy(User user) {
+        UserAuthenticationToken.UserDetails principal = new UserAuthenticationToken.UserDetails(user.getId());
+        SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+        Authentication authentication = new UserAuthenticationToken(principal);
+        securityContext.setAuthentication(authentication);
+        SecurityContextHolder.setContext(securityContext);
     }
 
     private User createUserBy(String userName) {
