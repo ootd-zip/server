@@ -37,7 +37,7 @@ class ReportControllerTest extends ControllerTestSupport {
     @Test
     void report() throws Exception {
         // given
-        ReportReq request = new ReportReq(1L, 1L, ReportType.OOTD);
+        ReportReq request = new ReportReq(List.of(1L), 1L, ReportType.OOTD);
 
         when(reportService.report(any(), any())).thenReturn(ReportResultRes.of(1L, 1));
 
@@ -52,11 +52,11 @@ class ReportControllerTest extends ControllerTestSupport {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result").exists());
     }
 
-    @DisplayName("신고할 때 신고 ID는 양수이다.")
+    @DisplayName("신고할 때 신고 ID는 필수이다.")
     @Test
-    void reportWithZeroReportId() throws Exception {
+    void reportWithoutReportId() throws Exception {
         // given
-        ReportReq request = new ReportReq(0L, 1L, ReportType.OOTD);
+        ReportReq request = new ReportReq(null, 1L, ReportType.OOTD);
 
         // when & then
         mockMvc.perform(post("/api/v1/report")
@@ -66,14 +66,33 @@ class ReportControllerTest extends ControllerTestSupport {
                 .andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(404))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.errors").isArray());
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errors[0].field").value("reportIds"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errors[0].reason").value("신고항목은 필수입니다."));
+    }
+
+    @DisplayName("신고할 때 신고 ID는 양수이다.")
+    @Test
+    void reportWithZeroReportId() throws Exception {
+        // given
+        ReportReq request = new ReportReq(List.of(0L), 1L, ReportType.OOTD);
+
+        // when & then
+        mockMvc.perform(post("/api/v1/report")
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isNotFound())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(404))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errors[0].field").value("reportIds[0]"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errors[0].reason").value("신고 항목 ID는 양수입니다."));
     }
 
     @DisplayName("신고할 때 target ID는 양수이다.")
     @Test
     void reportWithZeroTargetId() throws Exception {
         // given
-        ReportReq request = new ReportReq(1L, 0L, ReportType.OOTD);
+        ReportReq request = new ReportReq(List.of(1L), 0L, ReportType.OOTD);
 
         // when & then
         mockMvc.perform(post("/api/v1/report")
@@ -83,14 +102,15 @@ class ReportControllerTest extends ControllerTestSupport {
                 .andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(404))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.errors").isArray());
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errors[0].field").value("targetId"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errors[0].reason").value("신고할 ootd 선택은 필수입니다."));
     }
 
     @DisplayName("신고할 때 신고유형은 필수이다.")
     @Test
     void reportWithoutReportType() throws Exception {
         // given
-        ReportReq request = new ReportReq(1L, 1L, null);
+        ReportReq request = new ReportReq(List.of(1L), 1L, null);
 
         // when & then
         mockMvc.perform(post("/api/v1/report")
@@ -100,7 +120,8 @@ class ReportControllerTest extends ControllerTestSupport {
                 .andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(404))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.errors").isArray());
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errors[0].field").value("reportType"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errors[0].reason").value("유효하지 않은 신고타입입니다."));
     }
 
 }

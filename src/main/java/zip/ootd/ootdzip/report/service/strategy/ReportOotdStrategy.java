@@ -1,5 +1,7 @@
 package zip.ootd.ootdzip.report.service.strategy;
 
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
@@ -26,7 +28,7 @@ public class ReportOotdStrategy implements ReportStrategy {
     @Override
     public ReportResultRes report(User reporter, ReportSvcReq request) {
 
-        Report report = validateReportId(request.getReportId(), reportRepository);
+        List<Report> reports = validateReportId(request.getReportIds(), reportRepository);
 
         Ootd ootd = ootdRepository.findById(request.getTargetId())
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_OOTD_ID));
@@ -37,8 +39,10 @@ public class ReportOotdStrategy implements ReportStrategy {
             throw new CustomException(ErrorCode.NOT_DUPLICATE_REPORT);
         }
 
-        ReportOotd reportOotd = ReportOotd.of(report, ootd, reporter);
-        reportOotdRepository.save(reportOotd);
+        List<ReportOotd> reportOotds = reports.stream()
+                .map((report) -> ReportOotd.of(report, ootd, reporter))
+                .toList();
+        reportOotdRepository.saveAll(reportOotds);
 
         ootd.increaseReportCount();
 

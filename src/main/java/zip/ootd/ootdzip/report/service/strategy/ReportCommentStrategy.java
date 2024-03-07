@@ -2,6 +2,8 @@ package zip.ootd.ootdzip.report.service.strategy;
 
 import static zip.ootd.ootdzip.common.exception.code.ErrorCode.*;
 
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
@@ -28,7 +30,7 @@ public class ReportCommentStrategy implements ReportStrategy {
     @Override
     public ReportResultRes report(User reporter, ReportSvcReq request) {
 
-        Report report = validateReportId(request.getReportId(), reportRepository);
+        List<Report> reports = validateReportId(request.getReportIds(), reportRepository);
 
         Comment comment = commentRepository.findById(request.getTargetId())
                 .orElseThrow(() -> new CustomException(NOT_FOUNT_COMMENT_ID));
@@ -39,8 +41,10 @@ public class ReportCommentStrategy implements ReportStrategy {
             throw new CustomException(ErrorCode.NOT_DUPLICATE_REPORT);
         }
 
-        ReportComment reportComment = ReportComment.of(report, comment, reporter);
-        reportCommentRepository.save(reportComment);
+        List<ReportComment> reportComments = reports.stream()
+                .map((report) -> ReportComment.of(report, comment, reporter))
+                .toList();
+        reportCommentRepository.saveAll(reportComments);
 
         comment.increaseReportCount();
 

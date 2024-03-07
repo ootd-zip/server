@@ -1,5 +1,8 @@
 package zip.ootd.ootdzip.report.controller.request;
 
+import java.util.List;
+
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,8 +18,8 @@ import zip.ootd.ootdzip.report.service.request.ReportType;
 @AllArgsConstructor
 public class ReportReq {
 
-    @Positive(message = "신고 항목 선택은 필수입니다.")
-    private Long reportId;
+    @NotEmpty(message = "신고항목은 필수입니다.")
+    private List<@Positive(message = "신고 항목 ID는 양수입니다.") Long> reportIds;
 
     @Positive(message = "신고할 ootd 선택은 필수입니다.")
     private Long targetId;
@@ -26,7 +29,7 @@ public class ReportReq {
 
     public ReportSvcReq toServiceReq() {
         return ReportSvcReq.builder()
-                .reportId(this.reportId)
+                .reportIds(this.reportIds)
                 .targetId(this.targetId)
                 .reportType(this.reportType)
                 .build();

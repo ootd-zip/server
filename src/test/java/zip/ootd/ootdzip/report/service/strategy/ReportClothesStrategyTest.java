@@ -68,7 +68,7 @@ class ReportClothesStrategyTest extends IntegrationTestSupport {
 
         Clothes clothes = createClothesBy(user, true, "1");
 
-        ReportSvcReq request = ReportSvcReq.of(report.getId(), clothes.getId(), ReportType.CLOTHES);
+        ReportSvcReq request = ReportSvcReq.of(List.of(report.getId()), clothes.getId(), ReportType.CLOTHES);
 
         // when
         ReportResultRes result = reportClothesStrategy.report(reporter, request);
@@ -93,7 +93,7 @@ class ReportClothesStrategyTest extends IntegrationTestSupport {
         User user = createUserBy("유저1");
         User reporter = createUserBy("신고자1");
 
-        ReportSvcReq request = ReportSvcReq.of(report.getId(), 1L, ReportType.CLOTHES);
+        ReportSvcReq request = ReportSvcReq.of(List.of(report.getId()), 1L, ReportType.CLOTHES);
 
         // when & then
         assertThatThrownBy(() -> reportClothesStrategy.report(user, request))
@@ -111,7 +111,7 @@ class ReportClothesStrategyTest extends IntegrationTestSupport {
 
         Clothes clothes = createClothesBy(user, true, "1");
 
-        ReportSvcReq request = ReportSvcReq.of(1L, clothes.getId(), ReportType.CLOTHES);
+        ReportSvcReq request = ReportSvcReq.of(List.of(1L), clothes.getId(), ReportType.CLOTHES);
 
         // when & then
         assertThatThrownBy(() -> reportClothesStrategy.report(user, request))
@@ -131,7 +131,7 @@ class ReportClothesStrategyTest extends IntegrationTestSupport {
 
         Clothes clothes = createClothesBy(user, true, "1");
 
-        ReportSvcReq request = ReportSvcReq.of(report.getId(), clothes.getId(), ReportType.CLOTHES);
+        ReportSvcReq request = ReportSvcReq.of(List.of(report.getId()), clothes.getId(), ReportType.CLOTHES);
         reportClothesStrategy.report(reporter, request);
 
         // when & then
@@ -151,7 +151,7 @@ class ReportClothesStrategyTest extends IntegrationTestSupport {
 
         Clothes clothes = createClothesBy(user, true, "1");
 
-        ReportSvcReq request = ReportSvcReq.of(report.getId(), clothes.getId(), ReportType.CLOTHES);
+        ReportSvcReq request = ReportSvcReq.of(List.of(report.getId()), clothes.getId(), ReportType.CLOTHES);
 
         // when & then
         assertThatThrownBy(() -> reportClothesStrategy.report(user, request))
