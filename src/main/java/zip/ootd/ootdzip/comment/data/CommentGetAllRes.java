@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import zip.ootd.ootdzip.comment.domain.Comment;
+import zip.ootd.ootdzip.common.util.TimeUtil;
 
 @Builder
 @AllArgsConstructor
@@ -38,7 +39,7 @@ public class CommentGetAllRes {
                 .userName(comment.getWriter().getName())
                 .userImage(comment.getWriter().getProfileImage())
                 .content(comment.getContents())
-                .timeStamp(comment.compareCreatedTimeAndNow())
+                .timeStamp(TimeUtil.compareCreatedTimeAndNow(comment.getCreatedAt()))
                 .taggedUserName(comment.getTaggedUserName())
                 .depth(comment.getDepth())
                 .groupId(comment.getGroupId())

@@ -3,12 +3,13 @@ package zip.ootd.ootdzip.comment.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import zip.ootd.ootdzip.comment.data.CommentGetAllReq;
 import zip.ootd.ootdzip.comment.data.CommentGetAllRes;
@@ -18,6 +19,8 @@ import zip.ootd.ootdzip.comment.repository.CommentRepository;
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.exception.code.ErrorCode;
 import zip.ootd.ootdzip.common.response.CommonSliceResponse;
+import zip.ootd.ootdzip.notification.domain.NotificationType;
+import zip.ootd.ootdzip.notification.event.NotificationEvent;
 import zip.ootd.ootdzip.ootd.domain.Ootd;
 import zip.ootd.ootdzip.ootd.repository.OotdRepository;
 import zip.ootd.ootdzip.user.domain.User;
@@ -31,6 +34,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
     private final OotdRepository ootdRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     /**
      * 댓글 기능
@@ -58,6 +62,7 @@ public class CommentService {
                     .groupOrder(0L)
                     .build();
 
+            notifyOotdComment(ootd.getWriter(), writer, request.getContent(), ootd.getFirstImage(), ootd.getId());
         } else {
             User taggedUser;
             if (request.getTaggedUserName() != null && !request.getTaggedUserName().isEmpty()) {
@@ -78,9 +83,42 @@ public class CommentService {
                     .groupOrder(maxGroupOrder + 1L)
                     .build();
             parentComment.addChildComment(comment);
+            notifyTagComment(taggedUser, writer, request.getContent(), ootd.getFirstImage(), ootd.getId());
         }
 
         return commentRepository.save(comment);
+    }
+
+    private void notifyOotdComment(User receiver, User sender, String content, String imageUrl, Long id) {
+
+        if (receiver.equals(sender)) { // OOTD 작성자와 댓글 작성자가 같으면 알람 X
+            return;
+        }
+
+        eventPublisher.publishEvent(NotificationEvent.builder()
+                .receiver(receiver)
+                .sender(sender)
+                .notificationType(NotificationType.OOTD_COMMENT)
+                .goUrl("/api/v1/ootd/" + id)
+                .imageUrl(imageUrl)
+                .content(content)
+                .build());
+    }
+
+    private void notifyTagComment(User receiver, User sender, String content, String imageUrl, Long id) {
+
+        if (receiver.equals(sender)) { // 댓글 작성자와 태깅된 유저가 같으면 알람 X
+            return;
+        }
+
+        eventPublisher.publishEvent(NotificationEvent.builder()
+                .receiver(receiver)
+                .sender(sender)
+                .notificationType(NotificationType.TAG_COMMENT)
+                .goUrl("/api/v1/ootd/" + id)
+                .imageUrl(imageUrl)
+                .content(content)
+                .build());
     }
 
     /**
