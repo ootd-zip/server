@@ -6,7 +6,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
-import org.springframework.transaction.annotation.Transactional;
 
 import zip.ootd.ootdzip.IntegrationTestSupport;
 import zip.ootd.ootdzip.common.response.CommonSliceResponse;
@@ -30,7 +29,6 @@ public class NotificationServiceTest extends IntegrationTestSupport {
     private NotificationRepository notificationRepository;
 
     @DisplayName("알람을 정상적으로 저장합니다.")
-    @Transactional
     @Test
     void saveNotification() {
         // given
@@ -49,7 +47,6 @@ public class NotificationServiceTest extends IntegrationTestSupport {
     }
 
     @DisplayName("읽지않은 알람을 정상적으로 가져옵니다.")
-    @Transactional
     @Test
     void getNotifications() {
         // given
@@ -84,7 +81,6 @@ public class NotificationServiceTest extends IntegrationTestSupport {
     }
 
     @DisplayName("읽은 알람을 정상적으로 가져옵니다.")
-    @Transactional
     @Test
     void getReadNotifications() {
         // given
@@ -119,7 +115,6 @@ public class NotificationServiceTest extends IntegrationTestSupport {
     }
 
     @DisplayName("알람을 정상적으로 읽음으로 수정 합니다.")
-    @Transactional
     @Test
     void updateIsRead() {
         // given
@@ -138,7 +133,6 @@ public class NotificationServiceTest extends IntegrationTestSupport {
     }
 
     @DisplayName("알람을 정상적으로 읽음/읽지 않음으로 수정시 다른사람이 수정시 예외가 발생합니다.")
-    @Transactional
     @Test
     void updateIsReadByOtherUser() {
         // given
