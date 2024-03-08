@@ -206,6 +206,7 @@ public class UserService {
         return ProfileRes.of(loginUser);
     }
 
+    @Transactional
     public void updateProfile(ProfileSvcReq request, User loginUser) {
 
         if (!request.getProfileImage().isBlank()
