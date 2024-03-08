@@ -109,7 +109,7 @@ public class NotificationRepositoryTest extends IntegrationTestSupport {
         Notification noti8 = createNotification(user1, user, NotificationType.OOTD_COMMENT, false);
 
         // when
-        Long result = notificationRepository.findCountByUserIdAndIsRead(user.getId(), true);
+        Long result = notificationRepository.countByUserIdAndIsRead(user.getId(), true);
 
         // then
         assertThat(result).isEqualTo(4L);

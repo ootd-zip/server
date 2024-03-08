@@ -18,5 +18,5 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
             Pageable pageable);
 
     @Query("SELECT count(n) from Notification n where n.receiver.id = :userId and n.isRead = :isRead")
-    Long findCountByUserIdAndIsRead(@Param("userId") Long userId, @Param("isRead") Boolean isRead);
+    Long countByUserIdAndIsRead(@Param("userId") Long userId, @Param("isRead") Boolean isRead);
 }
