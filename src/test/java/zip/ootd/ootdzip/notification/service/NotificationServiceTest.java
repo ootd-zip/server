@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+
 import org.springframework.transaction.annotation.Transactional;
 
 import zip.ootd.ootdzip.IntegrationTestSupport;
@@ -30,7 +31,6 @@ public class NotificationServiceTest extends IntegrationTestSupport {
     private NotificationRepository notificationRepository;
 
     @DisplayName("알람을 정상적으로 저장합니다.")
-    @Transactional
     @Test
     void saveNotification() {
         // given
@@ -49,7 +49,6 @@ public class NotificationServiceTest extends IntegrationTestSupport {
     }
 
     @DisplayName("읽지않은 알람을 정상적으로 가져옵니다.")
-    @Transactional
     @Test
     void getNotifications() {
         // given
@@ -84,7 +83,6 @@ public class NotificationServiceTest extends IntegrationTestSupport {
     }
 
     @DisplayName("읽은 알람을 정상적으로 가져옵니다.")
-    @Transactional
     @Test
     void getReadNotifications() {
         // given
@@ -119,7 +117,6 @@ public class NotificationServiceTest extends IntegrationTestSupport {
     }
 
     @DisplayName("알람을 정상적으로 읽음으로 수정 합니다.")
-    @Transactional
     @Test
     void updateIsRead() {
         // given
@@ -138,7 +135,6 @@ public class NotificationServiceTest extends IntegrationTestSupport {
     }
 
     @DisplayName("알람을 정상적으로 읽음/읽지 않음으로 수정시 다른사람이 수정시 예외가 발생합니다.")
-    @Transactional
     @Test
     void updateIsReadByOtherUser() {
         // given
@@ -168,6 +164,28 @@ public class NotificationServiceTest extends IntegrationTestSupport {
                 .build();
 
         return notificationRepository.save(notification);
+    }
+
+    @DisplayName("읽지 않은 알람이 있을시 true, 아니면 false 를 반환합니다.")
+    @Test
+    void getIsReadExist() {
+        // given
+        User user = createUserBy("유저");
+        User user1 = createUserBy("유저1");
+        User user2 = createUserBy("유저2");
+        Notification noti = createNotification(user, user1, NotificationType.OOTD_COMMENT, false);
+        Notification noti1 = createNotification(user, user1, NotificationType.OOTD_COMMENT, true);
+        Notification noti2 = createNotification(user1, user, NotificationType.OOTD_COMMENT, true);
+        Notification noti3 = createNotification(user1, user, NotificationType.OOTD_COMMENT, true);
+        Notification noti4 = createNotification(user1, user, NotificationType.OOTD_COMMENT, false);
+
+        // when
+        Boolean result = notificationService.getIsReadExist(user);
+        Boolean result1 = notificationService.getIsReadExist(user2);
+
+        // then
+        assertThat(result).isEqualTo(true);
+        assertThat(result1).isEqualTo(false);
     }
 
     private User createUserBy(String userName) {
