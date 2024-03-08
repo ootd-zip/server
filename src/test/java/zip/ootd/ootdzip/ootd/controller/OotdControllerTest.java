@@ -511,4 +511,22 @@ public class OotdControllerTest extends ControllerTestSupport {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result").exists());
     }
 
+    @DisplayName("비슷한 OOTD 게시글 조회")
+    @Test
+    void getOotdByClothes() throws Exception {
+        // given
+        Pageable pageable = PageRequest.of(0, 10);
+
+        when(ootdService.getOotdByClothes(any(), any()))
+                .thenReturn(new CommonSliceResponse<>(List.of(), pageable, false));
+
+        // when & then
+        mockMvc.perform(get("/api/v1/ootd/clothes")
+                        .param("clothesId", "1")
+                        .param("userId", "1"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(200))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result").exists());
+    }
 }

@@ -28,6 +28,8 @@ import zip.ootd.ootdzip.notification.event.NotificationEvent;
 import zip.ootd.ootdzip.ootd.data.OotdGetAllRes;
 import zip.ootd.ootdzip.ootd.data.OotdGetByUserReq;
 import zip.ootd.ootdzip.ootd.data.OotdGetByUserRes;
+import zip.ootd.ootdzip.ootd.data.OotdGetClothesReq;
+import zip.ootd.ootdzip.ootd.data.OotdGetClothesRes;
 import zip.ootd.ootdzip.ootd.data.OotdGetOtherReq;
 import zip.ootd.ootdzip.ootd.data.OotdGetOtherRes;
 import zip.ootd.ootdzip.ootd.data.OotdGetRes;
@@ -436,5 +438,24 @@ public class OotdService {
                 .collect(Collectors.toList());
 
         return new CommonSliceResponse<>(ootdGetByUserResList, pageable, ootds.isLast());
+    }
+
+    /**
+     * 특정 유저의 옷을 사용한 OOTD 를 조회합니다.
+     * 본인 조회시에도 비공개글 조회가 가능합니다.
+     */
+    public CommonSliceResponse<OotdGetClothesRes> getOotdByClothes(User loginUser, OotdGetClothesReq request) {
+
+        Pageable pageable = request.toPageable();
+        Slice<OotdImage> ootdImages = ootdImageRepository.findByClothesAndUserIdAndLoginUserId(request.getUserId(),
+                loginUser.getId(),
+                request.getClothesId(),
+                pageable);
+
+        List<OotdGetClothesRes> ootdGetClothesResList = ootdImages.stream()
+                .map(OotdGetClothesRes::new)
+                .collect(Collectors.toList());
+
+        return new CommonSliceResponse<>(ootdGetClothesResList, pageable, ootdImages.isLast());
     }
 }

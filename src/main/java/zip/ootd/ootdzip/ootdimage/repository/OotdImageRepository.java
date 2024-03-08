@@ -37,4 +37,16 @@ public interface OotdImageRepository extends JpaRepository<OotdImage, Long> {
             @Param("ootdId") Long ootdId,
             @Param("styles") List<Style> styles,
             Pageable pageable);
+
+    @Query("SELECT DISTINCT oi FROM OotdImage oi "
+            + "JOIN FETCH oi.ootd o "
+            + "JOIN oi.ootdImageClothesList oc "
+            + "JOIN oc.clothes c ON c.id = :clothesId "
+            + "WHERE o.writer.id = :userId "
+            + "AND (o.isPrivate = false or o.writer.id = :loginUserId) ")
+    Slice<OotdImage> findByClothesAndUserIdAndLoginUserId(
+            @Param("userId") Long userId,
+            @Param("loginUserId") Long loginUserId,
+            @Param("clothesId") Long clothesId,
+            Pageable pageable);
 }
