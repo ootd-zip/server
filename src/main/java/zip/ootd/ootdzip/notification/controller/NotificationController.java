@@ -55,4 +55,13 @@ public class NotificationController {
 
         return new ApiResponse<>(true);
     }
+
+    @Operation(summary = "읽지 않음 알림 존재 유무", description = "읽지 않은 알림이 있는지 확인합니다.")
+    @GetMapping(value = "/exist")
+    public ApiResponse<Boolean> getIsReadExist() {
+
+        Boolean response = notificationService.getIsReadExist(userService.getAuthenticatiedUser());
+
+        return new ApiResponse<>(response);
+    }
 }

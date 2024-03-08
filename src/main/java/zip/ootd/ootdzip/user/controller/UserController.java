@@ -109,7 +109,7 @@ public class UserController {
 
     @GetMapping("/check-name")
     public ApiResponse<Boolean> checkName(CheckNameReq request) {
-        return new ApiResponse<>(userService.checkName(request.getName()));
+        return new ApiResponse<>(userService.checkName(request));
     }
 
     private Cookie createRefreshTokenCookie(String refreshToken, int maxAge) {
