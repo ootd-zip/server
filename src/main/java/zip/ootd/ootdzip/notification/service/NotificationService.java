@@ -134,4 +134,9 @@ public class NotificationService {
 
         notification.readNotification();
     }
+
+    public Boolean getIsReadExist(User loginUser) {
+        Long isReadCount = notificationRepository.countByUserIdAndIsRead(loginUser.getId(), false);
+        return isReadCount > 0;
+    }
 }
