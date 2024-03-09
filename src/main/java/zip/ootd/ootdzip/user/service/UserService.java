@@ -1,5 +1,7 @@
 package zip.ootd.ootdzip.user.service;
 
+import static zip.ootd.ootdzip.common.exception.code.ErrorCode.*;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -192,6 +194,18 @@ public class UserService {
 
         Optional<User> user = userRepository.findById(Long.valueOf(authentication.getName()));
         return user.orElseThrow();
+    }
+
+    public void checkValidUser(User loginUser, User targetUser) {
+        if (!loginUser.equals(targetUser)) {
+            throw new CustomException(UNAUTHORIZED_USER_ERROR);
+        }
+    }
+
+    public void checkValidUser(User targetUser) {
+        if (!getAuthenticatiedUser().equals(targetUser)) {
+            throw new CustomException(UNAUTHORIZED_USER_ERROR);
+        }
     }
 
     public UserInfoForMyPageRes getUserInfoForMyPage(UserInfoForMyPageSvcReq request, User loginUser) {

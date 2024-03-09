@@ -16,6 +16,7 @@ import zip.ootd.ootdzip.ootdbookmark.data.OotdBookmarkGetAllRes;
 import zip.ootd.ootdzip.ootdbookmark.domain.OotdBookmark;
 import zip.ootd.ootdzip.ootdbookmark.repository.OotdBookmarkRepository;
 import zip.ootd.ootdzip.user.domain.User;
+import zip.ootd.ootdzip.user.service.UserService;
 
 @Service
 @Transactional
@@ -23,6 +24,7 @@ import zip.ootd.ootdzip.user.domain.User;
 public class OotdBookmarkService {
 
     private final OotdBookmarkRepository ootdBookmarkRepository;
+    private final UserService userService;
 
     public CommonSliceResponse<OotdBookmarkGetAllRes> getOotdBookmarks(User loginUser, CommonPageRequest request) {
 
@@ -37,7 +39,11 @@ public class OotdBookmarkService {
 
     public void deleteOotdBookmarks(OotdBookmarkDeleteReq request) {
 
-        ootdBookmarkRepository.deleteAllById(request.getOotdBookmarkIds());
+        List<OotdBookmark> ootdBookmarks = ootdBookmarkRepository.findAllById(request.getOotdBookmarkIds());
+        ootdBookmarks.forEach(ob -> {
+            userService.checkValidUser(ob.getUser());
+            ootdBookmarkRepository.deleteById(ob.getId());
+        });
     }
 
 }

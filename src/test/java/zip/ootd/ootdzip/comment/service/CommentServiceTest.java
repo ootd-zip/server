@@ -9,6 +9,9 @@ import java.util.NoSuchElementException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import zip.ootd.ootdzip.IntegrationTestSupport;
 import zip.ootd.ootdzip.brand.domain.Brand;
@@ -33,6 +36,7 @@ import zip.ootd.ootdzip.comment.domain.Comment;
 import zip.ootd.ootdzip.comment.repository.CommentRepository;
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.response.CommonSliceResponse;
+import zip.ootd.ootdzip.oauth.domain.UserAuthenticationToken;
 import zip.ootd.ootdzip.ootd.domain.Ootd;
 import zip.ootd.ootdzip.ootd.repository.OotdRepository;
 import zip.ootd.ootdzip.ootdimage.domain.OotdImage;
@@ -215,6 +219,7 @@ public class CommentServiceTest extends IntegrationTestSupport {
     void delete() {
         // given
         User user = createUserBy("유저1");
+        makeAuthenticatedUserBy(user);
         Ootd ootd = createOotdBy(user, "안녕", false);
         Comment comment = createParentCommentBy(ootd, user, "hi1");
 
@@ -241,6 +246,7 @@ public class CommentServiceTest extends IntegrationTestSupport {
     void duplicatedDelete() {
         // given
         User user = createUserBy("유저1");
+        makeAuthenticatedUserBy(user);
         Ootd ootd = createOotdBy(user, "안녕", false);
         Comment comment = createParentCommentBy(ootd, user, "hi1");
 
@@ -400,6 +406,14 @@ public class CommentServiceTest extends IntegrationTestSupport {
                 isOpen, savedCategory, savedSize, "메모입니다" + idx, "구매일" + idx, "image" + idx + ".jpg", clothesColors);
 
         return clothesRepository.save(clothes);
+    }
+
+    private void makeAuthenticatedUserBy(User user) {
+        UserAuthenticationToken.UserDetails principal = new UserAuthenticationToken.UserDetails(user.getId());
+        SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+        Authentication authentication = new UserAuthenticationToken(principal);
+        securityContext.setAuthentication(authentication);
+        SecurityContextHolder.setContext(securityContext);
     }
 
     private User createUserBy(String userName) {

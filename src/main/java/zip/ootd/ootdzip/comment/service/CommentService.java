@@ -25,6 +25,7 @@ import zip.ootd.ootdzip.ootd.domain.Ootd;
 import zip.ootd.ootdzip.ootd.repository.OotdRepository;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.repository.UserRepository;
+import zip.ootd.ootdzip.user.service.UserService;
 
 @Service
 @Transactional
@@ -33,6 +34,7 @@ public class CommentService {
 
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
+    private final UserService userService;
     private final OotdRepository ootdRepository;
     private final ApplicationEventPublisher eventPublisher;
 
@@ -129,6 +131,8 @@ public class CommentService {
     public void deleteOotd(Long id) {
 
         Comment comment = commentRepository.findById(id).orElseThrow();
+
+        userService.checkValidUser(comment.getWriter());
 
         if (comment.getIsDeleted()) {
             throw new CustomException(ErrorCode.DUPLICATE_DELETE_COMMENT);
