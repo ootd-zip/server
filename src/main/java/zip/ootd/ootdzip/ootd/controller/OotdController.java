@@ -21,6 +21,8 @@ import zip.ootd.ootdzip.common.response.CommonSliceResponse;
 import zip.ootd.ootdzip.ootd.data.OotdGetAllRes;
 import zip.ootd.ootdzip.ootd.data.OotdGetByUserReq;
 import zip.ootd.ootdzip.ootd.data.OotdGetByUserRes;
+import zip.ootd.ootdzip.ootd.data.OotdGetClothesReq;
+import zip.ootd.ootdzip.ootd.data.OotdGetClothesRes;
 import zip.ootd.ootdzip.ootd.data.OotdGetOtherReq;
 import zip.ootd.ootdzip.ootd.data.OotdGetOtherRes;
 import zip.ootd.ootdzip.ootd.data.OotdGetRes;
@@ -160,6 +162,17 @@ public class OotdController {
     public ApiResponse<CommonSliceResponse<OotdGetByUserRes>> getUserOotd(@Valid OotdGetByUserReq request) {
 
         CommonSliceResponse<OotdGetByUserRes> response = ootdService.getOotdByUser(userService.getAuthenticatiedUser(),
+                request);
+
+        return new ApiResponse<>(response);
+    }
+
+    @Operation(summary = "이 옷을 활용한 ootd 조회", description = "해당 옷을 이용한 유저의 ootd 들을 반환 api")
+    @GetMapping("/clothes")
+    public ApiResponse<CommonSliceResponse<OotdGetClothesRes>> getOotdByClothes(@Valid OotdGetClothesReq request) {
+
+        CommonSliceResponse<OotdGetClothesRes> response = ootdService.getOotdByClothes(
+                userService.getAuthenticatiedUser(),
                 request);
 
         return new ApiResponse<>(response);
