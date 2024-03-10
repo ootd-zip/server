@@ -160,7 +160,7 @@ public class UserService {
                 .receiver(receiver)
                 .sender(sender)
                 .notificationType(NotificationType.FOLLOW)
-                .goUrl("/api/v1/" + id + "/mypage")
+                .goUrl("mypage/" + id)
                 .build());
     }
 

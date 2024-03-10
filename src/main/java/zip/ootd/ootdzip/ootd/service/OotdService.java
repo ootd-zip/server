@@ -284,7 +284,7 @@ public class OotdService {
                 .receiver(receiver)
                 .sender(sender)
                 .notificationType(NotificationType.LIKE)
-                .goUrl("/api/v1/ootd/" + id)
+                .goUrl("ootd/" + id)
                 .imageUrl(imageUrl)
                 .build());
     }

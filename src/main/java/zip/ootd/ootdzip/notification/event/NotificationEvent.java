@@ -17,7 +17,6 @@ public class NotificationEvent {
 
     private NotificationType notificationType;
 
-    // 푸쉬 알람 사용시 이동할 url 링크
     private String goUrl;
 
     // 해당 content 는 현재 댓글 알람에서만 사용됩니다.
