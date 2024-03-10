@@ -447,7 +447,7 @@ public class OotdService {
     public CommonSliceResponse<OotdGetClothesRes> getOotdByClothes(User loginUser, OotdGetClothesReq request) {
 
         Pageable pageable = request.toPageable();
-        Slice<OotdImage> ootdImages = ootdImageRepository.findByClothesAndUserIdAndLoginUserId(request.getUserId(),
+        Slice<OotdImage> ootdImages = ootdImageRepository.findByClothesAndUserIdAndLoginUserId(
                 loginUser.getId(),
                 request.getClothesId(),
                 pageable);

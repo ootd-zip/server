@@ -240,7 +240,6 @@ public class OotdImageRepositoryTest extends IntegrationTestSupport {
 
         // when
         Slice<OotdImage> results = ootdImageRepository.findByClothesAndUserIdAndLoginUserId(user.getId(),
-                user.getId(),
                 clothes.getId(),
                 pageable);
 
@@ -258,14 +257,16 @@ public class OotdImageRepositoryTest extends IntegrationTestSupport {
         User user = createUserBy("유저");
         User user1 = createUserBy("유저1");
 
-        Clothes clothes = createClothesBy(user, true, "0");
-        Clothes clothes1 = createClothesBy(user, true, "1");
-        Clothes clothes2 = createClothesBy(user, true, "2");
-
-        Ootd ootd = createOotdBy2(user, "안녕", false, Arrays.asList(clothes, clothes1, clothes2));
+        Clothes clothes = createClothesBy(user1, true, "0");
+        Clothes clothes1 = createClothesBy(user1, true, "1");
+        Clothes clothes2 = createClothesBy(user1, true, "2");
 
         // 다른 유저의 옷은 포함되지 않음
+        Ootd ootd = createOotdBy2(user, "안녕", false, Arrays.asList(clothes, clothes1, clothes2));
+
+        // 비공개 옷은 포함되지 않음
         Ootd ootd1 = createOotdBy2(user1, "안녕1", false, Arrays.asList(clothes, clothes1, clothes2));
+
         Ootd ootd2 = createOotdBy2(user1, "안녕2", true, Arrays.asList(clothes, clothes1, clothes2));
 
         int page = 0;
@@ -274,8 +275,7 @@ public class OotdImageRepositoryTest extends IntegrationTestSupport {
         Pageable pageable = PageRequest.of(page, size, sort);
 
         // when
-        Slice<OotdImage> results = ootdImageRepository.findByClothesAndUserIdAndLoginUserId(user1.getId(),
-                user.getId(),
+        Slice<OotdImage> results = ootdImageRepository.findByClothesAndUserIdAndLoginUserId(user.getId(),
                 clothes.getId(),
                 pageable);
 

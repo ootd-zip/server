@@ -626,7 +626,6 @@ public class OotdServiceTest extends IntegrationTestSupport {
 
         OotdGetClothesReq ootdGetClothesReq = new OotdGetClothesReq();
         ootdGetClothesReq.setClothesId(clothes.getId());
-        ootdGetClothesReq.setUserId(user.getId());
         ootdGetClothesReq.setSize(10);
         ootdGetClothesReq.setPage(0);
         ootdGetClothesReq.setSortCriteria("createdAt");
@@ -649,9 +648,9 @@ public class OotdServiceTest extends IntegrationTestSupport {
         User user = createUserBy("유저");
         User user1 = createUserBy("유저1");
 
-        Clothes clothes = createClothesBy(user, true, "0");
-        Clothes clothes1 = createClothesBy(user, true, "1");
-        Clothes clothes2 = createClothesBy(user, true, "2");
+        Clothes clothes = createClothesBy(user1, true, "0");
+        Clothes clothes1 = createClothesBy(user1, true, "1");
+        Clothes clothes2 = createClothesBy(user1, true, "2");
 
         // 다른 유저의 옷은 포함되지 않음
         Ootd ootd = createOotdBy2(user, "안녕", false, Arrays.asList(clothes, clothes1, clothes2));
@@ -663,7 +662,6 @@ public class OotdServiceTest extends IntegrationTestSupport {
 
         OotdGetClothesReq ootdGetClothesReq = new OotdGetClothesReq();
         ootdGetClothesReq.setClothesId(clothes.getId());
-        ootdGetClothesReq.setUserId(user1.getId());
         ootdGetClothesReq.setSize(10);
         ootdGetClothesReq.setPage(0);
         ootdGetClothesReq.setSortCriteria("createdAt");
