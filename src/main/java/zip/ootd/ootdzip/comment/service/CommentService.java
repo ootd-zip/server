@@ -101,7 +101,7 @@ public class CommentService {
                 .receiver(receiver)
                 .sender(sender)
                 .notificationType(NotificationType.OOTD_COMMENT)
-                .goUrl("/api/v1/ootd/" + id)
+                .goUrl("ootd/" + id)
                 .imageUrl(imageUrl)
                 .content(content)
                 .build());
@@ -117,7 +117,7 @@ public class CommentService {
                 .receiver(receiver)
                 .sender(sender)
                 .notificationType(NotificationType.TAG_COMMENT)
-                .goUrl("/api/v1/ootd/" + id)
+                .goUrl("ootd/" + id)
                 .imageUrl(imageUrl)
                 .content(content)
                 .build());

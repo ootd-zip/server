@@ -18,6 +18,8 @@ public class NotificationGetAllRes {
 
     private String userName;
 
+    private Long userId;
+
     private String alarmType;
 
     private String message;
@@ -30,6 +32,8 @@ public class NotificationGetAllRes {
 
     private String timeType;
 
+    private String goUrl;
+
     public static NotificationGetAllRes of(Notification notification) {
 
         User receiver = notification.getReceiver();
@@ -38,12 +42,14 @@ public class NotificationGetAllRes {
                 .id(notification.getId())
                 .profileImage(receiver.getProfileImage())
                 .userName(receiver.getName())
+                .userId(receiver.getId())
                 .alarmType(notification.getNotificationType().toString())
                 .message(notification.getNotificationType().getBaseMessage())
                 .content(notification.getContent())
                 .alarmImage(notification.getImageUrl())
                 .timeStamp(TimeUtil.compareCreatedTimeAndNow(notification.getCreatedAt()))
                 .timeType(notification.compareSimpleCreatedTimeAndNow())
+                .goUrl(notification.getGoUrl())
                 .build();
     }
 }
