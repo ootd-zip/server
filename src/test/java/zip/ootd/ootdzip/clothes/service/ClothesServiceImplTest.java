@@ -9,6 +9,8 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 
 import zip.ootd.ootdzip.IntegrationTestSupport;
 import zip.ootd.ootdzip.brand.domain.Brand;
@@ -536,13 +538,17 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
         Clothes clothes1 = createClothesBy(user, false, "1");
         Clothes clothes2 = createClothesBy(user, false, "2");
 
-        SearchClothesSvcReq request = SearchClothesSvcReq.builder().userId(user.getId()).build();
+        SearchClothesSvcReq request = SearchClothesSvcReq
+                .builder()
+                .userId(user.getId())
+                .pageable(Pageable.ofSize(10))
+                .build();
 
         // when
-        List<FindClothesRes> result = clothesService.findClothesByUser(request, user);
+        Slice<FindClothesRes> result = clothesService.findClothesByUser(request, user);
 
         //then
-        assertThat(result).hasSize(2)
+        assertThat(result.getContent()).hasSize(2)
                 .extracting("id", "name", "userName", "isPrivate", "memo", "purchaseStore", "purchaseDate", "imageUrl",
                         "purchaseStoreType")
                 .containsExactlyInAnyOrder(
@@ -560,13 +566,16 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
         Clothes clothes1 = createClothesBy(user1, true, "1");
         Clothes clothes2 = createClothesBy(user1, false, "2");
 
-        SearchClothesSvcReq request = SearchClothesSvcReq.builder().userId(user1.getId()).build();
+        SearchClothesSvcReq request = SearchClothesSvcReq.builder()
+                .userId(user1.getId())
+                .pageable(Pageable.ofSize(10))
+                .build();
 
         // when
-        List<FindClothesRes> result = clothesService.findClothesByUser(request, user2);
+        Slice<FindClothesRes> result = clothesService.findClothesByUser(request, user2);
 
         //then
-        assertThat(result).hasSize(1)
+        assertThat(result.getContent()).hasSize(1)
                 .extracting("id", "name", "userName", "isPrivate", "memo", "purchaseStore", "purchaseDate", "imageUrl",
                         "purchaseStoreType")
                 .containsExactlyInAnyOrder(

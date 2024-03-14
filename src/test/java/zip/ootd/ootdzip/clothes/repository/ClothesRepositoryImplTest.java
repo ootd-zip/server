@@ -20,7 +20,7 @@ import zip.ootd.ootdzip.category.domain.Size;
 import zip.ootd.ootdzip.category.repository.CategoryRepository;
 import zip.ootd.ootdzip.category.repository.ColorRepository;
 import zip.ootd.ootdzip.category.repository.SizeRepository;
-import zip.ootd.ootdzip.clothes.controller.response.SearchClothesRes;
+import zip.ootd.ootdzip.clothes.data.FindClothesRes;
 import zip.ootd.ootdzip.clothes.data.PurchaseStoreType;
 import zip.ootd.ootdzip.clothes.domain.Clothes;
 import zip.ootd.ootdzip.clothes.domain.ClothesColor;
@@ -64,7 +64,7 @@ class ClothesRepositoryImplTest extends IntegrationTestSupport {
         Clothes clothes2 = createClothesBy("옷2", brand2, category1, size, List.of(color1), true, user);
 
         // when
-        Slice<SearchClothesRes> result = clothesRepository.searchClothesBy(user.getId(),
+        Slice<FindClothesRes> result = clothesRepository.searchClothesBy(user.getId(),
                 user.getId(),
                 true,
                 List.of(brand1.getId()),

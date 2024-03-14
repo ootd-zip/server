@@ -12,6 +12,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.util.LinkedMultiValueMap;
@@ -407,7 +408,9 @@ class ClothesControllerTest extends ControllerTestSupport {
     @Test
     void findClothesByUser() throws Exception {
         // given
-        when(clothesService.findClothesByUser(any(), any())).thenReturn(List.of());
+
+        when(clothesService.findClothesByUser(any(), any())).thenReturn(
+                new SliceImpl<FindClothesRes>(new ArrayList<>()));
 
         MultiValueMap<String, String> requestParam = new LinkedMultiValueMap<>();
         requestParam.set("userId", "1");
@@ -417,14 +420,15 @@ class ClothesControllerTest extends ControllerTestSupport {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(200))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result").isArray());
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result").exists());
     }
 
     @DisplayName("유저 ID로 옷을 조회할 때 유저 ID는 양수여야 한다.")
     @Test
     void findClothesByUserWithZeroUserId() throws Exception {
         // given
-        when(clothesService.findClothesByUser(any(), any())).thenReturn(List.of());
+        when(clothesService.findClothesByUser(any(), any())).thenReturn(
+                new SliceImpl<FindClothesRes>(new ArrayList<>()));
 
         MultiValueMap<String, String> requestParam = new LinkedMultiValueMap<>();
         requestParam.set("userId", "0");

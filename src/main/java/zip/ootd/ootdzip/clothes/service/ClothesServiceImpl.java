@@ -2,9 +2,9 @@ package zip.ootd.ootdzip.clothes.service;
 
 import static zip.ootd.ootdzip.common.exception.code.ErrorCode.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -114,23 +114,22 @@ public class ClothesServiceImpl implements ClothesService {
     }
 
     @Override
-    public List<FindClothesRes> findClothesByUser(SearchClothesSvcReq request, User loginUser) {
-
-        List<FindClothesRes> result = new ArrayList<>();
-        List<Clothes> clothesList;
+    public Slice<FindClothesRes> findClothesByUser(SearchClothesSvcReq request, User loginUser) {
 
         User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new CustomException(NOT_FOUND_USER_ID));
-
-        if (user.equals(loginUser)) {
-            clothesList = clothesRepository.findByUser(user, request.getPageable());
-        } else {
-            clothesList = clothesRepository.findByUserAndIsPrivateFalse(user, request.getPageable());
+        Boolean isPrivate = request.getIsPrivate();
+        if (!user.equals(loginUser)) {
+            isPrivate = false;
         }
 
-        for (Clothes clothes : clothesList) {
-            result.add(FindClothesRes.of(clothes));
-        }
+        Slice<FindClothesRes> result = clothesRepository.searchClothesBy(loginUser.getId(),
+                request.getUserId(),
+                isPrivate,
+                request.getBrandIds(),
+                request.getCategoryIds(),
+                request.getColorIds(),
+                request.getPageable());
 
         return result;
     }

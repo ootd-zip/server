@@ -10,11 +10,10 @@ import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
 
-import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
-import zip.ootd.ootdzip.clothes.controller.response.SearchClothesRes;
+import zip.ootd.ootdzip.clothes.data.FindClothesRes;
 import zip.ootd.ootdzip.clothes.domain.Clothes;
 
 @Repository
@@ -27,7 +26,7 @@ public class ClothesRepositoryImpl extends QuerydslRepositorySupport implements 
         this.queryFactory = queryFactory;
     }
 
-    public Slice<SearchClothesRes> searchClothesBy(Long loginUserId,
+    public Slice<FindClothesRes> searchClothesBy(Long loginUserId,
             Long userId,
             Boolean isPrivate,
             List<Long> brandIds,
@@ -35,10 +34,7 @@ public class ClothesRepositoryImpl extends QuerydslRepositorySupport implements 
             List<Long> colorIds,
             Pageable pageable) {
         int pageSize = pageable.getPageSize();
-        List<SearchClothesRes> findClothes = queryFactory.select(Projections.constructor(SearchClothesRes.class,
-                        clothes.id,
-                        clothes.imageUrl))
-                .from(clothes)
+        List<Clothes> findClothes = queryFactory.selectFrom(clothes)
                 .where(defaultCondition(loginUserId),
                         eqUserId(userId),
                         eqIsPrivate(isPrivate),
@@ -55,7 +51,9 @@ public class ClothesRepositoryImpl extends QuerydslRepositorySupport implements 
             hasNext = true;
         }
 
-        return new SliceImpl<>(findClothes, pageable, hasNext);
+        List<FindClothesRes> result = findClothes.stream().map(FindClothesRes::of).toList();
+
+        return new SliceImpl<>(result, pageable, hasNext);
     }
 
     private BooleanExpression defaultCondition(Long loginUserId) {
