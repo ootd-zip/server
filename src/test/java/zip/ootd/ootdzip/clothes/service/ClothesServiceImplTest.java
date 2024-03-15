@@ -10,7 +10,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 
 import zip.ootd.ootdzip.IntegrationTestSupport;
 import zip.ootd.ootdzip.brand.domain.Brand;
@@ -33,6 +32,7 @@ import zip.ootd.ootdzip.clothes.service.request.SearchClothesSvcReq;
 import zip.ootd.ootdzip.clothes.service.request.UpdateClothesIsPrivateSvcReq;
 import zip.ootd.ootdzip.clothes.service.request.UpdateClothesSvcReq;
 import zip.ootd.ootdzip.common.exception.CustomException;
+import zip.ootd.ootdzip.common.response.CommonSliceResponse;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.repository.UserRepository;
 
@@ -547,7 +547,7 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
                 .build();
 
         // when
-        Slice<FindClothesRes> result = clothesService.findClothesByUser(request, user);
+        CommonSliceResponse<FindClothesRes> result = clothesService.findClothesByUser(request, user);
 
         //then
         assertThat(result.getContent()).hasSize(2)
@@ -574,7 +574,7 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
                 .build();
 
         // when
-        Slice<FindClothesRes> result = clothesService.findClothesByUser(request, user2);
+        CommonSliceResponse<FindClothesRes> result = clothesService.findClothesByUser(request, user2);
 
         //then
         assertThat(result.getContent()).hasSize(1)

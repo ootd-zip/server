@@ -5,8 +5,10 @@ import java.util.List;
 import org.springframework.data.domain.Pageable;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class CommonSliceResponse<T> {
 
     private List<T> content;
