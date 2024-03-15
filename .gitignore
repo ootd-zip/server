@@ -38,3 +38,6 @@ out/
 
 ### key file ###
 **/application-secret.yaml
+
+### Querydsl ###
+/src/main/generated/

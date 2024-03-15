@@ -1,12 +1,12 @@
 package zip.ootd.ootdzip.clothes.service;
 
-import java.util.List;
+import org.springframework.data.domain.Slice;
 
 import zip.ootd.ootdzip.clothes.controller.response.FindClothesRes;
 import zip.ootd.ootdzip.clothes.data.DeleteClothesByIdRes;
 import zip.ootd.ootdzip.clothes.data.SaveClothesRes;
-import zip.ootd.ootdzip.clothes.service.request.FindClothesByUserSvcReq;
 import zip.ootd.ootdzip.clothes.service.request.SaveClothesSvcReq;
+import zip.ootd.ootdzip.clothes.service.request.SearchClothesSvcReq;
 import zip.ootd.ootdzip.clothes.service.request.UpdateClothesIsPrivateSvcReq;
 import zip.ootd.ootdzip.clothes.service.request.UpdateClothesSvcReq;
 import zip.ootd.ootdzip.user.domain.User;
@@ -33,7 +33,7 @@ public interface ClothesService {
      * @param request
      * @return
      */
-    List<FindClothesRes> findClothesByUser(FindClothesByUserSvcReq request, User loginUser);
+    Slice<FindClothesRes> findClothesByUser(SearchClothesSvcReq request, User loginUser);
 
     /**
      * id로 옷 정보 삭제

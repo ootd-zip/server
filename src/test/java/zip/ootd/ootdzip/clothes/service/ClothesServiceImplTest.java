@@ -9,6 +9,8 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 
 import zip.ootd.ootdzip.IntegrationTestSupport;
 import zip.ootd.ootdzip.brand.domain.Brand;
@@ -26,8 +28,8 @@ import zip.ootd.ootdzip.clothes.data.SaveClothesRes;
 import zip.ootd.ootdzip.clothes.domain.Clothes;
 import zip.ootd.ootdzip.clothes.domain.ClothesColor;
 import zip.ootd.ootdzip.clothes.repository.ClothesRepository;
-import zip.ootd.ootdzip.clothes.service.request.FindClothesByUserSvcReq;
 import zip.ootd.ootdzip.clothes.service.request.SaveClothesSvcReq;
+import zip.ootd.ootdzip.clothes.service.request.SearchClothesSvcReq;
 import zip.ootd.ootdzip.clothes.service.request.UpdateClothesIsPrivateSvcReq;
 import zip.ootd.ootdzip.clothes.service.request.UpdateClothesSvcReq;
 import zip.ootd.ootdzip.common.exception.CustomException;
@@ -538,13 +540,17 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
         Clothes clothes1 = createClothesBy(user, false, "1");
         Clothes clothes2 = createClothesBy(user, false, "2");
 
-        FindClothesByUserSvcReq request = FindClothesByUserSvcReq.builder().userId(user.getId()).build();
+        SearchClothesSvcReq request = SearchClothesSvcReq
+                .builder()
+                .userId(user.getId())
+                .pageable(Pageable.ofSize(10))
+                .build();
 
         // when
-        List<FindClothesRes> result = clothesService.findClothesByUser(request, user);
+        Slice<FindClothesRes> result = clothesService.findClothesByUser(request, user);
 
         //then
-        assertThat(result).hasSize(2)
+        assertThat(result.getContent()).hasSize(2)
                 .extracting("id", "name", "userName", "isPrivate", "memo", "purchaseStore", "purchaseDate", "imageUrl",
                         "purchaseStoreType")
                 .containsExactlyInAnyOrder(
@@ -562,13 +568,16 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
         Clothes clothes1 = createClothesBy(user1, true, "1");
         Clothes clothes2 = createClothesBy(user1, false, "2");
 
-        FindClothesByUserSvcReq request = FindClothesByUserSvcReq.builder().userId(user1.getId()).build();
+        SearchClothesSvcReq request = SearchClothesSvcReq.builder()
+                .userId(user1.getId())
+                .pageable(Pageable.ofSize(10))
+                .build();
 
         // when
-        List<FindClothesRes> result = clothesService.findClothesByUser(request, user2);
+        Slice<FindClothesRes> result = clothesService.findClothesByUser(request, user2);
 
         //then
-        assertThat(result).hasSize(1)
+        assertThat(result.getContent()).hasSize(1)
                 .extracting("id", "name", "userName", "isPrivate", "memo", "purchaseStore", "purchaseDate", "imageUrl",
                         "purchaseStoreType")
                 .containsExactlyInAnyOrder(
@@ -584,7 +593,7 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
         Clothes clothes1 = createClothesBy(user1, false, "1");
         Clothes clothes2 = createClothesBy(user1, true, "2");
 
-        FindClothesByUserSvcReq request = FindClothesByUserSvcReq.builder().userId(user1.getId() + 1).build();
+        SearchClothesSvcReq request = SearchClothesSvcReq.builder().userId(user1.getId() + 1).build();
 
         // when & then
         assertThatThrownBy(() -> clothesService.findClothesByUser(request, user1)).isInstanceOf(CustomException.class)

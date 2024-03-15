@@ -2,9 +2,9 @@ package zip.ootd.ootdzip.clothes.service;
 
 import static zip.ootd.ootdzip.common.exception.code.ErrorCode.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,8 +24,8 @@ import zip.ootd.ootdzip.clothes.data.SaveClothesRes;
 import zip.ootd.ootdzip.clothes.domain.Clothes;
 import zip.ootd.ootdzip.clothes.domain.ClothesColor;
 import zip.ootd.ootdzip.clothes.repository.ClothesRepository;
-import zip.ootd.ootdzip.clothes.service.request.FindClothesByUserSvcReq;
 import zip.ootd.ootdzip.clothes.service.request.SaveClothesSvcReq;
+import zip.ootd.ootdzip.clothes.service.request.SearchClothesSvcReq;
 import zip.ootd.ootdzip.clothes.service.request.UpdateClothesIsPrivateSvcReq;
 import zip.ootd.ootdzip.clothes.service.request.UpdateClothesSvcReq;
 import zip.ootd.ootdzip.common.exception.CustomException;
@@ -114,27 +114,22 @@ public class ClothesServiceImpl implements ClothesService {
     }
 
     @Override
-    public List<FindClothesRes> findClothesByUser(FindClothesByUserSvcReq request, User loginUser) {
-
-        List<FindClothesRes> result = new ArrayList<>();
-        List<Clothes> clothesList;
+    public Slice<FindClothesRes> findClothesByUser(SearchClothesSvcReq request, User loginUser) {
 
         User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new CustomException(NOT_FOUND_USER_ID));
-
-        /*
-         * 본인 옷장은 isOpen 관계없이 모든 옷 리스트 조회
-         * 본인 옷장이 아닌경우 isOpen이 true인 옷 리스트 조회
-         */
-        if (user.equals(loginUser)) {
-            clothesList = clothesRepository.findByUser(user, request.getPageable());
-        } else {
-            clothesList = clothesRepository.findByUserAndIsPrivateFalse(user, request.getPageable());
+        Boolean isPrivate = request.getIsPrivate();
+        if (!user.equals(loginUser)) {
+            isPrivate = false;
         }
 
-        for (Clothes clothes : clothesList) {
-            result.add(FindClothesRes.of(clothes));
-        }
+        Slice<FindClothesRes> result = clothesRepository.searchClothesBy(loginUser.getId(),
+                request.getUserId(),
+                isPrivate,
+                request.getBrandIds(),
+                request.getCategoryIds(),
+                request.getColorIds(),
+                request.getPageable());
 
         return result;
     }

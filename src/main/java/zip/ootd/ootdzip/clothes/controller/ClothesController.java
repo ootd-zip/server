@@ -1,7 +1,6 @@
 package zip.ootd.ootdzip.clothes.controller;
 
-import java.util.List;
-
+import org.springframework.data.domain.Slice;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,8 +17,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
-import zip.ootd.ootdzip.clothes.controller.request.FindClothesByUserReq;
 import zip.ootd.ootdzip.clothes.controller.request.SaveClothesReq;
+import zip.ootd.ootdzip.clothes.controller.request.SearchClothesReq;
 import zip.ootd.ootdzip.clothes.controller.request.UpdateClothesIsPrivateReq;
 import zip.ootd.ootdzip.clothes.controller.request.UpdateClothesReq;
 import zip.ootd.ootdzip.clothes.controller.response.FindClothesRes;
@@ -55,7 +54,7 @@ public class ClothesController {
 
     @Operation(summary = "유저 옷 리스트 조회", description = "유저 옷 리스트 조회")
     @GetMapping("")
-    public ApiResponse<List<FindClothesRes>> findClothesByUser(@Valid FindClothesByUserReq request) {
+    public ApiResponse<Slice<FindClothesRes>> findClothesByUser(@Valid SearchClothesReq request) {
         return new ApiResponse<>(
                 clothesService.findClothesByUser(request.toServiceRequest(),
                         userService.getAuthenticatiedUser()));
