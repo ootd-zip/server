@@ -30,6 +30,7 @@ import zip.ootd.ootdzip.clothes.service.request.UpdateClothesIsPrivateSvcReq;
 import zip.ootd.ootdzip.clothes.service.request.UpdateClothesSvcReq;
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.exception.code.ErrorCode;
+import zip.ootd.ootdzip.common.response.CommonSliceResponse;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.repository.UserRepository;
 import zip.ootd.ootdzip.user.service.UserService;
@@ -114,7 +115,7 @@ public class ClothesServiceImpl implements ClothesService {
     }
 
     @Override
-    public Slice<FindClothesRes> findClothesByUser(SearchClothesSvcReq request, User loginUser) {
+    public CommonSliceResponse<FindClothesRes> findClothesByUser(SearchClothesSvcReq request, User loginUser) {
 
         User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new CustomException(NOT_FOUND_USER_ID));
@@ -131,7 +132,7 @@ public class ClothesServiceImpl implements ClothesService {
                 request.getColorIds(),
                 request.getPageable());
 
-        return result;
+        return new CommonSliceResponse<>(result.getContent(), request.getPageable(), result.isLast());
     }
 
     @Override

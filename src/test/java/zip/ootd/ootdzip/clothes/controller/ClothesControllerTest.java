@@ -12,7 +12,6 @@ import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.data.domain.SliceImpl;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.util.LinkedMultiValueMap;
@@ -26,6 +25,7 @@ import zip.ootd.ootdzip.clothes.controller.response.FindClothesRes;
 import zip.ootd.ootdzip.clothes.data.DeleteClothesByIdRes;
 import zip.ootd.ootdzip.clothes.data.PurchaseStoreType;
 import zip.ootd.ootdzip.clothes.data.SaveClothesRes;
+import zip.ootd.ootdzip.common.response.CommonSliceResponse;
 
 class ClothesControllerTest extends ControllerTestSupport {
 
@@ -410,7 +410,7 @@ class ClothesControllerTest extends ControllerTestSupport {
         // given
 
         when(clothesService.findClothesByUser(any(), any())).thenReturn(
-                new SliceImpl<FindClothesRes>(new ArrayList<>()));
+                new CommonSliceResponse<>());
 
         MultiValueMap<String, String> requestParam = new LinkedMultiValueMap<>();
         requestParam.set("userId", "1");
@@ -428,7 +428,7 @@ class ClothesControllerTest extends ControllerTestSupport {
     void findClothesByUserWithZeroUserId() throws Exception {
         // given
         when(clothesService.findClothesByUser(any(), any())).thenReturn(
-                new SliceImpl<FindClothesRes>(new ArrayList<>()));
+                new CommonSliceResponse<>());
 
         MultiValueMap<String, String> requestParam = new LinkedMultiValueMap<>();
         requestParam.set("userId", "0");
