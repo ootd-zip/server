@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 
-import zip.ootd.ootdzip.clothes.data.FindClothesRes;
+import zip.ootd.ootdzip.clothes.controller.response.FindClothesRes;
 
 public interface ClothesRepositoryCustom {
     Slice<FindClothesRes> searchClothesBy(Long loginUserId,

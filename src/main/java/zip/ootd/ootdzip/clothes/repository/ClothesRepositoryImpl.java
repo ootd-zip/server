@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
-import zip.ootd.ootdzip.clothes.data.FindClothesRes;
+import zip.ootd.ootdzip.clothes.controller.response.FindClothesRes;
 import zip.ootd.ootdzip.clothes.domain.Clothes;
 
 @Repository
