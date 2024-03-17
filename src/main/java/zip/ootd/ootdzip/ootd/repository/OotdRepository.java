@@ -12,7 +12,7 @@ import io.lettuce.core.dynamic.annotation.Param;
 import zip.ootd.ootdzip.ootd.domain.Ootd;
 
 @Repository
-public interface OotdRepository extends JpaRepository<Ootd, Long> {
+public interface OotdRepository extends JpaRepository<Ootd, Long>, OotdRepositoryCustom {
 
     @Query("SELECT o from Ootd o where (o.isPrivate = false or o.writer.id = :userId) ")
     Slice<Ootd> findAllByUserId(@Param("userId") Long userId, Pageable pageable);

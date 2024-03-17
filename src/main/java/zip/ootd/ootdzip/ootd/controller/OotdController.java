@@ -18,6 +18,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import zip.ootd.ootdzip.common.response.ApiResponse;
 import zip.ootd.ootdzip.common.response.CommonSliceResponse;
+import zip.ootd.ootdzip.ootd.controller.request.OotdSearchReq;
+import zip.ootd.ootdzip.ootd.controller.response.OotdSearchRes;
 import zip.ootd.ootdzip.ootd.data.OotdGetAllRes;
 import zip.ootd.ootdzip.ootd.data.OotdGetByUserReq;
 import zip.ootd.ootdzip.ootd.data.OotdGetByUserRes;
@@ -176,5 +178,11 @@ public class OotdController {
                 request);
 
         return new ApiResponse<>(response);
+    }
+
+    @Operation(summary = "ootd 검색 기능")
+    @GetMapping("/search")
+    public ApiResponse<CommonSliceResponse<OotdSearchRes>> searchOotds(@Valid OotdSearchReq request) {
+        return new ApiResponse<>(ootdService.searchOotds(request.toServiceRequest()));
     }
 }

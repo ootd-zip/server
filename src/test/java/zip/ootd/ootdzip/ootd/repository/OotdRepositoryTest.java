@@ -32,6 +32,7 @@ import zip.ootd.ootdzip.clothes.data.PurchaseStoreType;
 import zip.ootd.ootdzip.clothes.domain.Clothes;
 import zip.ootd.ootdzip.clothes.domain.ClothesColor;
 import zip.ootd.ootdzip.clothes.repository.ClothesRepository;
+import zip.ootd.ootdzip.ootd.data.OotdSearchSortType;
 import zip.ootd.ootdzip.ootd.domain.Ootd;
 import zip.ootd.ootdzip.ootdimage.domain.OotdImage;
 import zip.ootd.ootdzip.ootdimageclothe.domain.Coordinate;
@@ -39,6 +40,7 @@ import zip.ootd.ootdzip.ootdimageclothe.domain.DeviceSize;
 import zip.ootd.ootdzip.ootdimageclothe.domain.OotdImageClothes;
 import zip.ootd.ootdzip.ootdstyle.domain.OotdStyle;
 import zip.ootd.ootdzip.user.domain.User;
+import zip.ootd.ootdzip.user.domain.UserGender;
 import zip.ootd.ootdzip.user.repository.UserRepository;
 
 public class OotdRepositoryTest extends IntegrationTestSupport {
@@ -201,6 +203,31 @@ public class OotdRepositoryTest extends IntegrationTestSupport {
         assertThat(result).hasSize(0);
     }
 
+    @DisplayName("OOTD를 검색한다")
+    @Test
+    void searchOotds() {
+        // given
+        User user1 = createUserBy("유저1");
+        for (int i = 1; i <= 50; i++) {
+
+            Clothes clothes1 = createClothesBy(user1, true, String.valueOf(i));
+            Clothes clothes2 = createClothesBy(user1, true, String.valueOf(i + 50));
+
+            Style style = createStyleBy("스타일1");
+
+            Ootd ootd = createOotdBy(user1, String.format("내용본문%d", i), false, List.of(clothes1, clothes2),
+                    List.of(style));
+        }
+        // when
+        Slice<Ootd> ootds = ootdRepository.searchOotds("3", null, null, null, null, OotdSearchSortType.LATEST,
+                PageRequest.of(0, 10));
+        //then
+        assertThat(ootds.getContent()).hasSize(10);
+
+        assertThat(ootds.hasNext()).isTrue();
+
+    }
+
     private Ootd createOotdBy(User user, String content, boolean isPrivate) {
 
         Clothes clothes = createClothesBy(user, true, "1");
@@ -242,6 +269,39 @@ public class OotdRepositoryTest extends IntegrationTestSupport {
         return ootdRepository.save(ootd);
     }
 
+    private Ootd createOotdBy(User user, String content, boolean isPrivate, List<Clothes> clothesList,
+            List<Style> styles) {
+
+        List<OotdImageClothes> ootdImageClothes = new ArrayList<>();
+
+        for (Clothes clothes : clothesList) {
+            Coordinate coordinate = new Coordinate("22.33", "33.44");
+            DeviceSize deviceSize = new DeviceSize(100L, 50L);
+
+            ootdImageClothes.add(OotdImageClothes.builder().clothes(clothes)
+                    .coordinate(coordinate)
+                    .deviceSize(deviceSize)
+                    .build());
+        }
+
+        OotdImage ootdImage = OotdImage.createOotdImageBy("input_image_url.jpg",
+                ootdImageClothes);
+
+        List<OotdStyle> ootdStyles = new ArrayList<>();
+
+        for (Style style : styles) {
+            ootdStyles.add(OotdStyle.createOotdStyleBy(style));
+        }
+
+        Ootd ootd = Ootd.createOotd(user,
+                content,
+                isPrivate,
+                List.of(ootdImage),
+                ootdStyles);
+
+        return ootdRepository.save(ootd);
+    }
+
     private Clothes createClothesBy(User user, boolean isOpen, String idx) {
 
         Brand brand = Brand.builder().name("브랜드" + idx).build();
@@ -267,14 +327,20 @@ public class OotdRepositoryTest extends IntegrationTestSupport {
         List<ClothesColor> clothesColors = ClothesColor.createClothesColorsBy(List.of(savedColor));
 
         Clothes clothes = Clothes.createClothes(user, savedBrand, "구매처" + idx, PurchaseStoreType.Write, "제품명" + idx,
-                isOpen, savedCategory, savedSize, "메모입니다" + idx, "구매일" + idx, "image" + idx + ".jpg", clothesColors);
+                !isOpen, savedCategory, savedSize, "메모입니다" + idx, "구매일" + idx, "image" + idx + ".jpg", clothesColors);
 
         return clothesRepository.save(clothes);
+    }
+
+    private Style createStyleBy(String name) {
+        Style style = Style.builder().name(name).build();
+        return styleRepository.save(style);
     }
 
     private User createUserBy(String userName) {
         User user = User.getDefault();
         user.setName(userName);
+        user.setGender(UserGender.MALE);
         return userRepository.save(user);
     }
 }
