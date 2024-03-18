@@ -36,13 +36,13 @@ public class NotificationGetAllRes {
 
     public static NotificationGetAllRes of(Notification notification) {
 
-        User receiver = notification.getReceiver();
+        User sender = notification.getSender();
 
         return NotificationGetAllRes.builder()
                 .id(notification.getId())
-                .profileImage(receiver.getProfileImage())
-                .userName(receiver.getName())
-                .userId(receiver.getId())
+                .profileImage(sender.getProfileImage())
+                .userName(sender.getName())
+                .userId(sender.getId())
                 .alarmType(notification.getNotificationType().toString())
                 .message(notification.getNotificationType().getBaseMessage())
                 .content(notification.getContent())
