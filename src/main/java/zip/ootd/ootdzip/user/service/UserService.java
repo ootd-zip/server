@@ -244,8 +244,8 @@ public class UserService {
 
     public CommonSliceResponse<UserSearchRes> searchUser(UserSearchSvcReq request, User loginUser) {
 
-        Slice<User> findUsers = userRepository.searchUsers(request.getName()
-                , request.getPageable());
+        Slice<User> findUsers = userRepository.searchUsers(request.getName(),
+                request.getPageable());
 
         List<UserSearchRes> result = findUsers.stream()
                 .map((item) -> {
