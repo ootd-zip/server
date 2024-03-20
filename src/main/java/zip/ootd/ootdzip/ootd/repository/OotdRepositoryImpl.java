@@ -52,13 +52,12 @@ public class OotdRepositoryImpl extends QuerydslRepositorySupport implements Oot
                 .on(ootdImageClothes.clothes.isPrivate.eq(false),
                         ootdImageClothes.clothes.reportCount.loe(5))
                 .innerJoin(ootdImageClothes.clothes, clothes)
-                .where(//defaultCondition(),
+                .where(
                         searchTextCondition(searchText),
                         inBrandIds(brandIds),
                         inCategoryIds(categoryIds),
                         inColorIds(colorIds),
                         eqWriterGender(writerGender))
-                .distinct()
                 .orderBy(createOrderSpecifiers(sortType))
                 .offset(pageable.getOffset())
                 .limit(pageSize + 1)
@@ -71,12 +70,6 @@ public class OotdRepositoryImpl extends QuerydslRepositorySupport implements Oot
         }
 
         return new SliceImpl<>(findOotds, pageable, hasNext);
-    }
-
-    private BooleanExpression defaultCondition() {
-        return ootd.isBlocked.eq(false)
-                .and(ootd.isDeleted).eq(false)
-                .and(ootd.reportCount.loe(5));
     }
 
     private BooleanExpression searchTextCondition(String searchText) {

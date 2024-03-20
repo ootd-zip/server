@@ -24,11 +24,14 @@ import lombok.RequiredArgsConstructor;
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.exception.code.ErrorCode;
 import zip.ootd.ootdzip.common.response.ApiResponse;
+import zip.ootd.ootdzip.common.response.CommonSliceResponse;
 import zip.ootd.ootdzip.oauth.data.TokenInfo;
 import zip.ootd.ootdzip.user.controller.request.ProfileReq;
 import zip.ootd.ootdzip.user.controller.request.UserRegisterReq;
+import zip.ootd.ootdzip.user.controller.request.UserSearchReq;
 import zip.ootd.ootdzip.user.controller.response.ProfileRes;
 import zip.ootd.ootdzip.user.controller.response.UserInfoForMyPageRes;
+import zip.ootd.ootdzip.user.controller.response.UserSearchRes;
 import zip.ootd.ootdzip.user.data.CheckNameReq;
 import zip.ootd.ootdzip.user.data.FollowReq;
 import zip.ootd.ootdzip.user.data.TokenUserInfoRes;
@@ -163,6 +166,13 @@ public class UserController {
             @PathVariable(name = "id") @Positive(message = "유저 ID는 양수여야 합니다.") Long id) {
         return new ApiResponse<>(userService.getUserInfoForMyPage(UserInfoForMyPageSvcReq.createBy(id),
                 userService.getAuthenticatiedUser()));
+    }
+
+    @Operation(summary = "유저 프로필 검색", description = "유저 프로필 검색 API")
+    @GetMapping("/search")
+    public ApiResponse<CommonSliceResponse<UserSearchRes>> searchUser(UserSearchReq request) {
+        return new ApiResponse<>(
+                userService.searchUser(request.toServiceRequest(), userService.getAuthenticatiedUser()));
     }
 
 }
