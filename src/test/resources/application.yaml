@@ -3,6 +3,8 @@ spring:
     hibernate:
       ddl-auto: create-drop
     show-sql: true
+    format_sql: true # sql 보기 편하게 출력
+    use_sql_comments: true
   datasource:
     url: jdbc:h2:tcp://localhost/~/ootdzip
     username: sa

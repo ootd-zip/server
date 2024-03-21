@@ -25,6 +25,7 @@ import zip.ootd.ootdzip.common.exception.code.ErrorCode;
 import zip.ootd.ootdzip.common.response.CommonSliceResponse;
 import zip.ootd.ootdzip.notification.domain.NotificationType;
 import zip.ootd.ootdzip.notification.event.NotificationEvent;
+import zip.ootd.ootdzip.ootd.controller.response.OotdSearchRes;
 import zip.ootd.ootdzip.ootd.data.OotdGetAllRes;
 import zip.ootd.ootdzip.ootd.data.OotdGetByUserReq;
 import zip.ootd.ootdzip.ootd.data.OotdGetByUserRes;
@@ -40,6 +41,7 @@ import zip.ootd.ootdzip.ootd.data.OotdPostReq;
 import zip.ootd.ootdzip.ootd.data.OotdPutReq;
 import zip.ootd.ootdzip.ootd.domain.Ootd;
 import zip.ootd.ootdzip.ootd.repository.OotdRepository;
+import zip.ootd.ootdzip.ootd.service.request.OotdSearchSvcReq;
 import zip.ootd.ootdzip.ootdimage.domain.OotdImage;
 import zip.ootd.ootdzip.ootdimage.repository.OotdImageRepository;
 import zip.ootd.ootdzip.ootdimageclothe.domain.Coordinate;
@@ -457,5 +459,25 @@ public class OotdService {
                 .collect(Collectors.toList());
 
         return new CommonSliceResponse<>(ootdGetClothesResList, pageable, ootdImages.isLast());
+    }
+
+    /**
+     * 검색 기능에서 사용하는 ootd 검색 메소드입니다.
+     */
+    public CommonSliceResponse<OotdSearchRes> searchOotds(OotdSearchSvcReq request) {
+
+        Slice<Ootd> findOotds = ootdRepository.searchOotds(request.getSearchText(),
+                request.getBrandIds(),
+                request.getCategoryIds(),
+                request.getColorIds(),
+                request.getWriterGender(),
+                request.getSortType(),
+                request.getPageable());
+
+        List<OotdSearchRes> ootdSearchRes = findOotds.stream()
+                .map(OotdSearchRes::of)
+                .toList();
+
+        return new CommonSliceResponse<OotdSearchRes>(ootdSearchRes, request.getPageable(), findOotds.isLast());
     }
 }

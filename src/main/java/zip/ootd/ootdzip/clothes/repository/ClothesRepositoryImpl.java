@@ -41,6 +41,7 @@ public class ClothesRepositoryImpl extends QuerydslRepositorySupport implements 
                         inBrandIds(brandIds),
                         inCategoryIds(categoryIds),
                         inColorIds(colorIds))
+                .orderBy(clothes.createdAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageSize + 1)
                 .fetch();

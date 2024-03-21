@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Slice;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,6 +20,7 @@ import zip.ootd.ootdzip.category.domain.Style;
 import zip.ootd.ootdzip.category.repository.StyleRepository;
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.exception.code.ErrorCode;
+import zip.ootd.ootdzip.common.response.CommonSliceResponse;
 import zip.ootd.ootdzip.notification.domain.NotificationType;
 import zip.ootd.ootdzip.notification.event.NotificationEvent;
 import zip.ootd.ootdzip.oauth.data.TokenInfo;
@@ -32,6 +34,7 @@ import zip.ootd.ootdzip.oauth.service.SocialOAuth;
 import zip.ootd.ootdzip.security.JwtUtils;
 import zip.ootd.ootdzip.user.controller.response.ProfileRes;
 import zip.ootd.ootdzip.user.controller.response.UserInfoForMyPageRes;
+import zip.ootd.ootdzip.user.controller.response.UserSearchRes;
 import zip.ootd.ootdzip.user.data.CheckNameReq;
 import zip.ootd.ootdzip.user.data.TokenUserInfoRes;
 import zip.ootd.ootdzip.user.data.UserLoginReq;
@@ -41,6 +44,7 @@ import zip.ootd.ootdzip.user.repository.UserRepository;
 import zip.ootd.ootdzip.user.service.request.ProfileSvcReq;
 import zip.ootd.ootdzip.user.service.request.UserInfoForMyPageSvcReq;
 import zip.ootd.ootdzip.user.service.request.UserRegisterSvcReq;
+import zip.ootd.ootdzip.user.service.request.UserSearchSvcReq;
 import zip.ootd.ootdzip.utils.ImageFileUtil;
 
 @Service
@@ -236,6 +240,20 @@ public class UserService {
                 request.getIsBodyPrivate());
 
         userRepository.save(loginUser);
+    }
 
+    public CommonSliceResponse<UserSearchRes> searchUser(UserSearchSvcReq request, User loginUser) {
+
+        Slice<User> findUsers = userRepository.searchUsers(request.getName(),
+                request.getPageable());
+
+        List<UserSearchRes> result = findUsers.stream()
+                .map((item) -> {
+                    return UserSearchRes.of(item, loginUser);
+                })
+                .toList();
+
+        return new CommonSliceResponse<UserSearchRes>(result, request.getPageable(),
+                findUsers.isLast());
     }
 }
