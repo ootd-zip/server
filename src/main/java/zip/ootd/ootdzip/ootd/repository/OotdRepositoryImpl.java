@@ -49,9 +49,7 @@ public class OotdRepositoryImpl extends QuerydslRepositorySupport implements Oot
                 .innerJoin(ootd.styles, ootdStyle)
                 .innerJoin(ootd.ootdImages, ootdImage)
                 .leftJoin(ootdImage.ootdImageClothesList, ootdImageClothes)
-                .on(ootdImageClothes.clothes.isPrivate.eq(false),
-                        ootdImageClothes.clothes.reportCount.loe(5))
-                .innerJoin(ootdImageClothes.clothes, clothes)
+                .leftJoin(ootdImageClothes.clothes, clothes)
                 .where(
                         searchTextCondition(searchText),
                         inBrandIds(brandIds),

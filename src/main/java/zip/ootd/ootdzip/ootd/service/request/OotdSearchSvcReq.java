@@ -23,6 +23,6 @@ public class OotdSearchSvcReq {
     private List<Long> colorIds;
     private List<Long> brandIds;
     private UserGender writerGender;
-    private OotdSearchSortType sortType;
+    private OotdSearchSortType sortCriteria;
     private Pageable pageable;
 }
