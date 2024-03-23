@@ -385,7 +385,7 @@ class UserServiceTest extends IntegrationTestSupport {
         Style style2 = createStyleBy("스타일2");
         Style style3 = createStyleBy("스타일3");
 
-        List<UserStyle> userStyles = UserStyle.createUserStylesBy(List.of(style1, style2), user);
+        List<UserStyle> userStyles = UserStyle.createUserStylesBy(List.of(style1, style2, style3), user);
 
         userStyleRepository.saveAll(userStyles);
 
@@ -394,11 +394,25 @@ class UserServiceTest extends IntegrationTestSupport {
 
         //then
         assertThat(result).hasSize(3)
-                .extracting("id", "styleName")
+                .extracting("id", "name")
                 .containsExactlyInAnyOrder(
                         tuple(style1.getId(), style1.getName()),
                         tuple(style2.getId(), style2.getName()),
                         tuple(style3.getId(), style3.getName()));
+    }
+
+    @DisplayName("유저 선호 스타일을 조회할 때 등록된 선호 스타일이 없을 때 빈 리스트를 반환한다.")
+    @Test
+    void getUserStylesWithNoRegisteredUserStyle() {
+        // given
+        User user = createDefaultUser();
+
+        // when
+        List<UserStyleRes> result = userService.getUserStyle(user);
+
+        //then
+        assertThat(result).hasSize(0)
+                .isNotNull();
     }
 
     private User createDefaultUser() {

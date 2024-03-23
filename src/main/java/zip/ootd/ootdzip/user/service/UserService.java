@@ -42,6 +42,7 @@ import zip.ootd.ootdzip.user.data.UserLoginReq;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.domain.UserStyle;
 import zip.ootd.ootdzip.user.repository.UserRepository;
+import zip.ootd.ootdzip.user.repository.UserStyleRepository;
 import zip.ootd.ootdzip.user.service.request.ProfileSvcReq;
 import zip.ootd.ootdzip.user.service.request.UserInfoForMyPageSvcReq;
 import zip.ootd.ootdzip.user.service.request.UserRegisterSvcReq;
@@ -61,6 +62,7 @@ public class UserService {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final StyleRepository styleRepository;
     private final ApplicationEventPublisher eventPublisher;
+    private final UserStyleRepository userStyleRepository;
 
     @Transactional
     public TokenInfo login(UserLoginReq request) {
@@ -260,7 +262,13 @@ public class UserService {
 
     public List<UserStyleRes> getUserStyle(User loginUser) {
 
-        return null;
+        List<UserStyle> userStyles = userStyleRepository.findAllByUser(loginUser);
+
+        return userStyles.stream()
+                .map((userStyle) -> {
+                    return UserStyleRes.of(userStyle.getStyle());
+                })
+                .toList();
     }
 
 }
