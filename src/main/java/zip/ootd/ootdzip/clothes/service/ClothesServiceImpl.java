@@ -130,6 +130,7 @@ public class ClothesServiceImpl implements ClothesService {
                 request.getBrandIds(),
                 request.getCategoryIds(),
                 request.getColorIds(),
+                request.getSearchText(),
                 request.getPageable());
 
         return new CommonSliceResponse<>(result.getContent(), request.getPageable(), result.isLast());

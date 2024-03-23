@@ -79,7 +79,7 @@ public class OotdRepositoryImpl extends QuerydslRepositorySupport implements Oot
         return ootd.contents.contains(searchText)
                 .or(ootd.writer.name.contains(searchText))
                 .or(ootdStyle.style.name.eq(searchText))
-                .or(clothes.brand.name.eq(searchText));
+                .or(clothes.brand.name.contains(searchText));
     }
 
     private BooleanExpression inBrandIds(List<Long> brandIds) {
