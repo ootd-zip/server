@@ -24,5 +24,7 @@ public class SearchClothesSvcReq {
 
     private List<Long> colorIds;
 
+    private String searchText;
+
     private final Pageable pageable;
 }

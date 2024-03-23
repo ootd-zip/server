@@ -49,9 +49,7 @@ public class OotdRepositoryImpl extends QuerydslRepositorySupport implements Oot
                 .innerJoin(ootd.styles, ootdStyle)
                 .innerJoin(ootd.ootdImages, ootdImage)
                 .leftJoin(ootdImage.ootdImageClothesList, ootdImageClothes)
-                .on(ootdImageClothes.clothes.isPrivate.eq(false),
-                        ootdImageClothes.clothes.reportCount.loe(5))
-                .innerJoin(ootdImageClothes.clothes, clothes)
+                .leftJoin(ootdImageClothes.clothes, clothes)
                 .where(
                         searchTextCondition(searchText),
                         inBrandIds(brandIds),
@@ -81,7 +79,7 @@ public class OotdRepositoryImpl extends QuerydslRepositorySupport implements Oot
         return ootd.contents.contains(searchText)
                 .or(ootd.writer.name.contains(searchText))
                 .or(ootdStyle.style.name.eq(searchText))
-                .or(clothes.brand.name.eq(searchText));
+                .or(clothes.brand.name.contains(searchText));
     }
 
     private BooleanExpression inBrandIds(List<Long> brandIds) {

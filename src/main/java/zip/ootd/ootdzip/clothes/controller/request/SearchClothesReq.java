@@ -21,6 +21,8 @@ public class SearchClothesReq extends CommonPageRequest {
 
     private List<@Positive(message = "색 ID는 양수여야 합니다.") Long> colorIds;
 
+    private String searchText;
+
     public SearchClothesSvcReq toServiceRequest() {
         return SearchClothesSvcReq.builder()
                 .userId(this.userId)
@@ -28,6 +30,7 @@ public class SearchClothesReq extends CommonPageRequest {
                 .brandIds(brandIds)
                 .categoryIds(categoryIds)
                 .colorIds(colorIds)
+                .searchText(searchText)
                 .pageable(this.toPageable())
                 .build();
     }

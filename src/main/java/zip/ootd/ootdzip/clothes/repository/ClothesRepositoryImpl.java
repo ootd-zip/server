@@ -32,6 +32,7 @@ public class ClothesRepositoryImpl extends QuerydslRepositorySupport implements 
             List<Long> brandIds,
             List<Long> categoryIds,
             List<Long> colorIds,
+            String searchText,
             Pageable pageable) {
         int pageSize = pageable.getPageSize();
         List<Clothes> findClothes = queryFactory.selectFrom(clothes)
@@ -99,6 +100,16 @@ public class ClothesRepositoryImpl extends QuerydslRepositorySupport implements 
             return null;
         }
         return clothes.clothesColors.any().color.id.in(colorIds);
+    }
+
+    private BooleanExpression searchTextCondition(String searchText) {
+        if (searchText == null
+                || searchText.isBlank()) {
+            return null;
+        }
+
+        return clothes.name.contains(searchText)
+                .or(clothes.brand.name.contains(searchText));
     }
 
 }

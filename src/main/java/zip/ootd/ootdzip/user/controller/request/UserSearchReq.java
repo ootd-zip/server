@@ -17,12 +17,12 @@ import zip.ootd.ootdzip.user.service.request.UserSearchSvcReq;
 public class UserSearchReq {
     private String name;
     private Integer page = 0;
-    private Integer pageSize = 30;
+    private Integer size = 30;
 
     public UserSearchSvcReq toServiceRequest() {
         return UserSearchSvcReq.builder()
                 .name(name)
-                .pageable(PageRequest.of(page, pageSize))
+                .pageable(PageRequest.of(page, size))
                 .build();
 
     }

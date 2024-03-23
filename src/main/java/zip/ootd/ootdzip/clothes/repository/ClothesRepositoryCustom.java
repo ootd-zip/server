@@ -14,5 +14,6 @@ public interface ClothesRepositoryCustom {
             List<Long> brandIds,
             List<Long> categoryIds,
             List<Long> colorIds,
+            String searchText,
             Pageable pageable);
 }

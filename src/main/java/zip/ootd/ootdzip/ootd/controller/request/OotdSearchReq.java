@@ -25,7 +25,7 @@ public class OotdSearchReq {
     private UserGender writerGender;
 
     @EnumValid(enumClass = OotdSearchSortType.class, ignoreCase = true)
-    private OotdSearchSortType sortType;
+    private OotdSearchSortType sortCriteria;
 
     private Integer page = 0;
 
@@ -38,7 +38,7 @@ public class OotdSearchReq {
                 .colorIds(colorIds)
                 .brandIds(brandIds)
                 .writerGender(writerGender)
-                .sortType(sortType)
+                .sortCriteria(sortCriteria)
                 .pageable(PageRequest.of(page, size))
                 .build();
     }

@@ -471,7 +471,7 @@ public class OotdService {
                 request.getCategoryIds(),
                 request.getColorIds(),
                 request.getWriterGender(),
-                request.getSortType(),
+                request.getSortCriteria(),
                 request.getPageable());
 
         List<OotdSearchRes> ootdSearchRes = findOotds.stream()

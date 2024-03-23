@@ -70,6 +70,7 @@ class ClothesRepositoryImplTest extends IntegrationTestSupport {
                 List.of(brand1.getId()),
                 List.of(category1.getId()),
                 List.of(color1.getId()),
+                "",
                 Pageable.ofSize(10));
         //then
         assertThat(result).hasSize(1)

@@ -228,10 +228,35 @@ public class OotdRepositoryTest extends IntegrationTestSupport {
 
     }
 
+    @DisplayName("비공개 옷이 등록된 OOTD도 검색된다.")
+    @Test
+    void searchOotdsWithPrivateClothes() {
+        // given
+        User user1 = createUserBy("유저1");
+        for (int i = 1; i <= 50; i++) {
+
+            Clothes clothes1 = createClothesBy(user1, false, String.valueOf(i));
+            Clothes clothes2 = createClothesBy(user1, false, String.valueOf(i + 50));
+
+            Style style = createStyleBy("스타일1");
+
+            Ootd ootd = createOotdBy(user1, String.format("내용본문%d", i), false, List.of(clothes1, clothes2),
+                    List.of(style));
+        }
+        // when
+        Slice<Ootd> ootds = ootdRepository.searchOotds("3", null, null, null, null, OotdSearchSortType.LATEST,
+                PageRequest.of(0, 10));
+        //then
+        assertThat(ootds.getContent()).hasSize(10);
+
+        assertThat(ootds.hasNext()).isTrue();
+
+    }
+
     private Ootd createOotdBy(User user, String content, boolean isPrivate) {
 
-        Clothes clothes = createClothesBy(user, true, "1");
-        Clothes clothes1 = createClothesBy(user, true, "2");
+        Clothes clothes = createClothesBy(user, isPrivate, "1");
+        Clothes clothes1 = createClothesBy(user, isPrivate, "2");
 
         Coordinate coordinate = new Coordinate("22.33", "33.44");
         Coordinate coordinate1 = new Coordinate("33.44", "44.55");
