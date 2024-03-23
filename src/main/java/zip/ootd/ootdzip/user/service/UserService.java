@@ -35,6 +35,7 @@ import zip.ootd.ootdzip.security.JwtUtils;
 import zip.ootd.ootdzip.user.controller.response.ProfileRes;
 import zip.ootd.ootdzip.user.controller.response.UserInfoForMyPageRes;
 import zip.ootd.ootdzip.user.controller.response.UserSearchRes;
+import zip.ootd.ootdzip.user.controller.response.UserStyleRes;
 import zip.ootd.ootdzip.user.data.CheckNameReq;
 import zip.ootd.ootdzip.user.data.TokenUserInfoRes;
 import zip.ootd.ootdzip.user.data.UserLoginReq;
@@ -256,4 +257,10 @@ public class UserService {
         return new CommonSliceResponse<UserSearchRes>(result, request.getPageable(),
                 findUsers.isLast());
     }
+
+    public List<UserStyleRes> getUserStyle(User loginUser) {
+
+        return null;
+    }
+
 }
