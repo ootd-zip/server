@@ -72,7 +72,7 @@ public class User extends BaseEntity {
                 .height(0)
                 .isBodyPrivate(false)
                 .weight(0)
-                .profileImage(null)
+                .profileImage("")
                 .description(null)
                 .isCompleted(false)
                 .isDeleted(false)
