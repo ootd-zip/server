@@ -51,3 +51,10 @@ springdoc:
     persist-authorization: true
     query-config-enabled: true
   pre-loading-enabled: true
+
+# Token config
+authorization:
+  issuer: ootdzip
+  audience: ootdzip
+  access-token-time-to-live: 1800  # 30 minutes
+  refresh-token-time-to-live: 5184000  # 60 days
