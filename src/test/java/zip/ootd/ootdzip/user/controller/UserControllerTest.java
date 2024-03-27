@@ -18,6 +18,7 @@ import zip.ootd.ootdzip.ControllerTestSupport;
 import zip.ootd.ootdzip.user.controller.request.ProfileReq;
 import zip.ootd.ootdzip.user.controller.request.UserRegisterReq;
 import zip.ootd.ootdzip.user.controller.response.UserInfoForMyPageRes;
+import zip.ootd.ootdzip.user.data.FollowReq;
 import zip.ootd.ootdzip.user.domain.UserGender;
 
 class UserControllerTest extends ControllerTestSupport {
@@ -414,5 +415,22 @@ class UserControllerTest extends ControllerTestSupport {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(404))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.errors[0].field").value("isBodyPrivate"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.errors[0].reason").value("체형정보 공개여부는 필수입니다."));
+    }
+
+    @DisplayName("언팔로워가 성공한다.")
+    @Test
+    void unfollower() throws Exception {
+        // given
+        FollowReq request = new FollowReq();
+        request.setUserId(1L);
+        when(userService.unfollower(any(), any())).thenReturn(true);
+
+        // when & then
+        mockMvc.perform(post("/api/v1/user/unfollower").content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(200))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result").isBoolean());
     }
 }

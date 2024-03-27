@@ -36,6 +36,7 @@ import zip.ootd.ootdzip.user.controller.response.ProfileRes;
 import zip.ootd.ootdzip.user.controller.response.UserInfoForMyPageRes;
 import zip.ootd.ootdzip.user.controller.response.UserSearchRes;
 import zip.ootd.ootdzip.user.data.CheckNameReq;
+import zip.ootd.ootdzip.user.data.FollowReq;
 import zip.ootd.ootdzip.user.data.TokenUserInfoRes;
 import zip.ootd.ootdzip.user.data.UserLoginReq;
 import zip.ootd.ootdzip.user.domain.User;
@@ -173,6 +174,12 @@ public class UserService {
         User user = userRepository.findById(userId).orElseThrow();
         User follower = userRepository.findById(followerId).orElseThrow();
         return user.removeFollower(follower);
+    }
+
+    @Transactional
+    public boolean unfollower(User loginUser, FollowReq request) {
+        User follower = userRepository.findById(request.getUserId()).orElseThrow();
+        return loginUser.removeFollower(follower);
     }
 
     public Set<User> getFollowers(Long userId) {

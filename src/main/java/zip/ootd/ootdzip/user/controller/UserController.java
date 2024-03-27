@@ -110,6 +110,16 @@ public class UserController {
         }
     }
 
+    @PostMapping("/unfollower")
+    public ApiResponse<Boolean> unfollower(@RequestBody FollowReq request) {
+        User loginUser = userService.getAuthenticatiedUser();
+        if (userService.unfollower(loginUser, request)) {
+            return new ApiResponse<>(true);
+        } else {
+            throw new CustomException(ErrorCode.UNFOLLOW_ERROR);
+        }
+    }
+
     @GetMapping("/check-name")
     public ApiResponse<Boolean> checkName(CheckNameReq request) {
         return new ApiResponse<>(userService.checkName(request));
