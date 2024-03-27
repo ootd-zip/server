@@ -113,8 +113,7 @@ class BrandServiceTest extends IntegrationTestSupport {
                 .extracting("id", "name")
                 .containsExactlyInAnyOrder(
                         tuple(brand1.getId(), brand1.getName()),
-                        tuple(brand2.getId(), brand2.getName())
-                );
+                        tuple(brand2.getId(), brand2.getName()));
     }
 
     @DisplayName("다른 유저가 공개로 등록한 옷의 브랜드만 조회한다.")
@@ -137,8 +136,7 @@ class BrandServiceTest extends IntegrationTestSupport {
         assertThat(result).hasSize(1)
                 .extracting("id", "name")
                 .containsExactlyInAnyOrder(
-                        tuple(brand1.getId(), brand1.getName())
-                );
+                        tuple(brand1.getId(), brand1.getName()));
     }
 
     private Clothes createClothesBy(User user, Brand brand, boolean isPrivate, String idx) {
