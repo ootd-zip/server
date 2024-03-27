@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import zip.ootd.ootdzip.user.data.UserSearchType;
 
 @Getter
 @NoArgsConstructor
@@ -14,5 +15,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class UserSearchSvcReq {
     private String name;
+    private UserSearchType userSearchType;
     private Pageable pageable;
 }

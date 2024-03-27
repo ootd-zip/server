@@ -39,6 +39,7 @@ import zip.ootd.ootdzip.user.data.CheckNameReq;
 import zip.ootd.ootdzip.user.data.FollowReq;
 import zip.ootd.ootdzip.user.data.TokenUserInfoRes;
 import zip.ootd.ootdzip.user.data.UserLoginReq;
+import zip.ootd.ootdzip.user.data.UserSearchType;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.domain.UserStyle;
 import zip.ootd.ootdzip.user.repository.UserRepository;
@@ -251,16 +252,26 @@ public class UserService {
 
     public CommonSliceResponse<UserSearchRes> searchUser(UserSearchSvcReq request, User loginUser) {
 
-        Slice<User> findUsers = userRepository.searchUsers(request.getName(),
-                request.getPageable());
+        Slice<User> findUsers = null;
+        UserSearchType userSearchType = request.getUserSearchType();
+
+        if (userSearchType == UserSearchType.USER) {
+            findUsers = userRepository.searchUsers(request.getName(),
+                    request.getPageable());
+        } else if (userSearchType == UserSearchType.FOLLOWER) {
+            findUsers = userRepository.searchFollowers(request.getName(),
+                    loginUser,
+                    request.getPageable());
+        } else if (userSearchType == UserSearchType.FOLLOWING) {
+            findUsers = userRepository.searchFollowings(request.getName(),
+                    loginUser,
+                    request.getPageable());
+        }
 
         List<UserSearchRes> result = findUsers.stream()
-                .map((item) -> {
-                    return UserSearchRes.of(item, loginUser);
-                })
+                .map((item) -> UserSearchRes.of(item, loginUser))
                 .toList();
 
-        return new CommonSliceResponse<UserSearchRes>(result, request.getPageable(),
-                findUsers.isLast());
+        return new CommonSliceResponse<>(result, request.getPageable(), findUsers.isLast());
     }
 }
