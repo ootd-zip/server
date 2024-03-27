@@ -442,9 +442,9 @@ class UserServiceTest extends IntegrationTestSupport {
         assertThat(result).hasSize(3)
                 .extracting("style.id", "style.name")
                 .containsExactlyInAnyOrder(
-                        tuple(style1.getId(), style1.getName())
-                        , tuple(style2.getId(), style2.getName())
-                        , tuple(style4.getId(), style4.getName())
+                        tuple(style1.getId(), style1.getName()),
+                        tuple(style2.getId(), style2.getName()),
+                        tuple(style4.getId(), style4.getName())
                 );
 
     }
@@ -472,9 +472,9 @@ class UserServiceTest extends IntegrationTestSupport {
         assertThat(result).hasSize(3)
                 .extracting("style.id", "style.name")
                 .containsExactlyInAnyOrder(
-                        tuple(style1.getId(), style1.getName())
-                        , tuple(style2.getId(), style2.getName())
-                        , tuple(style3.getId(), style3.getName())
+                        tuple(style1.getId(), style1.getName()),
+                        tuple(style2.getId(), style2.getName()),
+                        tuple(style3.getId(), style3.getName())
                 );
     }
 
