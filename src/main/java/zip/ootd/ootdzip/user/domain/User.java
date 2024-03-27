@@ -10,7 +10,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
@@ -61,7 +60,7 @@ public class User extends BaseEntity {
     private List<Clothes> clothesList;
     @OneToMany(mappedBy = "writer")
     private List<Ootd> ootds;
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<UserStyle> userStyles;
 
     public static User getDefault() {
@@ -163,13 +162,10 @@ public class User extends BaseEntity {
         this.height = height;
         this.weight = weight;
         this.isBodyPrivate = isBodyPrivate;
-
-        userStyles.forEach(this::addUserStyle);
-
         this.isCompleted = true;
     }
 
-    private void addUserStyle(UserStyle userStyle) {
+    public void addUserStyle(UserStyle userStyle) {
         this.userStyles.add(userStyle);
     }
 
@@ -187,5 +183,4 @@ public class User extends BaseEntity {
         this.isBodyPrivate = isBodyPrivate;
 
     }
-
 }
