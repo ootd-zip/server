@@ -15,11 +15,13 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import zip.ootd.ootdzip.user.domain.User;
 
 @Entity
 @Table(name = "issued_refresh_tokens")
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
