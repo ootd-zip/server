@@ -444,9 +444,7 @@ class UserServiceTest extends IntegrationTestSupport {
                 .containsExactlyInAnyOrder(
                         tuple(style1.getId(), style1.getName()),
                         tuple(style2.getId(), style2.getName()),
-                        tuple(style4.getId(), style4.getName())
-                );
-
+                        tuple(style4.getId(), style4.getName()));
     }
 
     @DisplayName("유저 선호 스타일이 등록되지 않은 유저의 선호 스타일을 업데이트한다.")
@@ -474,8 +472,7 @@ class UserServiceTest extends IntegrationTestSupport {
                 .containsExactlyInAnyOrder(
                         tuple(style1.getId(), style1.getName()),
                         tuple(style2.getId(), style2.getName()),
-                        tuple(style3.getId(), style3.getName())
-                );
+                        tuple(style3.getId(), style3.getName()));
     }
 
     @DisplayName("유효하지 않은 스타일로 유저 선호 스타일을 업데이트하면 에러가 발생한다.")
