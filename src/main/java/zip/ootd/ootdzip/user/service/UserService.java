@@ -266,6 +266,8 @@ public class UserService {
             findUsers = userRepository.searchFollowings(request.getName(),
                     loginUser,
                     request.getPageable());
+        } else {
+            throw new IllegalArgumentException("잘못된 검색 조건");
         }
 
         List<UserSearchRes> result = findUsers.stream()
