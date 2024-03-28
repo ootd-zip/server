@@ -37,6 +37,7 @@ public class ClothesRepositoryImpl extends QuerydslRepositorySupport implements 
         int pageSize = pageable.getPageSize();
         List<Clothes> findClothes = queryFactory.selectFrom(clothes)
                 .where(defaultCondition(loginUserId),
+                        searchTextCondition(searchText),
                         eqUserId(userId),
                         eqIsPrivate(isPrivate),
                         inBrandIds(brandIds),

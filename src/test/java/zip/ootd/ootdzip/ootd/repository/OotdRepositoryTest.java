@@ -253,6 +253,31 @@ public class OotdRepositoryTest extends IntegrationTestSupport {
 
     }
 
+    @DisplayName("비공개 OOTD는 검색되지 않는다.")
+    @Test
+    void searchOotdsWithPrivateOotds() {
+        // given
+        User user1 = createUserBy("유저1");
+        for (int i = 1; i <= 10; i++) {
+
+            Clothes clothes1 = createClothesBy(user1, false, String.valueOf(i));
+            Clothes clothes2 = createClothesBy(user1, false, String.valueOf(i + 50));
+
+            Style style = createStyleBy("스타일1");
+
+            Ootd ootd = createOotdBy(user1, String.format("내용본문%d", i), i % 2 == 0, List.of(clothes1, clothes2),
+                    List.of(style));
+        }
+        // when
+        Slice<Ootd> ootds = ootdRepository.searchOotds("", null, null, null, null, OotdSearchSortType.LATEST,
+                PageRequest.of(0, 10));
+        //then
+        assertThat(ootds.getContent()).hasSize(5);
+
+        assertThat(ootds.hasNext()).isFalse();
+
+    }
+
     private Ootd createOotdBy(User user, String content, boolean isPrivate) {
 
         Clothes clothes = createClothesBy(user, isPrivate, "1");
