@@ -29,10 +29,13 @@ public class UserStyle extends BaseEntity {
     private Style style;
 
     private static UserStyle createUserStyleBy(Style style, User user) {
-        return UserStyle.builder()
+        UserStyle userStyle = UserStyle.builder()
                 .style(style)
                 .user(user)
                 .build();
+
+        user.addUserStyle(userStyle);
+        return userStyle;
     }
 
     public static List<UserStyle> createUserStylesBy(List<Style> styles, User user) {

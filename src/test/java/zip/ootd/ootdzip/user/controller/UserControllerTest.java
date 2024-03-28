@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import zip.ootd.ootdzip.ControllerTestSupport;
 import zip.ootd.ootdzip.user.controller.request.ProfileReq;
 import zip.ootd.ootdzip.user.controller.request.UserRegisterReq;
+import zip.ootd.ootdzip.user.controller.request.UserStyleUpdateReq;
 import zip.ootd.ootdzip.user.controller.response.UserInfoForMyPageRes;
 import zip.ootd.ootdzip.user.domain.UserGender;
 
@@ -414,5 +415,61 @@ class UserControllerTest extends ControllerTestSupport {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(404))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.errors[0].field").value("isBodyPrivate"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.errors[0].reason").value("체형정보 공개여부는 필수입니다."));
+    }
+
+    @DisplayName("유저 선호 스타일을 업데이트한다.")
+    @Test
+    void updateUserStyle() throws Exception {
+        // given
+        UserStyleUpdateReq request = UserStyleUpdateReq.builder()
+                .styleIds(List.of(1L, 2L, 3L))
+                .build();
+
+        // when & then
+        mockMvc.perform(put("/api/v1/user/user-styles")
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(200))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result").value("ok"));
+    }
+
+    @DisplayName("유저 선호 스타일을 업데이트할 때 스타일 ID는 양수여야 한다.")
+    @Test
+    void updateUserStyleWithZeroStyleId() throws Exception {
+        // given
+        UserStyleUpdateReq request = UserStyleUpdateReq.builder()
+                .styleIds(List.of(0L, 2L, 3L))
+                .build();
+
+        // when & then
+        mockMvc.perform(put("/api/v1/user/user-styles")
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNotFound())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(404))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errors[0].field").value("styleIds[0]"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errors[0].reason").value("스타일 ID는 양수여야 합니다."));
+    }
+
+    @DisplayName("유저 선호 스타일을 업데이트할 때 스타일 ID는 최소 3개가 필요하다.")
+    @Test
+    void updateUserStyleWith2Styles() throws Exception {
+        // given
+        UserStyleUpdateReq request = UserStyleUpdateReq.builder()
+                .styleIds(List.of(1L, 2L))
+                .build();
+
+        // when & then
+        mockMvc.perform(put("/api/v1/user/user-styles")
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNotFound())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(404))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errors[0].field").value("styleIds"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errors[0].reason").value("스타일은 3개 이상 입력해주세요."));
     }
 }

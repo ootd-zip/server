@@ -1,5 +1,7 @@
 package zip.ootd.ootdzip.user.controller.response;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,6 +9,8 @@ import zip.ootd.ootdzip.user.domain.User;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
 public class UserInfoForMyPageRes {
 
     private Long userId;
@@ -22,27 +26,11 @@ public class UserInfoForMyPageRes {
     private Long ootdCount;
     private Long clothesCount;
 
-    @Builder
-    private UserInfoForMyPageRes(Long userId, String userName, Long followerCount, Long followingCount, Integer height,
-            Integer weight, String description, Boolean isMyProfile, Boolean isFollow, Long ootdCount,
-            Long clothesCount) {
-        this.userId = userId;
-        this.userName = userName;
-        this.followerCount = followerCount;
-        this.followingCount = followingCount;
-        this.height = height;
-        this.weight = weight;
-        this.description = description;
-        this.isMyProfile = isMyProfile;
-        this.isFollow = isFollow;
-        this.ootdCount = ootdCount;
-        this.clothesCount = clothesCount;
-    }
-
     public static UserInfoForMyPageRes of(User user, User loginUser) {
         return UserInfoForMyPageRes.builder()
                 .userId(user.getId())
                 .userName(user.getName())
+                .profileImage(user.getProfileImage())
                 .followerCount(user.getFollowerCount())
                 .followingCount(user.getFollowingCount())
                 .height(user.getProfileHeight(loginUser))
