@@ -473,21 +473,4 @@ class UserControllerTest extends ControllerTestSupport {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.errors[0].field").value("styleIds"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.errors[0].reason").value("스타일은 3개 이상 입력해주세요."));
     }
-
-    @DisplayName("언팔로워가 성공한다.")
-    @Test
-    void unfollower() throws Exception {
-        // given
-        FollowReq request = new FollowReq();
-        request.setUserId(1L);
-        when(userService.removeFollower(any(), any())).thenReturn(true);
-
-        // when & then
-        mockMvc.perform(delete("/api/v1/user/follower").content(objectMapper.writeValueAsString(request))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(200))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result").isBoolean());
-    }
 }

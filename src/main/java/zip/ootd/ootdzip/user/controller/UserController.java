@@ -117,21 +117,6 @@ public class UserController {
         }
     }
 
-    /**
-     * 현재 사용하지 않는 슬픈 API
-     * 미래에 니즈가 생긴다면 풀도록 합니다.
-     */
-    @Hidden
-    @DeleteMapping("/follower")
-    public ApiResponse<Boolean> removeFollower(@RequestBody FollowReq request) {
-        User loginUser = userService.getAuthenticatiedUser();
-        if (userService.removeFollower(loginUser, request)) {
-            return new ApiResponse<>(true);
-        } else {
-            throw new CustomException(ErrorCode.UNFOLLOW_ERROR);
-        }
-    }
-
     @GetMapping("/check-name")
     public ApiResponse<Boolean> checkName(CheckNameReq request) {
         return new ApiResponse<>(userService.checkName(request));
