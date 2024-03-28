@@ -3,6 +3,8 @@ package zip.ootd.ootdzip.user.controller;
 import java.util.List;
 import java.util.Optional;
 
+import io.swagger.v3.oas.annotations.Hidden;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -115,6 +117,11 @@ public class UserController {
         }
     }
 
+    /**
+     * 현재 사용하지 않는 슬픈 API
+     * 미래에 니즈가 생긴다면 풀도록 합니다.
+     */
+    @Hidden
     @DeleteMapping("/follower")
     public ApiResponse<Boolean> removeFollower(@RequestBody FollowReq request) {
         User loginUser = userService.getAuthenticatiedUser();
