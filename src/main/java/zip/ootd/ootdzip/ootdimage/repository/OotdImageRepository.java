@@ -12,7 +12,7 @@ import zip.ootd.ootdzip.category.domain.Category;
 import zip.ootd.ootdzip.ootdimage.domain.OotdImage;
 import zip.ootd.ootdzip.user.domain.User;
 
-public interface OotdImageRepository extends JpaRepository<OotdImage, Long>, OotdImageRepositoryCustom {
+public interface OotdImageRepository extends JpaRepository<OotdImage, Long> {
 
     @Query("SELECT DISTINCT oi FROM OotdImage oi "
             + "JOIN FETCH oi.ootd o "
