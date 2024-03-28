@@ -19,7 +19,7 @@ public class CommonSliceResponse<T> {
 
     private Boolean isLast;
 
-    public CommonSliceResponse(List<T> content, Pageable pageable, boolean isLast) {
+    public CommonSliceResponse(List<T> content, Pageable pageable, Boolean isLast) {
         this.content = content;
         this.page = pageable.getPageNumber();
         this.size = pageable.getPageSize();
