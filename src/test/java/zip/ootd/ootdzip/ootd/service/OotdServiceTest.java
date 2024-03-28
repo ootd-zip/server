@@ -34,6 +34,7 @@ import zip.ootd.ootdzip.clothes.domain.Clothes;
 import zip.ootd.ootdzip.clothes.domain.ClothesColor;
 import zip.ootd.ootdzip.clothes.repository.ClothesRepository;
 import zip.ootd.ootdzip.common.exception.CustomException;
+import zip.ootd.ootdzip.common.response.CommonPageResponse;
 import zip.ootd.ootdzip.common.response.CommonSliceResponse;
 import zip.ootd.ootdzip.oauth.domain.UserAuthenticationToken;
 import zip.ootd.ootdzip.ootd.data.OotdGetByUserReq;
@@ -632,9 +633,10 @@ public class OotdServiceTest extends IntegrationTestSupport {
         ootdGetClothesReq.setSortDirection(Sort.Direction.DESC);
 
         // when
-        CommonSliceResponse<OotdGetClothesRes> results = ootdService.getOotdByClothes(user, ootdGetClothesReq);
+        CommonPageResponse<OotdGetClothesRes> results = ootdService.getOotdByClothes(user, ootdGetClothesReq);
 
         // then
+        assertThat(results.getTotal()).isEqualTo(5);
         assertThat(results.getContent()).hasSize(5)
                 .extracting("id")
                 .containsExactly(ootd7.getId(), ootd4.getId(), ootd3.getId(), ootd2.getId(), ootd.getId());
@@ -668,9 +670,10 @@ public class OotdServiceTest extends IntegrationTestSupport {
         ootdGetClothesReq.setSortDirection(Sort.Direction.DESC);
 
         // when
-        CommonSliceResponse<OotdGetClothesRes> results = ootdService.getOotdByClothes(user, ootdGetClothesReq);
+        CommonPageResponse<OotdGetClothesRes> results = ootdService.getOotdByClothes(user, ootdGetClothesReq);
 
         // then
+        assertThat(results.getTotal()).isEqualTo(1);
         assertThat(results.getContent()).hasSize(1)
                 .extracting("id")
                 .containsExactly(ootd1.getId());

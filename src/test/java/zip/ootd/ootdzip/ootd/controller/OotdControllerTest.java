@@ -17,6 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import zip.ootd.ootdzip.ControllerTestSupport;
+import zip.ootd.ootdzip.common.response.CommonPageResponse;
 import zip.ootd.ootdzip.common.response.CommonSliceResponse;
 import zip.ootd.ootdzip.ootd.data.OotdGetRes;
 import zip.ootd.ootdzip.ootd.data.OotdPatchReq;
@@ -518,7 +519,7 @@ public class OotdControllerTest extends ControllerTestSupport {
         Pageable pageable = PageRequest.of(0, 10);
 
         when(ootdService.getOotdByClothes(any(), any()))
-                .thenReturn(new CommonSliceResponse<>(List.of(), pageable, false));
+                .thenReturn(new CommonPageResponse<>(List.of(), pageable, false, 100L));
 
         // when & then
         mockMvc.perform(get("/api/v1/ootd/clothes")

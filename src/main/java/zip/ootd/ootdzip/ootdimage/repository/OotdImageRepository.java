@@ -2,8 +2,8 @@ package zip.ootd.ootdzip.ootdimage.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -33,7 +33,7 @@ public interface OotdImageRepository extends JpaRepository<OotdImage, Long>, Oot
             + "JOIN oc.clothes c ON c.id = :clothesId "
             + "WHERE o.writer.id = c.user.id "
             + "AND (o.isPrivate = false or o.writer.id = :loginUserId) ")
-    Slice<OotdImage> findByClothesAndUserIdAndLoginUserId(
+    Page<OotdImage> findByClothesAndUserIdAndLoginUserId(
             @Param("loginUserId") Long loginUserId,
             @Param("clothesId") Long clothesId,
             Pageable pageable);
