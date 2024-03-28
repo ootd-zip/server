@@ -26,6 +26,7 @@ public class UserRepositoryImpl extends QuerydslRepositorySupport implements Use
     }
 
     public Slice<User> searchUsers(String name, Pageable pageable) {
+
         int pageSize = pageable.getPageSize();
         List<User> findUsers = queryFactory.selectFrom(user)
                 .where(containName(name))
@@ -46,7 +47,67 @@ public class UserRepositoryImpl extends QuerydslRepositorySupport implements Use
         return new SliceImpl<>(findUsers, pageable, hasNext);
     }
 
+    public Slice<User> searchFollowers(String name, User loginUser, Pageable pageable) {
+
+        int pageSize = pageable.getPageSize();
+        List<User> findUsers = queryFactory.selectFrom(user)
+                .where(containUserInFollowings(loginUser),
+                        containName(name))
+                .orderBy(
+                        user.name.length().asc(),
+                        user.name.asc()
+                )
+                .offset(pageable.getOffset())
+                .limit(pageSize + 1)
+                .fetch();
+
+        boolean hasNext = false;
+        if (pageSize < findUsers.size()) {
+            findUsers.remove(pageSize);
+            hasNext = true;
+        }
+
+        return new SliceImpl<>(findUsers, pageable, hasNext);
+    }
+
+    public Slice<User> searchFollowings(String name, User loginUser, Pageable pageable) {
+
+        int pageSize = pageable.getPageSize();
+        List<User> findUsers = queryFactory.selectFrom(user)
+                .where(containUserInFollowers(loginUser),
+                        containName(name))
+                .orderBy(
+                        user.name.length().asc(),
+                        user.name.asc()
+                )
+                .offset(pageable.getOffset())
+                .limit(pageSize + 1)
+                .fetch();
+
+        boolean hasNext = false;
+        if (pageSize < findUsers.size()) {
+            findUsers.remove(pageSize);
+            hasNext = true;
+        }
+
+        return new SliceImpl<>(findUsers, pageable, hasNext);
+    }
+
+    private BooleanExpression containUserInFollowings(User loginUser) {
+        // 전체유저 팔로잉에서 본인이 포함되면 반환 => 나를 팔로우한 사람을 가져옴
+        return user.followings.contains(loginUser);
+    }
+
+    private BooleanExpression containUserInFollowers(User loginUser) {
+        // 전체유저 팔로워에서 본인을 포함하면 반환 => 내가 팔로우한 사람을 가져옴
+        return user.followers.contains(loginUser);
+    }
+
     public BooleanExpression containName(String name) {
+        if (name == null || name.isBlank()) {
+            return null;
+        }
+
         return user.name.contains(name);
     }
 }

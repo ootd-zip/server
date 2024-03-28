@@ -15,6 +15,7 @@ import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.user.controller.response.ProfileRes;
 import zip.ootd.ootdzip.user.controller.response.UserInfoForMyPageRes;
 import zip.ootd.ootdzip.user.controller.response.UserStyleRes;
+import zip.ootd.ootdzip.user.data.FollowReq;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.domain.UserGender;
 import zip.ootd.ootdzip.user.domain.UserStyle;
@@ -499,6 +500,50 @@ class UserServiceTest extends IntegrationTestSupport {
                 .extracting("errorCode.status", "errorCode.divisionCode", "errorCode.message")
                 .contains(404, "S002", "유효하지 않은 사이즈 ID");
 
+    }
+
+    @DisplayName("나를 팔로워한 사람을 언팔한다.")
+    @Test
+    void unfollower() {
+        // given
+        User user = createUserBy("유저");
+        User user1 = createUserBy("유저1");
+        User user2 = createUserBy("유저2");
+        userService.follow(user.getId(), user1.getId()); // 유저1 이 유저를 팔로우
+        userService.follow(user.getId(), user2.getId()); // 유저2 이 유저를 팔로우
+
+        FollowReq request = new FollowReq();
+        request.setUserId(user1.getId());
+
+        // when
+        userService.removeFollower(user, request); // 유저가 유저1을 언팔로우
+
+        // then
+        User result = userRepository.findById(user.getId()).orElseThrow();
+        assertThat(result.getFollowers())
+                .hasSize(1)
+                .extracting("id")
+                .containsExactlyInAnyOrder(user2.getId());
+
+        User result1 = userRepository.findById(user1.getId()).orElseThrow();
+        assertThat(result1.getFollowings()).hasSize(0);
+    }
+
+    @DisplayName("나를 팔로우한 사람이 아닌 사람을 언팔로워할시 실패한다.")
+    @Test
+    void unfollowerNotFollower() {
+        // given
+        User user = createUserBy("유저");
+        User user1 = createUserBy("유저1");
+        User user2 = createUserBy("유저2");
+        userService.follow(user.getId(), user2.getId()); // 유저2 이 유저를 팔로우
+
+        FollowReq request = new FollowReq();
+        request.setUserId(user1.getId());
+
+        // when & then
+        User result = userRepository.findById(user.getId()).orElseThrow();
+        assertThat(userService.removeFollower(user, request)).isEqualTo(false);
     }
 
     private User createDefaultUser() {

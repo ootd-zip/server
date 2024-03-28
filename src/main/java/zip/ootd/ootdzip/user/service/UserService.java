@@ -38,8 +38,10 @@ import zip.ootd.ootdzip.user.controller.response.UserInfoForMyPageRes;
 import zip.ootd.ootdzip.user.controller.response.UserSearchRes;
 import zip.ootd.ootdzip.user.controller.response.UserStyleRes;
 import zip.ootd.ootdzip.user.data.CheckNameReq;
+import zip.ootd.ootdzip.user.data.FollowReq;
 import zip.ootd.ootdzip.user.data.TokenUserInfoRes;
 import zip.ootd.ootdzip.user.data.UserLoginReq;
+import zip.ootd.ootdzip.user.data.UserSearchType;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.domain.UserStyle;
 import zip.ootd.ootdzip.user.repository.UserRepository;
@@ -181,6 +183,12 @@ public class UserService {
         return user.removeFollower(follower);
     }
 
+    @Transactional
+    public boolean removeFollower(User loginUser, FollowReq request) {
+        User follower = userRepository.findById(request.getUserId()).orElseThrow();
+        return loginUser.removeFollower(follower);
+    }
+
     public Set<User> getFollowers(Long userId) {
         User user = userRepository.findById(userId).orElseThrow();
         return user.getFollowers();
@@ -250,17 +258,29 @@ public class UserService {
 
     public CommonSliceResponse<UserSearchRes> searchUser(UserSearchSvcReq request, User loginUser) {
 
-        Slice<User> findUsers = userRepository.searchUsers(request.getName(),
-                request.getPageable());
+        Slice<User> findUsers = null;
+        UserSearchType userSearchType = request.getUserSearchType();
+
+        if (userSearchType == UserSearchType.USER) {
+            findUsers = userRepository.searchUsers(request.getName(),
+                    request.getPageable());
+        } else if (userSearchType == UserSearchType.FOLLOWER) {
+            findUsers = userRepository.searchFollowers(request.getName(),
+                    loginUser,
+                    request.getPageable());
+        } else if (userSearchType == UserSearchType.FOLLOWING) {
+            findUsers = userRepository.searchFollowings(request.getName(),
+                    loginUser,
+                    request.getPageable());
+        } else {
+            throw new IllegalArgumentException("잘못된 검색 조건");
+        }
 
         List<UserSearchRes> result = findUsers.stream()
-                .map((item) -> {
-                    return UserSearchRes.of(item, loginUser);
-                })
+                .map((item) -> UserSearchRes.of(item, loginUser))
                 .toList();
 
-        return new CommonSliceResponse<UserSearchRes>(result, request.getPageable(),
-                findUsers.isLast());
+        return new CommonSliceResponse<>(result, request.getPageable(), findUsers.isLast());
     }
 
     public List<UserStyleRes> getUserStyle(User loginUser) {
