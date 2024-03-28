@@ -15,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import zip.ootd.ootdzip.category.domain.Style;
 import zip.ootd.ootdzip.category.repository.StyleRepository;
@@ -35,6 +36,7 @@ import zip.ootd.ootdzip.security.JwtUtils;
 import zip.ootd.ootdzip.user.controller.response.ProfileRes;
 import zip.ootd.ootdzip.user.controller.response.UserInfoForMyPageRes;
 import zip.ootd.ootdzip.user.controller.response.UserSearchRes;
+import zip.ootd.ootdzip.user.controller.response.UserStyleRes;
 import zip.ootd.ootdzip.user.data.CheckNameReq;
 import zip.ootd.ootdzip.user.data.FollowReq;
 import zip.ootd.ootdzip.user.data.TokenUserInfoRes;
@@ -43,10 +45,12 @@ import zip.ootd.ootdzip.user.data.UserSearchType;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.domain.UserStyle;
 import zip.ootd.ootdzip.user.repository.UserRepository;
+import zip.ootd.ootdzip.user.repository.UserStyleRepository;
 import zip.ootd.ootdzip.user.service.request.ProfileSvcReq;
 import zip.ootd.ootdzip.user.service.request.UserInfoForMyPageSvcReq;
 import zip.ootd.ootdzip.user.service.request.UserRegisterSvcReq;
 import zip.ootd.ootdzip.user.service.request.UserSearchSvcReq;
+import zip.ootd.ootdzip.user.service.request.UserStyleUpdateSvcReq;
 import zip.ootd.ootdzip.utils.ImageFileUtil;
 
 @Service
@@ -62,6 +66,8 @@ public class UserService {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final StyleRepository styleRepository;
     private final ApplicationEventPublisher eventPublisher;
+    private final UserStyleRepository userStyleRepository;
+    private final EntityManager em;
 
     @Transactional
     public TokenInfo login(UserLoginReq request) {
@@ -275,5 +281,48 @@ public class UserService {
                 .toList();
 
         return new CommonSliceResponse<>(result, request.getPageable(), findUsers.isLast());
+    }
+
+    public List<UserStyleRes> getUserStyle(User loginUser) {
+
+        List<UserStyle> userStyles = userStyleRepository.findAllByUser(loginUser);
+
+        return userStyles.stream()
+                .map((userStyle) -> {
+                    return UserStyleRes.of(userStyle.getStyle());
+                })
+                .toList();
+    }
+
+    @Transactional
+    public void updateUserStyles(UserStyleUpdateSvcReq request, User loginUser) {
+
+        em.merge(loginUser);
+        List<UserStyle> userStyles = userStyleRepository.findAllByUser(loginUser);
+
+        List<Style> styles = styleRepository.findAllById(request.getStyleIds());
+
+        if (styles.size() != request.getStyleIds().size()) {
+            throw new CustomException(ErrorCode.NOT_FOUND_SIZE_ID);
+        }
+
+        List<UserStyle> deleteUserStyle = userStyles.stream()
+                .filter(userStyle -> !styles.contains(userStyle.getStyle()))
+                .toList();
+
+        userStyleRepository.deleteAllInBatch(deleteUserStyle);
+
+        List<Style> existingStyles = userStyles
+                .stream()
+                .map(UserStyle::getStyle)
+                .toList();
+
+        List<Style> addStyles = styles.stream()
+                .filter(style -> !existingStyles.contains(style))
+                .toList();
+
+        userStyles.addAll(UserStyle.createUserStylesBy(addStyles, loginUser));
+
+        userStyleRepository.saveAll(userStyles);
     }
 }

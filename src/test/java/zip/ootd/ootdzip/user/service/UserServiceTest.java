@@ -14,13 +14,17 @@ import zip.ootd.ootdzip.category.repository.StyleRepository;
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.user.controller.response.ProfileRes;
 import zip.ootd.ootdzip.user.controller.response.UserInfoForMyPageRes;
+import zip.ootd.ootdzip.user.controller.response.UserStyleRes;
 import zip.ootd.ootdzip.user.data.FollowReq;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.domain.UserGender;
+import zip.ootd.ootdzip.user.domain.UserStyle;
 import zip.ootd.ootdzip.user.repository.UserRepository;
+import zip.ootd.ootdzip.user.repository.UserStyleRepository;
 import zip.ootd.ootdzip.user.service.request.ProfileSvcReq;
 import zip.ootd.ootdzip.user.service.request.UserInfoForMyPageSvcReq;
 import zip.ootd.ootdzip.user.service.request.UserRegisterSvcReq;
+import zip.ootd.ootdzip.user.service.request.UserStyleUpdateSvcReq;
 
 class UserServiceTest extends IntegrationTestSupport {
 
@@ -32,6 +36,9 @@ class UserServiceTest extends IntegrationTestSupport {
 
     @Autowired
     private StyleRepository styleRepository;
+
+    @Autowired
+    private UserStyleRepository userStyleRepository;
 
     @DisplayName("userId로 마이페이지에서 사용하는 유저 정보를 조회한다.")
     @Test
@@ -368,6 +375,130 @@ class UserServiceTest extends IntegrationTestSupport {
                 .isInstanceOf(CustomException.class)
                 .extracting("errorCode.status", "errorCode.divisionCode", "errorCode.message")
                 .contains(400, "I001", "이미지 URL이 유효하지 않습니다.");
+
+    }
+
+    @DisplayName("유저 선호 스타일을 조회한다.")
+    @Test
+    void getUserStyles() {
+        // given
+        User user = createDefaultUser();
+        Style style1 = createStyleBy("스타일1");
+        Style style2 = createStyleBy("스타일2");
+        Style style3 = createStyleBy("스타일3");
+
+        List<UserStyle> userStyles = UserStyle.createUserStylesBy(List.of(style1, style2, style3), user);
+
+        userStyleRepository.saveAll(userStyles);
+
+        // when
+        List<UserStyleRes> result = userService.getUserStyle(user);
+
+        //then
+        assertThat(result).hasSize(3)
+                .extracting("id", "name")
+                .containsExactlyInAnyOrder(
+                        tuple(style1.getId(), style1.getName()),
+                        tuple(style2.getId(), style2.getName()),
+                        tuple(style3.getId(), style3.getName()));
+    }
+
+    @DisplayName("유저 선호 스타일을 조회할 때 등록된 선호 스타일이 없을 때 빈 리스트를 반환한다.")
+    @Test
+    void getUserStylesWithNoRegisteredUserStyle() {
+        // given
+        User user = createDefaultUser();
+
+        // when
+        List<UserStyleRes> result = userService.getUserStyle(user);
+
+        //then
+        assertThat(result).hasSize(0)
+                .isNotNull();
+    }
+
+    @DisplayName("유저 선호 스타일을 업데이트한다.")
+    @Test
+    void updateUserStyles() {
+        // given
+        User user = createDefaultUser();
+        Style style1 = createStyleBy("스타일1");
+        Style style2 = createStyleBy("스타일2");
+        Style style3 = createStyleBy("스타일3");
+
+        List<UserStyle> userStyles = UserStyle.createUserStylesBy(List.of(style1, style2, style3), user);
+        userRepository.save(user);
+
+        Style style4 = createStyleBy("스타일4");
+
+        UserStyleUpdateSvcReq request = UserStyleUpdateSvcReq.builder()
+                .styleIds(List.of(style1.getId(), style2.getId(), style4.getId()))
+                .build();
+
+        // when
+        userService.updateUserStyles(request, user);
+        //then
+        List<UserStyle> result = userStyleRepository.findAllByUser(user);
+
+        assertThat(result).hasSize(3)
+                .extracting("style.id", "style.name")
+                .containsExactlyInAnyOrder(
+                        tuple(style1.getId(), style1.getName()),
+                        tuple(style2.getId(), style2.getName()),
+                        tuple(style4.getId(), style4.getName()));
+    }
+
+    @DisplayName("유저 선호 스타일이 등록되지 않은 유저의 선호 스타일을 업데이트한다.")
+    @Test
+    void updateUserStyleWithNoRegisteredUserStyle() {
+        // given
+        User user = createDefaultUser();
+        userRepository.save(user);
+
+        Style style1 = createStyleBy("스타일1");
+        Style style2 = createStyleBy("스타일2");
+        Style style3 = createStyleBy("스타일3");
+
+        UserStyleUpdateSvcReq request = UserStyleUpdateSvcReq.builder()
+                .styleIds(List.of(style1.getId(), style2.getId(), style3.getId()))
+                .build();
+
+        // when
+        userService.updateUserStyles(request, user);
+        //then
+        List<UserStyle> result = userStyleRepository.findAllByUser(user);
+
+        assertThat(result).hasSize(3)
+                .extracting("style.id", "style.name")
+                .containsExactlyInAnyOrder(
+                        tuple(style1.getId(), style1.getName()),
+                        tuple(style2.getId(), style2.getName()),
+                        tuple(style3.getId(), style3.getName()));
+    }
+
+    @DisplayName("유효하지 않은 스타일로 유저 선호 스타일을 업데이트하면 에러가 발생한다.")
+    @Test
+    void updateUserStylesInvalidStyle() {
+        // given
+        User user = createDefaultUser();
+        Style style1 = createStyleBy("스타일1");
+        Style style2 = createStyleBy("스타일2");
+        Style style3 = createStyleBy("스타일3");
+
+        List<UserStyle> userStyles = UserStyle.createUserStylesBy(List.of(style1, style2, style3), user);
+        userRepository.save(user);
+
+        Style style4 = createStyleBy("스타일4");
+
+        UserStyleUpdateSvcReq request = UserStyleUpdateSvcReq.builder()
+                .styleIds(List.of(style1.getId(), style2.getId(), style4.getId() + 1))
+                .build();
+
+        // when
+        assertThatThrownBy(() -> userService.updateUserStyles(request, user))
+                .isInstanceOf(CustomException.class)
+                .extracting("errorCode.status", "errorCode.divisionCode", "errorCode.message")
+                .contains(404, "S002", "유효하지 않은 사이즈 ID");
 
     }
 

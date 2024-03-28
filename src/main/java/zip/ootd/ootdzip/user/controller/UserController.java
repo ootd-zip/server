@@ -1,5 +1,6 @@
 package zip.ootd.ootdzip.user.controller;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,9 +31,11 @@ import zip.ootd.ootdzip.oauth.data.TokenInfo;
 import zip.ootd.ootdzip.user.controller.request.ProfileReq;
 import zip.ootd.ootdzip.user.controller.request.UserRegisterReq;
 import zip.ootd.ootdzip.user.controller.request.UserSearchReq;
+import zip.ootd.ootdzip.user.controller.request.UserStyleUpdateReq;
 import zip.ootd.ootdzip.user.controller.response.ProfileRes;
 import zip.ootd.ootdzip.user.controller.response.UserInfoForMyPageRes;
 import zip.ootd.ootdzip.user.controller.response.UserSearchRes;
+import zip.ootd.ootdzip.user.controller.response.UserStyleRes;
 import zip.ootd.ootdzip.user.data.CheckNameReq;
 import zip.ootd.ootdzip.user.data.FollowReq;
 import zip.ootd.ootdzip.user.data.TokenUserInfoRes;
@@ -183,6 +187,19 @@ public class UserController {
     public ApiResponse<CommonSliceResponse<UserSearchRes>> searchUser(UserSearchReq request) {
         return new ApiResponse<>(
                 userService.searchUser(request.toServiceRequest(), userService.getAuthenticatiedUser()));
+    }
+
+    @Operation(summary = "유저 스타일 조회", description = "로그인한 유저의 선호 스타일 조회")
+    @GetMapping("user-styles")
+    public ApiResponse<List<UserStyleRes>> getUserStyles() {
+        return new ApiResponse<>(userService.getUserStyle(userService.getAuthenticatiedUser()));
+    }
+
+    @Operation(summary = "유저 스타일 업데이트", description = "유저 스타일 업데이트")
+    @PutMapping("user-styles")
+    public ApiResponse<String> updateUserStyles(@RequestBody @Valid UserStyleUpdateReq request) {
+        userService.updateUserStyles(request.toServiceRequest(), userService.getAuthenticatiedUser());
+        return new ApiResponse("ok");
     }
 
 }
