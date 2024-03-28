@@ -19,7 +19,6 @@ import zip.ootd.ootdzip.user.controller.request.ProfileReq;
 import zip.ootd.ootdzip.user.controller.request.UserRegisterReq;
 import zip.ootd.ootdzip.user.controller.request.UserStyleUpdateReq;
 import zip.ootd.ootdzip.user.controller.response.UserInfoForMyPageRes;
-import zip.ootd.ootdzip.user.data.FollowReq;
 import zip.ootd.ootdzip.user.domain.UserGender;
 
 class UserControllerTest extends ControllerTestSupport {
