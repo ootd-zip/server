@@ -480,10 +480,10 @@ class UserControllerTest extends ControllerTestSupport {
         // given
         FollowReq request = new FollowReq();
         request.setUserId(1L);
-        when(userService.unfollower(any(), any())).thenReturn(true);
+        when(userService.removeFollower(any(), any())).thenReturn(true);
 
         // when & then
-        mockMvc.perform(post("/api/v1/user/unfollower").content(objectMapper.writeValueAsString(request))
+        mockMvc.perform(delete("/api/v1/user/follower").content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())

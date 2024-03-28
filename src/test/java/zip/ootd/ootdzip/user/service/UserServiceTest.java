@@ -516,7 +516,7 @@ class UserServiceTest extends IntegrationTestSupport {
         request.setUserId(user1.getId());
 
         // when
-        userService.unfollower(user, request); // 유저가 유저1을 언팔로우
+        userService.removeFollower(user, request); // 유저가 유저1을 언팔로우
 
         // then
         User result = userRepository.findById(user.getId()).orElseThrow();
@@ -543,7 +543,7 @@ class UserServiceTest extends IntegrationTestSupport {
 
         // when & then
         User result = userRepository.findById(user.getId()).orElseThrow();
-        assertThat(userService.unfollower(user, request)).isEqualTo(false);
+        assertThat(userService.removeFollower(user, request)).isEqualTo(false);
     }
 
     private User createDefaultUser() {

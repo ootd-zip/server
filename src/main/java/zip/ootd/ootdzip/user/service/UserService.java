@@ -184,7 +184,7 @@ public class UserService {
     }
 
     @Transactional
-    public boolean unfollower(User loginUser, FollowReq request) {
+    public boolean removeFollower(User loginUser, FollowReq request) {
         User follower = userRepository.findById(request.getUserId()).orElseThrow();
         return loginUser.removeFollower(follower);
     }

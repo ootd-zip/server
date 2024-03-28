@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -114,10 +115,10 @@ public class UserController {
         }
     }
 
-    @PostMapping("/unfollower")
-    public ApiResponse<Boolean> unfollower(@RequestBody FollowReq request) {
+    @DeleteMapping("/follower")
+    public ApiResponse<Boolean> removeFollower(@RequestBody FollowReq request) {
         User loginUser = userService.getAuthenticatiedUser();
-        if (userService.unfollower(loginUser, request)) {
+        if (userService.removeFollower(loginUser, request)) {
             return new ApiResponse<>(true);
         } else {
             throw new CustomException(ErrorCode.UNFOLLOW_ERROR);
