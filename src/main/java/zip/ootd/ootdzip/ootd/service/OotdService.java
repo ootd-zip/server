@@ -414,13 +414,13 @@ public class OotdService {
                 .map(OotdStyle::getStyle)
                 .collect(Collectors.toList());
 
-        Slice<OotdImage> ootdImages = ootdImageRepository.findByStyles(ootdId, styles, pageable);
+        Slice<Ootd> ootds = ootdRepository.findAllByOotdIdAndStyles(ootdId, styles, pageable);
 
-        List<OotdGetSimilarRes> ootdGetSimilarResList = ootdImages.stream()
+        List<OotdGetSimilarRes> ootdGetSimilarResList = ootds.stream()
                 .map(OotdGetSimilarRes::new)
                 .collect(Collectors.toList());
 
-        return new CommonSliceResponse<>(ootdGetSimilarResList, pageable, ootdImages.isLast());
+        return new CommonSliceResponse<>(ootdGetSimilarResList, pageable, ootds.isLast());
     }
 
     /**

@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import io.lettuce.core.dynamic.annotation.Param;
+import zip.ootd.ootdzip.category.domain.Style;
 import zip.ootd.ootdzip.ootd.domain.Ootd;
 
 @Repository
@@ -32,5 +33,19 @@ public interface OotdRepository extends JpaRepository<Ootd, Long>, OotdRepositor
             + "and o.isPrivate = false ")
     Slice<Ootd> findAllByUserIdAndOotdId(@Param("userId") Long userId,
             @Param("ootdId") Long ootdId,
+            Pageable pageable);
+
+    // @Query("SELECT DISTINCT oi FROM OotdImage oi "
+    //         + "JOIN FETCH oi.ootd o "
+    //         + "JOIN o.styles os ON os.style IN (:styles) "
+    //         + "AND o.id <> :ootdId "
+    //         + "AND o.isPrivate = false ")
+    @Query("SELECT o FROM Ootd o "
+            + "JOIN o.styles os ON os.style IN (:styles) "
+            + "AND o.id <> :ootdId "
+            + "AND o.isPrivate = false ")
+    Slice<Ootd> findAllByOotdIdAndStyles(
+            @Param("ootdId") Long ootdId,
+            @Param("styles") List<Style> styles,
             Pageable pageable);
 }

@@ -9,11 +9,10 @@ import org.springframework.data.jpa.repository.Query;
 
 import io.lettuce.core.dynamic.annotation.Param;
 import zip.ootd.ootdzip.category.domain.Category;
-import zip.ootd.ootdzip.category.domain.Style;
 import zip.ootd.ootdzip.ootdimage.domain.OotdImage;
 import zip.ootd.ootdzip.user.domain.User;
 
-public interface OotdImageRepository extends JpaRepository<OotdImage, Long> {
+public interface OotdImageRepository extends JpaRepository<OotdImage, Long>, OotdImageRepositoryCustom {
 
     @Query("SELECT DISTINCT oi FROM OotdImage oi "
             + "JOIN FETCH oi.ootd o "
@@ -26,16 +25,6 @@ public interface OotdImageRepository extends JpaRepository<OotdImage, Long> {
             @Param("colorNames") List<String> colorNames,
             @Param("category") Category category,
             @Param("user") User user,
-            Pageable pageable);
-
-    @Query("SELECT DISTINCT oi FROM OotdImage oi "
-            + "JOIN FETCH oi.ootd o "
-            + "JOIN o.styles os ON os.style IN (:styles) "
-            + "AND o.id <> :ootdId "
-            + "AND o.isPrivate = false ")
-    Slice<OotdImage> findByStyles(
-            @Param("ootdId") Long ootdId,
-            @Param("styles") List<Style> styles,
             Pageable pageable);
 
     @Query("SELECT DISTINCT oi FROM OotdImage oi "
