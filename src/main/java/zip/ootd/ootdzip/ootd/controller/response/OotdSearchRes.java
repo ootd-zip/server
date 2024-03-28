@@ -14,11 +14,13 @@ import zip.ootd.ootdzip.ootd.domain.Ootd;
 public class OotdSearchRes {
     private Long id;
     private String imageUrl;
+    private Integer imageCount;
 
     public static OotdSearchRes of(Ootd ootd) {
         return OotdSearchRes.builder()
                 .id(ootd.getId())
                 .imageUrl(ootd.getFirstImage())
+                .imageCount(ootd.getImageCount())
                 .build();
     }
 }

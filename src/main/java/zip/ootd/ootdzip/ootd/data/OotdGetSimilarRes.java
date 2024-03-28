@@ -12,8 +12,11 @@ public class OotdGetSimilarRes {
 
     private String image;
 
+    private Integer imageCount;
+
     public OotdGetSimilarRes(Ootd ootd) {
         this.id = ootd.getId();
         this.image = ootd.getFirstImage();
+        this.imageCount = ootd.getImageCount();
     }
 }

@@ -16,11 +16,14 @@ public class OotdBookmarkGetAllRes {
 
     private String ootdImage;
 
+    private Integer ootdImageCount;
+
     public static OotdBookmarkGetAllRes of(OotdBookmark ootdBookmark) {
         return OotdBookmarkGetAllRes.builder()
                 .ootdId(ootdBookmark.getOotd().getId())
                 .ootdBookmarkId(ootdBookmark.getId())
-                .ootdImage(ootdBookmark.getOotd().getOotdImages().get(0).getImageUrl())
+                .ootdImage(ootdBookmark.getOotd().getFirstImage())
+                .ootdImageCount(ootdBookmark.getOotd().getImageCount())
                 .build();
     }
 }

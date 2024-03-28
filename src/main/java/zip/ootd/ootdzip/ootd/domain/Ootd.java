@@ -196,6 +196,13 @@ public class Ootd extends BaseEntity {
         return ootdImages.get(0).getImageUrl();
     }
 
+    public Integer getImageCount() {
+        if (ootdImages.isEmpty()) {
+            throw new IllegalArgumentException("저장된 OOTD 이미지가없는 OOTD 를 조회했습니다.");
+        }
+        return ootdImages.size();
+    }
+
     // == 연관관계 메서드 == //
     public void addOotdImage(OotdImage ootdImage) {
         ootdImages.add(ootdImage);
