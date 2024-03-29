@@ -20,9 +20,9 @@ import com.nimbusds.jose.jwk.source.ImmutableSecret;
 @Configuration
 public class JwtConfig {
 
-    @Value("${jwt.issuer}")
+    @Value("${authorization.issuer}")
     private String issuer;
-    @Value("${jwt.secret-key}")
+    @Value("${authorization.secret-key}")
     private String secretKey;
 
     @Bean
