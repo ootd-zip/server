@@ -67,6 +67,10 @@ public enum ErrorCode {
 
     NOT_AUTHENTICATED_ERROR(400, "U002", "인가되지 않은 사용자"),
 
+    INVALID_GRANT_TYPE_ERROR(401, "T001", "잘못된 grant type"),
+
+    INVALID_REFRESH_TOKEN_ERROR(401, "T002", "잘못된 리프레시 토큰"),
+
     DUPLICATE_NAME_ERROR(409, "U003", "중복된 닉네임"),
 
     IMAGE_CONVERT_ERROR(400, "UT001", "이미지 변환 실패"),
