@@ -1,4 +1,4 @@
-package zip.ootd.ootdzip.login;
+package zip.ootd.ootdzip.oauth;
 
 import java.io.IOException;
 
@@ -10,9 +10,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import zip.ootd.ootdzip.login.data.RegisteredOAuth2User;
-import zip.ootd.ootdzip.login.data.TokenResponse;
-import zip.ootd.ootdzip.login.service.TokenService;
+import zip.ootd.ootdzip.oauth.data.RegisteredOAuth2User;
+import zip.ootd.ootdzip.oauth.data.TokenResponse;
+import zip.ootd.ootdzip.oauth.service.TokenService;
 
 @RequiredArgsConstructor
 public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccessHandler {

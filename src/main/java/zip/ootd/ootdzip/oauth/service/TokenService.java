@@ -1,4 +1,4 @@
-package zip.ootd.ootdzip.login.service;
+package zip.ootd.ootdzip.oauth.service;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -10,13 +10,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
-import zip.ootd.ootdzip.login.data.RegisteredOAuth2User;
-import zip.ootd.ootdzip.login.data.TokenResponse;
-import zip.ootd.ootdzip.login.domain.IssuedRefreshToken;
-import zip.ootd.ootdzip.login.repository.IssuedRefreshTokenRepository;
-import zip.ootd.ootdzip.login.token.TokenGenerator;
-import zip.ootd.ootdzip.login.token.TokenParams;
-import zip.ootd.ootdzip.login.token.TokenType;
+import zip.ootd.ootdzip.oauth.data.RegisteredOAuth2User;
+import zip.ootd.ootdzip.oauth.data.TokenResponse;
+import zip.ootd.ootdzip.oauth.domain.IssuedRefreshToken;
+import zip.ootd.ootdzip.oauth.repository.IssuedRefreshTokenRepository;
+import zip.ootd.ootdzip.oauth.token.TokenGenerator;
+import zip.ootd.ootdzip.oauth.token.TokenParams;
+import zip.ootd.ootdzip.oauth.token.TokenType;
 import zip.ootd.ootdzip.user.domain.User;
 
 @Service

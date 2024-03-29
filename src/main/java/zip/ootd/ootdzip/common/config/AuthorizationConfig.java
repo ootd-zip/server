@@ -13,9 +13,9 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
-import zip.ootd.ootdzip.login.OAuth2AuthenticationSuccessHandler;
-import zip.ootd.ootdzip.login.repository.InMemoryOAuth2AuthorizationRequestRepository;
-import zip.ootd.ootdzip.login.service.TokenService;
+import zip.ootd.ootdzip.oauth.OAuth2AuthenticationSuccessHandler;
+import zip.ootd.ootdzip.oauth.repository.InMemoryOAuth2AuthorizationRequestRepository;
+import zip.ootd.ootdzip.oauth.service.TokenService;
 
 @Configuration
 @RequiredArgsConstructor

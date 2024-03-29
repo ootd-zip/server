@@ -1,4 +1,4 @@
-package zip.ootd.ootdzip.login.util;
+package zip.ootd.ootdzip.oauth.util;
 
 import java.util.Collection;
 import java.util.Map;

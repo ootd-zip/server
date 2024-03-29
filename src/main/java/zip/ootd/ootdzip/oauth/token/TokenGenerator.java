@@ -1,4 +1,4 @@
-package zip.ootd.ootdzip.login.token;
+package zip.ootd.ootdzip.oauth.token;
 
 import org.springframework.security.oauth2.core.AbstractOAuth2Token;
 

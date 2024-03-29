@@ -1,4 +1,4 @@
-package zip.ootd.ootdzip.login.domain;
+package zip.ootd.ootdzip.oauth.domain;
 
 import java.time.Instant;
 

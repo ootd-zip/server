@@ -36,7 +36,7 @@ import zip.ootd.ootdzip.clothes.repository.ClothesRepository;
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.response.CommonPageResponse;
 import zip.ootd.ootdzip.common.response.CommonSliceResponse;
-import zip.ootd.ootdzip.oauth.domain.UserAuthenticationToken;
+import zip.ootd.ootdzip.oauth.OAuthUtils;
 import zip.ootd.ootdzip.ootd.data.OotdGetByUserReq;
 import zip.ootd.ootdzip.ootd.data.OotdGetByUserRes;
 import zip.ootd.ootdzip.ootd.data.OotdGetClothesReq;
@@ -123,7 +123,7 @@ public class OotdServiceTest extends IntegrationTestSupport {
         ootdPostReq.setIsPrivate(false);
         ootdPostReq.setContent("테스트");
         ootdPostReq.setStyles(Arrays.asList(savedStyle.getId(), savedStyle1.getId()));
-        ootdPostReq.setOotdImages(Arrays.asList(ootdImageReq));
+        ootdPostReq.setOotdImages(List.of(ootdImageReq));
 
         // when
         Ootd result = ootdService.postOotd(ootdPostReq, user);
@@ -209,7 +209,7 @@ public class OotdServiceTest extends IntegrationTestSupport {
         OotdPutReq ootdPutReq = new OotdPutReq();
         ootdPutReq.setContent("잘가");
         ootdPutReq.setIsPrivate(true);
-        ootdPutReq.setOotdImages(Arrays.asList(ootdImageReq));
+        ootdPutReq.setOotdImages(List.of(ootdImageReq));
         ootdPutReq.setStyles(Arrays.asList(savedStyle.getId(), savedStyle1.getId()));
 
         // when
@@ -460,12 +460,12 @@ public class OotdServiceTest extends IntegrationTestSupport {
         Ootd ootd3 = createOotdBy(user1, "안녕3", false, Arrays.asList(style1, style2));
 
         // 한 개라도 동일한 스타일이 있으면 포함
-        Ootd ootd4 = createOotdBy(user1, "안녕4", false, Arrays.asList(style1));
-        Ootd ootd5 = createOotdBy(user1, "안녕5", false, Arrays.asList(style2));
+        Ootd ootd4 = createOotdBy(user1, "안녕4", false, List.of(style1));
+        Ootd ootd5 = createOotdBy(user1, "안녕5", false, List.of(style2));
         Ootd ootd6 = createOotdBy(user1, "안녕6", false, Arrays.asList(style1, style3));
 
         // 포함되는 스타일이 하나도 없을시 포함하지 않음
-        Ootd ootd7 = createOotdBy(user1, "안녕7", false, Arrays.asList(style3));
+        Ootd ootd7 = createOotdBy(user1, "안녕7", false, List.of(style3));
 
         OotdGetSimilarReq ootdGetSimilarReq = new OotdGetSimilarReq();
         ootdGetSimilarReq.setOotdId(ootd.getId());
@@ -502,12 +502,12 @@ public class OotdServiceTest extends IntegrationTestSupport {
         Ootd ootd3 = createOotdBy(user1, "안녕3", true, Arrays.asList(style1, style2));
 
         // 한 개라도 동일한 스타일이 있으면 포함
-        Ootd ootd4 = createOotdBy(user1, "안녕4", false, Arrays.asList(style1));
-        Ootd ootd5 = createOotdBy(user1, "안녕5", true, Arrays.asList(style2));
+        Ootd ootd4 = createOotdBy(user1, "안녕4", false, List.of(style1));
+        Ootd ootd5 = createOotdBy(user1, "안녕5", true, List.of(style2));
         Ootd ootd6 = createOotdBy(user1, "안녕6", true, Arrays.asList(style1, style3));
 
         // 포함되는 스타일이 하나도 없을시 포함하지 않음
-        Ootd ootd7 = createOotdBy(user1, "안녕7", false, Arrays.asList(style3));
+        Ootd ootd7 = createOotdBy(user1, "안녕7", false, List.of(style3));
 
         OotdGetSimilarReq ootdGetSimilarReq = new OotdGetSimilarReq();
         ootdGetSimilarReq.setOotdId(ootd.getId());
@@ -606,12 +606,12 @@ public class OotdServiceTest extends IntegrationTestSupport {
         Ootd ootd1 = createOotdBy2(user1, "안녕1", false, Arrays.asList(clothes, clothes1, clothes2));
 
         // 한 개라도 동일한 옷이 있으면 포함
-        Ootd ootd2 = createOotdBy2(user, "안녕2", false, Arrays.asList(clothes));
+        Ootd ootd2 = createOotdBy2(user, "안녕2", false, List.of(clothes));
         Ootd ootd3 = createOotdBy2(user, "안녕3", false, Arrays.asList(clothes, clothes1));
         Ootd ootd4 = createOotdBy2(user, "안녕4", false, Arrays.asList(clothes, clothes2));
 
         // 포함되는 옷이 하나도 없을시 포함하지 않음
-        Ootd ootd5 = createOotdBy2(user, "안녕5", false, Arrays.asList(clothes1));
+        Ootd ootd5 = createOotdBy2(user, "안녕5", false, List.of(clothes1));
         Ootd ootd6 = createOotdBy2(user, "안녕6", false, Arrays.asList(clothes1, clothes2));
 
         // 비공개글이어도 본인이면 포함
@@ -640,7 +640,6 @@ public class OotdServiceTest extends IntegrationTestSupport {
         assertThat(results.getContent()).hasSize(5)
                 .extracting("id")
                 .containsExactly(ootd7.getId(), ootd4.getId(), ootd3.getId(), ootd2.getId(), ootd.getId());
-        ;
     }
 
     @DisplayName("옷을 사용한 OOTD 가져올시 본인이 아니면 비공개글은 가져오지 않는다.")
@@ -710,7 +709,7 @@ public class OotdServiceTest extends IntegrationTestSupport {
         Ootd ootd = Ootd.createOotd(user,
                 content,
                 isPrivate,
-                Arrays.asList(ootdImage),
+            List.of(ootdImage),
                 Arrays.asList(ootdStyle, ootdStyle1));
 
         return ootdRepository.save(ootd);
@@ -745,7 +744,7 @@ public class OotdServiceTest extends IntegrationTestSupport {
         Ootd ootd = Ootd.createOotd(user,
                 content,
                 isPrivate,
-                Arrays.asList(ootdImage),
+            List.of(ootdImage),
                 ootdStyles);
 
         return ootdRepository.save(ootd);
@@ -792,7 +791,7 @@ public class OotdServiceTest extends IntegrationTestSupport {
         Ootd ootd = Ootd.createOotd(user,
                 content,
                 isPrivate,
-                Arrays.asList(ootdImage),
+            List.of(ootdImage),
                 Arrays.asList(ootdStyle, ootdStyle1));
 
         return ootdRepository.save(ootd);
@@ -829,10 +828,10 @@ public class OotdServiceTest extends IntegrationTestSupport {
     }
 
     private void makeAuthenticatedUserBy(User user) {
-        UserAuthenticationToken.UserDetails principal = new UserAuthenticationToken.UserDetails(user.getId());
         SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-        Authentication authentication = new UserAuthenticationToken(principal);
+        Authentication authentication = OAuthUtils.createJwtAuthentication(user);
         securityContext.setAuthentication(authentication);
+
         SecurityContextHolder.setContext(securityContext);
     }
 

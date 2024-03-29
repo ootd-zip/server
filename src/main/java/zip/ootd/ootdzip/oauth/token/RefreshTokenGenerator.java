@@ -1,4 +1,4 @@
-package zip.ootd.ootdzip.login.token;
+package zip.ootd.ootdzip.oauth.token;
 
 import java.time.Instant;
 import java.util.Base64;

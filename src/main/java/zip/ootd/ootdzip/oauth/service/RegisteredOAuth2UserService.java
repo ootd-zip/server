@@ -1,4 +1,4 @@
-package zip.ootd.ootdzip.login.service;
+package zip.ootd.ootdzip.oauth.service;
 
 import java.util.Optional;
 
@@ -9,9 +9,9 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
-import zip.ootd.ootdzip.login.data.RegisteredOAuth2User;
-import zip.ootd.ootdzip.login.domain.UserSocialLogin;
-import zip.ootd.ootdzip.login.repository.UserSocialLoginRepository;
+import zip.ootd.ootdzip.oauth.data.RegisteredOAuth2User;
+import zip.ootd.ootdzip.oauth.domain.UserSocialLogin;
+import zip.ootd.ootdzip.oauth.repository.UserSocialLoginRepository;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.repository.UserRepository;
 

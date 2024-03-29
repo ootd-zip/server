@@ -1,4 +1,4 @@
-package zip.ootd.ootdzip.login.repository;
+package zip.ootd.ootdzip.oauth.repository;
 
 import java.util.Map;
 
@@ -8,7 +8,7 @@ import org.springframework.util.Assert;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import zip.ootd.ootdzip.login.util.ExpiringHashMap;
+import zip.ootd.ootdzip.oauth.util.ExpiringHashMap;
 
 public final class InMemoryOAuth2AuthorizationRequestRepository
         implements AuthorizationRequestRepository<OAuth2AuthorizationRequest> {

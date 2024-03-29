@@ -29,7 +29,7 @@ import zip.ootd.ootdzip.clothes.data.PurchaseStoreType;
 import zip.ootd.ootdzip.clothes.domain.Clothes;
 import zip.ootd.ootdzip.clothes.domain.ClothesColor;
 import zip.ootd.ootdzip.clothes.repository.ClothesRepository;
-import zip.ootd.ootdzip.oauth.domain.UserAuthenticationToken;
+import zip.ootd.ootdzip.oauth.OAuthUtils;
 import zip.ootd.ootdzip.ootd.domain.Ootd;
 import zip.ootd.ootdzip.ootd.repository.OotdRepository;
 import zip.ootd.ootdzip.ootdbookmark.data.OotdBookmarkDeleteReq;
@@ -151,7 +151,7 @@ public class OotdBookmarkServiceTest extends IntegrationTestSupport {
         Ootd ootd = Ootd.createOotd(user,
                 content,
                 isPrivate,
-                Arrays.asList(ootdImage),
+            List.of(ootdImage),
                 Arrays.asList(ootdStyle, ootdStyle1));
 
         return ootdRepository.save(ootd);
@@ -188,10 +188,10 @@ public class OotdBookmarkServiceTest extends IntegrationTestSupport {
     }
 
     private void makeAuthenticatedUserBy(User user) {
-        UserAuthenticationToken.UserDetails principal = new UserAuthenticationToken.UserDetails(user.getId());
         SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-        Authentication authentication = new UserAuthenticationToken(principal);
+        Authentication authentication = OAuthUtils.createJwtAuthentication(user);
         securityContext.setAuthentication(authentication);
+
         SecurityContextHolder.setContext(securityContext);
     }
 
