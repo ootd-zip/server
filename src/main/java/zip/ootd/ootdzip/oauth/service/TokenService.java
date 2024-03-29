@@ -23,9 +23,6 @@ import zip.ootd.ootdzip.user.domain.User;
 @RequiredArgsConstructor
 public class TokenService {
 
-    private final TokenGenerator<?> accessTokenGenerator;
-    private final TokenGenerator<?> refreshTokenGenerator;
-    private final IssuedRefreshTokenRepository issuedRefreshTokenRepository;
     @Value("${authorization.issuer}")
     private String issuer;
     @Value("${authorization.audience}")
@@ -34,6 +31,10 @@ public class TokenService {
     private Long accessTokenTimeToLive;
     @Value("${authorization.refresh-token-time-to-live}")
     private Long refreshTokenTimeToLive;
+
+    private final TokenGenerator<?> accessTokenGenerator;
+    private final TokenGenerator<?> refreshTokenGenerator;
+    private final IssuedRefreshTokenRepository issuedRefreshTokenRepository;
 
     @Transactional
     public TokenResponse issueNewAccessToken(RegisteredOAuth2User principal) {
