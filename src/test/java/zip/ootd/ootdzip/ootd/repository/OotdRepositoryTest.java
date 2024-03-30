@@ -236,7 +236,7 @@ public class OotdRepositoryTest extends IntegrationTestSupport {
         Style baseStyle2 = ootd.getStyles().get(1).getStyle();
 
         // when
-        Slice<Ootd> result = ootdRepository.findAllByOotdIdAndStyles(ootd.getId(),
+        Slice<Ootd> result = ootdRepository.findAllByOotdIdNotAndStyles(ootd.getId(),
                 Arrays.asList(baseStyle1, baseStyle2),
                 pageable);
 
@@ -265,7 +265,7 @@ public class OotdRepositoryTest extends IntegrationTestSupport {
         Style baseStyle2 = ootd.getStyles().get(1).getStyle();
 
         // when
-        Slice<Ootd> result = ootdRepository.findAllByOotdIdAndStyles(ootd.getId(),
+        Slice<Ootd> result = ootdRepository.findAllByOotdIdNotAndStyles(ootd.getId(),
                 Arrays.asList(baseStyle1, baseStyle2),
                 pageable);
 
@@ -294,7 +294,7 @@ public class OotdRepositoryTest extends IntegrationTestSupport {
         Style baseStyle2 = ootd.getStyles().get(1).getStyle();
 
         // when
-        Slice<Ootd> result = ootdRepository.findAllByOotdIdAndStyles(ootd.getId(),
+        Slice<Ootd> result = ootdRepository.findAllByOotdIdNotAndStyles(ootd.getId(),
                 Arrays.asList(baseStyle1, baseStyle2),
                 pageable);
 
@@ -323,7 +323,7 @@ public class OotdRepositoryTest extends IntegrationTestSupport {
         Style baseStyle2 = ootd.getStyles().get(1).getStyle();
 
         // when
-        Slice<Ootd> result = ootdRepository.findAllByOotdIdAndStyles(ootd.getId(),
+        Slice<Ootd> result = ootdRepository.findAllByOotdIdNotAndStyles(ootd.getId(),
                 Arrays.asList(baseStyle1, baseStyle2),
                 pageable);
 

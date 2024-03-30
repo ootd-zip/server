@@ -416,7 +416,7 @@ public class OotdService {
                 .map(OotdStyle::getStyle)
                 .collect(Collectors.toList());
 
-        Slice<Ootd> ootds = ootdRepository.findAllByOotdIdAndStyles(ootdId, styles, pageable);
+        Slice<Ootd> ootds = ootdRepository.findAllByOotdIdNotAndStyles(ootdId, styles, pageable);
 
         List<OotdGetSimilarRes> ootdGetSimilarResList = ootds.stream()
                 .map(OotdGetSimilarRes::new)
