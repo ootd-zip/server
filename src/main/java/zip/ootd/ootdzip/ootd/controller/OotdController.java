@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import zip.ootd.ootdzip.common.response.ApiResponse;
+import zip.ootd.ootdzip.common.response.CommonPageResponse;
 import zip.ootd.ootdzip.common.response.CommonSliceResponse;
 import zip.ootd.ootdzip.ootd.controller.request.OotdSearchReq;
 import zip.ootd.ootdzip.ootd.controller.response.OotdSearchRes;
@@ -171,9 +172,9 @@ public class OotdController {
 
     @Operation(summary = "이 옷을 활용한 ootd 조회", description = "해당 옷을 이용한 유저의 ootd 들을 반환 api")
     @GetMapping("/clothes")
-    public ApiResponse<CommonSliceResponse<OotdGetClothesRes>> getOotdByClothes(@Valid OotdGetClothesReq request) {
+    public ApiResponse<CommonPageResponse<OotdGetClothesRes>> getOotdByClothes(@Valid OotdGetClothesReq request) {
 
-        CommonSliceResponse<OotdGetClothesRes> response = ootdService.getOotdByClothes(
+        CommonPageResponse<OotdGetClothesRes> response = ootdService.getOotdByClothes(
                 userService.getAuthenticatiedUser(),
                 request);
 

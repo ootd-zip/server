@@ -11,7 +11,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import zip.ootd.ootdzip.common.request.CommonPageRequest;
 import zip.ootd.ootdzip.common.response.ApiResponse;
-import zip.ootd.ootdzip.common.response.CommonSliceResponse;
+import zip.ootd.ootdzip.common.response.CommonPageResponse;
 import zip.ootd.ootdzip.ootdbookmark.data.OotdBookmarkDeleteReq;
 import zip.ootd.ootdzip.ootdbookmark.data.OotdBookmarkGetAllRes;
 import zip.ootd.ootdzip.ootdbookmark.service.OotdBookmarkService;
@@ -29,11 +29,10 @@ public class OotdBookmarkController {
 
     @Operation(summary = "bookmark 전체조회", description = "사용자 기준 북마크 전체조회 기능")
     @GetMapping("/bookmarks")
-    public ApiResponse<CommonSliceResponse<OotdBookmarkGetAllRes>> getBookmarks(CommonPageRequest request) {
+    public ApiResponse<CommonPageResponse<OotdBookmarkGetAllRes>> getBookmarks(CommonPageRequest request) {
         User loginUser = userService.getAuthenticatiedUser();
 
-        CommonSliceResponse<OotdBookmarkGetAllRes> response = ootdBookmarkService.getOotdBookmarks(loginUser,
-                request);
+        CommonPageResponse<OotdBookmarkGetAllRes> response = ootdBookmarkService.getOotdBookmarks(loginUser, request);
 
         return new ApiResponse<>(response);
     }

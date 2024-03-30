@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class CommonSliceResponse<T> {
+public class CommonPageResponse<T> {
 
     private List<T> content;
 
@@ -19,10 +19,13 @@ public class CommonSliceResponse<T> {
 
     private Boolean isLast;
 
-    public CommonSliceResponse(List<T> content, Pageable pageable, Boolean isLast) {
+    private Long total;
+
+    public CommonPageResponse(List<T> content, Pageable pageable, Boolean isLast, Long total) {
         this.content = content;
         this.page = pageable.getPageNumber();
         this.size = pageable.getPageSize();
         this.isLast = isLast;
+        this.total = total;
     }
 }

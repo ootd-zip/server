@@ -15,7 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import zip.ootd.ootdzip.ControllerTestSupport;
-import zip.ootd.ootdzip.common.response.CommonSliceResponse;
+import zip.ootd.ootdzip.common.response.CommonPageResponse;
 
 public class OotdBookmarkControllerTest extends ControllerTestSupport {
 
@@ -26,7 +26,7 @@ public class OotdBookmarkControllerTest extends ControllerTestSupport {
         Pageable pageable = PageRequest.of(0, 10);
 
         when(ootdBookmarkService.getOotdBookmarks(any(), any()))
-                .thenReturn(new CommonSliceResponse<>(List.of(), pageable, false));
+                .thenReturn(new CommonPageResponse<>(List.of(), pageable, false, 100L));
 
         // when & then
         mockMvc.perform(get("/api/v1/bookmarks")

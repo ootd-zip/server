@@ -10,8 +10,11 @@ public class OotdGetClothesRes {
 
     private String image;
 
+    private Integer imageCount;
+
     public OotdGetClothesRes(OotdImage ootdImage) {
         this.id = ootdImage.getOotd().getId();
         this.image = ootdImage.getImageUrl();
+        this.imageCount = ootdImage.getOotd().getImageCount();
     }
 }

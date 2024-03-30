@@ -203,6 +203,134 @@ public class OotdRepositoryTest extends IntegrationTestSupport {
         assertThat(result).hasSize(0);
     }
 
+    @DisplayName("주어진 스타일을 포함하는 Ootd 를 가져온다.")
+    @Test
+    void findAllByOotdIdAndStyles() {
+        // given
+        Style style1 = createStyleBy("올드머니");
+        Style style2 = createStyleBy("블루코어");
+        Style style3 = createStyleBy("고프코어");
+        Style style4 = createStyleBy("시티보이");
+
+        User user = createUserBy("유저");
+        User user1 = createUserBy("유저1");
+        Ootd ootd = createOotdBy(user, "안녕", false, Arrays.asList(style1, style2));
+        Ootd ootd1 = createOotdBy(user, "안녕1", false, Arrays.asList(style1, style2));
+        Ootd ootd2 = createOotdBy(user, "안녕2", false, Arrays.asList(style1, style2));
+        Ootd ootd3 = createOotdBy(user1, "안녕3", false, Arrays.asList(style1, style2));
+
+        // 한 개라도 동일한 스타일이 있으면 포함
+        Ootd ootd4 = createOotdBy(user1, "안녕4", false, Arrays.asList(style1));
+        Ootd ootd5 = createOotdBy(user1, "안녕5", false, Arrays.asList(style2));
+        Ootd ootd6 = createOotdBy(user1, "안녕6", false, Arrays.asList(style1, style3));
+
+        // 포함되는 스타일이 하나도 없을시 포함하지 않음
+        Ootd ootd7 = createOotdBy(user1, "안녕7", false, Arrays.asList(style3, style4));
+
+        int page = 0;
+        int size = 10;
+        Sort sort = Sort.by("createdAt").descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Style baseStyle1 = ootd.getStyles().get(0).getStyle();
+        Style baseStyle2 = ootd.getStyles().get(1).getStyle();
+
+        // when
+        Slice<Ootd> result = ootdRepository.findAllByOotdIdNotAndStyles(ootd.getId(),
+                Arrays.asList(baseStyle1, baseStyle2),
+                pageable);
+
+        // then
+        assertThat(result).hasSize(6);
+    }
+
+    @DisplayName("주어진 스타일을 포함하는 OotdImage 를 가져올 때 신고 수는 5회 미만인 OOTD 이어야 한다.")
+    @Test
+    void findByStylesOverReportCount() {
+        // given
+        Style style1 = createStyleBy("올드머니");
+        Style style2 = createStyleBy("블루코어");
+
+        User user = createUserBy("유저");
+        Ootd ootd = createOotdBy(user, "안녕", false, Arrays.asList(style1, style2));
+        Ootd ootd1 = createOotdBy(user, "안녕1", false, Arrays.asList(style1, style2));
+        ootd1.setReportCount(5);
+
+        int page = 0;
+        int size = 10;
+        Sort sort = Sort.by("createdAt").descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Style baseStyle1 = ootd.getStyles().get(0).getStyle();
+        Style baseStyle2 = ootd.getStyles().get(1).getStyle();
+
+        // when
+        Slice<Ootd> result = ootdRepository.findAllByOotdIdNotAndStyles(ootd.getId(),
+                Arrays.asList(baseStyle1, baseStyle2),
+                pageable);
+
+        // then
+        assertThat(result).hasSize(0);
+    }
+
+    @DisplayName("주어진 스타일을 포함하는 OotdImage 를 가져올 때 삭제 되지 않은 OOTD 이어야 한다.")
+    @Test
+    void findByStylesWithIsDeleted() {
+        // given
+        Style style1 = createStyleBy("올드머니");
+        Style style2 = createStyleBy("블루코어");
+
+        User user = createUserBy("유저");
+        Ootd ootd = createOotdBy(user, "안녕", false, Arrays.asList(style1, style2));
+        Ootd ootd1 = createOotdBy(user, "안녕1", false, Arrays.asList(style1, style2));
+        ootd1.setIsDeleted(true);
+
+        int page = 0;
+        int size = 10;
+        Sort sort = Sort.by("createdAt").descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Style baseStyle1 = ootd.getStyles().get(0).getStyle();
+        Style baseStyle2 = ootd.getStyles().get(1).getStyle();
+
+        // when
+        Slice<Ootd> result = ootdRepository.findAllByOotdIdNotAndStyles(ootd.getId(),
+                Arrays.asList(baseStyle1, baseStyle2),
+                pageable);
+
+        // then
+        assertThat(result).hasSize(0);
+    }
+
+    @DisplayName("주어진 스타일을 포함하는 OotdImage 를 가져올 때 차단 되지 않은 OOTD 이어야 한다.")
+    @Test
+    void findByStylesWithIsBlocked() {
+        // given
+        Style style1 = createStyleBy("올드머니");
+        Style style2 = createStyleBy("블루코어");
+
+        User user = createUserBy("유저");
+        Ootd ootd = createOotdBy(user, "안녕", false, Arrays.asList(style1, style2));
+        Ootd ootd1 = createOotdBy(user, "안녕1", false, Arrays.asList(style1, style2));
+        ootd1.setIsBlocked(true);
+
+        int page = 0;
+        int size = 10;
+        Sort sort = Sort.by("createdAt").descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Style baseStyle1 = ootd.getStyles().get(0).getStyle();
+        Style baseStyle2 = ootd.getStyles().get(1).getStyle();
+
+        // when
+        Slice<Ootd> result = ootdRepository.findAllByOotdIdNotAndStyles(ootd.getId(),
+                Arrays.asList(baseStyle1, baseStyle2),
+                pageable);
+
+        // then
+        assertThat(result).hasSize(0);
+    }
+
     @DisplayName("OOTD를 검색한다")
     @Test
     void searchOotds() {
@@ -380,6 +508,41 @@ public class OotdRepositoryTest extends IntegrationTestSupport {
                 !isOpen, savedCategory, savedSize, "메모입니다" + idx, "구매일" + idx, "image" + idx + ".jpg", clothesColors);
 
         return clothesRepository.save(clothes);
+    }
+
+    private Ootd createOotdBy(User user, String content, boolean isPrivate, List<Style> styles) {
+
+        Clothes clothes = createClothesBy(user, true, "1");
+        Clothes clothes1 = createClothesBy(user, true, "2");
+
+        Coordinate coordinate = new Coordinate("22.33", "33.44");
+        Coordinate coordinate1 = new Coordinate("33.44", "44.55");
+
+        DeviceSize deviceSize = new DeviceSize(100L, 50L);
+        DeviceSize deviceSize1 = new DeviceSize(100L, 50L);
+
+        OotdImageClothes ootdImageClothes = OotdImageClothes.builder().clothes(clothes)
+                .coordinate(coordinate)
+                .deviceSize(deviceSize)
+                .build();
+
+        OotdImageClothes ootdImageClothes1 = OotdImageClothes.builder().clothes(clothes1)
+                .coordinate(coordinate1)
+                .deviceSize(deviceSize1)
+                .build();
+
+        OotdImage ootdImage = OotdImage.createOotdImageBy("input_image_url",
+                Arrays.asList(ootdImageClothes, ootdImageClothes1));
+
+        List<OotdStyle> ootdStyles = OotdStyle.createOotdStylesBy(styles);
+
+        Ootd ootd = Ootd.createOotd(user,
+                content,
+                isPrivate,
+                Arrays.asList(ootdImage),
+                ootdStyles);
+
+        return ootdRepository.save(ootd);
     }
 
     private Style createStyleBy(String name) {

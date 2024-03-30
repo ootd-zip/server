@@ -12,8 +12,11 @@ public class OotdGetOtherRes {
 
     private String image;
 
+    private Integer imageCount;
+
     public OotdGetOtherRes(Ootd ootd) {
         this.id = ootd.getId();
         this.image = ootd.getFirstImage();
+        this.imageCount = ootd.getImageCount();
     }
 }

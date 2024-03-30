@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -22,6 +23,7 @@ import zip.ootd.ootdzip.common.constant.RedisKey;
 import zip.ootd.ootdzip.common.dao.RedisDao;
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.exception.code.ErrorCode;
+import zip.ootd.ootdzip.common.response.CommonPageResponse;
 import zip.ootd.ootdzip.common.response.CommonSliceResponse;
 import zip.ootd.ootdzip.notification.domain.NotificationType;
 import zip.ootd.ootdzip.notification.event.NotificationEvent;
@@ -414,13 +416,13 @@ public class OotdService {
                 .map(OotdStyle::getStyle)
                 .collect(Collectors.toList());
 
-        Slice<OotdImage> ootdImages = ootdImageRepository.findByStyles(ootdId, styles, pageable);
+        Slice<Ootd> ootds = ootdRepository.findAllByOotdIdNotAndStyles(ootdId, styles, pageable);
 
-        List<OotdGetSimilarRes> ootdGetSimilarResList = ootdImages.stream()
+        List<OotdGetSimilarRes> ootdGetSimilarResList = ootds.stream()
                 .map(OotdGetSimilarRes::new)
                 .collect(Collectors.toList());
 
-        return new CommonSliceResponse<>(ootdGetSimilarResList, pageable, ootdImages.isLast());
+        return new CommonSliceResponse<>(ootdGetSimilarResList, pageable, ootds.isLast());
     }
 
     /**
@@ -446,10 +448,10 @@ public class OotdService {
      * 특정 유저의 옷을 사용한 OOTD 를 조회합니다.
      * 본인 조회시에도 비공개글 조회가 가능합니다.
      */
-    public CommonSliceResponse<OotdGetClothesRes> getOotdByClothes(User loginUser, OotdGetClothesReq request) {
+    public CommonPageResponse<OotdGetClothesRes> getOotdByClothes(User loginUser, OotdGetClothesReq request) {
 
         Pageable pageable = request.toPageable();
-        Slice<OotdImage> ootdImages = ootdImageRepository.findByClothesAndUserIdAndLoginUserId(
+        Page<OotdImage> ootdImages = ootdImageRepository.findByClothesAndUserIdAndLoginUserId(
                 loginUser.getId(),
                 request.getClothesId(),
                 pageable);
@@ -458,7 +460,10 @@ public class OotdService {
                 .map(OotdGetClothesRes::new)
                 .collect(Collectors.toList());
 
-        return new CommonSliceResponse<>(ootdGetClothesResList, pageable, ootdImages.isLast());
+        return new CommonPageResponse<>(ootdGetClothesResList,
+                pageable,
+                ootdImages.isLast(),
+                ootdImages.getTotalElements());
     }
 
     /**
