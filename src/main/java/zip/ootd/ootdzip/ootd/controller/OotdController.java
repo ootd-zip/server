@@ -183,7 +183,7 @@ public class OotdController {
 
     @Operation(summary = "ootd 검색 기능")
     @GetMapping("/search")
-    public ApiResponse<CommonSliceResponse<OotdSearchRes>> searchOotds(@Valid OotdSearchReq request) {
+    public ApiResponse<CommonPageResponse<OotdSearchRes>> searchOotds(@Valid OotdSearchReq request) {
         return new ApiResponse<>(ootdService.searchOotds(request.toServiceRequest()));
     }
 }

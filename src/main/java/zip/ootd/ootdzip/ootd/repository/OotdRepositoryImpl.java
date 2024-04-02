@@ -10,8 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
 
@@ -20,6 +18,7 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
+import zip.ootd.ootdzip.common.response.CommonPageResponse;
 import zip.ootd.ootdzip.ootd.data.OotdSearchSortType;
 import zip.ootd.ootdzip.ootd.domain.Ootd;
 import zip.ootd.ootdzip.user.domain.UserGender;
@@ -34,7 +33,7 @@ public class OotdRepositoryImpl extends QuerydslRepositorySupport implements Oot
         this.queryFactory = queryFactory;
     }
 
-    public Slice<Ootd> searchOotds(String searchText,
+    public CommonPageResponse<Ootd> searchOotds(String searchText,
             List<Long> brandIds,
             List<Long> categoryIds,
             List<Long> colorIds,
@@ -62,13 +61,28 @@ public class OotdRepositoryImpl extends QuerydslRepositorySupport implements Oot
                 .limit(pageSize + 1)
                 .fetch();
 
+        Long totalCount = queryFactory.select(ootd.count())
+                .from(ootd)
+                .innerJoin(ootd.styles, ootdStyle)
+                .innerJoin(ootd.ootdImages, ootdImage)
+                .leftJoin(ootdImage.ootdImageClothesList, ootdImageClothes)
+                .leftJoin(ootdImageClothes.clothes, clothes)
+                .where(
+                        ootd.isPrivate.eq(false),
+                        searchTextCondition(searchText),
+                        inBrandIds(brandIds),
+                        inCategoryIds(categoryIds),
+                        inColorIds(colorIds),
+                        eqWriterGender(writerGender))
+                .fetchOne();
+
         boolean hasNext = false;
         if (pageSize < findOotds.size()) {
             findOotds.remove(pageSize);
             hasNext = true;
         }
 
-        return new SliceImpl<>(findOotds, pageable, hasNext);
+        return new CommonPageResponse<>(findOotds, pageable, hasNext, totalCount);
     }
 
     private BooleanExpression searchTextCondition(String searchText) {
