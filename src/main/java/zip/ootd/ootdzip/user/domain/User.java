@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.hibernate.annotations.Where;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -27,6 +29,7 @@ import zip.ootd.ootdzip.ootd.domain.Ootd;
 
 @Entity
 @Table(name = "users")
+@Where(clause = "is_deleted = false")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -182,5 +185,9 @@ public class User extends BaseEntity {
         this.weight = weight;
         this.isBodyPrivate = isBodyPrivate;
 
+    }
+
+    public void disjoin() {
+        this.isDeleted = true;
     }
 }

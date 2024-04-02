@@ -3,6 +3,7 @@ package zip.ootd.ootdzip.user.service;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -169,6 +170,25 @@ class UserServiceTest extends IntegrationTestSupport {
     @DisplayName("유효하지 않은 userId로 마이페이지 정보를 조회하면 에러가 발생한다.")
     @Test
     void getUserInfoForMyPageWithInvalidUserId() {
+        // given
+        User user1 = createUserBy("유저1");
+        User loginUser = createUserBy("유저2");
+        UserInfoForMyPageSvcReq request = UserInfoForMyPageSvcReq
+                .builder()
+                .userId(user1.getId())
+                .build();
+
+        userService.deleteUser(user1);
+        // when & then
+        assertThatThrownBy(() -> userService.getUserInfoForMyPage(request, loginUser))
+                .isInstanceOf(CustomException.class)
+                .extracting("errorCode.status", "errorCode.divisionCode", "errorCode.message")
+                .contains(404, "U002", "유효하지 않은 유저 ID");
+    }
+
+    @DisplayName("탈퇴한 userId로 마이페이지 정보를 조회하면 에러가 발생한다.")
+    @Test
+    void getUserInfoForMyPageWithDeletedUserId() {
         // given
         User loginUser = createUserBy("유저1");
         UserInfoForMyPageSvcReq request = UserInfoForMyPageSvcReq
@@ -544,6 +564,20 @@ class UserServiceTest extends IntegrationTestSupport {
         // when & then
         User result = userRepository.findById(user.getId()).orElseThrow();
         assertThat(userService.removeFollower(user, request)).isEqualTo(false);
+    }
+
+    @DisplayName("계정을 삭제한다.")
+    @Test
+    void deleteUser() {
+        // given
+        User user1 = createUserBy("유저1");
+
+        // when
+        userService.deleteUser(user1);
+
+        //then
+        Optional<User> disjoinedUser = userRepository.findById(user1.getId());
+        assertThat(disjoinedUser.get().getIsDeleted()).isTrue();
     }
 
     private User createDefaultUser() {
