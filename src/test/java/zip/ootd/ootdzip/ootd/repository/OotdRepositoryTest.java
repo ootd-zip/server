@@ -32,6 +32,7 @@ import zip.ootd.ootdzip.clothes.data.PurchaseStoreType;
 import zip.ootd.ootdzip.clothes.domain.Clothes;
 import zip.ootd.ootdzip.clothes.domain.ClothesColor;
 import zip.ootd.ootdzip.clothes.repository.ClothesRepository;
+import zip.ootd.ootdzip.common.response.CommonPageResponse;
 import zip.ootd.ootdzip.ootd.data.OotdSearchSortType;
 import zip.ootd.ootdzip.ootd.domain.Ootd;
 import zip.ootd.ootdzip.ootdimage.domain.OotdImage;
@@ -347,12 +348,13 @@ public class OotdRepositoryTest extends IntegrationTestSupport {
                     List.of(style));
         }
         // when
-        Slice<Ootd> ootds = ootdRepository.searchOotds("3", null, null, null, null, OotdSearchSortType.LATEST,
+        CommonPageResponse<Ootd> ootds = ootdRepository.searchOotds("3", null, null, null, null,
+                OotdSearchSortType.LATEST,
                 PageRequest.of(0, 10));
         //then
         assertThat(ootds.getContent()).hasSize(10);
 
-        assertThat(ootds.hasNext()).isTrue();
+        assertThat(ootds.getIsLast()).isTrue();
 
     }
 
@@ -372,12 +374,13 @@ public class OotdRepositoryTest extends IntegrationTestSupport {
                     List.of(style));
         }
         // when
-        Slice<Ootd> ootds = ootdRepository.searchOotds("3", null, null, null, null, OotdSearchSortType.LATEST,
+        CommonPageResponse<Ootd> ootds = ootdRepository.searchOotds("3", null, null, null, null,
+                OotdSearchSortType.LATEST,
                 PageRequest.of(0, 10));
         //then
         assertThat(ootds.getContent()).hasSize(10);
 
-        assertThat(ootds.hasNext()).isTrue();
+        assertThat(ootds.getIsLast()).isTrue();
 
     }
 
@@ -397,12 +400,13 @@ public class OotdRepositoryTest extends IntegrationTestSupport {
                     List.of(style));
         }
         // when
-        Slice<Ootd> ootds = ootdRepository.searchOotds("", null, null, null, null, OotdSearchSortType.LATEST,
+        CommonPageResponse<Ootd> ootds = ootdRepository.searchOotds("", null, null, null, null,
+                OotdSearchSortType.LATEST,
                 PageRequest.of(0, 10));
         //then
         assertThat(ootds.getContent()).hasSize(5);
 
-        assertThat(ootds.hasNext()).isFalse();
+        assertThat(ootds.getIsLast()).isFalse();
 
     }
 

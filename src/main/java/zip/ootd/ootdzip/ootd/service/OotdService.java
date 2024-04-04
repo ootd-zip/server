@@ -469,9 +469,9 @@ public class OotdService {
     /**
      * 검색 기능에서 사용하는 ootd 검색 메소드입니다.
      */
-    public CommonSliceResponse<OotdSearchRes> searchOotds(OotdSearchSvcReq request) {
+    public CommonPageResponse<OotdSearchRes> searchOotds(OotdSearchSvcReq request) {
 
-        Slice<Ootd> findOotds = ootdRepository.searchOotds(request.getSearchText(),
+        CommonPageResponse<Ootd> findOotds = ootdRepository.searchOotds(request.getSearchText(),
                 request.getBrandIds(),
                 request.getCategoryIds(),
                 request.getColorIds(),
@@ -479,10 +479,12 @@ public class OotdService {
                 request.getSortCriteria(),
                 request.getPageable());
 
-        List<OotdSearchRes> ootdSearchRes = findOotds.stream()
+        List<OotdSearchRes> ootdSearchRes = findOotds.getContent()
+                .stream()
                 .map(OotdSearchRes::of)
                 .toList();
 
-        return new CommonSliceResponse<OotdSearchRes>(ootdSearchRes, request.getPageable(), findOotds.isLast());
+        return new CommonPageResponse<OotdSearchRes>(ootdSearchRes, request.getPageable(), findOotds.getIsLast(),
+                findOotds.getTotal());
     }
 }
