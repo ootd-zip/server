@@ -266,11 +266,11 @@ public class UserService {
                     request.getPageable());
         } else if (userSearchType == UserSearchType.FOLLOWER) {
             findUsers = userRepository.searchFollowers(request.getName(),
-                    loginUser,
+                    request.getUserId(),
                     request.getPageable());
         } else if (userSearchType == UserSearchType.FOLLOWING) {
             findUsers = userRepository.searchFollowings(request.getName(),
-                    loginUser,
+                    request.getUserId(),
                     request.getPageable());
         } else {
             throw new IllegalArgumentException("잘못된 검색 조건");
