@@ -139,6 +139,24 @@ class BrandServiceTest extends IntegrationTestSupport {
                         tuple(brand1.getId(), brand1.getName()));
     }
 
+    @DisplayName("탈퇴한 유저가 등록한 옷의 브랜드를 조회하면 에러가 발생한다")
+    @Test
+    void getUserBrandsWithDeletedUser() {
+        // given
+        User user = createUserBy("유저1", true);
+        Brand brand1 = createBrandBy("브랜드1");
+        Brand brand2 = createBrandBy("브랜드2");
+        createClothesBy(user, brand1, false, "1");
+        createClothesBy(user, brand1, false, "1");
+        createClothesBy(user, brand2, false, "1");
+
+        // when
+        List<BrandDto> result = brandService.getUserBrands(user.getId(), user);
+
+        //then
+        assertThat(result).hasSize(0);
+    }
+
     private Clothes createClothesBy(User user, Brand brand, boolean isPrivate, String idx) {
         Category parentCategory = Category.createLargeCategoryBy("상위카테고리" + idx, SizeType.TOP);
 
@@ -167,6 +185,13 @@ class BrandServiceTest extends IntegrationTestSupport {
     private User createUserBy(String userName) {
         User user = User.getDefault();
         user.setName(userName);
+        return userRepository.save(user);
+    }
+
+    private User createUserBy(String userName, Boolean isDeleted) {
+        User user = User.getDefault();
+        user.setName(userName);
+        user.setIsDeleted(isDeleted);
         return userRepository.save(user);
     }
 

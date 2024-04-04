@@ -326,4 +326,10 @@ public class UserService {
 
         userStyleRepository.saveAll(userStyles);
     }
+
+    @Transactional
+    public void deleteUser(User loginUser) {
+        em.merge(loginUser);
+        loginUser.disjoin();
+    }
 }
