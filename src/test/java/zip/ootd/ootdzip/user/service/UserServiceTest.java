@@ -12,10 +12,14 @@ import zip.ootd.ootdzip.IntegrationTestSupport;
 import zip.ootd.ootdzip.category.domain.Style;
 import zip.ootd.ootdzip.category.repository.StyleRepository;
 import zip.ootd.ootdzip.common.exception.CustomException;
+import zip.ootd.ootdzip.common.request.CommonPageRequest;
+import zip.ootd.ootdzip.common.response.CommonSliceResponse;
 import zip.ootd.ootdzip.user.controller.response.ProfileRes;
 import zip.ootd.ootdzip.user.controller.response.UserInfoForMyPageRes;
+import zip.ootd.ootdzip.user.controller.response.UserSearchRes;
 import zip.ootd.ootdzip.user.controller.response.UserStyleRes;
 import zip.ootd.ootdzip.user.data.FollowReq;
+import zip.ootd.ootdzip.user.data.UserSearchType;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.domain.UserGender;
 import zip.ootd.ootdzip.user.domain.UserStyle;
@@ -24,6 +28,7 @@ import zip.ootd.ootdzip.user.repository.UserStyleRepository;
 import zip.ootd.ootdzip.user.service.request.ProfileSvcReq;
 import zip.ootd.ootdzip.user.service.request.UserInfoForMyPageSvcReq;
 import zip.ootd.ootdzip.user.service.request.UserRegisterSvcReq;
+import zip.ootd.ootdzip.user.service.request.UserSearchSvcReq;
 import zip.ootd.ootdzip.user.service.request.UserStyleUpdateSvcReq;
 
 class UserServiceTest extends IntegrationTestSupport {
@@ -544,6 +549,69 @@ class UserServiceTest extends IntegrationTestSupport {
         // when & then
         User result = userRepository.findById(user.getId()).orElseThrow();
         assertThat(userService.removeFollower(user, request)).isEqualTo(false);
+    }
+
+    @DisplayName("유저의 팔로워를 기본 조회 한다.")
+    @Test
+    void searchFollowerByDefault() {
+        // given
+        User user = createUserBy("감자");
+        User user1 = createUserBy("자감");
+        User user2 = createUserBy("자감자");
+        User user3 = createUserBy("자가비");
+
+        userService.follow(user.getId(), user1.getId()); // user1 이 user 를 팔로우
+        userService.follow(user.getId(), user2.getId()); // user2 이 user 를 팔로우
+        CommonPageRequest pageRequest = new CommonPageRequest();
+
+        UserSearchSvcReq userSearchSvcReq = UserSearchSvcReq.builder()
+                .userSearchType(UserSearchType.FOLLOWER)
+                .userId(user.getId())
+                .name("")
+                .pageable(pageRequest.toPageable())
+                .build();
+
+        // when
+        CommonSliceResponse<UserSearchRes> results = userService.searchUser(userSearchSvcReq, user3);
+
+        // then
+        assertThat(results.getContent()).hasSize(2)
+                .extracting("id", "name")
+                .containsExactlyInAnyOrder(tuple(user1.getId(), user1.getName()),
+                        tuple(user2.getId(), user2.getName()));
+    }
+
+    @DisplayName("유저의 팔로잉을 기본 조회 한다.")
+    @Test
+    void searchFollowingByDefault() {
+        // given
+        User user = createUserBy("감자");
+        User user1 = createUserBy("자감");
+        User user2 = createUserBy("자감자");
+        User user3 = createUserBy("자가비");
+        User user4 = createUserBy("긴감자");
+
+        userService.follow(user1.getId(), user.getId()); // user 이 user1 를 팔로우
+        userService.follow(user2.getId(), user.getId()); // user 이 user2 를 팔로우
+        userService.follow(user3.getId(), user.getId()); // user 이 user3 를 팔로우
+        CommonPageRequest pageRequest = new CommonPageRequest();
+
+        UserSearchSvcReq userSearchSvcReq = UserSearchSvcReq.builder()
+                .userSearchType(UserSearchType.FOLLOWING)
+                .userId(user.getId())
+                .name("")
+                .pageable(pageRequest.toPageable())
+                .build();
+
+        // when
+        CommonSliceResponse<UserSearchRes> results = userService.searchUser(userSearchSvcReq, user3);
+
+        // then
+        assertThat(results.getContent()).hasSize(3)
+                .extracting("id", "name")
+                .containsExactlyInAnyOrder(tuple(user1.getId(), user1.getName()),
+                        tuple(user2.getId(), user2.getName()),
+                        tuple(user3.getId(), user3.getName()));
     }
 
     private User createDefaultUser() {

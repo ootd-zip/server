@@ -27,11 +27,14 @@ public class UserSearchReq {
 
     private Integer size = 30;
 
+    private Long userId;
+
     public UserSearchSvcReq toServiceRequest() {
         return UserSearchSvcReq.builder()
                 .name(name)
                 .userSearchType(searchType)
                 .pageable(PageRequest.of(page, size))
+                .userId(userId)
                 .build();
 
     }

@@ -17,4 +17,5 @@ public class UserSearchSvcReq {
     private String name;
     private UserSearchType userSearchType;
     private Pageable pageable;
+    private Long userId;
 }
