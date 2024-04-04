@@ -104,13 +104,14 @@ public class UserRepositoryImplTest extends IntegrationTestSupport {
         CommonPageRequest pageRequest = new CommonPageRequest();
 
         // when
-        Slice<User> results = userRepository.searchFollowings("감", user, pageRequest.toPageable());
+        Slice<User> results = userRepository.searchFollowings("", user, pageRequest.toPageable());
 
         // then
-        assertThat(results).hasSize(2)
+        assertThat(results).hasSize(3)
                 .extracting("id", "name")
                 .containsExactlyInAnyOrder(tuple(user1.getId(), user1.getName()),
-                        tuple(user2.getId(), user2.getName()));
+                        tuple(user2.getId(), user2.getName()),
+                        tuple(user3.getId(), user3.getName()));
     }
 
     @DisplayName("유저의 팔로잉을 검색 한다.")
