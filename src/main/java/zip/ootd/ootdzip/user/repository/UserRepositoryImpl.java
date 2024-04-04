@@ -47,11 +47,11 @@ public class UserRepositoryImpl extends QuerydslRepositorySupport implements Use
         return new SliceImpl<>(findUsers, pageable, hasNext);
     }
 
-    public Slice<User> searchFollowers(String name, User loginUser, Pageable pageable) {
+    public Slice<User> searchFollowers(String name, Long userId, Pageable pageable) {
 
         int pageSize = pageable.getPageSize();
         List<User> findUsers = queryFactory.selectFrom(user)
-                .where(containUserInFollowings(loginUser),
+                .where(containUserInFollowings(userId),
                         containName(name))
                 .orderBy(
                         user.name.length().asc(),
@@ -70,11 +70,11 @@ public class UserRepositoryImpl extends QuerydslRepositorySupport implements Use
         return new SliceImpl<>(findUsers, pageable, hasNext);
     }
 
-    public Slice<User> searchFollowings(String name, User loginUser, Pageable pageable) {
+    public Slice<User> searchFollowings(String name, Long userId, Pageable pageable) {
 
         int pageSize = pageable.getPageSize();
         List<User> findUsers = queryFactory.selectFrom(user)
-                .where(containUserInFollowers(loginUser),
+                .where(containUserInFollowers(userId),
                         containName(name))
                 .orderBy(
                         user.name.length().asc(),
@@ -93,14 +93,14 @@ public class UserRepositoryImpl extends QuerydslRepositorySupport implements Use
         return new SliceImpl<>(findUsers, pageable, hasNext);
     }
 
-    private BooleanExpression containUserInFollowings(User loginUser) {
+    private BooleanExpression containUserInFollowings(Long userId) {
         // 전체유저 팔로잉에서 본인이 포함되면 반환 => 나를 팔로우한 사람을 가져옴
-        return user.followings.contains(loginUser);
+        return user.followings.any().id.eq(userId);
     }
 
-    private BooleanExpression containUserInFollowers(User loginUser) {
+    private BooleanExpression containUserInFollowers(Long userId) {
         // 전체유저 팔로워에서 본인을 포함하면 반환 => 내가 팔로우한 사람을 가져옴
-        return user.followers.contains(loginUser);
+        return user.followers.any().id.eq(userId);
     }
 
     public BooleanExpression containName(String name) {

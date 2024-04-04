@@ -259,7 +259,6 @@ public class UserService {
     public CommonSliceResponse<UserSearchRes> searchUser(UserSearchSvcReq request, User loginUser) {
 
         Slice<User> findUsers = null;
-        User targetUser = userRepository.findById(request.getUserId()).orElseThrow();
         UserSearchType userSearchType = request.getUserSearchType();
 
         if (userSearchType == UserSearchType.USER) {
@@ -267,11 +266,11 @@ public class UserService {
                     request.getPageable());
         } else if (userSearchType == UserSearchType.FOLLOWER) {
             findUsers = userRepository.searchFollowers(request.getName(),
-                    targetUser,
+                    request.getUserId(),
                     request.getPageable());
         } else if (userSearchType == UserSearchType.FOLLOWING) {
             findUsers = userRepository.searchFollowings(request.getName(),
-                    targetUser,
+                    request.getUserId(),
                     request.getPageable());
         } else {
             throw new IllegalArgumentException("잘못된 검색 조건");
