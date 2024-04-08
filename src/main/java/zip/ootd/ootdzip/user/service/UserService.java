@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Page;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,7 +21,7 @@ import zip.ootd.ootdzip.category.domain.Style;
 import zip.ootd.ootdzip.category.repository.StyleRepository;
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.exception.code.ErrorCode;
-import zip.ootd.ootdzip.common.response.CommonSliceResponse;
+import zip.ootd.ootdzip.common.response.CommonPageResponse;
 import zip.ootd.ootdzip.notification.domain.NotificationType;
 import zip.ootd.ootdzip.notification.event.NotificationEvent;
 import zip.ootd.ootdzip.oauth.data.TokenInfo;
@@ -256,9 +256,9 @@ public class UserService {
         userRepository.save(loginUser);
     }
 
-    public CommonSliceResponse<UserSearchRes> searchUser(UserSearchSvcReq request, User loginUser) {
+    public CommonPageResponse<UserSearchRes> searchUser(UserSearchSvcReq request, User loginUser) {
 
-        Slice<User> findUsers = null;
+        Page<User> findUsers = null;
         UserSearchType userSearchType = request.getUserSearchType();
 
         if (userSearchType == UserSearchType.USER) {
@@ -280,7 +280,8 @@ public class UserService {
                 .map((item) -> UserSearchRes.of(item, loginUser))
                 .toList();
 
-        return new CommonSliceResponse<>(result, request.getPageable(), findUsers.isLast());
+        return new CommonPageResponse<>(result, request.getPageable(), findUsers.isLast(),
+                findUsers.getTotalElements());
     }
 
     public List<UserStyleRes> getUserStyle(User loginUser) {
