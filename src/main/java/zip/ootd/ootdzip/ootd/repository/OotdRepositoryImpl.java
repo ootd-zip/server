@@ -82,7 +82,7 @@ public class OotdRepositoryImpl extends QuerydslRepositorySupport implements Oot
             hasNext = true;
         }
 
-        return new CommonPageResponse<>(findOotds, pageable, hasNext, totalCount);
+        return new CommonPageResponse<>(findOotds, pageable, !hasNext, totalCount);
     }
 
     private BooleanExpression searchTextCondition(String searchText) {
