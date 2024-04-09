@@ -353,7 +353,7 @@ public class OotdRepositoryTest extends IntegrationTestSupport {
                 PageRequest.of(0, 10));
         //then
         assertThat(ootds.getContent()).hasSize(10);
-        assertThat(ootds.getTotal()).isEqualTo(28);
+        assertThat(ootds.getTotal()).isEqualTo(14);
         assertThat(ootds.getIsLast()).isFalse();
 
     }
@@ -379,7 +379,7 @@ public class OotdRepositoryTest extends IntegrationTestSupport {
                 PageRequest.of(0, 10));
         //then
         assertThat(ootds.getContent()).hasSize(10);
-        assertThat(ootds.getTotal()).isEqualTo(28);
+        assertThat(ootds.getTotal()).isEqualTo(14);
         assertThat(ootds.getIsLast()).isFalse();
 
     }
