@@ -9,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import jakarta.persistence.EntityManager;
 import zip.ootd.ootdzip.IntegrationTestSupport;
 import zip.ootd.ootdzip.category.domain.Style;
 import zip.ootd.ootdzip.category.repository.StyleRepository;
@@ -45,6 +46,9 @@ class UserServiceTest extends IntegrationTestSupport {
 
     @Autowired
     private UserStyleRepository userStyleRepository;
+
+    @Autowired
+    private EntityManager em;
 
     @DisplayName("userId로 마이페이지에서 사용하는 유저 정보를 조회한다.")
     @Test
@@ -184,6 +188,8 @@ class UserServiceTest extends IntegrationTestSupport {
                 .build();
 
         userService.deleteUser(user1);
+        em.flush();
+        em.detach(user1);
         // when & then
         assertThatThrownBy(() -> userService.getUserInfoForMyPage(request, loginUser))
                 .isInstanceOf(CustomException.class)

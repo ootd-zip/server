@@ -2,6 +2,7 @@ package zip.ootd.ootdzip.brand.repository;
 
 import static zip.ootd.ootdzip.brand.domain.QBrand.*;
 import static zip.ootd.ootdzip.clothes.domain.QClothes.*;
+import static zip.ootd.ootdzip.user.domain.QUser.*;
 
 import java.util.List;
 
@@ -29,7 +30,9 @@ public class BrandRepositoryImpl extends QuerydslRepositorySupport implements Br
                 .distinct()
                 .from(clothes)
                 .innerJoin(clothes.brand, brand)
-                .where(clothes.user.id.eq(userId), eqIsPrivate(isPrivate))
+                .where(user.id.eq(userId),
+                        user.isDeleted.eq(false),
+                        eqIsPrivate(isPrivate))
                 .orderBy(brand.name.asc())
                 .fetch();
     }

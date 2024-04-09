@@ -154,7 +154,7 @@ class BrandServiceTest extends IntegrationTestSupport {
         List<BrandDto> result = brandService.getUserBrands(user.getId(), user);
 
         //then
-        assertThat(result).hasSize(0);
+        assertThat(result).isEmpty();
     }
 
     private Clothes createClothesBy(User user, Brand brand, boolean isPrivate, String idx) {
