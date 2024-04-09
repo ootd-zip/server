@@ -2,6 +2,7 @@ package zip.ootd.ootdzip.ootdlike.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,7 @@ public class OotdLikeService {
     public List<OotdLikeRes> getUserOotdLikes(User loginUser) {
 
         List<OotdLike> ootdLikes = ootdLikeRepository.findTop10ByUser(loginUser.getId(),
-                sortByCreatedAt(Direction.DESC));
+                PageRequest.of(0, 10, sortByCreatedAt(Direction.DESC)));
 
         return ootdLikes.stream()
                 .map(OotdLikeRes::of)

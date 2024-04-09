@@ -2,7 +2,7 @@ package zip.ootd.ootdzip.ootdlike.repository;
 
 import java.util.List;
 
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -18,5 +18,5 @@ public interface OotdLikeRepository extends JpaRepository<OotdLike, Long> {
             + "INNER JOIN ol.user u "
             + "WHERE u.id = :userId "
             + "AND o.isPrivate = false ")
-    List<OotdLike> findTop10ByUser(@Param("userId") Long userId, Sort sort);
+    List<OotdLike> findTop10ByUser(@Param("userId") Long userId, Pageable pageable);
 }
