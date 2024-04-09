@@ -86,7 +86,7 @@ class OotdLikeServiceTest extends IntegrationTestSupport {
         ootdService.addLike(ootd1.getId(), loginUser);
         ootdService.addLike(ootd2.getId(), loginUser);
         // when
-        List<OotdLikeRes> result = ootdLikeService.getOotdLikes(loginUser);
+        List<OotdLikeRes> result = ootdLikeService.getUserOotdLikes(loginUser);
 
         //then
         assertThat(result).hasSize(2)
@@ -112,7 +112,7 @@ class OotdLikeServiceTest extends IntegrationTestSupport {
         ootdService.addLike(ootd1.getId(), loginUser);
         ootdService.addLike(ootd2.getId(), loginUser);
         // when
-        List<OotdLikeRes> result = ootdLikeService.getOotdLikes(loginUser);
+        List<OotdLikeRes> result = ootdLikeService.getUserOotdLikes(loginUser);
 
         //then
         assertThat(result).hasSize(1)
@@ -134,7 +134,7 @@ class OotdLikeServiceTest extends IntegrationTestSupport {
         Ootd ootd2 = createOotdBy(user1, "내용2", true);
 
         // when
-        List<OotdLikeRes> result = ootdLikeService.getOotdLikes(loginUser);
+        List<OotdLikeRes> result = ootdLikeService.getUserOotdLikes(loginUser);
 
         //then
         assertThat(result).isEmpty();
@@ -156,7 +156,7 @@ class OotdLikeServiceTest extends IntegrationTestSupport {
         ootd2.setIsDeleted(true);
         ootdRepository.save(ootd2);
         // when
-        List<OotdLikeRes> result = ootdLikeService.getOotdLikes(loginUser);
+        List<OotdLikeRes> result = ootdLikeService.getUserOotdLikes(loginUser);
 
         //then
         assertThat(result).hasSize(1)

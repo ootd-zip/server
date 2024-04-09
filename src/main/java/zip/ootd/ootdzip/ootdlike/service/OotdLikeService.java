@@ -20,7 +20,7 @@ public class OotdLikeService {
 
     private final OotdLikeRepository ootdLikeRepository;
 
-    public List<OotdLikeRes> getOotdLikes(User loginUser) {
+    public List<OotdLikeRes> getUserOotdLikes(User loginUser) {
 
         List<OotdLike> ootdLikes = ootdLikeRepository.findTop10ByUser(loginUser.getId(),
                 sortByCreatedAt(Direction.DESC));
