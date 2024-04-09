@@ -27,7 +27,7 @@ import lombok.RequiredArgsConstructor;
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.exception.code.ErrorCode;
 import zip.ootd.ootdzip.common.response.ApiResponse;
-import zip.ootd.ootdzip.common.response.CommonSliceResponse;
+import zip.ootd.ootdzip.common.response.CommonPageResponse;
 import zip.ootd.ootdzip.oauth.data.TokenInfo;
 import zip.ootd.ootdzip.user.controller.request.ProfileReq;
 import zip.ootd.ootdzip.user.controller.request.UserRegisterReq;
@@ -175,7 +175,7 @@ public class UserController {
 
     @Operation(summary = "유저 프로필 검색", description = "유저 프로필 검색 API")
     @GetMapping("/search")
-    public ApiResponse<CommonSliceResponse<UserSearchRes>> searchUser(UserSearchReq request) {
+    public ApiResponse<CommonPageResponse<UserSearchRes>> searchUser(UserSearchReq request) {
         return new ApiResponse<>(
                 userService.searchUser(request.toServiceRequest(), userService.getAuthenticatiedUser()));
     }

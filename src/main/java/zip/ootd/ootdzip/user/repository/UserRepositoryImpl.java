@@ -4,9 +4,9 @@ import static zip.ootd.ootdzip.user.domain.QUser.*;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
 
@@ -25,9 +25,8 @@ public class UserRepositoryImpl extends QuerydslRepositorySupport implements Use
         this.queryFactory = queryFactory;
     }
 
-    public Slice<User> searchUsers(String name, Pageable pageable) {
+    public Page<User> searchUsers(String name, Pageable pageable) {
 
-        int pageSize = pageable.getPageSize();
         List<User> findUsers = queryFactory.selectFrom(user)
                 .where(containName(name))
                 .orderBy(
@@ -35,21 +34,19 @@ public class UserRepositoryImpl extends QuerydslRepositorySupport implements Use
                         user.name.asc()
                 )
                 .offset(pageable.getOffset())
-                .limit(pageSize + 1)
+                .limit(pageable.getPageSize())
                 .fetch();
 
-        boolean hasNext = false;
-        if (pageSize < findUsers.size()) {
-            findUsers.remove(pageSize);
-            hasNext = true;
-        }
+        Long totalCount = queryFactory.select(user.count())
+                .from(user)
+                .where(containName(name))
+                .fetchOne();
 
-        return new SliceImpl<>(findUsers, pageable, hasNext);
+        return new PageImpl<>(findUsers, pageable, totalCount);
     }
 
-    public Slice<User> searchFollowers(String name, Long userId, Pageable pageable) {
+    public Page<User> searchFollowers(String name, Long userId, Pageable pageable) {
 
-        int pageSize = pageable.getPageSize();
         List<User> findUsers = queryFactory.selectFrom(user)
                 .where(containUserInFollowings(userId),
                         containName(name))
@@ -58,21 +55,20 @@ public class UserRepositoryImpl extends QuerydslRepositorySupport implements Use
                         user.name.asc()
                 )
                 .offset(pageable.getOffset())
-                .limit(pageSize + 1)
+                .limit(pageable.getPageSize())
                 .fetch();
 
-        boolean hasNext = false;
-        if (pageSize < findUsers.size()) {
-            findUsers.remove(pageSize);
-            hasNext = true;
-        }
+        Long totalCount = queryFactory.select(user.count())
+                .from(user)
+                .where(containUserInFollowings(userId),
+                        containName(name))
+                .fetchOne();
 
-        return new SliceImpl<>(findUsers, pageable, hasNext);
+        return new PageImpl<>(findUsers, pageable, totalCount);
     }
 
-    public Slice<User> searchFollowings(String name, Long userId, Pageable pageable) {
+    public Page<User> searchFollowings(String name, Long userId, Pageable pageable) {
 
-        int pageSize = pageable.getPageSize();
         List<User> findUsers = queryFactory.selectFrom(user)
                 .where(containUserInFollowers(userId),
                         containName(name))
@@ -81,16 +77,16 @@ public class UserRepositoryImpl extends QuerydslRepositorySupport implements Use
                         user.name.asc()
                 )
                 .offset(pageable.getOffset())
-                .limit(pageSize + 1)
+                .limit(pageable.getPageSize())
                 .fetch();
 
-        boolean hasNext = false;
-        if (pageSize < findUsers.size()) {
-            findUsers.remove(pageSize);
-            hasNext = true;
-        }
+        Long totalCount = queryFactory.select(user.count())
+                .from(user)
+                .where(containUserInFollowers(userId),
+                        containName(name))
+                .fetchOne();
 
-        return new SliceImpl<>(findUsers, pageable, hasNext);
+        return new PageImpl<>(findUsers, pageable, totalCount);
     }
 
     private BooleanExpression containUserInFollowings(Long userId) {
