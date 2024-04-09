@@ -61,7 +61,7 @@ public class OotdRepositoryImpl extends QuerydslRepositorySupport implements Oot
                 .limit(pageSize + 1)
                 .fetch();
 
-        Long totalCount = queryFactory.select(ootd.count())
+        Long totalCount = queryFactory.select(ootd.countDistinct())
                 .from(ootd)
                 .innerJoin(ootd.styles, ootdStyle)
                 .innerJoin(ootd.ootdImages, ootdImage)
