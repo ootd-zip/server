@@ -30,12 +30,6 @@ spring:
     oauth2:
       client:
         registration:
-          google:
-            provider: google
-            redirect_uri: ${client.base-url}/login/callback/google
-            scope:
-              - email
-              - profile
           kakao:
             redirect-uri: ${client.base-url}/login/callback/kakao
             client-authentication-method: client_secret_post
