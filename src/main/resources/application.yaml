@@ -2,7 +2,7 @@ server:
   port: 8081
 
 client:
-  base-url: ootdzip.com
+  base-url: https://ootdzip.com
 
 spring:
   jpa:
@@ -15,6 +15,7 @@ spring:
         jdbc:
           batch_size: 100 # update문 하이버네이트 배치를 사용하기 위해 추가, (Insert는 적용불가, id 생성방식이 Identity 이기 때문)
         order_updates: true
+        dialect: org.hibernate.dialect.MariaDB103Dialect
   datasource:
     url: jdbc:mariadb://localhost:3306/ootdzip # mariaDB 쿼리로그가 보고싶을시 ?&profileSQL=true&maxQuerySizeToLog=0
     username: ootdzip
@@ -30,14 +31,20 @@ spring:
     oauth2:
       client:
         registration:
+          apple:
+            redirect-uri: ${client.base-url}/sign-in/apple/callback
+            authorization-grant-type: authorization_code
+            client-authentication-method: client_secret_post
+            scope:
           kakao:
-            redirect-uri: ${client.base-url}/login/callback/kakao
+            redirect-uri: ${client.base-url}/sign-in/kakao/callback
             client-authentication-method: client_secret_post
             authorization-grant-type: authorization_code
             scope:
-              - profile_nickname
-              - profile_image
         provider:
+          apple:
+            authorization-uri: https://appleid.apple.com/auth/authorize
+            token-uri: https://appleid.apple.com/auth/token
           kakao:
             authorization-uri: https://kauth.kakao.com/oauth/authorize
             token-uri: https://kauth.kakao.com/oauth/token
@@ -77,7 +84,7 @@ springdoc:
 
 # Token config
 authorization:
-  issuer: ootdzip
-  audience: ootdzip
+  issuer: https://ootdzip.com
+  audience: https://ootdzip.com
   access-token-time-to-live: 1800  # 30 minutes
   refresh-token-time-to-live: 5184000  # 60 days
