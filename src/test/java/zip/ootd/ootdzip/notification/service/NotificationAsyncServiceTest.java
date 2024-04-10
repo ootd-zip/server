@@ -319,7 +319,7 @@ public class NotificationAsyncServiceTest {
         Ootd ootd = Ootd.createOotd(user,
                 content,
                 isPrivate,
-            List.of(ootdImage),
+                List.of(ootdImage),
                 Arrays.asList(ootdStyle, ootdStyle1));
 
         return ootdRepository.save(ootd);

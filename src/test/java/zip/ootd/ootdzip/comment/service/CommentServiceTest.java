@@ -372,7 +372,7 @@ public class CommentServiceTest extends IntegrationTestSupport {
         Ootd ootd = Ootd.createOotd(user,
                 content,
                 isPrivate,
-            List.of(ootdImage),
+                List.of(ootdImage),
                 Arrays.asList(ootdStyle, ootdStyle1));
 
         return ootdRepository.save(ootd);

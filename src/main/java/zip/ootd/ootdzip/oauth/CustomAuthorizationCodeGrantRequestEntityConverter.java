@@ -13,7 +13,8 @@ import zip.ootd.ootdzip.oauth.provider.AppleClientRegistration;
 public class CustomAuthorizationCodeGrantRequestEntityConverter
         implements Converter<OAuth2AuthorizationCodeGrantRequest, RequestEntity<?>> {
 
-    private final OAuth2AuthorizationCodeGrantRequestEntityConverter delegate = new OAuth2AuthorizationCodeGrantRequestEntityConverter();
+    private final OAuth2AuthorizationCodeGrantRequestEntityConverter delegate =
+            new OAuth2AuthorizationCodeGrantRequestEntityConverter();
 
     @Override
     public RequestEntity<?> convert(@NonNull OAuth2AuthorizationCodeGrantRequest source) {

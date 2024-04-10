@@ -81,6 +81,7 @@ public class ExpiringHashMap<K, V> implements Map<K, V> {
         return removed;
     }
 
+    @SuppressWarnings("checkstyle:ParameterName")
     @Override
     public void putAll(Map<? extends K, ? extends V> m) {
         throw new UnsupportedOperationException();
@@ -111,8 +112,9 @@ public class ExpiringHashMap<K, V> implements Map<K, V> {
     private void flush() {
         ExpiringKey key;
         while ((key = delayQueue.poll()) != null) {
-            if (key.isExpired())
+            if (key.isExpired()) {
                 continue;
+            }
             map.remove(key.getKey());
             expiringKeys.remove(key.getKey());
         }
@@ -158,8 +160,9 @@ public class ExpiringHashMap<K, V> implements Map<K, V> {
         }
 
         private long getDelayMillis() {
-            if (expired)
+            if (expired) {
                 return 0;
+            }
             return createdMillis + timeoutMillis - System.currentTimeMillis();
         }
 
@@ -167,6 +170,7 @@ public class ExpiringHashMap<K, V> implements Map<K, V> {
             expired = true;
         }
 
+        @SuppressWarnings("checkstyle:ParameterName")
         @Override
         public int compareTo(Delayed o) {
             ExpiringKey other = (ExpiringKey)o;
