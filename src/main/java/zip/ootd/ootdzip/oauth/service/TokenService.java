@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
+import zip.ootd.ootdzip.common.exception.CustomException;
+import zip.ootd.ootdzip.common.exception.code.ErrorCode;
 import zip.ootd.ootdzip.oauth.data.TokenResponse;
 import zip.ootd.ootdzip.oauth.domain.IssuedRefreshToken;
 import zip.ootd.ootdzip.oauth.repository.IssuedRefreshTokenRepository;
@@ -45,12 +47,11 @@ public class TokenService {
         Optional<IssuedRefreshToken> optionalFoundRefreshToken = issuedRefreshTokenRepository
                 .findByTokenValue(refreshTokenValue);
         if (optionalFoundRefreshToken.isEmpty()) {
-            throw new RuntimeException("Unknown refresh token");
+            throw new CustomException(ErrorCode.INVALID_REFRESH_TOKEN_ERROR);
         }
         IssuedRefreshToken foundRefreshToken = optionalFoundRefreshToken.get();
-        // TODO: 리프레시 토큰 오류 상황에 따라 적절한 예외 발생
         if (foundRefreshToken.isRevokedOrInvalidated() || foundRefreshToken.isExpired(Instant.now())) {
-            throw new RuntimeException("Invalid refresh token");
+            throw new CustomException(ErrorCode.INVALID_REFRESH_TOKEN_ERROR);
         }
 
         User user = foundRefreshToken.getUser();
