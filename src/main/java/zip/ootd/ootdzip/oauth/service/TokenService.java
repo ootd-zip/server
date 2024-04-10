@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
-import zip.ootd.ootdzip.oauth.data.RegisteredOAuth2User;
 import zip.ootd.ootdzip.oauth.data.TokenResponse;
 import zip.ootd.ootdzip.oauth.domain.IssuedRefreshToken;
 import zip.ootd.ootdzip.oauth.repository.IssuedRefreshTokenRepository;
@@ -37,8 +36,8 @@ public class TokenService {
     private final IssuedRefreshTokenRepository issuedRefreshTokenRepository;
 
     @Transactional
-    public TokenResponse issueNewAccessToken(RegisteredOAuth2User principal) {
-        return generateToken(principal.getUser());
+    public TokenResponse issueNewAccessToken(User user) {
+        return generateToken(user);
     }
 
     @Transactional

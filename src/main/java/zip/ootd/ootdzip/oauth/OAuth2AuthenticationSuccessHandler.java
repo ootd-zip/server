@@ -24,7 +24,7 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
             Authentication authentication) throws IOException {
         RegisteredOAuth2User principal = (RegisteredOAuth2User)authentication.getPrincipal();
-        TokenResponse tokenResponse = tokenService.issueNewAccessToken(principal);
+        TokenResponse tokenResponse = tokenService.issueNewAccessToken(principal.getUser());
 
         response.setContentType("application/json");
         objectMapper.writeValue(response.getWriter(), tokenResponse);
