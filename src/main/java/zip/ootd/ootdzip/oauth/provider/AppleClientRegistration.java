@@ -63,7 +63,7 @@ public class AppleClientRegistration {
             byte[] keyBytes = keyFile.getInputStream().readAllBytes();
             String keyString = new String(keyBytes, StandardCharsets.UTF_8).replace("-----BEGIN PRIVATE KEY-----", "")
                     .replace("-----END PRIVATE KEY-----", "")
-                    .trim();
+                    .replaceAll("\\s+", "");
             KeySpec keySpec = new PKCS8EncodedKeySpec(Base64.getDecoder().decode(keyString));
             return KeyFactory.getInstance("EC").generatePrivate(keySpec);
         } catch (IOException | InvalidKeySpecException | NoSuchAlgorithmException e) {
