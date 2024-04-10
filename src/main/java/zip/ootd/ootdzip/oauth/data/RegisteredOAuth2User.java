@@ -30,17 +30,13 @@ public class RegisteredOAuth2User implements OAuth2User {
 
     private final User user;
 
-    private RegisteredOAuth2User(Collection<? extends GrantedAuthority> authorities, Map<String, Object> attributes,
+    public RegisteredOAuth2User(Collection<? extends GrantedAuthority> authorities, Map<String, Object> attributes,
             User user) {
         this.authorities = authorities != null ?
                 Collections.unmodifiableSet(new LinkedHashSet<>(this.sortAuthorities(authorities))) :
                 Collections.unmodifiableSet(new LinkedHashSet<>(AuthorityUtils.NO_AUTHORITIES));
         this.attributes = Collections.unmodifiableMap(new LinkedHashMap<>(attributes));
         this.user = user;
-    }
-
-    public static RegisteredOAuth2User from(OAuth2User oauth2User, User user) {
-        return new RegisteredOAuth2User(oauth2User.getAuthorities(), oauth2User.getAttributes(), user);
     }
 
     public String getName() {
