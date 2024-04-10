@@ -49,7 +49,7 @@ public class TokenService {
         }
         IssuedRefreshToken foundRefreshToken = optionalFoundRefreshToken.get();
         // TODO: 리프레시 토큰 오류 상황에 따라 적절한 예외 발생
-        if (foundRefreshToken.isRevokedOrInvalidated() || foundRefreshToken.checkTime(Instant.now())) {
+        if (foundRefreshToken.isRevokedOrInvalidated() || foundRefreshToken.isExpired(Instant.now())) {
             throw new RuntimeException("Invalid refresh token");
         }
 

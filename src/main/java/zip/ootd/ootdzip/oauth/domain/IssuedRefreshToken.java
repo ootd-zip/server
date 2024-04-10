@@ -65,10 +65,10 @@ public class IssuedRefreshToken {
         return revoked || invalidated;
     }
 
-    public boolean checkTime(Instant now) {
+    public boolean isExpired(Instant now) {
         Instant iat = Instant.ofEpochSecond(issuedAt);
         Instant exp = Instant.ofEpochSecond(expiresAt);
-        return now.isAfter(iat) && now.isBefore(exp);
+        return now.isBefore(iat) || now.isAfter(exp);
     }
 
     public void revoke() {
