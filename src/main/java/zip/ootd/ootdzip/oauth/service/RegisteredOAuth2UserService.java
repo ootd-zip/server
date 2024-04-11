@@ -4,6 +4,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -23,6 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import zip.ootd.ootdzip.oauth.data.RegisteredOAuth2User;
 import zip.ootd.ootdzip.user.domain.User;
+import zip.ootd.ootdzip.user.repository.UserRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -30,9 +32,10 @@ public class RegisteredOAuth2UserService implements OAuth2UserService<OAuth2User
 
     private static final String ID_TOKEN = "id_token";
 
-    private final DefaultOAuth2UserService delegate = new DefaultOAuth2UserService();
-
+    private final UserRepository userRepository;
     private final UserSocialLoginService userSocialLoginService;
+
+    private final DefaultOAuth2UserService delegate = new DefaultOAuth2UserService();
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -43,7 +46,7 @@ public class RegisteredOAuth2UserService implements OAuth2UserService<OAuth2User
             Map<String, Object> claims = parseClaims(idToken);
             String providerUserId = (String)claims.get(JwtClaimNames.SUB);
 
-            User serviceUser = userSocialLoginService.findOrRegister(registrationId, providerUserId);
+            User serviceUser = findOrCreateUser(registrationId, providerUserId);
 
             Map<String, Object> attributes = Map.of(JwtClaimNames.SUB, providerUserId);
             Set<GrantedAuthority> authorities = Set.of(new OAuth2UserAuthority(attributes));
@@ -53,10 +56,23 @@ public class RegisteredOAuth2UserService implements OAuth2UserService<OAuth2User
             // 토큰 정보 API에서 사용자 정보 받아오기
             OAuth2User oauth2User = delegate.loadUser(userRequest);
             // 받아온 정보의 sub로 필요 시 DB에 저장하고 user 가져오기
-            User serviceUser = userSocialLoginService.findOrRegister(registrationId, oauth2User.getName());
+            User serviceUser = findOrCreateUser(registrationId, oauth2User.getName());
 
             return new RegisteredOAuth2User(oauth2User.getAuthorities(), oauth2User.getAttributes(), serviceUser);
         }
+    }
+
+    private User findOrCreateUser(String provider, String providerId) {
+        Optional<User> optionalUser = userSocialLoginService.findUser(provider, providerId);
+        if (optionalUser.isPresent()) {
+            return optionalUser.get();
+        }
+
+        User user = User.getDefault();
+        user = userRepository.save(user);
+        userSocialLoginService.addUserSocialLogin(provider, providerId, user);
+
+        return user;
     }
 
     private Map<String, Object> parseClaims(String jwt) {
