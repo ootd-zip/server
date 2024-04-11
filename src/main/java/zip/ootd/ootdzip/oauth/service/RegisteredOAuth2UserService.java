@@ -22,7 +22,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
 import zip.ootd.ootdzip.oauth.data.RegisteredOAuth2User;
-import zip.ootd.ootdzip.oauth.provider.AppleClientRegistration;
 import zip.ootd.ootdzip.user.domain.User;
 
 @Service
@@ -38,7 +37,7 @@ public class RegisteredOAuth2UserService implements OAuth2UserService<OAuth2User
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
-        if (AppleClientRegistration.getRegistrationId().equals(registrationId)) {
+        if ("apple".equals(registrationId)) {
             // Apple ID일 경우 id_token에서 sub 추출
             String idToken = userRequest.getAdditionalParameters().get(ID_TOKEN).toString();
             Map<String, Object> claims = parseClaims(idToken);

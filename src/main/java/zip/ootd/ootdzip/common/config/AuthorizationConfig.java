@@ -9,12 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.core.convert.converter.Converter;
-import org.springframework.http.RequestEntity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.oauth2.client.endpoint.DefaultAuthorizationCodeTokenResponseClient;
-import org.springframework.security.oauth2.client.endpoint.OAuth2AccessTokenResponseClient;
-import org.springframework.security.oauth2.client.endpoint.OAuth2AuthorizationCodeGrantRequest;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;
@@ -25,7 +20,6 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
-import zip.ootd.ootdzip.oauth.CustomAuthorizationCodeGrantRequestEntityConverter;
 import zip.ootd.ootdzip.oauth.OAuth2AuthenticationSuccessHandler;
 import zip.ootd.ootdzip.oauth.provider.ClientSecretGenerator;
 import zip.ootd.ootdzip.oauth.repository.InMemoryDynamicClientRegistrationRepository;
@@ -55,8 +49,6 @@ public class AuthorizationConfig {
                                 .authorizationRequestRepository(authorizationRequestRepository()))
                         .redirectionEndpoint(redirection -> redirection
                                 .baseUri(redirectionUri))
-                        .tokenEndpoint(token -> token
-                                .accessTokenResponseClient(accessTokenResponseClient()))
                         .successHandler(successHandler(tokenService, objectMapper)))
                 .cors(cors -> cors.configurationSource(corsConfigurationSource));
 
@@ -79,18 +71,5 @@ public class AuthorizationConfig {
                 properties).asClientRegistrations();
         List<ClientSecretGenerator> secretGenerators = List.of();
         return new InMemoryDynamicClientRegistrationRepository(registrations, secretGenerators);
-    }
-
-    @Bean
-    public Converter<OAuth2AuthorizationCodeGrantRequest, RequestEntity<?>> requestEntityConverter() {
-        return new CustomAuthorizationCodeGrantRequestEntityConverter();
-    }
-
-    @Bean
-    public OAuth2AccessTokenResponseClient<OAuth2AuthorizationCodeGrantRequest> accessTokenResponseClient() {
-        DefaultAuthorizationCodeTokenResponseClient client = new DefaultAuthorizationCodeTokenResponseClient();
-        client.setRequestEntityConverter(requestEntityConverter());
-
-        return client;
     }
 }
