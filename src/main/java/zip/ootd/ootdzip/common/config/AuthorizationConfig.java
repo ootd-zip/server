@@ -1,5 +1,10 @@
 package zip.ootd.ootdzip.common.config;
 
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientProperties;
+import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientPropertiesMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
@@ -10,6 +15,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.client.endpoint.DefaultAuthorizationCodeTokenResponseClient;
 import org.springframework.security.oauth2.client.endpoint.OAuth2AccessTokenResponseClient;
 import org.springframework.security.oauth2.client.endpoint.OAuth2AuthorizationCodeGrantRequest;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 import org.springframework.security.web.SecurityFilterChain;
@@ -20,6 +27,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import zip.ootd.ootdzip.oauth.CustomAuthorizationCodeGrantRequestEntityConverter;
 import zip.ootd.ootdzip.oauth.OAuth2AuthenticationSuccessHandler;
+import zip.ootd.ootdzip.oauth.provider.ClientSecretGenerator;
+import zip.ootd.ootdzip.oauth.repository.InMemoryDynamicClientRegistrationRepository;
 import zip.ootd.ootdzip.oauth.repository.InMemoryOAuth2AuthorizationRequestRepository;
 import zip.ootd.ootdzip.oauth.service.TokenService;
 
@@ -62,6 +71,14 @@ public class AuthorizationConfig {
     @Bean
     public AuthorizationRequestRepository<OAuth2AuthorizationRequest> authorizationRequestRepository() {
         return new InMemoryOAuth2AuthorizationRequestRepository();
+    }
+
+    @Bean
+    public ClientRegistrationRepository clientRegistrationRepository(OAuth2ClientProperties properties) {
+        Map<String, ClientRegistration> registrations = new OAuth2ClientPropertiesMapper(
+                properties).asClientRegistrations();
+        List<ClientSecretGenerator> secretGenerators = List.of();
+        return new InMemoryDynamicClientRegistrationRepository(registrations, secretGenerators);
     }
 
     @Bean
