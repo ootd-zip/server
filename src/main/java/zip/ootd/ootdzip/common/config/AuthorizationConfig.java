@@ -37,6 +37,7 @@ public class AuthorizationConfig {
     private final CorsConfigurationSource corsConfigurationSource;
     private final TokenService tokenService;
     private final ObjectMapper objectMapper;
+    private final List<ClientSecretGenerator> secretGenerators;
 
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -69,7 +70,6 @@ public class AuthorizationConfig {
     public ClientRegistrationRepository clientRegistrationRepository(OAuth2ClientProperties properties) {
         Map<String, ClientRegistration> registrations = new OAuth2ClientPropertiesMapper(
                 properties).asClientRegistrations();
-        List<ClientSecretGenerator> secretGenerators = List.of();
         return new InMemoryDynamicClientRegistrationRepository(registrations, secretGenerators);
     }
 }
