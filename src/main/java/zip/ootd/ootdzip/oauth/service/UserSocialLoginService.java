@@ -11,12 +11,12 @@ import zip.ootd.ootdzip.oauth.repository.UserSocialLoginRepository;
 import zip.ootd.ootdzip.user.domain.User;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class UserSocialLoginService {
 
     private final UserSocialLoginRepository userSocialLoginRepository;
 
-    @Transactional(readOnly = true)
     public Optional<User> findUser(String provider, String providerId) {
         return userSocialLoginRepository.findByProviderAndProviderId(provider, providerId)
                 .map(UserSocialLogin::getUser);
