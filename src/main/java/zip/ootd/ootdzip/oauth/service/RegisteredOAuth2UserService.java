@@ -3,6 +3,7 @@ package zip.ootd.ootdzip.oauth.service;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -22,6 +23,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
+import zip.ootd.ootdzip.common.exception.CustomException;
+import zip.ootd.ootdzip.common.exception.code.ErrorCode;
 import zip.ootd.ootdzip.oauth.data.RegisteredOAuth2User;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.repository.UserRepository;
@@ -39,6 +42,10 @@ public class RegisteredOAuth2UserService implements OAuth2UserService<OAuth2User
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+        User serviceUser;
+        Map<String, Object> attributes;
+        Collection<? extends GrantedAuthority> authorities;
+
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
         if ("apple".equals(registrationId)) {
             // Apple ID일 경우 id_token에서 sub 추출
@@ -46,20 +53,24 @@ public class RegisteredOAuth2UserService implements OAuth2UserService<OAuth2User
             Map<String, Object> claims = parseClaims(idToken);
             String providerUserId = (String)claims.get(JwtClaimNames.SUB);
 
-            User serviceUser = findOrCreateUser(registrationId, providerUserId);
-
-            Map<String, Object> attributes = Map.of(JwtClaimNames.SUB, providerUserId);
-            Set<GrantedAuthority> authorities = Set.of(new OAuth2UserAuthority(attributes));
-
-            return new RegisteredOAuth2User(authorities, attributes, serviceUser);
+            serviceUser = findOrCreateUser(registrationId, providerUserId);
+            attributes = Map.of(JwtClaimNames.SUB, providerUserId);
+            authorities = Set.of(new OAuth2UserAuthority(attributes));
         } else {
             // 토큰 정보 API에서 사용자 정보 받아오기
             OAuth2User oauth2User = delegate.loadUser(userRequest);
             // 받아온 정보의 sub로 필요 시 DB에 저장하고 user 가져오기
-            User serviceUser = findOrCreateUser(registrationId, oauth2User.getName());
-
-            return new RegisteredOAuth2User(oauth2User.getAuthorities(), oauth2User.getAttributes(), serviceUser);
+            serviceUser = findOrCreateUser(registrationId, oauth2User.getName());
+            attributes = oauth2User.getAttributes();
+            authorities = oauth2User.getAuthorities();
         }
+
+        // 탈퇴한 유저가 소셜 로그인을 시도할 경우 에러
+        if (serviceUser.getIsDeleted()) {
+            throw new CustomException(ErrorCode.DELETED_USER_ERROR);
+        }
+
+        return new RegisteredOAuth2User(authorities, attributes, serviceUser);
     }
 
     private User findOrCreateUser(String provider, String providerId) {

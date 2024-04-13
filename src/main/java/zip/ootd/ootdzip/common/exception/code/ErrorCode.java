@@ -67,6 +67,8 @@ public enum ErrorCode {
 
     NOT_AUTHENTICATED_ERROR(400, "U002", "인가되지 않은 사용자"),
 
+    DELETED_USER_ERROR(403, "U003", "탈퇴된 사용자"),
+
     INVALID_GRANT_TYPE_ERROR(401, "T001", "잘못된 grant type"),
 
     INVALID_REFRESH_TOKEN_ERROR(401, "T002", "잘못된 리프레시 토큰"),
