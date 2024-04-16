@@ -1,30 +1,32 @@
 package zip.ootd.ootdzip.oauth.domain;
 
-import java.time.LocalDateTime;
-
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import zip.ootd.ootdzip.common.entity.BaseEntity;
 import zip.ootd.ootdzip.user.domain.User;
 
 @Entity
-@Table(name = "refresh_tokens")
+@Table(name = "user_social_logins")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RefreshToken extends BaseEntity {
+@Builder
+public class UserSocialLogin extends BaseEntity {
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    private String token;
+    @Column(nullable = false)
+    private String provider;
 
-    private LocalDateTime expiresAt;
-
-    private boolean isInvalidated;
+    @Column(nullable = false)
+    private String providerId;
 }

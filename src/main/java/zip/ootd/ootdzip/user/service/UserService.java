@@ -2,14 +2,12 @@ package zip.ootd.ootdzip.user.service;
 
 import static zip.ootd.ootdzip.common.exception.code.ErrorCode.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -24,23 +22,12 @@ import zip.ootd.ootdzip.common.exception.code.ErrorCode;
 import zip.ootd.ootdzip.common.response.CommonPageResponse;
 import zip.ootd.ootdzip.notification.domain.NotificationType;
 import zip.ootd.ootdzip.notification.event.NotificationEvent;
-import zip.ootd.ootdzip.oauth.data.TokenInfo;
-import zip.ootd.ootdzip.oauth.domain.OauthProvider;
-import zip.ootd.ootdzip.oauth.domain.RefreshToken;
-import zip.ootd.ootdzip.oauth.domain.UserAuthenticationToken;
-import zip.ootd.ootdzip.oauth.domain.UserOauth;
-import zip.ootd.ootdzip.oauth.repository.RefreshTokenRepository;
-import zip.ootd.ootdzip.oauth.repository.UserOauthRepository;
-import zip.ootd.ootdzip.oauth.service.SocialOAuth;
-import zip.ootd.ootdzip.security.JwtUtils;
 import zip.ootd.ootdzip.user.controller.response.ProfileRes;
 import zip.ootd.ootdzip.user.controller.response.UserInfoForMyPageRes;
 import zip.ootd.ootdzip.user.controller.response.UserSearchRes;
 import zip.ootd.ootdzip.user.controller.response.UserStyleRes;
 import zip.ootd.ootdzip.user.data.CheckNameReq;
 import zip.ootd.ootdzip.user.data.FollowReq;
-import zip.ootd.ootdzip.user.data.TokenUserInfoRes;
-import zip.ootd.ootdzip.user.data.UserLoginReq;
 import zip.ootd.ootdzip.user.data.UserSearchType;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.domain.UserStyle;
@@ -59,57 +46,10 @@ import zip.ootd.ootdzip.utils.ImageFileUtil;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final UserOauthRepository userOAuthRepository;
-    private final RefreshTokenRepository refreshTokenRepository;
-    private final JwtUtils jwtUtils;
-    private final List<SocialOAuth> socialOAuths;
-    private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final StyleRepository styleRepository;
     private final ApplicationEventPublisher eventPublisher;
     private final UserStyleRepository userStyleRepository;
     private final EntityManager em;
-
-    @Transactional
-    public TokenInfo login(UserLoginReq request) {
-        OauthProvider oAuthProvider = request.getOauthProvider();
-        SocialOAuth socialOAuth = findSocialOauthByType(oAuthProvider);
-
-        // request 정보로 소셜로그인 멤버 ID 가져오기
-        String memberId = socialOAuth.getSocialIdBy(request.getAuthorizationCode(),
-                request.getRedirectUri()); // 소셜로그인 멤버 ID
-        Optional<UserOauth> foundUserOauth = userOAuthRepository.findUserOauthByOauthProviderAndOauthUserId(
-                oAuthProvider, memberId);
-        User user;
-        if (foundUserOauth.isEmpty()) { // 새로운 멤버 ID일 경우 User 추가
-            user = User.getDefault();
-            user = userRepository.save(user);
-            UserOauth userOauth = new UserOauth(user, oAuthProvider, memberId);
-            userOAuthRepository.save(userOauth);
-        } else { // 소셜로그인 멤버 ID가 이미 존재할 경우 불러오기
-            user = foundUserOauth.get().getUser();
-        }
-        UserAuthenticationToken authenticationToken = new UserAuthenticationToken(
-                new UserAuthenticationToken.UserDetails(user.getId()));
-        TokenInfo tokenInfo = jwtUtils.buildTokenInfo(authenticationToken);
-        // 리프레시 토큰 DB에 저장
-        LocalDateTime now = LocalDateTime.now();
-        refreshTokenRepository.save(new RefreshToken(user,
-                tokenInfo.getRefreshToken(),
-                now.plusSeconds(tokenInfo.getRefreshTokenExpiresIn()),
-                false));
-        return tokenInfo;
-    }
-
-    private SocialOAuth findSocialOauthByType(OauthProvider oAuthProvider) {
-        return socialOAuths.stream()
-                .filter(s -> s.type() == oAuthProvider)
-                .findFirst()
-                .orElseThrow(() -> new CustomException(ErrorCode.NONE_SOCIAL_ERROR));
-    }
-
-    public TokenUserInfoRes getUserInfo(User user) {
-        return TokenUserInfoRes.of(user);
-    }
 
     @Transactional
     public void register(UserRegisterSvcReq request, User loginUser) {
@@ -135,27 +75,6 @@ public class UserService {
                 userStyles);
 
         userRepository.save(loginUser);
-    }
-
-    @Transactional
-    public TokenInfo refresh(String refreshToken) {
-        // refresh token white-list로 관리
-        RefreshToken token = refreshTokenRepository.findByToken(refreshToken).orElseThrow(() ->
-                new IllegalStateException("401")); // TODO : 적절한 Exception 정의해서 사용
-        Authentication decoded = jwtUtils.decode(token.getToken());
-        if (decoded == null) { // 잘못되었거나 기한이 지난 jwt
-            throw new IllegalStateException("403"); // TODO : 적절한 Exception 정의해서 사용
-        }
-        refreshTokenRepository.delete(token); // 이전 refresh token invalidate
-        User user = token.getUser();
-        TokenInfo tokenInfo = jwtUtils.buildTokenInfo(decoded);
-        // 리프레시 토큰 DB에 저장
-        LocalDateTime now = LocalDateTime.now();
-        refreshTokenRepository.save(new RefreshToken(user,
-                tokenInfo.getRefreshToken(),
-                now.plusSeconds(tokenInfo.getRefreshTokenExpiresIn()),
-                false));
-        return tokenInfo;
     }
 
     @Transactional
