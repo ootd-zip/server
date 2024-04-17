@@ -3,6 +3,7 @@ server:
 
 client:
   base-url: https://ootdzip.com
+  dev-url: http://localhost:3000
 
 spring:
   jpa:
@@ -38,6 +39,12 @@ spring:
             scope:
           kakao:
             redirect-uri: ${client.base-url}/sign-in/kakao/callback
+            client-authentication-method: client_secret_post
+            authorization-grant-type: authorization_code
+            scope:
+          dev:
+            provider: kakao
+            redirect-uri: ${client.dev-url}/sign-in/dev/callback
             client-authentication-method: client_secret_post
             authorization-grant-type: authorization_code
             scope:
