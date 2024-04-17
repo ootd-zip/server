@@ -71,6 +71,16 @@ public class UserController {
         }
     }
 
+    @GetMapping("/id")
+    public ApiResponse<Long> id() {
+        return new ApiResponse<>(userService.getUserId());
+    }
+
+    @GetMapping("/social-login-provider")
+    public ApiResponse<String> socialLoginProvider() {
+        return new ApiResponse<>(userService.getUserSocialLoginProvider());
+    }
+
     @GetMapping("/check-name")
     public ApiResponse<Boolean> checkName(CheckNameReq request) {
         return new ApiResponse<>(userService.checkName(request));

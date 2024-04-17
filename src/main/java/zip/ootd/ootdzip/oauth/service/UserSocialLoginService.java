@@ -17,6 +17,12 @@ public class UserSocialLoginService {
 
     private final UserSocialLoginRepository userSocialLoginRepository;
 
+    public String getUserProvider(User user) {
+        Optional<UserSocialLogin> socialLogin = userSocialLoginRepository.findByUser(user);
+        return socialLogin.map(UserSocialLogin::getProvider)
+                .orElseThrow(() -> new RuntimeException("사용자의 소셜 로그인 정보가 존재하지 않습니다."));
+    }
+
     public Optional<User> findUser(String provider, String providerId) {
         return userSocialLoginRepository.findByProviderAndProviderId(provider, providerId)
                 .map(UserSocialLogin::getUser);

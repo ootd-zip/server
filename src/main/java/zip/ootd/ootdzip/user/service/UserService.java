@@ -22,6 +22,7 @@ import zip.ootd.ootdzip.common.exception.code.ErrorCode;
 import zip.ootd.ootdzip.common.response.CommonPageResponse;
 import zip.ootd.ootdzip.notification.domain.NotificationType;
 import zip.ootd.ootdzip.notification.event.NotificationEvent;
+import zip.ootd.ootdzip.oauth.service.UserSocialLoginService;
 import zip.ootd.ootdzip.user.controller.response.ProfileRes;
 import zip.ootd.ootdzip.user.controller.response.UserInfoForMyPageRes;
 import zip.ootd.ootdzip.user.controller.response.UserSearchRes;
@@ -45,6 +46,7 @@ import zip.ootd.ootdzip.utils.ImageFileUtil;
 @RequiredArgsConstructor
 public class UserService {
 
+    private final UserSocialLoginService userSocialLoginService;
     private final UserRepository userRepository;
     private final StyleRepository styleRepository;
     private final ApplicationEventPublisher eventPublisher;
@@ -75,6 +77,16 @@ public class UserService {
                 userStyles);
 
         userRepository.save(loginUser);
+    }
+
+    public long getUserId() {
+        User currentUser = getAuthenticatiedUser();
+        return currentUser.getId();
+    }
+
+    public String getUserSocialLoginProvider() {
+        User currentUser = getAuthenticatiedUser();
+        return userSocialLoginService.getUserProvider(currentUser);
     }
 
     @Transactional
