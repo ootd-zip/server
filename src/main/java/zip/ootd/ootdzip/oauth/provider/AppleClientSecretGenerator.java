@@ -1,7 +1,5 @@
 package zip.ootd.ootdzip.oauth.provider;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
@@ -14,7 +12,6 @@ import java.util.Base64;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Jwts;
@@ -33,8 +30,8 @@ public class AppleClientSecretGenerator implements ClientSecretGenerator {
     private String teamId;
     @Value("${spring.security.oauth2.client.registration.apple.key-id}")
     private String keyId;
-    @Value("${spring.security.oauth2.client.registration.apple.key-path}")
-    private String keyPath;
+    @Value("${spring.security.oauth2.client.registration.apple.private-key}")
+    private String privateKey;
 
     @Override
     public String generate() {
@@ -56,16 +53,25 @@ public class AppleClientSecretGenerator implements ClientSecretGenerator {
 
     private PrivateKey generatePrivateKey() {
         try {
-            ClassPathResource keyFile = new ClassPathResource(keyPath);
-            byte[] keyBytes = keyFile.getInputStream().readAllBytes();
-            String keyString = new String(keyBytes, StandardCharsets.UTF_8)
-                    .replace("-----BEGIN PRIVATE KEY-----", "")
-                    .replace("-----END PRIVATE KEY-----", "")
-                    .replaceAll("\\s+", "");
-            KeySpec keySpec = new PKCS8EncodedKeySpec(Base64.getDecoder().decode(keyString));
+            KeySpec keySpec = new PKCS8EncodedKeySpec(Base64.getDecoder().decode(privateKey));
             return KeyFactory.getInstance("EC").generatePrivate(keySpec);
-        } catch (IOException | InvalidKeySpecException | NoSuchAlgorithmException e) {
+        } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
     }
+
+    // private PrivateKey generatePrivateKey() {
+    //     try {
+    //         ClassPathResource keyFile = new ClassPathResource(keyPath);
+    //         byte[] keyBytes = keyFile.getInputStream().readAllBytes();
+    //         String keyString = new String(keyBytes, StandardCharsets.UTF_8)
+    //                 .replace("-----BEGIN PRIVATE KEY-----", "")
+    //                 .replace("-----END PRIVATE KEY-----", "")
+    //                 .replaceAll("\\s+", "");
+    //         KeySpec keySpec = new PKCS8EncodedKeySpec(Base64.getDecoder().decode(keyString));
+    //         return KeyFactory.getInstance("EC").generatePrivate(keySpec);
+    //     } catch (IOException | InvalidKeySpecException | NoSuchAlgorithmException e) {
+    //         throw new RuntimeException(e);
+    //     }
+    // }
 }
