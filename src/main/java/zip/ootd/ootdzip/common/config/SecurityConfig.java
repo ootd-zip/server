@@ -13,6 +13,8 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.CorsUtils;
 
 import lombok.RequiredArgsConstructor;
+import zip.ootd.ootdzip.common.security.CustomAccessDeniedHandler;
+import zip.ootd.ootdzip.common.security.CustomAuthenticationEntryPoint;
 
 @Configuration
 @EnableWebSecurity
@@ -20,6 +22,8 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
 
     private final CorsConfigurationSource corsConfigurationSource;
+    private final CustomAuthenticationEntryPoint authenticationEntryPoint;
+    private final CustomAccessDeniedHandler accessDeniedHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -28,7 +32,9 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
                 .oauth2ResourceServer(oauth2 -> oauth2
-                        .jwt(Customizer.withDefaults()))
+                        .jwt(Customizer.withDefaults())
+                        .authenticationEntryPoint(authenticationEntryPoint)
+                        .accessDeniedHandler(accessDeniedHandler))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(CorsUtils::isPreFlightRequest).permitAll() // Preflight 요청 허용
                         .requestMatchers(HttpMethod.POST, "/api/v1/oauth/token").permitAll()
