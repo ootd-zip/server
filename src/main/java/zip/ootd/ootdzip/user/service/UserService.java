@@ -131,6 +131,15 @@ public class UserService {
     }
 
     public boolean checkName(CheckNameReq req) {
+        try {
+            // 현재 사용자 닉네임과 동일한 닉네임일 경우 허용
+            User user = getAuthenticatiedUser();
+            if (user.getName().equals(req.getName())) {
+                return true;
+            }
+        } catch (CustomException ignored) {
+            // 비로그인 상태
+        }
         return userRepository.findByName(req.getName()).isEmpty();
     }
 
