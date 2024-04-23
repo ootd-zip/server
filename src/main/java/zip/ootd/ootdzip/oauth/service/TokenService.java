@@ -62,6 +62,22 @@ public class TokenService {
         return generateToken(user);
     }
 
+    @Transactional
+    public void revokeRefreshToken(String refreshTokenValue) {
+        Optional<IssuedRefreshToken> optionalFoundRefreshToken = issuedRefreshTokenRepository.findByTokenValue(
+                refreshTokenValue);
+        // Note: invalid tokens do not cause an error response since the client
+        // cannot handle such an error in a reasonable way. Moreover, the
+        // purpose of the revocation request, invalidating the particular token,
+        // is already achieved.
+        if (optionalFoundRefreshToken.isEmpty()) {
+            return;
+        }
+        IssuedRefreshToken foundRefreshToken = optionalFoundRefreshToken.get();
+        foundRefreshToken.revoke();
+        foundRefreshToken = issuedRefreshTokenRepository.save(foundRefreshToken);
+    }
+
     private TokenResponse generateToken(User user) {
         AbstractOAuth2Token accessToken = accessTokenGenerator.generate(accessTokenParams(user));
         AbstractOAuth2Token refreshToken = refreshTokenGenerator.generate(refreshTokenParams(user));

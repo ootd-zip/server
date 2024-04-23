@@ -51,4 +51,10 @@ public class TokenController {
 
         return tokenService.refreshAccessToken(refreshToken);
     }
+
+    @Operation(summary = "리프레시 토큰 무효화", description = "리프레시 토큰을 무효화합니다.")
+    @PostMapping(value = "/api/v1/oauth/token/revoke", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public void revoke(@RequestParam("refreshToken") String refreshToken) {
+        tokenService.revokeRefreshToken(refreshToken);
+    }
 }
