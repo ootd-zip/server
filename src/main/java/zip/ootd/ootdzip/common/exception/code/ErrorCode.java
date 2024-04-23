@@ -65,7 +65,7 @@ public enum ErrorCode {
 
     NONE_SOCIAL_ERROR(400, "U001", "존재 하지 않는 소셜로그인 요청"),
 
-    NOT_AUTHENTICATED_ERROR(400, "U002", "인가되지 않은 사용자"),
+    NOT_AUTHENTICATED_ERROR(401, "U002", "인증되지 않은 사용자"),
 
     DELETED_USER_ERROR(403, "U003", "탈퇴된 사용자"),
 
