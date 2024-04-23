@@ -1,56 +1,88 @@
 package zip.ootd.ootdzip.home.data;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-import lombok.Data;
-import zip.ootd.ootdzip.category.data.CategoryType;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import zip.ootd.ootdzip.category.domain.Category;
 import zip.ootd.ootdzip.clothes.domain.Clothes;
+import zip.ootd.ootdzip.clothes.domain.ClothesColor;
 import zip.ootd.ootdzip.ootdimage.domain.OotdImage;
 
-@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Getter
 public class SameClothesDifferentFeelRes {
 
-    private ClothesForSameClothesDifferentFeelRes clothes;
-
-    private List<OotdImageForSameClothesDifferentFeelRes> ootdImages;
+    private Long clothesId;
+    private String clothesName;
+    private CategoryForSameClothesDifferentFeelRes clothesCategory;
+    private List<ColorForSameClothesDifferentFeelRes> clothesColors;
+    private List<OotdImageForSameClothesDifferentFeelRes> ootds;
 
     public SameClothesDifferentFeelRes(Clothes clothes, List<OotdImage> ootdImages) {
-        this.clothes = new ClothesForSameClothesDifferentFeelRes(clothes);
-        this.ootdImages = ootdImages.stream()
-                .map(OotdImageForSameClothesDifferentFeelRes::new)
-                .collect(Collectors.toList());
+        this.clothesId = clothes.getId();
+        this.clothesName = clothes.getName();
+        this.clothesCategory = CategoryForSameClothesDifferentFeelRes.of(clothes.getCategory());
+        this.clothesColors = ColorForSameClothesDifferentFeelRes.of(clothes.getClothesColors());
+        this.ootds = OotdImageForSameClothesDifferentFeelRes.of(ootdImages);
     }
 
-    @Data
-    static class ClothesForSameClothesDifferentFeelRes {
-
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    @Getter
+    static class CategoryForSameClothesDifferentFeelRes {
         private Long id;
+        private String categoryName;
 
-        private String name;
-
-        private CategoryType categoryType;
-
-        private String imageUrl;
-
-        public ClothesForSameClothesDifferentFeelRes(Clothes clothes) {
-            this.id = clothes.getId();
-            this.name = clothes.getName();
-            this.categoryType = clothes.getCategory().getType();
-            this.imageUrl = clothes.getImageUrl();
+        public static CategoryForSameClothesDifferentFeelRes of(Category category) {
+            return CategoryForSameClothesDifferentFeelRes.builder()
+                    .id(category.getId())
+                    .categoryName(category.getName())
+                    .build();
         }
     }
 
-    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    @Getter
+    static class ColorForSameClothesDifferentFeelRes {
+        private Long id;
+
+        public static List<ColorForSameClothesDifferentFeelRes> of(List<ClothesColor> clothesColors) {
+            return clothesColors.stream()
+                    .map(x -> ColorForSameClothesDifferentFeelRes.builder()
+                            .id(x.getColor().getId())
+                            .build())
+                    .toList();
+        }
+    }
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    @Getter
     static class OotdImageForSameClothesDifferentFeelRes {
 
         private Long ootdId;
 
         private String imageUrl;
 
-        public OotdImageForSameClothesDifferentFeelRes(OotdImage ootdImage) {
-            this.ootdId = ootdImage.getOotd().getId();
-            this.imageUrl = ootdImage.getImageUrl();
+        private Integer imageCount;
+
+        public static List<OotdImageForSameClothesDifferentFeelRes> of(List<OotdImage> ootdImages) {
+            return ootdImages.stream()
+                    .map(x -> OotdImageForSameClothesDifferentFeelRes.builder()
+                            .ootdId(x.getOotd().getId())
+                            .imageUrl(x.getImageUrl())
+                            .imageCount(x.getOotd().getImageCount())
+                            .build())
+                    .toList();
         }
     }
 }
