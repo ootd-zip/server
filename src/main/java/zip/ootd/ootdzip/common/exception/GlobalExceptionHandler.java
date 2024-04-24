@@ -6,6 +6,7 @@ import java.util.NoSuchElementException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.oauth2.server.resource.InvalidBearerTokenException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -184,10 +185,23 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    /**
+     * Bearer 토큰이 잘못되었을 경우
+     * @param ex InvalidBearerTokenException
+     * @return ResponseEntity<ErrorResponse>
+     */
+    @ExceptionHandler(InvalidBearerTokenException.class)
+    protected final ResponseEntity<ErrorResponse> handleInvalidBearerTokenException(InvalidBearerTokenException ex) {
+        log.debug(InvalidBearerTokenException.class.getSimpleName(), ex);
+        final ErrorResponse response = ErrorResponse.of(ErrorCode.NOT_AUTHENTICATED_ERROR, ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+    }
+
     // ======================================Custom Exception===========================================================
 
     @ExceptionHandler(CustomException.class)
     protected final ResponseEntity<ErrorResponse> handleAllExceptions(CustomException ex) {
+
         log.error("Custom Exception", ex);
 
         return new ResponseEntity<>(ErrorResponse.of(ex.getErrorCode(), ex.getMessage()),
