@@ -134,7 +134,7 @@ public class UserService {
         try {
             // 현재 사용자 닉네임과 동일한 닉네임일 경우 허용
             User user = getAuthenticatiedUser();
-            if (user.getName().equals(req.getName())) {
+            if (req.getName().equals(user.getName())) {
                 return true;
             }
         } catch (CustomException ignored) {
