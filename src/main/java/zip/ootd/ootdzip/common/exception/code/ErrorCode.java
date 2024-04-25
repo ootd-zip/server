@@ -119,7 +119,7 @@ public enum ErrorCode {
 
     NOT_FOUND_REPORT_ID(404, "R001", "유효하지 않은 신고 ID"),
 
-    NOT_DUPLICATE_REPORT(400, "R002", "신고는 한번만 가능합니다."),
+    NOT_DUPLICATE_REPORT(200, "R002", "신고는 한번만 가능합니다."),
 
     CANT_MY_REPORT(400, "R003", "작성자는 신고가 불가능합니다."),
 
