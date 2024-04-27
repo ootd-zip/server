@@ -65,7 +65,7 @@ public class User extends BaseEntity {
 
     public static User getDefault() {
         return User.builder()
-                .name("")
+                .name(null)
                 .gender(null)
                 .age(null)
                 .height(0)
