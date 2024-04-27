@@ -6,8 +6,8 @@ import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import zip.ootd.ootdzip.common.request.CommonPageRequest;
 import zip.ootd.ootdzip.common.response.CommonPageResponse;
@@ -19,7 +19,7 @@ import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.service.UserService;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class OotdBookmarkService {
 
@@ -40,11 +40,13 @@ public class OotdBookmarkService {
                 ootdBookmarks.getTotalElements());
     }
 
-    public void deleteOotdBookmarks(OotdBookmarkDeleteReq request) {
+    @Transactional
+    public void deleteOotdBookmarks(OotdBookmarkDeleteReq request, User loginUser) {
 
-        List<OotdBookmark> ootdBookmarks = ootdBookmarkRepository.findAllById(request.getOotdBookmarkIds());
+        List<OotdBookmark> ootdBookmarks = ootdBookmarkRepository.findAllByUserAndIdIn(loginUser,
+                request.getOotdBookmarkIds());
         ootdBookmarks.forEach(ob -> {
-            userService.checkValidUser(ob.getUser());
+            ob.getOotd().cancelBookmark(ob.getUser());
             ootdBookmarkRepository.deleteById(ob.getId());
         });
     }
