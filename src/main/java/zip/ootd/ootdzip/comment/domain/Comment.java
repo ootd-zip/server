@@ -113,7 +113,7 @@ public class Comment extends BaseEntity {
      */
     public String getContents() {
 
-        if (isDeleted || reportCount >= 5) {
+        if (writer.getIsDeleted() || isDeleted || reportCount >= 5) {
             return "삭제된 댓글입니다.";
         }
 
