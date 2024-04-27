@@ -6,7 +6,7 @@ public interface ClothesOotdRepoRes {
 
     Boolean getIsTagged();
 
-    String imageUrl();
+    String getImageUrl();
 
     String getClothesName();
 
