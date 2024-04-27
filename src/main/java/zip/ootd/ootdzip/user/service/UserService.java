@@ -151,6 +151,11 @@ public class UserService {
         }
 
         Optional<User> user = userRepository.findById(Long.valueOf(authentication.getName()));
+
+        if (user.isPresent() && user.get().getIsDeleted()) {
+            throw new CustomException(DELETED_USER_ERROR);
+        }
+
         return user.orElseThrow();
     }
 
@@ -170,6 +175,10 @@ public class UserService {
 
         User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER_ID));
+
+        if (user.getIsDeleted()) {
+            throw new CustomException(DELETED_USER_ERROR);
+        }
 
         return UserInfoForMyPageRes.of(user, loginUser);
     }

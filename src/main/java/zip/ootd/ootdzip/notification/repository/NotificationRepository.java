@@ -12,7 +12,7 @@ import zip.ootd.ootdzip.notification.domain.Notification;
 @Repository
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
 
-    @Query("SELECT n from Notification n where n.receiver.id = :userId and n.isRead = :isRead")
+    @Query("SELECT n from Notification n where n.receiver.id = :userId and n.isRead = :isRead ")
     Slice<Notification> findByUserIdAndIsRead(@Param("userId") Long userId,
             @Param("isRead") Boolean isRead,
             Pageable pageable);

@@ -51,6 +51,7 @@ public class OotdRepositoryImpl extends QuerydslRepositorySupport implements Oot
                 .leftJoin(ootdImageClothes.clothes, clothes)
                 .where(
                         ootd.isPrivate.eq(false),
+                        ootd.writer.isDeleted.eq(false),
                         searchTextCondition(searchText),
                         inBrandIds(brandIds),
                         inCategoryIds(categoryIds),
@@ -136,7 +137,7 @@ public class OotdRepositoryImpl extends QuerydslRepositorySupport implements Oot
         orderSpecifiers.add(new OrderSpecifier(Order.DESC, ootd.createdAt));
         if (sortType.equals(OotdSearchSortType.POPULARITY)) {
             orderSpecifiers.add(0, new OrderSpecifier(Order.DESC, ootd.likeCount));
-            orderSpecifiers.add(1, new OrderSpecifier(Order.DESC, ootd.ootdBookmarks.size()));
+            orderSpecifiers.add(1, new OrderSpecifier(Order.DESC, ootd.bookmarkCount));
             orderSpecifiers.add(2, new OrderSpecifier(Order.DESC, ootd.viewCount));
         }
 
