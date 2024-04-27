@@ -21,8 +21,8 @@ import zip.ootd.ootdzip.clothes.controller.request.SearchClothesReq;
 import zip.ootd.ootdzip.clothes.controller.request.UpdateClothesIsPrivateReq;
 import zip.ootd.ootdzip.clothes.controller.request.UpdateClothesReq;
 import zip.ootd.ootdzip.clothes.controller.response.FindClothesRes;
-import zip.ootd.ootdzip.clothes.data.ClothesOotdRepoRes;
 import zip.ootd.ootdzip.clothes.data.ClothesOotdReq;
+import zip.ootd.ootdzip.clothes.data.ClothesOotdRes;
 import zip.ootd.ootdzip.clothes.data.DeleteClothesByIdRes;
 import zip.ootd.ootdzip.clothes.data.SaveClothesRes;
 import zip.ootd.ootdzip.clothes.service.ClothesService;
@@ -90,9 +90,9 @@ public class ClothesController {
 
     @Operation(summary = "ootd 에 태그된 옷장 조회", description = "user id 와 ootd id 를 주면 해당 id에 해당하는 옷장 반환 api")
     @GetMapping("/ootd")
-    public ApiResponse<CommonSliceResponse<ClothesOotdRepoRes>> getOotdClothes(ClothesOotdReq clothesOotdReq) {
+    public ApiResponse<CommonSliceResponse<ClothesOotdRes>> getOotdClothes(@Valid ClothesOotdReq clothesOotdReq) {
 
-        CommonSliceResponse<ClothesOotdRepoRes> response = clothesService.getClothesOotd(clothesOotdReq);
+        CommonSliceResponse<ClothesOotdRes> response = clothesService.getClothesOotd(clothesOotdReq);
 
         return new ApiResponse<>(response);
     }
