@@ -30,7 +30,7 @@ public class UserRepositoryImpl extends QuerydslRepositorySupport implements Use
         List<User> findUsers = queryFactory.selectFrom(user)
                 .where(
                         containName(name),
-                        user.isDeleted.eq(true)
+                        user.isDeleted.eq(false)
                 )
                 .orderBy(
                         user.name.length().asc(),
@@ -43,7 +43,7 @@ public class UserRepositoryImpl extends QuerydslRepositorySupport implements Use
         Long totalCount = queryFactory.select(user.count())
                 .from(user)
                 .where(containName(name),
-                        user.isDeleted.eq(true))
+                        user.isDeleted.eq(false))
                 .fetchOne();
 
         return new PageImpl<>(findUsers, pageable, totalCount);
@@ -54,7 +54,7 @@ public class UserRepositoryImpl extends QuerydslRepositorySupport implements Use
         List<User> findUsers = queryFactory.selectFrom(user)
                 .where(containUserInFollowings(userId),
                         containName(name),
-                        user.isDeleted.eq(true)
+                        user.isDeleted.eq(false)
                 )
                 .orderBy(
                         user.name.length().asc(),
@@ -68,7 +68,7 @@ public class UserRepositoryImpl extends QuerydslRepositorySupport implements Use
                 .from(user)
                 .where(containUserInFollowings(userId),
                         containName(name),
-                        user.isDeleted.eq(true))
+                        user.isDeleted.eq(false))
                 .fetchOne();
 
         return new PageImpl<>(findUsers, pageable, totalCount);
@@ -79,7 +79,7 @@ public class UserRepositoryImpl extends QuerydslRepositorySupport implements Use
         List<User> findUsers = queryFactory.selectFrom(user)
                 .where(containUserInFollowers(userId),
                         containName(name),
-                        user.isDeleted.eq(true))
+                        user.isDeleted.eq(false))
                 .orderBy(
                         user.name.length().asc(),
                         user.name.asc()
@@ -92,7 +92,7 @@ public class UserRepositoryImpl extends QuerydslRepositorySupport implements Use
                 .from(user)
                 .where(containUserInFollowers(userId),
                         containName(name),
-                        user.isDeleted.eq(true))
+                        user.isDeleted.eq(false))
                 .fetchOne();
 
         return new PageImpl<>(findUsers, pageable, totalCount);
