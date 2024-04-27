@@ -64,7 +64,7 @@ public class RegisteredOAuth2UserService implements OAuth2UserService<OAuth2User
             if ("naver".equals(registrationId)) {
                 // Spring Security 6.3.0-M2부터 nested user-name-attribute 설정 가능
                 // https://github.com/spring-projects/spring-security/pull/14265
-                providerUserId = (String)oauth2User.getAttributes().get("id");
+                providerUserId = (String)((Map<String, Object>)oauth2User.getAttributes().get("response")).get("id");
             } else {
                 providerUserId = oauth2User.getName();
             }
