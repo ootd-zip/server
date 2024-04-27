@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import zip.ootd.ootdzip.clothes.data.ClothesOotdRepoRes;
 import zip.ootd.ootdzip.clothes.domain.Clothes;
 import zip.ootd.ootdzip.user.domain.User;
 
@@ -58,4 +59,42 @@ public interface ClothesRepository extends JpaRepository<Clothes, Long>, Clothes
             + "AND so.isPrivate = false "
             + "AND so.reportCount < 10)")
     Slice<Clothes> findExistOotd(@Param("user") User user, Pageable pageable);
+
+    @Query("SELECT DISTINCT c FROM Clothes c "
+            + "JOIN c.ootdImageClothesList oic "
+            + "JOIN oic.ootdImage oi "
+            + "JOIN oi.ootd o ON o.id = :ootdId "
+            + "WHERE c.isPrivate = false ")
+    List<Clothes> findByOotdId(@Param("ootdId") Long ootdId);
+
+    @Query(value =
+            "SELECT c.id, c.created_at AS CREATEAT, true AS ISTAGGED, c.image_url AS imageUrl, "
+                    + "c.name AS clothesName, b.name AS brandName, cg.name AS categoryName, s.name AS sizeName "
+                    + "FROM clothes c "
+                    + "JOIN brands b ON c.brand_id = b.id "
+                    + "JOIN categories cg ON c.category_id = cg.id "
+                    + "JOIN sizes s ON c.size_id = s.id "
+                    + "JOIN users u ON c.user_id = u.id AND u.is_deleted = false "
+                    + "WHERE c.is_private = false "
+                    + "AND c.id IN :clothesIds "
+                    + "AND c.user_id = :userId "
+                    + "UNION ALL "
+                    + "SELECT c.id, c.created_at AS CREATEAT, false AS ISTAGGED, c.image_url AS imageUrl, "
+                    + "c.name AS clothesName, b.name AS brandName, cg.name AS categoryName, s.name AS sizeName "
+                    + "FROM clothes c "
+                    + "JOIN brands b ON c.brand_id = b.id "
+                    + "JOIN categories cg ON c.category_id = cg.id "
+                    + "JOIN sizes s ON c.size_id = s.id "
+                    + "JOIN users u ON c.user_id = u.id AND u.is_deleted = false "
+                    + "WHERE c.is_private = false "
+                    + "AND c.id NOT IN :clothesIds "
+                    + "AND c.user_id = :userId "
+                    + "ORDER BY ISTAGGED DESC, CREATEAT DESC "
+                    // + "LIMIT :size OFFSET :page ",
+                    + "OFFSET :page ROWS FETCH FIRST :size ROWS ONLY ",
+            nativeQuery = true)
+    Slice<ClothesOotdRepoRes> findClothesOotdResByOotdId(@Param("userId") Long userId,
+            @Param("clothesIds") List<Long> clothesIds,
+            @Param("page") Integer page,
+            @Param("size") Integer size);
 }

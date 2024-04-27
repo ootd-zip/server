@@ -21,7 +21,7 @@ public class OAuthUtils {
                 JwtClaimNames.IAT, Instant.MIN,
                 JwtClaimNames.EXP, Instant.MAX
         );
-        Jwt jwt = new Jwt("", Instant.MIN, Instant.MAX, headers, claims);
+        Jwt jwt = new Jwt(".", Instant.MIN, Instant.MAX, headers, claims);
         return new JwtAuthenticationToken(jwt);
     }
 }
