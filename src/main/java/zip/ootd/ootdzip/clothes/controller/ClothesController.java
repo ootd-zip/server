@@ -89,7 +89,7 @@ public class ClothesController {
     }
 
     @Operation(summary = "ootd 에 태그된 옷장 조회", description = "user id 와 ootd id 를 주면 해당 id에 해당하는 옷장 반환 api")
-    @GetMapping("/")
+    @GetMapping("/ootd")
     public ApiResponse<CommonSliceResponse<ClothesOotdRepoRes>> getOotdClothes(ClothesOotdReq clothesOotdReq) {
 
         CommonSliceResponse<ClothesOotdRepoRes> response = clothesService.getClothesOotd(clothesOotdReq);
