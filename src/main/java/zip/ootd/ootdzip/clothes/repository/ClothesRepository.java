@@ -68,7 +68,7 @@ public interface ClothesRepository extends JpaRepository<Clothes, Long>, Clothes
     List<Clothes> findByOotdId(@Param("ootdId") Long ootdId);
 
     @Query(value =
-            "SELECT c.id, c.created_at AS CREATEAT, true AS ISTAGGED, c.image_url AS imageUrl, "
+            "SELECT c.id, c.created_at AS CREATEAT, 1 AS ISTAGGED, c.image_url AS imageUrl, "
                     + "c.name AS clothesName, b.name AS brandName, cg.name AS categoryName, s.name AS sizeName "
                     + "FROM clothes c "
                     + "JOIN brands b ON c.brand_id = b.id "
@@ -79,7 +79,7 @@ public interface ClothesRepository extends JpaRepository<Clothes, Long>, Clothes
                     + "AND c.id IN :clothesIds "
                     + "AND c.user_id = :userId "
                     + "UNION ALL "
-                    + "SELECT c.id, c.created_at AS CREATEAT, false AS ISTAGGED, c.image_url AS imageUrl, "
+                    + "SELECT c.id, c.created_at AS CREATEAT, 0 AS ISTAGGED, c.image_url AS imageUrl, "
                     + "c.name AS clothesName, b.name AS brandName, cg.name AS categoryName, s.name AS sizeName "
                     + "FROM clothes c "
                     + "JOIN brands b ON c.brand_id = b.id "

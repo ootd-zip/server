@@ -11,7 +11,7 @@ public class ClothesOotdRes {
 
     private Long id;
 
-    private Boolean isTagged;
+    private Integer isTagged;
 
     private String imageUrl;
 

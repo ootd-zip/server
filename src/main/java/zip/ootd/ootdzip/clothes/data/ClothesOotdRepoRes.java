@@ -4,7 +4,7 @@ public interface ClothesOotdRepoRes {
 
     Long getId();
 
-    Boolean getIsTagged();
+    Integer getIsTagged();
 
     String getImageUrl();
 
