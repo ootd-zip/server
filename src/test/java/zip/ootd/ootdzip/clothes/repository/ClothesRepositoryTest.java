@@ -162,13 +162,13 @@ class ClothesRepositoryTest extends IntegrationTestSupport {
         //then
         assertThat(clothesOotdResList)
                 .extracting("id", "isTagged")
-                .containsExactly(tuple(clothes2.getId(), true), tuple(clothes1.getId(), true),
-                        tuple(clothes6.getId(), false), tuple(clothes5.getId(), false),
-                        tuple(clothes4.getId(), false), tuple(clothes3.getId(), false));
+                .containsExactly(tuple(clothes2.getId(), 1), tuple(clothes1.getId(), 1),
+                        tuple(clothes6.getId(), 0), tuple(clothes5.getId(), 0),
+                        tuple(clothes4.getId(), 0), tuple(clothes3.getId(), 0));
 
         assertThat(clothesOotdResList2)
                 .extracting("id", "isTagged")
-                .containsExactly(tuple(clothes.getId(), false));
+                .containsExactly(tuple(clothes.getId(), 0));
     }
 
     private Clothes createClothesBy(User user, boolean isPrivate, String idx) {
