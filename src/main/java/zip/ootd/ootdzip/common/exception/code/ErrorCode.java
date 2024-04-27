@@ -65,7 +65,13 @@ public enum ErrorCode {
 
     NONE_SOCIAL_ERROR(400, "U001", "존재 하지 않는 소셜로그인 요청"),
 
-    NOT_AUTHENTICATED_ERROR(400, "U002", "인가되지 않은 사용자"),
+    NOT_AUTHENTICATED_ERROR(401, "U002", "인증되지 않은 사용자"),
+
+    DELETED_USER_ERROR(403, "U003", "탈퇴된 사용자"),
+
+    INVALID_GRANT_TYPE_ERROR(401, "T001", "잘못된 grant type"),
+
+    INVALID_REFRESH_TOKEN_ERROR(401, "T002", "잘못된 리프레시 토큰"),
 
     DUPLICATE_NAME_ERROR(409, "U003", "중복된 닉네임"),
 
@@ -113,7 +119,7 @@ public enum ErrorCode {
 
     NOT_FOUND_REPORT_ID(404, "R001", "유효하지 않은 신고 ID"),
 
-    NOT_DUPLICATE_REPORT(400, "R002", "신고는 한번만 가능합니다."),
+    NOT_DUPLICATE_REPORT(200, "R002", "신고는 한번만 가능합니다."),
 
     CANT_MY_REPORT(400, "R003", "작성자는 신고가 불가능합니다."),
 

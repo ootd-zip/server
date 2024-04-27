@@ -7,8 +7,6 @@ import java.util.List;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -98,31 +96,29 @@ public class HomeService {
      * <p>
      * 옷의 경우 Slice 적용하여 페이지네이션이 가능하도록 하였습니다.
      */
-    public SliceImpl<SameClothesDifferentFeelRes> getSameClothesDifferentFeel(
-            int page,
-            int size) {
+    public List<SameClothesDifferentFeelRes> getSameClothesDifferentFeel(User loginUser) {
 
-        User user = userService.getAuthenticatiedUser();
-        Pageable clothesPageable = PageRequest.of(page, size, sortClothesByCreatedAt());
-        Slice<Clothes> clothesListSlice = clothesRepository.findExistOotd(user, clothesPageable);
+        Pageable clothesPageable = PageRequest.of(0, 10, sortClothesByCreatedAt());
+        List<Clothes> userClothes = clothesRepository.findByUser(loginUser, clothesPageable);
         List<SameClothesDifferentFeelRes> result = new ArrayList<>();
 
-        for (Clothes clothes : clothesListSlice.getContent()) {
-            Pageable ootdImagePageable = PageRequest.of(0, 3);
+        for (Clothes clothes : userClothes) {
+            Pageable ootdImagePageable = PageRequest.of(0, 4);
 
-            List<String> colorNames = clothes.getClothesColors().stream()
-                    .map(cc -> cc.getColor().getName())
+            List<Long> colorIds = clothes.getClothesColors().stream()
+                    .map(cc -> cc.getColor().getId())
                     .toList();
 
-            List<OotdImage> ootdImages = ootdImageRepository.findByClothesColorNamesAndClothesCategory(
-                    colorNames,
+            List<OotdImage> ootdImages = ootdImageRepository.findOotdImageForSCDF(
+                    colorIds,
                     clothes.getCategory(),
-                    user,
+                    loginUser,
                     ootdImagePageable);
 
             result.add(new SameClothesDifferentFeelRes(clothes, ootdImages));
         }
-        return new SliceImpl<>(result, clothesPageable, clothesListSlice.hasNext());
+
+        return result;
     }
 
     private Sort sortClothesByCreatedAt() {

@@ -15,7 +15,7 @@ import zip.ootd.ootdzip.category.domain.Style;
 import zip.ootd.ootdzip.category.repository.StyleRepository;
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.request.CommonPageRequest;
-import zip.ootd.ootdzip.common.response.CommonSliceResponse;
+import zip.ootd.ootdzip.common.response.CommonPageResponse;
 import zip.ootd.ootdzip.user.controller.response.ProfileRes;
 import zip.ootd.ootdzip.user.controller.response.UserInfoForMyPageRes;
 import zip.ootd.ootdzip.user.controller.response.UserSearchRes;
@@ -598,13 +598,14 @@ class UserServiceTest extends IntegrationTestSupport {
                 .build();
 
         // when
-        CommonSliceResponse<UserSearchRes> results = userService.searchUser(userSearchSvcReq, user3);
+        CommonPageResponse<UserSearchRes> results = userService.searchUser(userSearchSvcReq, user3);
 
         // then
         assertThat(results.getContent()).hasSize(2)
                 .extracting("id", "name")
                 .containsExactlyInAnyOrder(tuple(user1.getId(), user1.getName()),
                         tuple(user2.getId(), user2.getName()));
+        assertThat(results.getTotal()).isEqualTo(2);
     }
 
     @DisplayName("유저의 팔로잉을 기본 조회 한다.")
@@ -630,7 +631,7 @@ class UserServiceTest extends IntegrationTestSupport {
                 .build();
 
         // when
-        CommonSliceResponse<UserSearchRes> results = userService.searchUser(userSearchSvcReq, user3);
+        CommonPageResponse<UserSearchRes> results = userService.searchUser(userSearchSvcReq, user3);
 
         // then
         assertThat(results.getContent()).hasSize(3)
@@ -638,6 +639,7 @@ class UserServiceTest extends IntegrationTestSupport {
                 .containsExactlyInAnyOrder(tuple(user1.getId(), user1.getName()),
                         tuple(user2.getId(), user2.getName()),
                         tuple(user3.getId(), user3.getName()));
+        assertThat(results.getTotal()).isEqualTo(3);
     }
 
     @DisplayName("계정을 삭제한다.")
