@@ -112,5 +112,4 @@ public class ClothesRepositoryImpl extends QuerydslRepositorySupport implements 
         return clothes.name.contains(searchText)
                 .or(clothes.brand.name.contains(searchText));
     }
-
 }

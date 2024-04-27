@@ -3,7 +3,9 @@ package zip.ootd.ootdzip.clothes.service;
 import static zip.ootd.ootdzip.common.exception.code.ErrorCode.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +21,8 @@ import zip.ootd.ootdzip.category.repository.CategoryRepository;
 import zip.ootd.ootdzip.category.repository.ColorRepository;
 import zip.ootd.ootdzip.category.repository.SizeRepository;
 import zip.ootd.ootdzip.clothes.controller.response.FindClothesRes;
+import zip.ootd.ootdzip.clothes.data.ClothesOotdRepoRes;
+import zip.ootd.ootdzip.clothes.data.ClothesOotdReq;
 import zip.ootd.ootdzip.clothes.data.DeleteClothesByIdRes;
 import zip.ootd.ootdzip.clothes.data.SaveClothesRes;
 import zip.ootd.ootdzip.clothes.domain.Clothes;
@@ -28,6 +32,7 @@ import zip.ootd.ootdzip.clothes.service.request.SaveClothesSvcReq;
 import zip.ootd.ootdzip.clothes.service.request.SearchClothesSvcReq;
 import zip.ootd.ootdzip.clothes.service.request.UpdateClothesIsPrivateSvcReq;
 import zip.ootd.ootdzip.clothes.service.request.UpdateClothesSvcReq;
+import zip.ootd.ootdzip.common.entity.BaseEntity;
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.exception.code.ErrorCode;
 import zip.ootd.ootdzip.common.response.CommonSliceResponse;
@@ -225,5 +230,22 @@ public class ClothesServiceImpl implements ClothesService {
         Clothes updatedClothes = clothesRepository.save(updateTarget);
 
         return SaveClothesRes.of(updatedClothes);
+    }
+
+    @Override
+    @Transactional
+    public CommonSliceResponse<ClothesOotdRepoRes> getClothesOotd(ClothesOotdReq request) {
+
+        Pageable pageable = request.toPageable();
+        List<Long> clothesIds = clothesRepository.findByOotdId(request.getOotdId()).stream()
+                .map(BaseEntity::getId)
+                .collect(Collectors.toList());
+
+        Slice<ClothesOotdRepoRes> taggedClothes = clothesRepository.findClothesOotdResByOotdId(request.getUserId(),
+                clothesIds,
+                request.getPage() * request.getSize(),
+                request.getSize());
+
+        return new CommonSliceResponse<>(taggedClothes.toList(), pageable, taggedClothes.isLast());
     }
 }

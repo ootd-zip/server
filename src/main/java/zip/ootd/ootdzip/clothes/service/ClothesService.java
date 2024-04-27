@@ -1,6 +1,8 @@
 package zip.ootd.ootdzip.clothes.service;
 
 import zip.ootd.ootdzip.clothes.controller.response.FindClothesRes;
+import zip.ootd.ootdzip.clothes.data.ClothesOotdRepoRes;
+import zip.ootd.ootdzip.clothes.data.ClothesOotdReq;
 import zip.ootd.ootdzip.clothes.data.DeleteClothesByIdRes;
 import zip.ootd.ootdzip.clothes.data.SaveClothesRes;
 import zip.ootd.ootdzip.clothes.service.request.SaveClothesSvcReq;
@@ -50,4 +52,6 @@ public interface ClothesService {
     SaveClothesRes updateClothes(UpdateClothesSvcReq request, User loginUser);
 
     SaveClothesRes updateClothesIsPrivate(UpdateClothesIsPrivateSvcReq request, User loginUser);
+
+    CommonSliceResponse<ClothesOotdRepoRes> getClothesOotd(ClothesOotdReq request);
 }
