@@ -187,9 +187,7 @@ public class OotdImageRepositoryTest extends IntegrationTestSupport {
                 .extracting("id")
                 .containsExactlyInAnyOrder(
                         ootd1.getId(),
-                        ootd4.getId()
-                );
-
+                        ootd4.getId());
     }
 
     @DisplayName("내가 가진 옷과 비슷한 옷이 등록되고 공개로 등록된 ootd를 조회한다.")
