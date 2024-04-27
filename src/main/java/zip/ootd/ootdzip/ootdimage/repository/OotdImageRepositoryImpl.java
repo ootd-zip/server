@@ -44,7 +44,8 @@ public class OotdImageRepositoryImpl extends QuerydslRepositorySupport implement
                         ootd.writer.ne(user),
                         clothesColor.color.id.in(colorIds),
                         clothes.isPrivate.eq(false),
-                        ootd.isPrivate.eq(false)
+                        ootd.isPrivate.eq(false),
+                        ootd.writer.isDeleted.eq(false)
                 )
                 .orderBy(
                         ootd.likeCount.desc(),

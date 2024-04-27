@@ -194,7 +194,7 @@ class UserServiceTest extends IntegrationTestSupport {
         assertThatThrownBy(() -> userService.getUserInfoForMyPage(request, loginUser))
                 .isInstanceOf(CustomException.class)
                 .extracting("errorCode.status", "errorCode.divisionCode", "errorCode.message")
-                .contains(404, "U002", "유효하지 않은 유저 ID");
+                .contains(403, "U003", "탈퇴된 사용자");
     }
 
     @DisplayName("탈퇴한 userId로 마이페이지 정보를 조회하면 에러가 발생한다.")

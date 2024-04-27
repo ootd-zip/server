@@ -1,7 +1,6 @@
 package zip.ootd.ootdzip.comment.service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
@@ -153,7 +152,7 @@ public class CommentService {
 
         List<CommentGetAllRes> commentGetAllResList = comments.stream()
                 .map(CommentGetAllRes::of)
-                .collect(Collectors.toList());
+                .toList();
 
         return new CommonSliceResponse<>(commentGetAllResList, pageable, comments.isLast());
     }
