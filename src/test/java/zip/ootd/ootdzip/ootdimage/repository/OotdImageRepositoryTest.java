@@ -186,8 +186,9 @@ public class OotdImageRepositoryTest extends IntegrationTestSupport {
         assertThat(result).hasSize(2)
                 .extracting("id")
                 .containsExactlyInAnyOrder(
-                        ootd1.getId()
-                        , ootd4.getId());
+                        ootd1.getId(),
+                        ootd4.getId()
+                );
 
     }
 
