@@ -31,8 +31,7 @@ import zip.ootd.ootdzip.user.domain.User;
 @Entity
 @Table(name = "comments")
 @Where(clause = "(depth = 1 AND is_deleted = false AND report_count < 5 AND child_count = 0) "
-        + "OR (depth = 1 AND child_count > 0) "
-        + "OR (depth = 2 AND is_deleted = false AND report_count < 5)")
+        + "OR (depth = 1 AND child_count > 0) " + "OR (depth = 2 AND is_deleted = false AND report_count < 5)")
 @Getter
 @Setter
 @Builder
@@ -113,7 +112,7 @@ public class Comment extends BaseEntity {
      */
     public String getContents() {
 
-        if (writer.getIsDeleted() || isDeleted || reportCount >= 5) {
+        if (writer == null || writer.getIsDeleted() || isDeleted || reportCount >= 5) {
             return "삭제된 댓글입니다.";
         }
 
