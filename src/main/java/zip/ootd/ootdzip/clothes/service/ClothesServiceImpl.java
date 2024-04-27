@@ -23,6 +23,7 @@ import zip.ootd.ootdzip.category.repository.SizeRepository;
 import zip.ootd.ootdzip.clothes.controller.response.FindClothesRes;
 import zip.ootd.ootdzip.clothes.data.ClothesOotdRepoRes;
 import zip.ootd.ootdzip.clothes.data.ClothesOotdReq;
+import zip.ootd.ootdzip.clothes.data.ClothesOotdRes;
 import zip.ootd.ootdzip.clothes.data.DeleteClothesByIdRes;
 import zip.ootd.ootdzip.clothes.data.SaveClothesRes;
 import zip.ootd.ootdzip.clothes.domain.Clothes;
@@ -243,18 +244,22 @@ public class ClothesServiceImpl implements ClothesService {
 
     @Override
     @Transactional
-    public CommonSliceResponse<ClothesOotdRepoRes> getClothesOotd(ClothesOotdReq request) {
+    public CommonSliceResponse<ClothesOotdRes> getClothesOotd(ClothesOotdReq request) {
 
         Pageable pageable = request.toPageable();
         List<Long> clothesIds = clothesRepository.findByOotdId(request.getOotdId()).stream()
                 .map(BaseEntity::getId)
                 .collect(Collectors.toList());
 
-        Slice<ClothesOotdRepoRes> taggedClothes = clothesRepository.findClothesOotdResByOotdId(request.getUserId(),
+        Slice<ClothesOotdRepoRes> taggedClothesSlice = clothesRepository.findClothesOotdResByOotdId(request.getUserId(),
                 clothesIds,
                 request.getPage() * request.getSize(),
                 request.getSize());
 
-        return new CommonSliceResponse<>(taggedClothes.toList(), pageable, taggedClothes.isLast());
+        List<ClothesOotdRes> clothesOotdResList = taggedClothesSlice.stream()
+                .map(ClothesOotdRes::of)
+                .collect(Collectors.toList());
+
+        return new CommonSliceResponse<>(clothesOotdResList, pageable, taggedClothesSlice.isLast());
     }
 }
