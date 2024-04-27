@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.exception.code.ErrorCode;
+import zip.ootd.ootdzip.common.response.ApiResponse;
 import zip.ootd.ootdzip.oauth.data.TokenResponse;
 import zip.ootd.ootdzip.oauth.service.TokenService;
 
@@ -26,7 +26,7 @@ public class TokenController {
 
     // Swagger 문서용 더미 메소드, 실제로는 AuthoriationConfig에서 처리.
     @Operation(summary = "소셜 로그인", description = "해당 경로에 접속하여 로그인 과정 시작", responses = {
-            @ApiResponse(responseCode = "302")
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "302")
     })
     @GetMapping("/api/v1/login/authorization/{provider}")
     public void login() {
@@ -54,7 +54,8 @@ public class TokenController {
 
     @Operation(summary = "리프레시 토큰 무효화", description = "리프레시 토큰을 무효화합니다.")
     @PostMapping(value = "/api/v1/oauth/token/revoke", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public void revoke(@RequestParam("refreshToken") String refreshToken) {
+    public ApiResponse<Void> revoke(@RequestParam("refreshToken") String refreshToken) {
         tokenService.revokeRefreshToken(refreshToken);
+        return new ApiResponse<>();
     }
 }
