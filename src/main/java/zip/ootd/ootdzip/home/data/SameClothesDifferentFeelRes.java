@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import zip.ootd.ootdzip.category.domain.Category;
 import zip.ootd.ootdzip.clothes.domain.Clothes;
 import zip.ootd.ootdzip.clothes.domain.ClothesColor;
-import zip.ootd.ootdzip.ootdimage.domain.OotdImage;
+import zip.ootd.ootdzip.ootd.domain.Ootd;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,12 +23,12 @@ public class SameClothesDifferentFeelRes {
     private List<ColorForSameClothesDifferentFeelRes> clothesColors;
     private List<OotdImageForSameClothesDifferentFeelRes> ootds;
 
-    public SameClothesDifferentFeelRes(Clothes clothes, List<OotdImage> ootdImages) {
+    public SameClothesDifferentFeelRes(Clothes clothes, List<Ootd> ootds) {
         this.clothesId = clothes.getId();
         this.clothesName = clothes.getName();
         this.clothesCategory = CategoryForSameClothesDifferentFeelRes.of(clothes.getCategory());
         this.clothesColors = ColorForSameClothesDifferentFeelRes.of(clothes.getClothesColors());
-        this.ootds = OotdImageForSameClothesDifferentFeelRes.of(ootdImages);
+        this.ootds = OotdImageForSameClothesDifferentFeelRes.of(ootds);
     }
 
     @NoArgsConstructor
@@ -75,12 +75,12 @@ public class SameClothesDifferentFeelRes {
 
         private Integer imageCount;
 
-        public static List<OotdImageForSameClothesDifferentFeelRes> of(List<OotdImage> ootdImages) {
-            return ootdImages.stream()
+        public static List<OotdImageForSameClothesDifferentFeelRes> of(List<Ootd> ootds) {
+            return ootds.stream()
                     .map(x -> OotdImageForSameClothesDifferentFeelRes.builder()
-                            .ootdId(x.getOotd().getId())
-                            .imageUrl(x.getImageUrl())
-                            .imageCount(x.getOotd().getImageCount())
+                            .ootdId(x.getId())
+                            .imageUrl(x.getFirstImage())
+                            .imageCount(x.getImageCount())
                             .build())
                     .toList();
         }

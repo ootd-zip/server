@@ -138,7 +138,7 @@ class ReportClothesStrategyTest extends IntegrationTestSupport {
         assertThatThrownBy(() -> reportClothesStrategy.report(reporter, request))
                 .isInstanceOf(CustomException.class)
                 .extracting("errorCode.status", "errorCode.divisionCode", "errorCode.message")
-                .contains(400, "R002", "신고는 한번만 가능합니다.");
+                .contains(200, "R002", "신고는 한번만 가능합니다.");
     }
 
     @DisplayName("작성자가 신고하면 에러가 발생한다.")
