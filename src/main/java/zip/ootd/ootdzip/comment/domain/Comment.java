@@ -1,17 +1,26 @@
 package zip.ootd.ootdzip.comment.domain;
 
-import jakarta.persistence.*;
-import lombok.*;
-
-import org.hibernate.annotations.Where;
-
-import zip.ootd.ootdzip.common.entity.BaseEntity;
-import zip.ootd.ootdzip.ootd.domain.Ootd;
-import zip.ootd.ootdzip.user.domain.User;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.hibernate.annotations.Where;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import zip.ootd.ootdzip.common.entity.BaseEntity;
+import zip.ootd.ootdzip.ootd.domain.Ootd;
+import zip.ootd.ootdzip.user.domain.User;
 
 /**
  * 댓글 조회시 기본 필터링으로 가져오는 댓글
@@ -22,8 +31,7 @@ import java.util.List;
 @Entity
 @Table(name = "comments")
 @Where(clause = "(depth = 1 AND is_deleted = false AND report_count < 5 AND child_count = 0) "
-        + "OR (depth = 1 AND child_count > 0) "
-        + "OR (depth = 2 AND is_deleted = false AND report_count < 5)")
+        + "OR (depth = 1 AND child_count > 0) " + "OR (depth = 2 AND is_deleted = false AND report_count < 5)")
 @Getter
 @Setter
 @Builder
