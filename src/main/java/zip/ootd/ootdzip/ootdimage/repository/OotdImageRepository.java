@@ -17,7 +17,8 @@ public interface OotdImageRepository extends JpaRepository<OotdImage, Long>, Oot
             + "JOIN oi.ootdImageClothesList oc "
             + "JOIN oc.clothes c ON c.id = :clothesId "
             + "WHERE o.writer.id = c.user.id "
-            + "AND (o.isPrivate = false or o.writer.id = :loginUserId) ")
+            + "AND (o.isPrivate = false or o.writer.id = :loginUserId) "
+            + "AND o.writer.isDeleted = false ")
     Page<OotdImage> findByClothesAndUserIdAndLoginUserId(
             @Param("loginUserId") Long loginUserId,
             @Param("clothesId") Long clothesId,

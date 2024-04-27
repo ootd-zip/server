@@ -15,11 +15,12 @@ import zip.ootd.ootdzip.ootd.domain.Ootd;
 @Repository
 public interface OotdRepository extends JpaRepository<Ootd, Long>, OotdRepositoryCustom {
 
-    @Query("SELECT o from Ootd o where (o.isPrivate = false or o.writer.id = :userId) ")
+    @Query("SELECT o from Ootd o where (o.isPrivate = false or o.writer.id = :userId) AND o.writer.isDeleted = false ")
     Slice<Ootd> findAllByUserId(@Param("userId") Long userId, Pageable pageable);
 
     @Query("SELECT o from Ootd o where o.writer.id = :userId "
-            + "and (o.isPrivate = false or o.writer.id = :loginUserId) ")
+            + "and (o.isPrivate = false or o.writer.id = :loginUserId) "
+            + "AND o.writer.isDeleted = false ")
     Slice<Ootd> findAllByUserIdAndLoginUserId(@Param("userId") Long userId,
             @Param("loginUserId") Long loginUserId,
             Pageable pageable);
@@ -30,7 +31,8 @@ public interface OotdRepository extends JpaRepository<Ootd, Long>, OotdRepositor
     @Query("SELECT o from Ootd o where o.isPrivate = false "
             + "and o.writer.id = :userId "
             + "and o.id <> :ootdId "
-            + "and o.isPrivate = false ")
+            + "and o.isPrivate = false"
+            + "AND o.writer.isDeleted = false ")
     Slice<Ootd> findAllByUserIdAndOotdId(@Param("userId") Long userId,
             @Param("ootdId") Long ootdId,
             Pageable pageable);
@@ -38,7 +40,8 @@ public interface OotdRepository extends JpaRepository<Ootd, Long>, OotdRepositor
     @Query("SELECT o FROM Ootd o "
             + "JOIN o.styles os ON os.style IN (:styles) "
             + "AND o.id <> :ootdId "
-            + "AND o.isPrivate = false ")
+            + "AND o.isPrivate = false "
+            + "AND o.writer.isDeleted = false ")
     Slice<Ootd> findAllByOotdIdNotAndStyles(
             @Param("ootdId") Long ootdId,
             @Param("styles") List<Style> styles,

@@ -28,7 +28,10 @@ public class UserRepositoryImpl extends QuerydslRepositorySupport implements Use
     public Page<User> searchUsers(String name, Pageable pageable) {
 
         List<User> findUsers = queryFactory.selectFrom(user)
-                .where(containName(name))
+                .where(
+                        containName(name),
+                        user.isDeleted.eq(true)
+                )
                 .orderBy(
                         user.name.length().asc(),
                         user.name.asc()
@@ -39,7 +42,8 @@ public class UserRepositoryImpl extends QuerydslRepositorySupport implements Use
 
         Long totalCount = queryFactory.select(user.count())
                 .from(user)
-                .where(containName(name))
+                .where(containName(name),
+                        user.isDeleted.eq(true))
                 .fetchOne();
 
         return new PageImpl<>(findUsers, pageable, totalCount);
@@ -49,7 +53,9 @@ public class UserRepositoryImpl extends QuerydslRepositorySupport implements Use
 
         List<User> findUsers = queryFactory.selectFrom(user)
                 .where(containUserInFollowings(userId),
-                        containName(name))
+                        containName(name),
+                        user.isDeleted.eq(true)
+                )
                 .orderBy(
                         user.name.length().asc(),
                         user.name.asc()
@@ -61,7 +67,8 @@ public class UserRepositoryImpl extends QuerydslRepositorySupport implements Use
         Long totalCount = queryFactory.select(user.count())
                 .from(user)
                 .where(containUserInFollowings(userId),
-                        containName(name))
+                        containName(name),
+                        user.isDeleted.eq(true))
                 .fetchOne();
 
         return new PageImpl<>(findUsers, pageable, totalCount);
@@ -71,7 +78,8 @@ public class UserRepositoryImpl extends QuerydslRepositorySupport implements Use
 
         List<User> findUsers = queryFactory.selectFrom(user)
                 .where(containUserInFollowers(userId),
-                        containName(name))
+                        containName(name),
+                        user.isDeleted.eq(true))
                 .orderBy(
                         user.name.length().asc(),
                         user.name.asc()
@@ -83,7 +91,8 @@ public class UserRepositoryImpl extends QuerydslRepositorySupport implements Use
         Long totalCount = queryFactory.select(user.count())
                 .from(user)
                 .where(containUserInFollowers(userId),
-                        containName(name))
+                        containName(name),
+                        user.isDeleted.eq(true))
                 .fetchOne();
 
         return new PageImpl<>(findUsers, pageable, totalCount);

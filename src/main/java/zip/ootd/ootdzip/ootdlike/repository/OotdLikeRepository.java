@@ -17,6 +17,7 @@ public interface OotdLikeRepository extends JpaRepository<OotdLike, Long> {
             + "INNER JOIN ol.ootd o "
             + "INNER JOIN ol.user u "
             + "WHERE u.id = :userId "
-            + "AND o.isPrivate = false ")
+            + "AND o.isPrivate = false "
+            + "AND o.writer.isDeleted = false ")
     List<OotdLike> findTop10ByUser(@Param("userId") Long userId, Pageable pageable);
 }

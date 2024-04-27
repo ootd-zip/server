@@ -51,6 +51,7 @@ public class OotdRepositoryImpl extends QuerydslRepositorySupport implements Oot
                 .leftJoin(ootdImageClothes.clothes, clothes)
                 .where(
                         ootd.isPrivate.eq(false),
+                        ootd.writer.isDeleted.eq(false),
                         searchTextCondition(searchText),
                         inBrandIds(brandIds),
                         inCategoryIds(categoryIds),

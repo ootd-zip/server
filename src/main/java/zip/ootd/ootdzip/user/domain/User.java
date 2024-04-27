@@ -187,4 +187,25 @@ public class User extends BaseEntity {
     public void disjoin() {
         this.isDeleted = true;
     }
+
+    public Long getId() {
+        if (isDeleted) {
+            return 0L;
+        }
+        return id;
+    }
+
+    public String getName() {
+        if (isDeleted) {
+            return "알수없음";
+        }
+        return name;
+    }
+
+    public String getProfileImage() {
+        if (isDeleted) {
+            return "";
+        }
+        return profileImage;
+    }
 }

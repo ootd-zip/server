@@ -107,6 +107,10 @@ public class ClothesServiceImpl implements ClothesService {
         Clothes clothes = clothesRepository.findById(id)
                 .orElseThrow(() -> new CustomException(NOT_FOUND_CLOTHES_ID));
 
+        if (clothes.getUser().getIsDeleted()) {
+            throw new CustomException(DELETE_USER_CLOTHES);
+        }
+
         if (clothes.getIsPrivate() && !clothes.getUser().getId().equals(loginUser.getId())) {
             throw new CustomException(UNAUTHORIZED_USER_ERROR);
         }
@@ -119,6 +123,11 @@ public class ClothesServiceImpl implements ClothesService {
 
         User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new CustomException(NOT_FOUND_USER_ID));
+
+        if (user.getIsDeleted()) {
+            throw new CustomException(DELETE_USER_CLOTHES);
+        }
+
         Boolean isPrivate = request.getIsPrivate();
         if (!user.equals(loginUser)) {
             isPrivate = false;
