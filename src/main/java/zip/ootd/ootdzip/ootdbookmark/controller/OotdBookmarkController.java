@@ -41,7 +41,7 @@ public class OotdBookmarkController {
     @DeleteMapping("/bookmarks")
     public ApiResponse<Boolean> getBookmarks(@Valid OotdBookmarkDeleteReq request) {
 
-        ootdBookmarkService.deleteOotdBookmarks(request);
+        ootdBookmarkService.deleteOotdBookmarks(request, userService.getAuthenticatiedUser());
 
         return new ApiResponse<>(true);
     }

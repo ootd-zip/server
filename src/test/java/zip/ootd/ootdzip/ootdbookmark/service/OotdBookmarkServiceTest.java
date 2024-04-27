@@ -83,7 +83,6 @@ public class OotdBookmarkServiceTest extends IntegrationTestSupport {
     void deleteOotdBookmarks() {
         // given
         User user = createUserBy("유저");
-        makeAuthenticatedUserBy(user);
 
         User user1 = createUserBy("유저1");
         Ootd ootd = createOotdBy(user1, "안녕", false);
@@ -97,16 +96,14 @@ public class OotdBookmarkServiceTest extends IntegrationTestSupport {
         ootd3.addBookmark(user);
 
         em.flush();
-        em.clear();
-
         OotdBookmarkDeleteReq ootdBookmarkDeleteReq = new OotdBookmarkDeleteReq();
         ootdBookmarkDeleteReq.setOotdBookmarkIds(Arrays.asList(ootd3.getOotdBookmarks().get(0).getId(),
                 ootd2.getOotdBookmarks().get(0).getId()));
 
         // when
-        ootdBookmarkService.deleteOotdBookmarks(ootdBookmarkDeleteReq);
+        ootdBookmarkService.deleteOotdBookmarks(ootdBookmarkDeleteReq, user);
         em.flush();
-        em.clear();
+
         List<OotdBookmark> result = ootdBookmarkRepository.findAll();
 
         // then
@@ -114,6 +111,9 @@ public class OotdBookmarkServiceTest extends IntegrationTestSupport {
                 .hasSize(2)
                 .extracting("ootd.id")
                 .containsExactlyInAnyOrder(ootd.getId(), ootd1.getId());
+
+        assertThat(ootd.getBookmarkCount()).isEqualTo(1);
+        assertThat(ootd2.getBookmarkCount()).isEqualTo(0);
     }
 
     private Ootd createOotdBy(User user, String content, boolean isPrivate) {

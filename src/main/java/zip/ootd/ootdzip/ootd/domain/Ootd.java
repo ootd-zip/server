@@ -75,6 +75,10 @@ public class Ootd extends BaseEntity {
     private Integer likeCount = 0;
 
     @Builder.Default
+    @Column(nullable = false)
+    private Integer bookmarkCount = 0;
+
+    @Builder.Default
     @OneToMany(mappedBy = "ootd", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OotdImage> ootdImages = new ArrayList<>();
 
@@ -165,11 +169,16 @@ public class Ootd extends BaseEntity {
     public void addBookmark(User user) {
         OotdBookmark ootdBookmark = getOotdBookmark(user).orElse(OotdBookmark.createOotdBookmarkBy(user));
         addOotdBookmark(ootdBookmark);
+
+        this.bookmarkCount += 1;
     }
 
     public void cancelBookmark(User user) {
         OotdBookmark ootdBookmark = getOotdBookmark(user).orElseThrow(NoSuchElementException::new);
         deleteOotdBookmark(ootdBookmark);
+        if (0 < this.bookmarkCount) {
+            this.bookmarkCount -= 1;
+        }
     }
 
     public boolean isBookmark(User user) {
