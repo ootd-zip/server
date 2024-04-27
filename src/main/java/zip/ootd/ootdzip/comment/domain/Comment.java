@@ -1,26 +1,17 @@
 package zip.ootd.ootdzip.comment.domain;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import jakarta.persistence.*;
+import lombok.*;
 
 import org.hibernate.annotations.Where;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import zip.ootd.ootdzip.common.entity.BaseEntity;
 import zip.ootd.ootdzip.ootd.domain.Ootd;
 import zip.ootd.ootdzip.user.domain.User;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 댓글 조회시 기본 필터링으로 가져오는 댓글
@@ -113,7 +104,7 @@ public class Comment extends BaseEntity {
      */
     public String getContents() {
 
-        if (writer.getIsDeleted() || isDeleted || reportCount >= 5) {
+        if (writer == null || writer.getIsDeleted() || isDeleted || reportCount >= 5) {
             return "삭제된 댓글입니다.";
         }
 
