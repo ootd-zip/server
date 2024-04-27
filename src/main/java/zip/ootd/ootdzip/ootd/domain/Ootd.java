@@ -176,7 +176,9 @@ public class Ootd extends BaseEntity {
     public void cancelBookmark(User user) {
         OotdBookmark ootdBookmark = getOotdBookmark(user).orElseThrow(NoSuchElementException::new);
         deleteOotdBookmark(ootdBookmark);
-        this.bookmarkCount -= 1;
+        if (0 < this.bookmarkCount) {
+            this.bookmarkCount -= 1;
+        }
     }
 
     public boolean isBookmark(User user) {
