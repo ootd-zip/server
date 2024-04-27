@@ -21,11 +21,13 @@ public class SameClothesDifferentFeelRes {
     private String clothesName;
     private CategoryForSameClothesDifferentFeelRes clothesCategory;
     private List<ColorForSameClothesDifferentFeelRes> clothesColors;
+    private String clothesImageUrl;
     private List<OotdImageForSameClothesDifferentFeelRes> ootds;
 
     public SameClothesDifferentFeelRes(Clothes clothes, List<Ootd> ootds) {
         this.clothesId = clothes.getId();
         this.clothesName = clothes.getName();
+        this.clothesImageUrl = clothes.getImageUrl();
         this.clothesCategory = CategoryForSameClothesDifferentFeelRes.of(clothes.getCategory());
         this.clothesColors = ColorForSameClothesDifferentFeelRes.of(clothes.getClothesColors());
         this.ootds = OotdImageForSameClothesDifferentFeelRes.of(ootds);
