@@ -80,29 +80,29 @@ public class OotdImageRepositoryTest extends IntegrationTestSupport {
         Clothes clothes1 = createClothesBy(user, true, "1");
         Clothes clothes2 = createClothesBy(user, true, "2");
 
-        Ootd ootd = createOotdBy2(user, "안녕", false, Arrays.asList(clothes, clothes1, clothes2));
+        Ootd ootd = createOotdBy(user, "안녕", false, Arrays.asList(clothes, clothes1, clothes2));
 
         // 다른 유저의 옷은 포함되지 않음
-        Ootd ootd1 = createOotdBy2(user1, "안녕1", false, Arrays.asList(clothes, clothes1, clothes2));
+        Ootd ootd1 = createOotdBy(user1, "안녕1", false, Arrays.asList(clothes, clothes1, clothes2));
 
         // 한 개라도 동일한 옷이 있으면 포함
-        Ootd ootd2 = createOotdBy2(user, "안녕2", false, Arrays.asList(clothes));
-        Ootd ootd3 = createOotdBy2(user, "안녕3", false, Arrays.asList(clothes, clothes1));
-        Ootd ootd4 = createOotdBy2(user, "안녕4", false, Arrays.asList(clothes, clothes2));
+        Ootd ootd2 = createOotdBy(user, "안녕2", false, Arrays.asList(clothes));
+        Ootd ootd3 = createOotdBy(user, "안녕3", false, Arrays.asList(clothes, clothes1));
+        Ootd ootd4 = createOotdBy(user, "안녕4", false, Arrays.asList(clothes, clothes2));
 
         // 포함되는 옷이 하나도 없을시 포함하지 않음
-        Ootd ootd5 = createOotdBy2(user, "안녕5", false, Arrays.asList(clothes1));
-        Ootd ootd6 = createOotdBy2(user, "안녕6", false, Arrays.asList(clothes1, clothes2));
+        Ootd ootd5 = createOotdBy(user, "안녕5", false, Arrays.asList(clothes1));
+        Ootd ootd6 = createOotdBy(user, "안녕6", false, Arrays.asList(clothes1, clothes2));
 
         // 비공개글이어도 본인이면 포함
-        Ootd ootd7 = createOotdBy2(user, "안녕7", true, Arrays.asList(clothes, clothes1, clothes2));
+        Ootd ootd7 = createOotdBy(user, "안녕7", true, Arrays.asList(clothes, clothes1, clothes2));
 
         // 차단, 신고수, 삭제된건 포함안함
-        Ootd ootd8 = createOotdBy2(user, "안녕8", false, Arrays.asList(clothes, clothes1, clothes2));
+        Ootd ootd8 = createOotdBy(user, "안녕8", false, Arrays.asList(clothes, clothes1, clothes2));
         ootd8.setIsBlocked(true);
-        Ootd ootd9 = createOotdBy2(user, "안녕9", false, Arrays.asList(clothes, clothes1, clothes2));
+        Ootd ootd9 = createOotdBy(user, "안녕9", false, Arrays.asList(clothes, clothes1, clothes2));
         ootd9.setReportCount(10);
-        Ootd ootd10 = createOotdBy2(user, "안녕10", false, Arrays.asList(clothes, clothes1, clothes2));
+        Ootd ootd10 = createOotdBy(user, "안녕10", false, Arrays.asList(clothes, clothes1, clothes2));
         ootd10.setIsDeleted(true);
 
         int page = 0;
@@ -119,7 +119,6 @@ public class OotdImageRepositoryTest extends IntegrationTestSupport {
         assertThat(results).hasSize(5)
                 .extracting("id")
                 .containsExactly(ootd7.getId(), ootd4.getId(), ootd3.getId(), ootd2.getId(), ootd.getId());
-        ;
     }
 
     @DisplayName("주어진 옷을 사용하는 OotdImage 를 가져올시 본인이 아니면 비공개글은 가져오지 않는다.")
@@ -134,12 +133,12 @@ public class OotdImageRepositoryTest extends IntegrationTestSupport {
         Clothes clothes2 = createClothesBy(user1, true, "2");
 
         // 다른 유저의 옷은 포함되지 않음
-        Ootd ootd = createOotdBy2(user, "안녕", false, Arrays.asList(clothes, clothes1, clothes2));
+        Ootd ootd = createOotdBy(user, "안녕", false, Arrays.asList(clothes, clothes1, clothes2));
 
         // 비공개 옷은 포함되지 않음
-        Ootd ootd1 = createOotdBy2(user1, "안녕1", false, Arrays.asList(clothes, clothes1, clothes2));
+        Ootd ootd1 = createOotdBy(user1, "안녕1", false, Arrays.asList(clothes, clothes1, clothes2));
 
-        Ootd ootd2 = createOotdBy2(user1, "안녕2", true, Arrays.asList(clothes, clothes1, clothes2));
+        Ootd ootd2 = createOotdBy(user1, "안녕2", true, Arrays.asList(clothes, clothes1, clothes2));
 
         int page = 0;
         int size = 10;
@@ -157,7 +156,75 @@ public class OotdImageRepositoryTest extends IntegrationTestSupport {
                 .containsExactly(ootd1.getId());
     }
 
-    private Ootd createOotdBy2(User user, String content, boolean isPrivate, List<Clothes> clothesList) {
+    @DisplayName("내가 가진 옷과 비슷한 옷이 등록된 ootd를 조회한다.")
+    @Test
+    void findOotdsFromOotdImageForSCDF() {
+        // given
+        User searchUser = createUserBy("유저1");
+        User ootdWriter = createUserBy("유저2");
+
+        Color color1 = createColorBy("색1");
+        Color color2 = createColorBy("색2");
+
+        Category category1 = createDetailCategoryBy("카테고리1");
+        Category category2 = createDetailCategoryBy("카테고리2");
+
+        Clothes ootdClothes1 = createClothesBy(ootdWriter, true, "1", List.of(color1, color2), category1);
+        Clothes ootdClothes2 = createClothesBy(ootdWriter, true, "2", List.of(color1), category2);
+        Clothes ootdClothes3 = createClothesBy(ootdWriter, false, "3", List.of(color1), category1);
+        Clothes ootdClothes4 = createClothesBy(ootdWriter, true, "4", List.of(color1), category1);
+
+        Ootd ootd1 = createOotdBy(ootdWriter, "내용1", false, List.of(ootdClothes1));
+        Ootd ootd2 = createOotdBy(ootdWriter, "내용2", false, List.of(ootdClothes2));
+        Ootd ootd3 = createOotdBy(ootdWriter, "내용3", false, List.of(ootdClothes3));
+        Ootd ootd4 = createOotdBy(ootdWriter, "내용4", false, List.of(ootdClothes4));
+        // when
+        List<Ootd> result = ootdImageRepository.findOotdsFromOotdImageForSCDF(
+                List.of(color1.getId(), color2.getId()), category1, searchUser, PageRequest.of(0, 10));
+
+        //then
+        assertThat(result).hasSize(2)
+                .extracting("id")
+                .containsExactlyInAnyOrder(
+                        ootd1.getId()
+                        , ootd4.getId());
+
+    }
+
+    @DisplayName("내가 가진 옷과 비슷한 옷이 등록되고 공개로 등록된 ootd를 조회한다.")
+    @Test
+    void findNotPrivateOotdsFromOotdImageForSCDF() {
+        // given
+        User searchUser = createUserBy("유저1");
+        User ootdWriter = createUserBy("유저2");
+
+        Color color1 = createColorBy("색1");
+        Color color2 = createColorBy("색2");
+
+        Category category1 = createDetailCategoryBy("카테고리1");
+        Category category2 = createDetailCategoryBy("카테고리2");
+
+        Clothes ootdClothes1 = createClothesBy(ootdWriter, true, "1", List.of(color1, color2), category1);
+        Clothes ootdClothes2 = createClothesBy(ootdWriter, true, "2", List.of(color1), category2);
+        Clothes ootdClothes3 = createClothesBy(ootdWriter, false, "3", List.of(color1), category1);
+        Clothes ootdClothes4 = createClothesBy(ootdWriter, true, "4", List.of(color1), category1);
+
+        Ootd ootd1 = createOotdBy(ootdWriter, "내용1", false, List.of(ootdClothes1));
+        Ootd ootd2 = createOotdBy(ootdWriter, "내용2", false, List.of(ootdClothes2));
+        Ootd ootd3 = createOotdBy(ootdWriter, "내용3", false, List.of(ootdClothes3));
+        Ootd ootd4 = createOotdBy(ootdWriter, "내용4", true, List.of(ootdClothes4));
+        // when
+        List<Ootd> result = ootdImageRepository.findOotdsFromOotdImageForSCDF(
+                List.of(color1.getId(), color2.getId()), category1, searchUser, PageRequest.of(0, 10));
+
+        //then
+        assertThat(result).hasSize(1)
+                .extracting("id")
+                .containsExactlyInAnyOrder(ootd1.getId());
+
+    }
+
+    private Ootd createOotdBy(User user, String content, boolean isPrivate, List<Clothes> clothesList) {
 
         Coordinate coordinate = new Coordinate("22.33", "33.44");
         Coordinate coordinate1 = new Coordinate("33.44", "44.55");
@@ -219,9 +286,42 @@ public class OotdImageRepositoryTest extends IntegrationTestSupport {
         List<ClothesColor> clothesColors = ClothesColor.createClothesColorsBy(List.of(savedColor));
 
         Clothes clothes = Clothes.createClothes(user, savedBrand, "구매처" + idx, PurchaseStoreType.Write, "제품명" + idx,
-                isOpen, savedCategory, savedSize, "메모입니다" + idx, "구매일" + idx, "image" + idx + ".jpg", clothesColors);
+                !isOpen, savedCategory, savedSize, "메모입니다" + idx, "구매일" + idx, "image" + idx + ".jpg", clothesColors);
 
         return clothesRepository.save(clothes);
+    }
+
+    private Clothes createClothesBy(User user, boolean isOpen, String idx, List<Color> colors, Category category) {
+
+        Brand brand = Brand.builder().name("브랜드" + idx).build();
+
+        Brand savedBrand = brandRepository.save(brand);
+
+        Size size = Size.builder().sizeType(SizeType.TOP).name("사이즈" + idx).lineNo((byte)1).build();
+
+        Size savedSize = sizeRepository.save(size);
+
+        List<ClothesColor> clothesColors = ClothesColor.createClothesColorsBy(colors);
+
+        Clothes clothes = Clothes.createClothes(user, savedBrand, "구매처" + idx, PurchaseStoreType.Write, "제품명" + idx,
+                !isOpen, category, savedSize, "메모입니다" + idx, "구매일" + idx, "image" + idx + ".jpg", clothesColors);
+
+        return clothesRepository.save(clothes);
+    }
+
+    private Color createColorBy(String name) {
+        Color color = Color.builder()
+                .name(name)
+                .colorCode("#44444")
+                .build();
+
+        return colorRepository.save(color);
+    }
+
+    private Category createDetailCategoryBy(String name) {
+        Category largeCategory = categoryRepository.save(Category.createLargeCategoryBy(name + "_상위", SizeType.TOP));
+        Category detailCategory = Category.createDetailCategoryBy(name, largeCategory, SizeType.TOP);
+        return categoryRepository.save(detailCategory);
     }
 
     private User createUserBy(String userName) {
@@ -229,4 +329,5 @@ public class OotdImageRepositoryTest extends IntegrationTestSupport {
         user.setName(userName);
         return userRepository.save(user);
     }
+
 }

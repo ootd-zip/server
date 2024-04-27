@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import zip.ootd.ootdzip.category.domain.Category;
+import zip.ootd.ootdzip.ootd.domain.Ootd;
 import zip.ootd.ootdzip.ootdimage.domain.OotdImage;
 import zip.ootd.ootdzip.user.domain.User;
 
@@ -29,8 +30,11 @@ public class OotdImageRepositoryImpl extends QuerydslRepositorySupport implement
     }
 
     @Override
-    public List<OotdImage> findOotdImageForSCDF(List<Long> colorIds, Category category, User user, Pageable pageable) {
-        return queryFactory.selectDistinct(ootdImage)
+    public List<Ootd> findOotdsFromOotdImageForSCDF(List<Long> colorIds, Category category, User user,
+            Pageable pageable) {
+        return queryFactory.select(ootd)
+                .distinct()
+                .from(ootdImage)
                 .innerJoin(ootdImage.ootd, ootd)
                 .innerJoin(ootdImage.ootdImageClothesList, ootdImageClothes)
                 .innerJoin(ootdImageClothes.clothes, clothes)
@@ -38,11 +42,13 @@ public class OotdImageRepositoryImpl extends QuerydslRepositorySupport implement
                 .where(
                         clothes.category.eq(category),
                         ootd.writer.ne(user),
-                        clothesColor.color.id.in(colorIds)
+                        clothesColor.color.id.in(colorIds),
+                        clothes.isPrivate.eq(false),
+                        ootd.isPrivate.eq(false)
                 )
                 .orderBy(
                         ootd.likeCount.desc(),
-                        ootd.ootdBookmarks.size().desc(),
+                        ootd.bookmarkCount.desc(),
                         ootd.viewCount.desc()
                 )
                 .offset(pageable.getOffset())

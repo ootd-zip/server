@@ -16,8 +16,8 @@ import zip.ootd.ootdzip.clothes.domain.Clothes;
 import zip.ootd.ootdzip.clothes.repository.ClothesRepository;
 import zip.ootd.ootdzip.home.data.ClothesAndOotdsForHomeRes;
 import zip.ootd.ootdzip.home.data.SameClothesDifferentFeelRes;
+import zip.ootd.ootdzip.ootd.domain.Ootd;
 import zip.ootd.ootdzip.ootd.repository.OotdRepository;
-import zip.ootd.ootdzip.ootdimage.domain.OotdImage;
 import zip.ootd.ootdzip.ootdimage.repository.OotdImageRepository;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.service.UserService;
@@ -109,13 +109,13 @@ public class HomeService {
                     .map(cc -> cc.getColor().getId())
                     .toList();
 
-            List<OotdImage> ootdImages = ootdImageRepository.findOotdImageForSCDF(
+            List<Ootd> ootds = ootdImageRepository.findOotdsFromOotdImageForSCDF(
                     colorIds,
                     clothes.getCategory(),
                     loginUser,
                     ootdImagePageable);
 
-            result.add(new SameClothesDifferentFeelRes(clothes, ootdImages));
+            result.add(new SameClothesDifferentFeelRes(clothes, ootds));
         }
 
         return result;
