@@ -12,6 +12,9 @@ import java.util.TreeSet;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.oauth2.core.oidc.OidcIdToken;
+import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import lombok.EqualsAndHashCode;
@@ -22,7 +25,7 @@ import zip.ootd.ootdzip.user.domain.User;
 @Getter
 @EqualsAndHashCode
 @ToString
-public class AuthorizedUser implements OAuth2User {
+public class AuthorizedUser implements OAuth2User, OidcUser {
 
     private final Set<GrantedAuthority> authorities;
 
@@ -48,5 +51,20 @@ public class AuthorizedUser implements OAuth2User {
                 Comparator.comparing(GrantedAuthority::getAuthority));
         sortedAuthorities.addAll(authorities);
         return sortedAuthorities;
+    }
+
+    @Override
+    public Map<String, Object> getClaims() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public OidcUserInfo getUserInfo() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public OidcIdToken getIdToken() {
+        throw new UnsupportedOperationException();
     }
 }

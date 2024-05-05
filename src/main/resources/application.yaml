@@ -37,6 +37,7 @@ spring:
             authorization-grant-type: authorization_code
             client-authentication-method: client_secret_post
             scope:
+              - openid
           kakao:
             redirect-uri: ${client.base-url}/sign-in/kakao/callback
             client-authentication-method: client_secret_post
