@@ -58,10 +58,12 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
     private static final String INVALID_USER_INFO_RESPONSE_ERROR_CODE = "invalid_user_info_response";
 
-    private static final ParameterizedTypeReference<Map<String, Object>> PARAMETERIZED_RESPONSE_TYPE = new ParameterizedTypeReference<Map<String, Object>>() {
-    };
+    private static final ParameterizedTypeReference<Map<String, Object>> PARAMETERIZED_RESPONSE_TYPE =
+            new ParameterizedTypeReference<Map<String, Object>>() {
+            };
 
-    private Converter<OAuth2UserRequest, RequestEntity<?>> requestEntityConverter = new OAuth2UserRequestEntityConverter();
+    private Converter<OAuth2UserRequest, RequestEntity<?>> requestEntityConverter =
+            new OAuth2UserRequestEntityConverter();
 
     private Converter<OAuth2UserRequest, Converter<Map<String, Object>, Map<String, Object>>> attributesConverter = (
             request) -> (attributes) -> attributes;
@@ -134,8 +136,8 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
             String errorMessage = "An error occurred while attempting to retrieve the UserInfo Resource from '"
                     + userRequest.getClientRegistration().getProviderDetails().getUserInfoEndpoint().getUri()
                     + "': response contains invalid content type '" + ex.getContentType() + "'. "
-                    + "The UserInfo Response should return a JSON object (content type 'application/json') "
-                    + "that contains a collection of name and value pairs of the claims about the authenticated End-User. "
+                    + "The UserInfo Response should return a JSON object (content type 'application/json') that "
+                    + "contains a collection of name and value pairs of the claims about the authenticated End-User. "
                     + "Please ensure the UserInfo Uri in UserInfoEndpoint for Client Registration '"
                     + userRequest.getClientRegistration().getRegistrationId() + "' conforms to the UserInfo Endpoint, "
                     + "as defined in OpenID Connect 1.0: 'https://openid.net/specs/openid-connect-core-1_0.html#UserInfo'";

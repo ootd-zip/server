@@ -36,14 +36,14 @@ public class AuthorizedOAuth2UserService implements OAuth2UserService<OAuth2User
     private static <T> T getNestedValue(Map<String, Object> map, String[] keys) {
         Map<String, Object> cur = map;
         for (String key : keys) {
-            Object o = cur.get(key);
-            if (o == null) {
+            Object obj = cur.get(key);
+            if (obj == null) {
                 return null;
             }
-            if (o instanceof Map) {
-                cur = (Map<String, Object>)o;
+            if (obj instanceof Map) {
+                cur = (Map<String, Object>)obj;
             } else {
-                return (T)o;
+                return (T)obj;
             }
         }
         return null;
