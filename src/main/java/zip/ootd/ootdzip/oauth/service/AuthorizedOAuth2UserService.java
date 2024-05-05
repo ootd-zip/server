@@ -25,13 +25,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.exception.code.ErrorCode;
-import zip.ootd.ootdzip.oauth.data.RegisteredOAuth2User;
+import zip.ootd.ootdzip.oauth.data.AuthorizedUser;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.repository.UserRepository;
 
 @Service
 @RequiredArgsConstructor
-public class RegisteredOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
+public class AuthorizedOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
     private static final String ID_TOKEN = "id_token";
 
@@ -78,7 +78,7 @@ public class RegisteredOAuth2UserService implements OAuth2UserService<OAuth2User
             throw new CustomException(ErrorCode.DELETED_USER_ERROR);
         }
 
-        return new RegisteredOAuth2User(authorities, attributes, serviceUser);
+        return new AuthorizedUser(authorities, attributes, serviceUser);
     }
 
     private User findOrCreateUser(String provider, String providerId) {

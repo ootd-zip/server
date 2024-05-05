@@ -22,7 +22,7 @@ import zip.ootd.ootdzip.user.domain.User;
 @Getter
 @EqualsAndHashCode
 @ToString
-public class RegisteredOAuth2User implements OAuth2User {
+public class AuthorizedUser implements OAuth2User {
 
     private final Set<GrantedAuthority> authorities;
 
@@ -30,7 +30,7 @@ public class RegisteredOAuth2User implements OAuth2User {
 
     private final User user;
 
-    public RegisteredOAuth2User(Collection<? extends GrantedAuthority> authorities, Map<String, Object> attributes,
+    public AuthorizedUser(Collection<? extends GrantedAuthority> authorities, Map<String, Object> attributes,
             User user) {
         this.authorities = authorities != null
                 ? Collections.unmodifiableSet(new LinkedHashSet<>(this.sortAuthorities(authorities)))
