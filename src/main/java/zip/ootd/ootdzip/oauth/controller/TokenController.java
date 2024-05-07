@@ -4,6 +4,7 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.http.MediaType;
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,18 +26,21 @@ public class TokenController {
     private final TokenService tokenService;
 
     // Swagger 문서용 더미 메소드, 실제로는 AuthoriationConfig에서 처리.
-    @Operation(summary = "소셜 로그인", description = "해당 경로에 접속하여 로그인 과정 시작", responses = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "302")
-    })
+    @Operation(summary = "소셜 로그인",
+            description = "해당 경로에 접속하여 로그인 과정 시작, provider=dev일 경우 redirect_uri 전달 가능",
+            responses = {
+                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "302")
+            })
     @GetMapping("/api/v1/login/authorization/{provider}")
-    public void login() {
+    public void login(@PathVariable("provider") String provider, @RequestParam("redirect_uri") String redirectUri) {
         throw new NotImplementedException();
     }
 
     // Swagger 문서용 더미 메소드, 실제로는 AuthoriationConfig에서 처리.
     @Operation(summary = "코드로 토큰 변환", description = "로그인 요청에서 callback 경로로 전달된 query params를 전달하여 토큰 발급")
     @GetMapping("/api/v1/login/oauth/code/{provider}")
-    public TokenResponse code(@RequestParam("code") String code, @RequestParam("state") String state) {
+    public TokenResponse code(@PathVariable("provider") String provider, @RequestParam("code") String code,
+            @RequestParam("state") String state) {
         throw new NotImplementedException();
     }
 
