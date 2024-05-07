@@ -24,6 +24,8 @@ import zip.ootd.ootdzip.report.controller.ReportController;
 import zip.ootd.ootdzip.report.service.ReportService;
 import zip.ootd.ootdzip.user.controller.UserController;
 import zip.ootd.ootdzip.user.service.UserService;
+import zip.ootd.ootdzip.userblock.controller.UserBlockController;
+import zip.ootd.ootdzip.userblock.service.UserBlockService;
 
 @WebMvcTest(controllers = {
         ClothesController.class,
@@ -32,7 +34,8 @@ import zip.ootd.ootdzip.user.service.UserService;
         CommentController.class,
         OotdBookmarkController.class,
         UserController.class,
-        NotificationController.class
+        NotificationController.class,
+        UserBlockController.class
 })
 public abstract class ControllerTestSupport {
 
@@ -65,6 +68,9 @@ public abstract class ControllerTestSupport {
 
     @MockBean
     protected NotificationService notificationService;
+
+    @MockBean
+    protected UserBlockService userBlockService;
 
     @BeforeEach
     void setUp() {
