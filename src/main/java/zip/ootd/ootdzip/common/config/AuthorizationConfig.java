@@ -21,6 +21,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
+import zip.ootd.ootdzip.oauth.OAuth2AuthenticationFailureHandler;
 import zip.ootd.ootdzip.oauth.OAuth2AuthenticationSuccessHandler;
 import zip.ootd.ootdzip.oauth.RedirectUriParameterOAuth2AuthorizationRequestResolver;
 import zip.ootd.ootdzip.oauth.provider.ClientSecretGenerator;
@@ -57,7 +58,8 @@ public class AuthorizationConfig {
                                 .authorizationRequestRepository(authorizationRequestRepository()))
                         .redirectionEndpoint(redirection -> redirection
                                 .baseUri(redirectionUri))
-                        .successHandler(successHandler(tokenService, objectMapper)))
+                        .successHandler(successHandler(tokenService, objectMapper))
+                        .failureHandler(failureHandler(objectMapper)))
                 .cors(cors -> cors.configurationSource(corsConfigurationSource));
 
         return http.build();
@@ -66,6 +68,11 @@ public class AuthorizationConfig {
     @Bean
     public OAuth2AuthenticationSuccessHandler successHandler(TokenService tokenService, ObjectMapper objectMapper) {
         return new OAuth2AuthenticationSuccessHandler(tokenService, objectMapper);
+    }
+
+    @Bean
+    public OAuth2AuthenticationFailureHandler failureHandler(ObjectMapper objectMapper) {
+        return new OAuth2AuthenticationFailureHandler(objectMapper);
     }
 
     @Bean
