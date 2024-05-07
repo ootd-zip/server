@@ -10,7 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import zip.ootd.ootdzip.oauth.data.RegisteredOAuth2User;
+import zip.ootd.ootdzip.oauth.data.AuthorizedUser;
 import zip.ootd.ootdzip.oauth.data.TokenResponse;
 import zip.ootd.ootdzip.oauth.service.TokenService;
 
@@ -23,7 +23,7 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
             Authentication authentication) throws IOException {
-        RegisteredOAuth2User principal = (RegisteredOAuth2User)authentication.getPrincipal();
+        AuthorizedUser principal = (AuthorizedUser)authentication.getPrincipal();
         TokenResponse tokenResponse = tokenService.issueNewAccessToken(principal.getUser());
 
         response.setContentType("application/json");
