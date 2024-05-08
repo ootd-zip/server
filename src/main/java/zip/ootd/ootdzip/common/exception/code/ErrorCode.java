@@ -133,7 +133,11 @@ public enum ErrorCode {
 
     INVALID_IMAGE_URL(400, "I001", "이미지 URL이 유효하지 않습니다."),
 
-    DELETE_USER_CLOTHES(404, "C006", "삭제된 유저의 옷입니다.");
+    DELETE_USER_CLOTHES(404, "C006", "삭제된 유저의 옷입니다."),
+
+    NOT_FOUND_USER_BLCOK_ID(404, "UB001", "유효하지 않은 사용자 차단 ID"),
+
+    NOT_AUTH_UNBLOCK_USER(403, "UB002", "본인만 차단을 해제할 수 았습니다.");
 
     private final Integer status;
 

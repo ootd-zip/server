@@ -11,6 +11,7 @@ import zip.ootd.ootdzip.user.repository.UserRepository;
 import zip.ootd.ootdzip.userblock.domain.UserBlock;
 import zip.ootd.ootdzip.userblock.repository.UserBlockRepository;
 import zip.ootd.ootdzip.userblock.service.request.BlockUserSvcReq;
+import zip.ootd.ootdzip.userblock.service.request.UnBlockUserSvcReq;
 
 @Service
 @Transactional(readOnly = true)
@@ -32,6 +33,18 @@ public class UserBlockService {
         UserBlock userBlock = UserBlock.createBy(targetUser, loginUser);
 
         userBlockRepository.save(userBlock);
+    }
+
+    @Transactional
+    public void unBlockUser(UnBlockUserSvcReq request, User loginUser) {
+        UserBlock userBlock = userBlockRepository.findById(request.getId())
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER_BLCOK_ID));
+
+        if (!userBlock.getBlockUser().equals(loginUser)) {
+            throw new CustomException(ErrorCode.NOT_AUTH_UNBLOCK_USER);
+        }
+
+        userBlockRepository.delete(userBlock);
     }
 
 }

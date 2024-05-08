@@ -17,6 +17,7 @@ import zip.ootd.ootdzip.user.repository.UserRepository;
 import zip.ootd.ootdzip.userblock.domain.UserBlock;
 import zip.ootd.ootdzip.userblock.repository.UserBlockRepository;
 import zip.ootd.ootdzip.userblock.service.request.BlockUserSvcReq;
+import zip.ootd.ootdzip.userblock.service.request.UnBlockUserSvcReq;
 
 class UserBlockServiceTest extends IntegrationTestSupport {
 
@@ -89,6 +90,71 @@ class UserBlockServiceTest extends IntegrationTestSupport {
                 .isInstanceOf(CustomException.class)
                 .extracting("errorCode.status", "errorCode.divisionCode", "errorCode.message")
                 .contains(403, "U003", "탈퇴된 사용자");
+    }
+
+    @DisplayName("차단을 해제한다")
+    @Test
+    void unBlockUser() {
+        // given
+        User blockUser = createdUserBy("유저1", false);
+        User blockedUser1 = createdUserBy("차단된 유저1", false);
+
+        UserBlock userBlock = UserBlock.createBy(blockedUser1, blockUser);
+        UserBlock savedUserBlock = userBlockRepository.save(userBlock);
+
+        UnBlockUserSvcReq request = UnBlockUserSvcReq.builder()
+                .id(savedUserBlock.getId())
+                .build();
+        // when
+        userBlockService.unBlockUser(request, blockUser);
+
+        //then
+        List<UserBlock> allByBlockUser = userBlockRepository.findAllByBlockUser(blockUser, PageRequest.of(0, 10));
+
+        assertThat(allByBlockUser).isEmpty();
+    }
+
+    @DisplayName("유효하지 않은 사용자 차단 ID로 차단 해제하면 에러가 발생한다.")
+    @Test
+    void unBlockUserWithInvalidUserBlockId() {
+        // given
+        User blockUser = createdUserBy("유저1", false);
+        User blockedUser1 = createdUserBy("차단된 유저1", false);
+
+        UserBlock userBlock = UserBlock.createBy(blockedUser1, blockUser);
+        UserBlock savedUserBlock = userBlockRepository.save(userBlock);
+
+        UnBlockUserSvcReq request = UnBlockUserSvcReq.builder()
+                .id(savedUserBlock.getId() + 1)
+                .build();
+
+        // when & then
+        assertThatThrownBy(() -> userBlockService.unBlockUser(request, blockUser))
+                .isInstanceOf(CustomException.class)
+                .extracting("errorCode.status", "errorCode.divisionCode", "errorCode.message")
+                .contains(404, "UB001", "유효하지 않은 사용자 차단 ID");
+    }
+
+    @DisplayName("유효하지 않은 사용자 차단 ID로 차단 해제하면 에러가 발생한다.")
+    @Test
+    void unBlockUserWithDifferentUser() {
+        // given
+        User blockUser = createdUserBy("유저1", false);
+        User diffUser = createdUserBy("유저2", false);
+        User blockedUser1 = createdUserBy("차단된 유저1", false);
+
+        UserBlock userBlock = UserBlock.createBy(blockedUser1, blockUser);
+        UserBlock savedUserBlock = userBlockRepository.save(userBlock);
+
+        UnBlockUserSvcReq request = UnBlockUserSvcReq.builder()
+                .id(savedUserBlock.getId())
+                .build();
+
+        // when & then
+        assertThatThrownBy(() -> userBlockService.unBlockUser(request, diffUser))
+                .isInstanceOf(CustomException.class)
+                .extracting("errorCode.status", "errorCode.divisionCode", "errorCode.message")
+                .contains(403, "UB002", "본인만 차단을 해제할 수 았습니다.");
     }
 
     private User createdUserBy(String name, Boolean isDeleted) {
