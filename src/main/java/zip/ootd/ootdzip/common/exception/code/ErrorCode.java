@@ -137,7 +137,8 @@ public enum ErrorCode {
 
     NOT_FOUND_USER_BLCOK_ID(404, "UB001", "유효하지 않은 사용자 차단 ID"),
 
-    NOT_AUTH_UNBLOCK_USER(403, "UB002", "본인만 차단을 해제할 수 았습니다.");
+    NOT_AUTH_UNBLOCK_USER(403, "UB002", "본인만 차단을 해제할 수 았습니다."),
+    EXISTED_BLOCK_USER(200, "UB003", "이미 차단한 유저입니다.");
 
     private final Integer status;
 

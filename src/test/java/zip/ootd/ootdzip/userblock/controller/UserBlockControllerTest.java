@@ -43,4 +43,24 @@ class UserBlockControllerTest extends ControllerTestSupport {
                 .andExpect(status().isNotFound())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(404));
     }
+
+    @DisplayName("사용자 차단을 해제한다.")
+    @Test
+    void unBlockUser() throws Exception {
+        // when & then
+        mockMvc.perform(delete("/api/v1/user-block/1"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(200));
+    }
+
+    @DisplayName("사용자 차단을 해제할 때 ID는 양수여야 한다.")
+    @Test
+    void unBlockUserWithZeroId() throws Exception {
+        // when & then
+        mockMvc.perform(delete("/api/v1/user-block/0"))
+                .andDo(print())
+                .andExpect(status().isNotFound())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(404));
+    }
 }

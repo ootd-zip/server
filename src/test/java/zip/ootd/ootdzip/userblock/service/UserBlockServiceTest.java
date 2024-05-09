@@ -92,6 +92,23 @@ class UserBlockServiceTest extends IntegrationTestSupport {
                 .contains(403, "U003", "탈퇴된 사용자");
     }
 
+    @DisplayName("동일한 사용자를 차단하면 에러가 발생한다.")
+    @Test
+    void blockUserWithExistUserBlock() {
+        // given
+        User blockUser = createdUserBy("유저1", false);
+        User blockedUser1 = createdUserBy("차단된 유저1", false);
+
+        BlockUserSvcReq request1 = BlockUserSvcReq.createBy(blockedUser1.getId());
+        userBlockService.blockUser(request1, blockUser);
+
+        // when & then
+        assertThatThrownBy(() -> userBlockService.blockUser(request1, blockUser))
+                .isInstanceOf(CustomException.class)
+                .extracting("errorCode.status", "errorCode.divisionCode", "errorCode.message")
+                .contains(200, "UB003", "이미 차단한 유저입니다.");
+    }
+
     @DisplayName("차단을 해제한다")
     @Test
     void unBlockUser() {

@@ -30,6 +30,10 @@ public class UserBlockService {
             throw new CustomException(ErrorCode.DELETED_USER_ERROR);
         }
 
+        if (userBlockRepository.existsByBlockedUserAndBlockUser(targetUser, loginUser)) {
+            throw new CustomException(ErrorCode.EXISTED_BLOCK_USER);
+        }
+
         UserBlock userBlock = UserBlock.createBy(targetUser, loginUser);
 
         userBlockRepository.save(userBlock);

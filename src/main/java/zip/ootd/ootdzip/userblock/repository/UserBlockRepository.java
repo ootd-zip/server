@@ -13,4 +13,6 @@ import zip.ootd.ootdzip.userblock.domain.UserBlock;
 public interface UserBlockRepository extends JpaRepository<UserBlock, Long> {
 
     List<UserBlock> findAllByBlockUser(User BlockUser, Pageable pageable);
+
+    Boolean existsByBlockedUserAndBlockUser(User BlockedUser, User BlockUser);
 }
