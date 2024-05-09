@@ -10,7 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import zip.ootd.ootdzip.ControllerTestSupport;
-import zip.ootd.ootdzip.userblock.service.request.BlockUserSvcReq;
+import zip.ootd.ootdzip.userblock.service.request.UserBlockSvcReq;
 
 class UserBlockControllerTest extends ControllerTestSupport {
 
@@ -18,7 +18,7 @@ class UserBlockControllerTest extends ControllerTestSupport {
     @Test
     void blockUser() throws Exception {
         //given
-        BlockUserSvcReq request = BlockUserSvcReq.createBy(1L);
+        UserBlockSvcReq request = UserBlockSvcReq.createBy(1L);
 
         // when & then
         mockMvc.perform(post("/api/v1/user-block")
@@ -33,7 +33,7 @@ class UserBlockControllerTest extends ControllerTestSupport {
     @Test
     void blockUserWithZeroUserId() throws Exception {
         //given
-        BlockUserSvcReq request = BlockUserSvcReq.createBy(0L);
+        UserBlockSvcReq request = UserBlockSvcReq.createBy(0L);
 
         // when & then
         mockMvc.perform(post("/api/v1/user-block")
