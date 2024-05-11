@@ -8,13 +8,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 
 import zip.ootd.ootdzip.IntegrationTestSupport;
 import zip.ootd.ootdzip.common.exception.CustomException;
+import zip.ootd.ootdzip.common.request.CommonPageRequest;
+import zip.ootd.ootdzip.common.response.CommonSliceResponse;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.repository.UserRepository;
+import zip.ootd.ootdzip.userblock.controller.response.UserBlockGetRes;
 import zip.ootd.ootdzip.userblock.domain.UserBlock;
 import zip.ootd.ootdzip.userblock.repository.UserBlockRepository;
+import zip.ootd.ootdzip.userblock.service.request.UserBlockGetSvcReq;
 import zip.ootd.ootdzip.userblock.service.request.UserBlockSvcReq;
 import zip.ootd.ootdzip.userblock.service.request.UserBlockUnBlockSvcReq;
 
@@ -115,8 +120,7 @@ class UserBlockServiceTest extends IntegrationTestSupport {
         User blockUser = createdUserBy("유저1", false);
         User blockedUser1 = createdUserBy("차단된 유저1", false);
 
-        UserBlock userBlock = UserBlock.createBy(blockedUser1, blockUser);
-        UserBlock savedUserBlock = userBlockRepository.save(userBlock);
+        UserBlock savedUserBlock = blockUser(blockedUser1, blockUser);
 
         UserBlockUnBlockSvcReq request = UserBlockUnBlockSvcReq.builder()
                 .id(savedUserBlock.getId())
@@ -137,8 +141,7 @@ class UserBlockServiceTest extends IntegrationTestSupport {
         User blockUser = createdUserBy("유저1", false);
         User blockedUser1 = createdUserBy("차단된 유저1", false);
 
-        UserBlock userBlock = UserBlock.createBy(blockedUser1, blockUser);
-        UserBlock savedUserBlock = userBlockRepository.save(userBlock);
+        UserBlock savedUserBlock = blockUser(blockedUser1, blockUser);
 
         UserBlockUnBlockSvcReq request = UserBlockUnBlockSvcReq.builder()
                 .id(savedUserBlock.getId() + 1)
@@ -159,8 +162,7 @@ class UserBlockServiceTest extends IntegrationTestSupport {
         User diffUser = createdUserBy("유저2", false);
         User blockedUser1 = createdUserBy("차단된 유저1", false);
 
-        UserBlock userBlock = UserBlock.createBy(blockedUser1, blockUser);
-        UserBlock savedUserBlock = userBlockRepository.save(userBlock);
+        UserBlock savedUserBlock = blockUser(blockedUser1, blockUser);
 
         UserBlockUnBlockSvcReq request = UserBlockUnBlockSvcReq.builder()
                 .id(savedUserBlock.getId())
@@ -171,6 +173,60 @@ class UserBlockServiceTest extends IntegrationTestSupport {
                 .isInstanceOf(CustomException.class)
                 .extracting("errorCode.status", "errorCode.divisionCode", "errorCode.message")
                 .contains(403, "UB002", "본인만 차단을 해제할 수 았습니다.");
+    }
+
+    @DisplayName("차단한 사용자를 조회한다.")
+    @Test
+    void getBlockedUser() {
+        // given
+        User blockUser = createdUserBy("유저1", false);
+        User blockedUser1 = createdUserBy("차단된 유저1", false);
+        User blockedUser2 = createdUserBy("차단된 유저2", false);
+        User blockedUser3 = createdUserBy("차단된 유저3", false);
+
+        UserBlock userBlock1 = blockUser(blockedUser1, blockUser);
+        UserBlock userBlock2 = blockUser(blockedUser2, blockUser);
+        UserBlock userBlock3 = blockUser(blockedUser3, blockUser);
+
+        CommonPageRequest pageRequest = new CommonPageRequest(0, 2, "createdAt", Sort.Direction.DESC);
+
+        UserBlockGetSvcReq request = UserBlockGetSvcReq.of(pageRequest);
+
+        // when
+        CommonSliceResponse<UserBlockGetRes> result = userBlockService.getUserBlocks(request, blockUser);
+
+        //then
+        assertThat(result.getContent()).hasSize(2)
+                .extracting("userId", "userName", "profileImage")
+                .containsExactlyInAnyOrder(
+                        tuple(blockedUser2.getId(), blockedUser2.getName(), blockedUser2.getProfileImage()),
+                        tuple(blockedUser3.getId(), blockedUser3.getName(), blockedUser3.getProfileImage())
+                );
+
+        assertThat(result.getIsLast()).isFalse();
+    }
+
+    @DisplayName("차단한 사용자를 조회할 때 차단한 사용자가 없으면 빈 리스트를 반환한다.")
+    @Test
+    void getEmptyBlockedUserWithNoBlockedUser() {
+        // given
+        User blockUser = createdUserBy("유저1", false);
+
+        CommonPageRequest pageRequest = new CommonPageRequest(0, 2);
+
+        UserBlockGetSvcReq request = UserBlockGetSvcReq.of(pageRequest);
+
+        // when
+        CommonSliceResponse<UserBlockGetRes> result = userBlockService.getUserBlocks(request, blockUser);
+
+        //then
+        assertThat(result.getContent()).isEmpty();
+        assertThat(result.getIsLast()).isTrue();
+    }
+
+    private UserBlock blockUser(User blockedUser1, User blockUser) {
+        UserBlock userBlock = UserBlock.createBy(blockedUser1, blockUser);
+        return userBlockRepository.save(userBlock);
     }
 
     private User createdUserBy(String name, Boolean isDeleted) {

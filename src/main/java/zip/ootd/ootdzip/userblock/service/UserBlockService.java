@@ -59,10 +59,7 @@ public class UserBlockService {
 
     public CommonSliceResponse<UserBlockGetRes> getUserBlocks(UserBlockGetSvcReq request, User loginUser) {
 
-        User targetUser = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER_ID));
-
-        Slice<UserBlock> allByBlockUser = userBlockRepository.findAllByBlockUser(targetUser, request.getPageable());
+        Slice<UserBlock> allByBlockUser = userBlockRepository.findAllByBlockUser(loginUser, request.getPageable());
 
         List<UserBlockGetRes> userBlockGetRes = allByBlockUser.getContent()
                 .stream()

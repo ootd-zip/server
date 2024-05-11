@@ -7,14 +7,18 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import zip.ootd.ootdzip.common.request.CommonPageRequest;
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 public class UserBlockGetSvcReq {
-
-    private Long userId;
-
     private Pageable pageable;
+
+    public static UserBlockGetSvcReq of(CommonPageRequest request) {
+        return UserBlockGetSvcReq.builder()
+                .pageable(request.toPageable())
+                .build();
+    }
 }
