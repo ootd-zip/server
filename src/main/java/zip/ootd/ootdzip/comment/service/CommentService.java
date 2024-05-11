@@ -1,6 +1,7 @@
 package zip.ootd.ootdzip.comment.service;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +26,7 @@ import zip.ootd.ootdzip.ootd.repository.OotdRepository;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.repository.UserRepository;
 import zip.ootd.ootdzip.user.service.UserService;
+import zip.ootd.ootdzip.userblock.repository.UserBlockRepository;
 
 @Service
 @Transactional
@@ -36,6 +38,7 @@ public class CommentService {
     private final UserService userService;
     private final OotdRepository ootdRepository;
     private final ApplicationEventPublisher eventPublisher;
+    private final UserBlockRepository userBlockRepository;
 
     /**
      * 댓글 기능
@@ -140,7 +143,7 @@ public class CommentService {
         comment.deleteComment();
     }
 
-    public CommonSliceResponse<CommentGetAllRes> getComments(CommentGetAllReq request) {
+    public CommonSliceResponse<CommentGetAllRes> getComments(CommentGetAllReq request, User loginUser) {
 
         Sort sort = Sort.by(
                 Sort.Order.asc("groupId"),
@@ -148,10 +151,13 @@ public class CommentService {
         );
         Pageable pageable = request.toPageableWithSort(sort);
 
-        Slice<Comment> comments = commentRepository.findAllByOotdId(request.getOotdId(), pageable);
+        Set<Long> nonAccessibleUserIds = userBlockRepository.getNonAccessibleUserIds(loginUser.getId());
+
+        Slice<Comment> comments = commentRepository.findAllByOotdId(request.getOotdId(), nonAccessibleUserIds,
+                pageable);
 
         List<CommentGetAllRes> commentGetAllResList = comments.stream()
-                .map(CommentGetAllRes::of)
+                .map(comment -> CommentGetAllRes.of(comment, nonAccessibleUserIds))
                 .toList();
 
         return new CommonSliceResponse<>(commentGetAllResList, pageable, comments.isLast());

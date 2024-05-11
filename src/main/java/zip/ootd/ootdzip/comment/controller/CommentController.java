@@ -54,7 +54,8 @@ public class CommentController {
     @GetMapping("/comments")
     public ApiResponse<CommonSliceResponse<CommentGetAllRes>> getComments(@Valid CommentGetAllReq request) {
 
-        CommonSliceResponse<CommentGetAllRes> response = commentService.getComments(request);
+        CommonSliceResponse<CommentGetAllRes> response = commentService.getComments(request,
+                userService.getAuthenticatiedUser());
 
         return new ApiResponse<>(response);
     }

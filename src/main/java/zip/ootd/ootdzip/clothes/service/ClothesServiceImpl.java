@@ -119,7 +119,7 @@ public class ClothesServiceImpl implements ClothesService {
             throw new CustomException(DELETE_USER_CLOTHES);
         }
 
-        if (clothes.getIsPrivate() && !clothes.getUser().equals(loginUser.getId())) {
+        if (clothes.getIsPrivate() && !clothes.getUser().equals(loginUser)) {
             throw new CustomException(UNAUTHORIZED_USER_ERROR);
         }
 

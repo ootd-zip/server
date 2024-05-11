@@ -7,11 +7,13 @@ import static zip.ootd.ootdzip.ootdimage.domain.QOotdImage.*;
 import static zip.ootd.ootdzip.ootdimageclothe.domain.QOotdImageClothes.*;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import zip.ootd.ootdzip.category.domain.Category;
@@ -30,7 +32,10 @@ public class OotdImageRepositoryImpl extends QuerydslRepositorySupport implement
     }
 
     @Override
-    public List<Ootd> findOotdsFromOotdImageForSCDF(List<Long> colorIds, Category category, User user,
+    public List<Ootd> findOotdsFromOotdImageForSCDF(List<Long> colorIds,
+            Category category,
+            User user,
+            Set<Long> nonAccessibleUserIds,
             Pageable pageable) {
         return queryFactory.select(ootd)
                 .distinct()
@@ -45,7 +50,8 @@ public class OotdImageRepositoryImpl extends QuerydslRepositorySupport implement
                         clothesColor.color.id.in(colorIds),
                         clothes.isPrivate.eq(false),
                         ootd.isPrivate.eq(false),
-                        ootd.writer.isDeleted.eq(false)
+                        ootd.writer.isDeleted.eq(false),
+                        notInUserIds(nonAccessibleUserIds)
                 )
                 .orderBy(
                         ootd.likeCount.desc(),
@@ -55,5 +61,15 @@ public class OotdImageRepositoryImpl extends QuerydslRepositorySupport implement
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
+    }
+
+    private BooleanExpression notInUserIds(Set<Long> nonAccessibleUserIds) {
+        if (nonAccessibleUserIds == null
+                || (1 == nonAccessibleUserIds.size()
+                && nonAccessibleUserIds.contains(0L))) {
+            return null;
+        }
+
+        return ootd.writer.id.notIn(nonAccessibleUserIds);
     }
 }

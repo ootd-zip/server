@@ -191,7 +191,7 @@ public class OotdImageRepositoryTest extends IntegrationTestSupport {
         Ootd ootd4 = createOotdBy(ootdWriter, "내용4", false, List.of(ootdClothes4));
         // when
         List<Ootd> result = ootdImageRepository.findOotdsFromOotdImageForSCDF(
-                List.of(color1.getId(), color2.getId()), category1, searchUser, PageRequest.of(0, 10));
+                List.of(color1.getId(), color2.getId()), category1, searchUser, null, PageRequest.of(0, 10));
 
         //then
         assertThat(result).hasSize(2)
@@ -225,7 +225,7 @@ public class OotdImageRepositoryTest extends IntegrationTestSupport {
         Ootd ootd4 = createOotdBy(ootdWriter, "내용4", true, List.of(ootdClothes4));
         // when
         List<Ootd> result = ootdImageRepository.findOotdsFromOotdImageForSCDF(
-                List.of(color1.getId(), color2.getId()), category1, searchUser, PageRequest.of(0, 10));
+                List.of(color1.getId(), color2.getId()), category1, searchUser, null, PageRequest.of(0, 10));
 
         //then
         assertThat(result).hasSize(1)

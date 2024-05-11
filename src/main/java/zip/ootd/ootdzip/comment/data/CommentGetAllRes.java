@@ -1,5 +1,7 @@
 package zip.ootd.ootdzip.comment.data;
 
+import java.util.Set;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -31,7 +33,7 @@ public class CommentGetAllRes {
 
     private Long groupId;
 
-    public static CommentGetAllRes of(Comment comment) {
+    public static CommentGetAllRes of(Comment comment, Set<Long> nonAccessibleUserIds) {
 
         return CommentGetAllRes.builder()
                 .id(comment.getId())

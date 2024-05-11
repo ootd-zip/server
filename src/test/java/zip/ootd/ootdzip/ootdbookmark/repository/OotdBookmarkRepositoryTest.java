@@ -3,7 +3,9 @@ package zip.ootd.ootdzip.ootdbookmark.repository;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -91,8 +93,13 @@ public class OotdBookmarkRepositoryTest extends IntegrationTestSupport {
         Sort sort = Sort.by("createdAt").descending();
         Pageable pageable = PageRequest.of(page, size, sort);
 
+        Set<Long> userIds = new HashSet<>();
+        userIds.add(0L);
+
         // when
-        Slice<OotdBookmark> result = ootdBookmarkRepository.findAllByUserId(user.getId(), pageable);
+        Slice<OotdBookmark> result = ootdBookmarkRepository.findAllByUserIdAndWriterIdNotIn(user.getId(),
+                userIds,
+                pageable);
 
         // then
         assertThat(result)
@@ -127,8 +134,13 @@ public class OotdBookmarkRepositoryTest extends IntegrationTestSupport {
         Sort sort = Sort.by("createdAt").descending();
         Pageable pageable = PageRequest.of(page, size, sort);
 
+        Set<Long> userIds = new HashSet<>();
+        userIds.add(0L);
+
         // when
-        Slice<OotdBookmark> result = ootdBookmarkRepository.findAllByUserId(user.getId(), pageable);
+        Slice<OotdBookmark> result = ootdBookmarkRepository.findAllByUserIdAndWriterIdNotIn(user.getId(),
+                userIds,
+                pageable);
 
         // then
         assertThat(result)
