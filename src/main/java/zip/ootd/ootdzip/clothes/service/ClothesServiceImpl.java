@@ -40,6 +40,7 @@ import zip.ootd.ootdzip.common.response.CommonSliceResponse;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.repository.UserRepository;
 import zip.ootd.ootdzip.user.service.UserService;
+import zip.ootd.ootdzip.userblock.repository.UserBlockRepository;
 import zip.ootd.ootdzip.utils.ImageFileUtil;
 
 @Service
@@ -53,6 +54,7 @@ public class ClothesServiceImpl implements ClothesService {
     private final ColorRepository colorRepository;
     private final ClothesRepository clothesRepository;
     private final UserRepository userRepository;
+    private final UserBlockRepository userBlockRepository;
 
     private final UserService userService;
 
@@ -117,8 +119,12 @@ public class ClothesServiceImpl implements ClothesService {
             throw new CustomException(DELETE_USER_CLOTHES);
         }
 
-        if (clothes.getIsPrivate() && !clothes.getUser().getId().equals(loginUser.getId())) {
+        if (clothes.getIsPrivate() && !clothes.getUser().equals(loginUser.getId())) {
             throw new CustomException(UNAUTHORIZED_USER_ERROR);
+        }
+
+        if (userBlockRepository.existUserBlock(clothes.getUser().getId(), loginUser.getId())) {
+            throw new CustomException(BLOCK_USER_CONTENTS);
         }
 
         return FindClothesRes.of(clothes);
@@ -132,6 +138,10 @@ public class ClothesServiceImpl implements ClothesService {
 
         if (user.getIsDeleted()) {
             throw new CustomException(DELETE_USER_CLOTHES);
+        }
+
+        if (userBlockRepository.existUserBlock(user.getId(), loginUser.getId())) {
+            throw new CustomException(BLOCK_USER_CONTENTS);
         }
 
         Boolean isPrivate = request.getIsPrivate();
@@ -244,7 +254,11 @@ public class ClothesServiceImpl implements ClothesService {
 
     @Override
     @Transactional
-    public CommonSliceResponse<ClothesOotdRes> getClothesOotd(ClothesOotdReq request) {
+    public CommonSliceResponse<ClothesOotdRes> getClothesOotd(ClothesOotdReq request, User loginUser) {
+
+        if (userBlockRepository.existUserBlock(request.getUserId(), loginUser.getId())) {
+            throw new CustomException(BLOCK_USER_CONTENTS);
+        }
 
         Pageable pageable = request.toPageable();
         List<Long> clothesIds = clothesRepository.findByOotdId(request.getOotdId()).stream()
