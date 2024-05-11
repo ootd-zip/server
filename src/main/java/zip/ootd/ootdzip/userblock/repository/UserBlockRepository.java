@@ -16,7 +16,7 @@ public interface UserBlockRepository extends JpaRepository<UserBlock, Long>, Use
     @Query("SELECT ub FROM UserBlock ub "
             + "WHERE ub.blockUser = :blockUser "
             + "AND ub.blockUser.isDeleted = false ")
-    Slice<UserBlock> findAllByBlockUser(@Param("blockUser") User BlockUser, Pageable pageable);
+    Slice<UserBlock> findAllByBlockUser(@Param("blockUser") User blockUser, Pageable pageable);
 
-    Boolean existsByBlockedUserAndBlockUser(User BlockedUser, User BlockUser);
+    Boolean existsByBlockedUserAndBlockUser(User blockedUser, User blockUser);
 }

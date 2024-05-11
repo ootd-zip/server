@@ -57,11 +57,8 @@ class UserBlockServiceTest extends IntegrationTestSupport {
 
         assertThat(result.getContent()).hasSize(3)
                 .extracting("blockUser.id", "blockedUser.id")
-                .containsExactlyInAnyOrder(
-                        tuple(blockUser.getId(), blockedUser1.getId()),
-                        tuple(blockUser.getId(), blockedUser2.getId()),
-                        tuple(blockUser.getId(), blockedUser3.getId())
-                );
+                .containsExactlyInAnyOrder(tuple(blockUser.getId(), blockedUser1.getId()),
+                        tuple(blockUser.getId(), blockedUser2.getId()), tuple(blockUser.getId(), blockedUser3.getId()));
     }
 
     @DisplayName("유효하지 않은 id의 사용자를 차단하면 에러가 발생한다.")
@@ -74,8 +71,7 @@ class UserBlockServiceTest extends IntegrationTestSupport {
         UserBlockSvcReq request1 = UserBlockSvcReq.createBy(blockedUser1.getId() + 100L);
 
         // when & then
-        assertThatThrownBy(() -> userBlockService.blockUser(request1, blockUser))
-                .isInstanceOf(CustomException.class)
+        assertThatThrownBy(() -> userBlockService.blockUser(request1, blockUser)).isInstanceOf(CustomException.class)
                 .extracting("errorCode.status", "errorCode.divisionCode", "errorCode.message")
                 .contains(404, "U002", "유효하지 않은 유저 ID");
     }
@@ -90,8 +86,7 @@ class UserBlockServiceTest extends IntegrationTestSupport {
         UserBlockSvcReq request1 = UserBlockSvcReq.createBy(blockedUser1.getId());
 
         // when & then
-        assertThatThrownBy(() -> userBlockService.blockUser(request1, blockUser))
-                .isInstanceOf(CustomException.class)
+        assertThatThrownBy(() -> userBlockService.blockUser(request1, blockUser)).isInstanceOf(CustomException.class)
                 .extracting("errorCode.status", "errorCode.divisionCode", "errorCode.message")
                 .contains(403, "U003", "탈퇴된 사용자");
     }
@@ -107,8 +102,7 @@ class UserBlockServiceTest extends IntegrationTestSupport {
         userBlockService.blockUser(request1, blockUser);
 
         // when & then
-        assertThatThrownBy(() -> userBlockService.blockUser(request1, blockUser))
-                .isInstanceOf(CustomException.class)
+        assertThatThrownBy(() -> userBlockService.blockUser(request1, blockUser)).isInstanceOf(CustomException.class)
                 .extracting("errorCode.status", "errorCode.divisionCode", "errorCode.message")
                 .contains(200, "UB003", "이미 차단한 유저입니다.");
     }
@@ -122,9 +116,7 @@ class UserBlockServiceTest extends IntegrationTestSupport {
 
         UserBlock savedUserBlock = blockUser(blockedUser1, blockUser);
 
-        UserBlockUnBlockSvcReq request = UserBlockUnBlockSvcReq.builder()
-                .id(savedUserBlock.getId())
-                .build();
+        UserBlockUnBlockSvcReq request = UserBlockUnBlockSvcReq.builder().id(savedUserBlock.getId()).build();
         // when
         userBlockService.unBlockUser(request, blockUser);
 
@@ -143,13 +135,10 @@ class UserBlockServiceTest extends IntegrationTestSupport {
 
         UserBlock savedUserBlock = blockUser(blockedUser1, blockUser);
 
-        UserBlockUnBlockSvcReq request = UserBlockUnBlockSvcReq.builder()
-                .id(savedUserBlock.getId() + 1)
-                .build();
+        UserBlockUnBlockSvcReq request = UserBlockUnBlockSvcReq.builder().id(savedUserBlock.getId() + 1).build();
 
         // when & then
-        assertThatThrownBy(() -> userBlockService.unBlockUser(request, blockUser))
-                .isInstanceOf(CustomException.class)
+        assertThatThrownBy(() -> userBlockService.unBlockUser(request, blockUser)).isInstanceOf(CustomException.class)
                 .extracting("errorCode.status", "errorCode.divisionCode", "errorCode.message")
                 .contains(404, "UB001", "유효하지 않은 사용자 차단 ID");
     }
@@ -164,13 +153,10 @@ class UserBlockServiceTest extends IntegrationTestSupport {
 
         UserBlock savedUserBlock = blockUser(blockedUser1, blockUser);
 
-        UserBlockUnBlockSvcReq request = UserBlockUnBlockSvcReq.builder()
-                .id(savedUserBlock.getId())
-                .build();
+        UserBlockUnBlockSvcReq request = UserBlockUnBlockSvcReq.builder().id(savedUserBlock.getId()).build();
 
         // when & then
-        assertThatThrownBy(() -> userBlockService.unBlockUser(request, diffUser))
-                .isInstanceOf(CustomException.class)
+        assertThatThrownBy(() -> userBlockService.unBlockUser(request, diffUser)).isInstanceOf(CustomException.class)
                 .extracting("errorCode.status", "errorCode.divisionCode", "errorCode.message")
                 .contains(403, "UB002", "본인만 차단을 해제할 수 았습니다.");
     }
@@ -200,8 +186,7 @@ class UserBlockServiceTest extends IntegrationTestSupport {
                 .extracting("userId", "userName", "profileImage")
                 .containsExactlyInAnyOrder(
                         tuple(blockedUser2.getId(), blockedUser2.getName(), blockedUser2.getProfileImage()),
-                        tuple(blockedUser3.getId(), blockedUser3.getName(), blockedUser3.getProfileImage())
-                );
+                        tuple(blockedUser3.getId(), blockedUser3.getName(), blockedUser3.getProfileImage()));
 
         assertThat(result.getIsLast()).isFalse();
     }

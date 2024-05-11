@@ -1,14 +1,21 @@
 package zip.ootd.ootdzip.clothes.controller;
 
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
-
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-
 import zip.ootd.ootdzip.clothes.controller.request.SaveClothesReq;
 import zip.ootd.ootdzip.clothes.controller.request.SearchClothesReq;
 import zip.ootd.ootdzip.clothes.controller.request.UpdateClothesIsPrivateReq;
@@ -51,8 +58,7 @@ public class ClothesController {
     @GetMapping("")
     public ApiResponse<CommonSliceResponse<FindClothesRes>> findClothesByUser(@Valid SearchClothesReq request) {
         return new ApiResponse<>(
-                clothesService.findClothesByUser(request.toServiceRequest(),
-                        userService.getAuthenticatiedUser()));
+                clothesService.findClothesByUser(request.toServiceRequest(), userService.getAuthenticatiedUser()));
     }
 
     @Operation(summary = "옷 삭제 API", description = "ID로 옷 삭제")
@@ -76,9 +82,8 @@ public class ClothesController {
     public ApiResponse<SaveClothesRes> updateClothesIsPrivate(
             @PathVariable(name = "id") @Positive(message = "옷 ID는 양수여야 합니다.") Long id,
             @RequestBody @Valid UpdateClothesIsPrivateReq request) {
-        return new ApiResponse<>(
-                clothesService.updateClothesIsPrivate(request.toServiceRequest(id),
-                        userService.getAuthenticatiedUser()));
+        return new ApiResponse<>(clothesService.updateClothesIsPrivate(request.toServiceRequest(id),
+                userService.getAuthenticatiedUser()));
     }
 
     @Operation(summary = "ootd 에 태그된 옷장 조회", description = "user id 와 ootd id 를 주면 해당 id에 해당하는 옷장 반환 api")
