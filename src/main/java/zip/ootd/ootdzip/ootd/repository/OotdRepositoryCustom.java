@@ -1,6 +1,7 @@
 package zip.ootd.ootdzip.ootd.repository;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.domain.Pageable;
 
@@ -16,6 +17,7 @@ public interface OotdRepositoryCustom {
             List<Long> categoryIds,
             List<Long> colorIds,
             UserGender writerGender,
+            Set<Long> nonAccessibleUserIds,
             OotdSearchSortType sortType,
             Pageable pageable);
 }

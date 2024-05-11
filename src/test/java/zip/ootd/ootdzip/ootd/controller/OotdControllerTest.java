@@ -461,7 +461,7 @@ public class OotdControllerTest extends ControllerTestSupport {
         Long ootdId = 1L;
         Pageable pageable = PageRequest.of(0, 10);
 
-        when(ootdService.getOotdOther(any()))
+        when(ootdService.getOotdOther(any(), any()))
                 .thenReturn(new CommonSliceResponse<>(List.of(), pageable, true));
 
         // when & then
@@ -481,7 +481,7 @@ public class OotdControllerTest extends ControllerTestSupport {
         Long ootdId = 1L;
         Pageable pageable = PageRequest.of(0, 10);
 
-        when(ootdService.getOotdSimilar(any()))
+        when(ootdService.getOotdSimilar(any(), any()))
                 .thenReturn(new CommonSliceResponse<>(List.of(), pageable, false));
 
         // when & then

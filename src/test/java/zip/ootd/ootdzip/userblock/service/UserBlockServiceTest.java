@@ -224,8 +224,8 @@ class UserBlockServiceTest extends IntegrationTestSupport {
         assertThat(result.getIsLast()).isTrue();
     }
 
-    private UserBlock blockUser(User blockedUser1, User blockUser) {
-        UserBlock userBlock = UserBlock.createBy(blockedUser1, blockUser);
+    private UserBlock blockUser(User blockedUser, User blockUser) {
+        UserBlock userBlock = UserBlock.createBy(blockedUser, blockUser);
         return userBlockRepository.save(userBlock);
     }
 

@@ -8,6 +8,7 @@ import static zip.ootd.ootdzip.ootdstyle.domain.QOotdStyle.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
@@ -38,6 +39,7 @@ public class OotdRepositoryImpl extends QuerydslRepositorySupport implements Oot
             List<Long> categoryIds,
             List<Long> colorIds,
             UserGender writerGender,
+            Set<Long> nonAccessibleUserIds,
             OotdSearchSortType sortType,
             Pageable pageable) {
 
@@ -56,6 +58,7 @@ public class OotdRepositoryImpl extends QuerydslRepositorySupport implements Oot
                         inBrandIds(brandIds),
                         inCategoryIds(categoryIds),
                         inColorIds(colorIds),
+                        notInUserIds(nonAccessibleUserIds),
                         eqWriterGender(writerGender))
                 .orderBy(createOrderSpecifiers(sortType))
                 .offset(pageable.getOffset())
@@ -74,6 +77,7 @@ public class OotdRepositoryImpl extends QuerydslRepositorySupport implements Oot
                         inBrandIds(brandIds),
                         inCategoryIds(categoryIds),
                         inColorIds(colorIds),
+                        notInUserIds(nonAccessibleUserIds),
                         eqWriterGender(writerGender))
                 .fetchOne();
 
@@ -84,6 +88,16 @@ public class OotdRepositoryImpl extends QuerydslRepositorySupport implements Oot
         }
 
         return new CommonPageResponse<>(findOotds, pageable, !hasNext, totalCount);
+    }
+
+    private BooleanExpression notInUserIds(Set<Long> nonAccessibleUserIds) {
+        if (nonAccessibleUserIds == null
+                || (1 == nonAccessibleUserIds.size()
+                && nonAccessibleUserIds.contains(0L))) {
+            return null;
+        }
+
+        return ootd.writer.id.notIn(nonAccessibleUserIds);
     }
 
     private BooleanExpression searchTextCondition(String searchText) {

@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
@@ -110,9 +111,14 @@ public class OotdImageRepositoryTest extends IntegrationTestSupport {
         Sort sort = Sort.by("createdAt").descending();
         Pageable pageable = PageRequest.of(page, size, sort);
 
+        HashSet<Long> userIds = new HashSet<>();
+        userIds.add(0L);
+
         // when
-        Slice<OotdImage> results = ootdImageRepository.findByClothesAndUserIdAndLoginUserId(user.getId(),
+        Slice<OotdImage> results = ootdImageRepository.findByClothesAndUserIdAndLoginUserIdAndWriterIdNotIn(
+                user.getId(),
                 clothes.getId(),
+                userIds,
                 pageable);
 
         // then
@@ -145,9 +151,14 @@ public class OotdImageRepositoryTest extends IntegrationTestSupport {
         Sort sort = Sort.by("createdAt").descending();
         Pageable pageable = PageRequest.of(page, size, sort);
 
+        HashSet<Long> userIds = new HashSet<>();
+        userIds.add(0L);
+
         // when
-        Slice<OotdImage> results = ootdImageRepository.findByClothesAndUserIdAndLoginUserId(user.getId(),
+        Slice<OotdImage> results = ootdImageRepository.findByClothesAndUserIdAndLoginUserIdAndWriterIdNotIn(
+                user.getId(),
                 clothes.getId(),
+                userIds,
                 pageable);
 
         // then

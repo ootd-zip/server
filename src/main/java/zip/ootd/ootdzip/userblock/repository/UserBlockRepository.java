@@ -11,7 +11,7 @@ import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.userblock.domain.UserBlock;
 
 @Repository
-public interface UserBlockRepository extends JpaRepository<UserBlock, Long> {
+public interface UserBlockRepository extends JpaRepository<UserBlock, Long>, UserBlockRepositoryCustom {
 
     @Query("SELECT ub FROM UserBlock ub "
             + "WHERE ub.blockUser = :blockUser "
