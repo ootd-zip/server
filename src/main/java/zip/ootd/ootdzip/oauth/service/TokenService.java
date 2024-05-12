@@ -48,7 +48,6 @@ public class TokenService {
     public TokenResponse refreshAccessToken(String refreshTokenValue) {
         Optional<IssuedRefreshToken> optionalFoundRefreshToken = issuedRefreshTokenRepository
                 .findByTokenValue(refreshTokenValue);
-        log.error("토큰 재발급");
         if (optionalFoundRefreshToken.isEmpty()) {
             throw new CustomException(ErrorCode.INVALID_REFRESH_TOKEN_ERROR);
         }
