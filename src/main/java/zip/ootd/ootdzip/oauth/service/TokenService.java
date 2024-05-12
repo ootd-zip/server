@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.exception.code.ErrorCode;
 import zip.ootd.ootdzip.oauth.data.TokenResponse;
@@ -22,6 +23,7 @@ import zip.ootd.ootdzip.user.domain.User;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class TokenService {
 
     @Value("${authorization.issuer}")
@@ -46,6 +48,7 @@ public class TokenService {
     public TokenResponse refreshAccessToken(String refreshTokenValue) {
         Optional<IssuedRefreshToken> optionalFoundRefreshToken = issuedRefreshTokenRepository
                 .findByTokenValue(refreshTokenValue);
+        log.error("토큰 재발급");
         if (optionalFoundRefreshToken.isEmpty()) {
             throw new CustomException(ErrorCode.INVALID_REFRESH_TOKEN_ERROR);
         }
