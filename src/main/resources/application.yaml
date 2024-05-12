@@ -1,5 +1,13 @@
 server:
   port: 8081
+  tomcat:
+    accesslog:
+      enabled: true
+      directory: logs
+      suffix: .log
+      prefix: access_log
+      file-date-format: .yyyy-MM-dd
+      pattern: "%{yyyy-MM-dd HH:mm:ss}t %s %r %{User-Agent}i %{Referer}i %a %b %D"
 
 client:
   base-url: https://ootdzip.com
@@ -80,7 +88,8 @@ spring:
 logging: #로그 레벨을 정하는 것
   level:
     org.hibernate.SQL: off #JPA 하이버네이트가 생성하는 SQL 로그
-    org.hibernate.orm.jdbc.bind: trace # 스프링 3.0 이후 변경됨
+    org.hibernate.orm.jdbc.bind: off # 스프링 3.0 이후 변경됨
+
 
 # for swagger
 springdoc:
