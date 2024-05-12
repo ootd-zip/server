@@ -30,7 +30,7 @@ public class S3Controller {
     @PostMapping(value = "/image",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiResponse<S3ImageRes> saveS3Image(@ModelAttribute S3ImageReq request) {
-        log.info("이미지 넘어오는지 테스트 리스트 사이즈 : " + request.getImages() == null ? "이미지 empty" :
+        log.error("이미지 넘어오는지 테스트 리스트 사이즈 : " + request.getImages() == null ? "이미지 empty" :
                 String.valueOf(request.getImages().size()));
         List<String> images = s3UploadService.saveImageS3(request);
         S3ImageRes s3ImageRes = new S3ImageRes(images);
