@@ -3,6 +3,7 @@ package zip.ootd.ootdzip.notification.service;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Pageable;
@@ -21,6 +22,7 @@ import zip.ootd.ootdzip.notification.repository.EmitterRepository;
 import zip.ootd.ootdzip.notification.repository.NotificationRepository;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.service.UserService;
+import zip.ootd.ootdzip.userblock.repository.UserBlockRepository;
 
 @Service
 @Transactional
@@ -31,6 +33,7 @@ public class NotificationService {
     private final EmitterRepository emitterRepository;
     private final NotificationRepository notificationRepository;
     private final UserService userService;
+    private final UserBlockRepository userBlockRepository;
 
     public SseEmitter subscribe(User loginUser, String lastEventId) {
         Long userId = loginUser.getId();
@@ -117,8 +120,13 @@ public class NotificationService {
 
         Pageable pageable = request.toPageable();
 
-        Slice<Notification> notifications = notificationRepository.findByUserIdAndIsRead(
-                loginUesr.getId(), request.getIsRead(), pageable);
+        Set<Long> nonAccessibleUserIds = userBlockRepository.getNonAccessibleUserIds(loginUesr.getId());
+
+        Slice<Notification> notifications = notificationRepository.findByUserIdAndIsReadAndSenderIdNotIn(
+                loginUesr.getId(),
+                request.getIsRead(),
+                nonAccessibleUserIds,
+                pageable);
 
         List<NotificationGetAllRes> notificationGetAllResList = notifications.stream()
                 .map(NotificationGetAllRes::of)

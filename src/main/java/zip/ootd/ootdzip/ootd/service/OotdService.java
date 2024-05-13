@@ -1,6 +1,7 @@
 package zip.ootd.ootdzip.ootd.service;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.math.NumberUtils;
@@ -52,6 +53,7 @@ import zip.ootd.ootdzip.ootdimageclothe.domain.OotdImageClothes;
 import zip.ootd.ootdzip.ootdstyle.domain.OotdStyle;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.service.UserService;
+import zip.ootd.ootdzip.userblock.repository.UserBlockRepository;
 
 @Service
 @Transactional
@@ -65,6 +67,7 @@ public class OotdService {
     private final RedisDao redisDao;
     private final OotdImageRepository ootdImageRepository;
     private final ApplicationEventPublisher eventPublisher;
+    private final UserBlockRepository userBlockRepository;
 
     public Ootd postOotd(OotdPostReq request, User loginUser) {
 
@@ -157,6 +160,10 @@ public class OotdService {
         if (ootd.isPrivate() && !ootd.getWriter().equals(user)) {
             throw new CustomException(ErrorCode.PRIVATE);
         }
+
+        if (userBlockRepository.existUserBlock(ootd.getWriter().getId(), user.getId())) {
+            throw new CustomException(ErrorCode.BLOCK_USER_CONTENTS);
+        }
     }
 
     /**
@@ -171,7 +178,10 @@ public class OotdService {
 
         Pageable pageable = PageRequest.of(page, size, sort);
 
-        Slice<Ootd> ootds = ootdRepository.findAllByUserId(loginUser.getId(), pageable);
+        Set<Long> nonAccessibleUserIds = userBlockRepository.getNonAccessibleUserIds(loginUser.getId());
+
+        Slice<Ootd> ootds = ootdRepository.findAllByUserIdAndWriterIdNotIn(loginUser.getId(), nonAccessibleUserIds,
+                pageable);
 
         List<OotdGetAllRes> ootdGetAllResList = ootds.stream()
                 .map(ootd -> new OotdGetAllRes(
@@ -387,11 +397,16 @@ public class OotdService {
      * OOTD 상세 조회시, 현재 OOTD 작성자의 다른 OOTD 정보를 제공한다.
      * 본인 조회시에도 비공개글은 조회되지 ㅏㅇㄴ흣ㅂ니다.
      */
-    public CommonSliceResponse<OotdGetOtherRes> getOotdOther(OotdGetOtherReq request) {
+    public CommonSliceResponse<OotdGetOtherRes> getOotdOther(OotdGetOtherReq request, User loginUser) {
 
         Long writerId = request.getUserId();
         Long ootdId = request.getOotdId();
         Pageable pageable = request.toPageable();
+
+        if (!request.getUserId().equals(loginUser.getId())
+                && userBlockRepository.existUserBlock(request.getUserId(), loginUser.getId())) {
+            throw new CustomException(ErrorCode.BLOCK_USER_CONTENTS);
+        }
 
         Slice<Ootd> ootds = ootdRepository.findAllByUserIdAndOotdId(writerId, ootdId, pageable);
 
@@ -406,7 +421,7 @@ public class OotdService {
      * OOTD 상세 조회시, 현재 OOTD 와 동일한 스타일의 다른 OOTD 를 제공합니다.
      * 본인 조회시에도 비공개글은 조회되지 않습니다.
      */
-    public CommonSliceResponse<OotdGetSimilarRes> getOotdSimilar(OotdGetSimilarReq request) {
+    public CommonSliceResponse<OotdGetSimilarRes> getOotdSimilar(OotdGetSimilarReq request, User loginUser) {
 
         Long ootdId = request.getOotdId();
         Pageable pageable = request.toPageable();
@@ -416,7 +431,12 @@ public class OotdService {
                 .map(OotdStyle::getStyle)
                 .collect(Collectors.toList());
 
-        Slice<Ootd> ootds = ootdRepository.findAllByOotdIdNotAndStyles(ootdId, styles, pageable);
+        Set<Long> nonAccessibleUserIds = userBlockRepository.getNonAccessibleUserIds(loginUser.getId());
+
+        Slice<Ootd> ootds = ootdRepository.findAllByOotdIdNotAndStylesWriterIdNotIn(ootdId,
+                styles,
+                nonAccessibleUserIds,
+                pageable);
 
         List<OotdGetSimilarRes> ootdGetSimilarResList = ootds.stream()
                 .map(OotdGetSimilarRes::new)
@@ -435,6 +455,10 @@ public class OotdService {
         Long loginUserId = loginUser.getId();
         Pageable pageable = request.toPageable();
 
+        if (userBlockRepository.existUserBlock(userId, loginUserId)) {
+            throw new CustomException(ErrorCode.BLOCK_USER_CONTENTS);
+        }
+
         Slice<Ootd> ootds = ootdRepository.findAllByUserIdAndLoginUserId(userId, loginUserId, pageable);
 
         List<OotdGetByUserRes> ootdGetByUserResList = ootds.stream()
@@ -451,9 +475,13 @@ public class OotdService {
     public CommonPageResponse<OotdGetClothesRes> getOotdByClothes(User loginUser, OotdGetClothesReq request) {
 
         Pageable pageable = request.toPageable();
-        Page<OotdImage> ootdImages = ootdImageRepository.findByClothesAndUserIdAndLoginUserId(
+
+        Set<Long> nonAccessibleUserIds = userBlockRepository.getNonAccessibleUserIds(loginUser.getId());
+
+        Page<OotdImage> ootdImages = ootdImageRepository.findByClothesAndUserIdAndLoginUserIdAndWriterIdNotIn(
                 loginUser.getId(),
                 request.getClothesId(),
+                nonAccessibleUserIds,
                 pageable);
 
         List<OotdGetClothesRes> ootdGetClothesResList = ootdImages.stream()
@@ -469,13 +497,16 @@ public class OotdService {
     /**
      * 검색 기능에서 사용하는 ootd 검색 메소드입니다.
      */
-    public CommonPageResponse<OotdSearchRes> searchOotds(OotdSearchSvcReq request) {
+    public CommonPageResponse<OotdSearchRes> searchOotds(OotdSearchSvcReq request, User loginUser) {
+
+        Set<Long> nonAccessibleUserIds = userBlockRepository.getNonAccessibleUserIds(loginUser.getId());
 
         CommonPageResponse<Ootd> findOotds = ootdRepository.searchOotds(request.getSearchText(),
                 request.getBrandIds(),
                 request.getCategoryIds(),
                 request.getColorIds(),
                 request.getWriterGender(),
+                nonAccessibleUserIds,
                 request.getSortCriteria(),
                 request.getPageable());
 

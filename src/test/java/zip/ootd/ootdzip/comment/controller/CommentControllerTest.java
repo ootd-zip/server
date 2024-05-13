@@ -181,7 +181,7 @@ public class CommentControllerTest extends ControllerTestSupport {
         Long ootdId = 1L;
         Pageable pageable = PageRequest.of(0, 10);
 
-        when(commentService.getComments(any()))
+        when(commentService.getComments(any(), any()))
                 .thenReturn(new CommonSliceResponse<>(List.of(), pageable, false));
 
         // when & then
@@ -199,7 +199,7 @@ public class CommentControllerTest extends ControllerTestSupport {
         // given
         Pageable pageable = PageRequest.of(0, 10);
 
-        when(commentService.getComments(any()))
+        when(commentService.getComments(any(), any()))
                 .thenReturn(new CommonSliceResponse<>(List.of(), pageable, false));
 
         // when & then

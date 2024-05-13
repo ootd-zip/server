@@ -2,6 +2,9 @@ package zip.ootd.ootdzip.notification.repository;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,8 +50,13 @@ public class NotificationRepositoryTest extends IntegrationTestSupport {
         Sort sort = Sort.by("createdAt").descending();
         Pageable pageable = PageRequest.of(page, size, sort);
 
+        Set<Long> userIds = new HashSet<>();
+        userIds.add(0L);
+
         // when
-        Slice<Notification> results = notificationRepository.findByUserIdAndIsRead(user.getId(), false,
+        Slice<Notification> results = notificationRepository.findByUserIdAndIsReadAndSenderIdNotIn(user.getId(),
+                false,
+                userIds,
                 pageable);
 
         // then
@@ -80,8 +88,13 @@ public class NotificationRepositoryTest extends IntegrationTestSupport {
         Sort sort = Sort.by("createdAt").descending();
         Pageable pageable = PageRequest.of(page, size, sort);
 
+        Set<Long> userIds = new HashSet<>();
+        userIds.add(0L);
+
         // when
-        Slice<Notification> results = notificationRepository.findByUserIdAndIsRead(user.getId(), true,
+        Slice<Notification> results = notificationRepository.findByUserIdAndIsReadAndSenderIdNotIn(user.getId(),
+                true,
+                userIds,
                 pageable);
 
         // then

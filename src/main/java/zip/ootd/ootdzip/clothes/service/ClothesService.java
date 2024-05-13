@@ -53,5 +53,5 @@ public interface ClothesService {
 
     SaveClothesRes updateClothesIsPrivate(UpdateClothesIsPrivateSvcReq request, User loginUser);
 
-    CommonSliceResponse<ClothesOotdRes> getClothesOotd(ClothesOotdReq request);
+    CommonSliceResponse<ClothesOotdRes> getClothesOotd(ClothesOotdReq request, User loginUser);
 }

@@ -280,7 +280,7 @@ public class CommentServiceTest extends IntegrationTestSupport {
         commentGetAllReq.setSize(10);
 
         // when
-        CommonSliceResponse<CommentGetAllRes> results = commentService.getComments(commentGetAllReq);
+        CommonSliceResponse<CommentGetAllRes> results = commentService.getComments(commentGetAllReq, user);
 
         // then 댓글이 0->6->1->3->4->2->5 순으로 정렬되어 조회된다.
         assertThat(results.getContent())

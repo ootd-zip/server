@@ -39,6 +39,7 @@ import zip.ootd.ootdzip.user.service.request.UserInfoForMyPageSvcReq;
 import zip.ootd.ootdzip.user.service.request.UserRegisterSvcReq;
 import zip.ootd.ootdzip.user.service.request.UserSearchSvcReq;
 import zip.ootd.ootdzip.user.service.request.UserStyleUpdateSvcReq;
+import zip.ootd.ootdzip.userblock.repository.UserBlockRepository;
 import zip.ootd.ootdzip.utils.ImageFileUtil;
 
 @Service
@@ -52,6 +53,7 @@ public class UserService {
     private final ApplicationEventPublisher eventPublisher;
     private final UserStyleRepository userStyleRepository;
     private final EntityManager em;
+    private final UserBlockRepository userBlockRepository;
 
     @Transactional
     public void register(UserRegisterSvcReq request, User loginUser) {
@@ -118,16 +120,6 @@ public class UserService {
     public boolean removeFollower(User loginUser, FollowReq request) {
         User follower = userRepository.findById(request.getUserId()).orElseThrow();
         return loginUser.removeFollower(follower);
-    }
-
-    public Set<User> getFollowers(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow();
-        return user.getFollowers();
-    }
-
-    public Set<User> getFollowings(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow();
-        return user.getFollowings();
     }
 
     public boolean checkName(CheckNameReq req) {
@@ -209,17 +201,21 @@ public class UserService {
 
         Page<User> findUsers = null;
         UserSearchType userSearchType = request.getUserSearchType();
+        Set<Long> nonAccessibleUserIds = userBlockRepository.getNonAccessibleUserIds(loginUser.getId());
 
         if (userSearchType == UserSearchType.USER) {
             findUsers = userRepository.searchUsers(request.getName(),
+                    nonAccessibleUserIds,
                     request.getPageable());
         } else if (userSearchType == UserSearchType.FOLLOWER) {
             findUsers = userRepository.searchFollowers(request.getName(),
                     request.getUserId(),
+                    nonAccessibleUserIds,
                     request.getPageable());
         } else if (userSearchType == UserSearchType.FOLLOWING) {
             findUsers = userRepository.searchFollowings(request.getName(),
                     request.getUserId(),
+                    nonAccessibleUserIds,
                     request.getPageable());
         } else {
             throw new IllegalArgumentException("잘못된 검색 조건");

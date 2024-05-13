@@ -3,6 +3,7 @@ package zip.ootd.ootdzip.comment.domain;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.annotations.Where;
 
@@ -110,9 +111,13 @@ public class Comment extends BaseEntity {
      * 댓글 (삭제 또는 신고 수 일정 이상), 대댓글 없을시 댓글 삭제
      * 대댓글 (삭제 또는 신고 수 일정 이상) 시 대댓글 삭제
      */
-    public String getContents() {
+    public String getContents(Set<Long> nonAccessibleUserIds) {
 
-        if (writer == null || writer.getIsDeleted() || isDeleted || reportCount >= 5) {
+        if (writer == null
+                || writer.getIsDeleted()
+                || isDeleted
+                || reportCount >= 5
+                || nonAccessibleUserIds.contains(writer.getId())) {
             return "삭제된 댓글입니다.";
         }
 

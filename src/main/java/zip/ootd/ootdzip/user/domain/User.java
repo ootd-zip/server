@@ -188,13 +188,6 @@ public class User extends BaseEntity {
         this.isDeleted = true;
     }
 
-    public Long getId() {
-        if (isDeleted) {
-            return 0L;
-        }
-        return id;
-    }
-
     public String getName() {
         if (isDeleted) {
             return "알수없음";

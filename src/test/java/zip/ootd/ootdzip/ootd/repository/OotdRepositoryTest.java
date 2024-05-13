@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -236,9 +237,13 @@ public class OotdRepositoryTest extends IntegrationTestSupport {
         Style baseStyle1 = ootd.getStyles().get(0).getStyle();
         Style baseStyle2 = ootd.getStyles().get(1).getStyle();
 
+        HashSet<Long> userIds = new HashSet<>();
+        userIds.add(0L);
+
         // when
-        Slice<Ootd> result = ootdRepository.findAllByOotdIdNotAndStyles(ootd.getId(),
+        Slice<Ootd> result = ootdRepository.findAllByOotdIdNotAndStylesWriterIdNotIn(ootd.getId(),
                 Arrays.asList(baseStyle1, baseStyle2),
+                userIds,
                 pageable);
 
         // then
@@ -266,8 +271,9 @@ public class OotdRepositoryTest extends IntegrationTestSupport {
         Style baseStyle2 = ootd.getStyles().get(1).getStyle();
 
         // when
-        Slice<Ootd> result = ootdRepository.findAllByOotdIdNotAndStyles(ootd.getId(),
+        Slice<Ootd> result = ootdRepository.findAllByOotdIdNotAndStylesWriterIdNotIn(ootd.getId(),
                 Arrays.asList(baseStyle1, baseStyle2),
+                new HashSet<>(),
                 pageable);
 
         // then
@@ -295,8 +301,9 @@ public class OotdRepositoryTest extends IntegrationTestSupport {
         Style baseStyle2 = ootd.getStyles().get(1).getStyle();
 
         // when
-        Slice<Ootd> result = ootdRepository.findAllByOotdIdNotAndStyles(ootd.getId(),
+        Slice<Ootd> result = ootdRepository.findAllByOotdIdNotAndStylesWriterIdNotIn(ootd.getId(),
                 Arrays.asList(baseStyle1, baseStyle2),
+                new HashSet<>(),
                 pageable);
 
         // then
@@ -324,8 +331,9 @@ public class OotdRepositoryTest extends IntegrationTestSupport {
         Style baseStyle2 = ootd.getStyles().get(1).getStyle();
 
         // when
-        Slice<Ootd> result = ootdRepository.findAllByOotdIdNotAndStyles(ootd.getId(),
+        Slice<Ootd> result = ootdRepository.findAllByOotdIdNotAndStylesWriterIdNotIn(ootd.getId(),
                 Arrays.asList(baseStyle1, baseStyle2),
+                new HashSet<>(),
                 pageable);
 
         // then
@@ -348,7 +356,12 @@ public class OotdRepositoryTest extends IntegrationTestSupport {
                     List.of(style));
         }
         // when
-        CommonPageResponse<Ootd> ootds = ootdRepository.searchOotds("3", null, null, null, null,
+        CommonPageResponse<Ootd> ootds = ootdRepository.searchOotds("3",
+                null,
+                null,
+                null,
+                null,
+                null,
                 OotdSearchSortType.LATEST,
                 PageRequest.of(0, 10));
         //then
@@ -374,7 +387,12 @@ public class OotdRepositoryTest extends IntegrationTestSupport {
                     List.of(style));
         }
         // when
-        CommonPageResponse<Ootd> ootds = ootdRepository.searchOotds("3", null, null, null, null,
+        CommonPageResponse<Ootd> ootds = ootdRepository.searchOotds("3",
+                null,
+                null,
+                null,
+                null,
+                null,
                 OotdSearchSortType.LATEST,
                 PageRequest.of(0, 10));
         //then
@@ -400,7 +418,12 @@ public class OotdRepositoryTest extends IntegrationTestSupport {
                     List.of(style));
         }
         // when
-        CommonPageResponse<Ootd> ootds = ootdRepository.searchOotds("", null, null, null, null,
+        CommonPageResponse<Ootd> ootds = ootdRepository.searchOotds("",
+                null,
+                null,
+                null,
+                null,
+                null,
                 OotdSearchSortType.LATEST,
                 PageRequest.of(0, 10));
         //then

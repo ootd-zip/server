@@ -653,7 +653,7 @@ class UserServiceTest extends IntegrationTestSupport {
 
         //then
         Optional<User> disjoinedUser = userRepository.findById(user1.getId());
-        assertThat(disjoinedUser.isEmpty()).isTrue();
+        assertThat(disjoinedUser.get().getIsDeleted()).isTrue();
     }
 
     private User createDefaultUser() {

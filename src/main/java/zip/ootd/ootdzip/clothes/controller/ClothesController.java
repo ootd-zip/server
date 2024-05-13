@@ -58,8 +58,7 @@ public class ClothesController {
     @GetMapping("")
     public ApiResponse<CommonSliceResponse<FindClothesRes>> findClothesByUser(@Valid SearchClothesReq request) {
         return new ApiResponse<>(
-                clothesService.findClothesByUser(request.toServiceRequest(),
-                        userService.getAuthenticatiedUser()));
+                clothesService.findClothesByUser(request.toServiceRequest(), userService.getAuthenticatiedUser()));
     }
 
     @Operation(summary = "옷 삭제 API", description = "ID로 옷 삭제")
@@ -83,16 +82,16 @@ public class ClothesController {
     public ApiResponse<SaveClothesRes> updateClothesIsPrivate(
             @PathVariable(name = "id") @Positive(message = "옷 ID는 양수여야 합니다.") Long id,
             @RequestBody @Valid UpdateClothesIsPrivateReq request) {
-        return new ApiResponse<>(
-                clothesService.updateClothesIsPrivate(request.toServiceRequest(id),
-                        userService.getAuthenticatiedUser()));
+        return new ApiResponse<>(clothesService.updateClothesIsPrivate(request.toServiceRequest(id),
+                userService.getAuthenticatiedUser()));
     }
 
     @Operation(summary = "ootd 에 태그된 옷장 조회", description = "user id 와 ootd id 를 주면 해당 id에 해당하는 옷장 반환 api")
     @GetMapping("/ootd")
     public ApiResponse<CommonSliceResponse<ClothesOotdRes>> getOotdClothes(@Valid ClothesOotdReq clothesOotdReq) {
 
-        CommonSliceResponse<ClothesOotdRes> response = clothesService.getClothesOotd(clothesOotdReq);
+        CommonSliceResponse<ClothesOotdRes> response = clothesService.getClothesOotd(clothesOotdReq,
+                userService.getAuthenticatiedUser());
 
         return new ApiResponse<>(response);
     }

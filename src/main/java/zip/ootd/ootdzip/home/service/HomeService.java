@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +22,7 @@ import zip.ootd.ootdzip.ootd.repository.OotdRepository;
 import zip.ootd.ootdzip.ootdimage.repository.OotdImageRepository;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.service.UserService;
+import zip.ootd.ootdzip.userblock.repository.UserBlockRepository;
 
 @Service
 @AllArgsConstructor
@@ -31,6 +33,7 @@ public class HomeService {
     private final ClothesRepository clothesRepository;
     private final OotdRepository ootdRepository;
     private final OotdImageRepository ootdImageRepository;
+    private final UserBlockRepository userBlockRepository;
 
     /**
      * 아래 조건에 부합하는 옷 랜덤 1개씩 조회
@@ -102,6 +105,8 @@ public class HomeService {
         List<Clothes> userClothes = clothesRepository.findByUser(loginUser, clothesPageable);
         List<SameClothesDifferentFeelRes> result = new ArrayList<>();
 
+        Set<Long> nonAccessibleUserIds = userBlockRepository.getNonAccessibleUserIds(loginUser.getId());
+
         for (Clothes clothes : userClothes) {
             Pageable ootdImagePageable = PageRequest.of(0, 4);
 
@@ -113,6 +118,7 @@ public class HomeService {
                     colorIds,
                     clothes.getCategory(),
                     loginUser,
+                    nonAccessibleUserIds,
                     ootdImagePageable);
 
             result.add(new SameClothesDifferentFeelRes(clothes, ootds));

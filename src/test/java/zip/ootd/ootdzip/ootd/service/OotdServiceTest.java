@@ -404,7 +404,7 @@ public class OotdServiceTest extends IntegrationTestSupport {
         ootdGetOtherReq.setSortDirection(Sort.Direction.DESC);
 
         // when
-        CommonSliceResponse<OotdGetOtherRes> result = ootdService.getOotdOther(ootdGetOtherReq);
+        CommonSliceResponse<OotdGetOtherRes> result = ootdService.getOotdOther(ootdGetOtherReq, user);
 
         // then
         // ootd 는 작성시간 내림차순으로 정렬된다.
@@ -434,7 +434,7 @@ public class OotdServiceTest extends IntegrationTestSupport {
         ootdGetOtherReq.setSortDirection(Sort.Direction.DESC);
 
         // when
-        CommonSliceResponse<OotdGetOtherRes> result = ootdService.getOotdOther(ootdGetOtherReq);
+        CommonSliceResponse<OotdGetOtherRes> result = ootdService.getOotdOther(ootdGetOtherReq, user);
 
         // then
         // ootd 는 작성시간 내림차순으로 정렬된다.
@@ -475,7 +475,7 @@ public class OotdServiceTest extends IntegrationTestSupport {
         ootdGetSimilarReq.setSortDirection(Sort.Direction.DESC);
 
         // when
-        CommonSliceResponse<OotdGetSimilarRes> result = ootdService.getOotdSimilar(ootdGetSimilarReq);
+        CommonSliceResponse<OotdGetSimilarRes> result = ootdService.getOotdSimilar(ootdGetSimilarReq, user);
 
         // then
         // ootd 는 작성시간 내림차순으로 정렬된다.
@@ -517,7 +517,7 @@ public class OotdServiceTest extends IntegrationTestSupport {
         ootdGetSimilarReq.setSortDirection(Sort.Direction.DESC);
 
         // when
-        CommonSliceResponse<OotdGetSimilarRes> result = ootdService.getOotdSimilar(ootdGetSimilarReq);
+        CommonSliceResponse<OotdGetSimilarRes> result = ootdService.getOotdSimilar(ootdGetSimilarReq, user);
 
         // then
         // ootd 는 작성시간 내림차순으로 정렬된다.

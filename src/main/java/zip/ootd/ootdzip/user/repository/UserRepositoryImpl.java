@@ -3,6 +3,7 @@ package zip.ootd.ootdzip.user.repository;
 import static zip.ootd.ootdzip.user.domain.QUser.*;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -25,12 +26,13 @@ public class UserRepositoryImpl extends QuerydslRepositorySupport implements Use
         this.queryFactory = queryFactory;
     }
 
-    public Page<User> searchUsers(String name, Pageable pageable) {
+    public Page<User> searchUsers(String name, Set<Long> nonAccessibleUserIds, Pageable pageable) {
 
         List<User> findUsers = queryFactory.selectFrom(user)
                 .where(
                         containName(name),
-                        user.isDeleted.eq(false)
+                        user.isDeleted.eq(false),
+                        notInNonAccessibleUserIds(nonAccessibleUserIds)
                 )
                 .orderBy(
                         user.name.length().asc(),
@@ -49,12 +51,13 @@ public class UserRepositoryImpl extends QuerydslRepositorySupport implements Use
         return new PageImpl<>(findUsers, pageable, totalCount);
     }
 
-    public Page<User> searchFollowers(String name, Long userId, Pageable pageable) {
+    public Page<User> searchFollowers(String name, Long userId, Set<Long> nonAccessibleUserIds, Pageable pageable) {
 
         List<User> findUsers = queryFactory.selectFrom(user)
                 .where(containUserInFollowings(userId),
                         containName(name),
-                        user.isDeleted.eq(false)
+                        user.isDeleted.eq(false),
+                        notInNonAccessibleUserIds(nonAccessibleUserIds)
                 )
                 .orderBy(
                         user.name.length().asc(),
@@ -74,12 +77,14 @@ public class UserRepositoryImpl extends QuerydslRepositorySupport implements Use
         return new PageImpl<>(findUsers, pageable, totalCount);
     }
 
-    public Page<User> searchFollowings(String name, Long userId, Pageable pageable) {
+    public Page<User> searchFollowings(String name, Long userId, Set<Long> nonAccessibleUserIds, Pageable pageable) {
 
         List<User> findUsers = queryFactory.selectFrom(user)
                 .where(containUserInFollowers(userId),
                         containName(name),
-                        user.isDeleted.eq(false))
+                        user.isDeleted.eq(false),
+                        notInNonAccessibleUserIds(nonAccessibleUserIds)
+                )
                 .orderBy(
                         user.name.length().asc(),
                         user.name.asc()
@@ -114,5 +119,15 @@ public class UserRepositoryImpl extends QuerydslRepositorySupport implements Use
         }
 
         return user.name.contains(name);
+    }
+
+    public BooleanExpression notInNonAccessibleUserIds(Set<Long> nonAccessibleUserIds) {
+        if (nonAccessibleUserIds == null
+                || (1 == nonAccessibleUserIds.size()
+                && nonAccessibleUserIds.contains(0L))) {
+            return null;
+        }
+
+        return user.id.notIn(nonAccessibleUserIds);
     }
 }

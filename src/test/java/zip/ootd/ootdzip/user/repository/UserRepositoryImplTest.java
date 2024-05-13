@@ -31,7 +31,7 @@ public class UserRepositoryImplTest extends IntegrationTestSupport {
         CommonPageRequest pageRequest = new CommonPageRequest();
 
         // when
-        Slice<User> results = userRepository.searchUsers("감자", pageRequest.toPageable());
+        Slice<User> results = userRepository.searchUsers("감자", null, pageRequest.toPageable());
 
         // then
         assertThat(results).hasSize(2)
@@ -54,7 +54,7 @@ public class UserRepositoryImplTest extends IntegrationTestSupport {
         CommonPageRequest pageRequest = new CommonPageRequest();
 
         // when
-        Slice<User> results = userRepository.searchFollowers("", user.getId(), pageRequest.toPageable());
+        Slice<User> results = userRepository.searchFollowers("", user.getId(), null, pageRequest.toPageable());
 
         // then
         assertThat(results).hasSize(2)
@@ -79,7 +79,7 @@ public class UserRepositoryImplTest extends IntegrationTestSupport {
         CommonPageRequest pageRequest = new CommonPageRequest();
 
         // when
-        Slice<User> results = userRepository.searchFollowers("감", user.getId(), pageRequest.toPageable());
+        Slice<User> results = userRepository.searchFollowers("감", user.getId(), null, pageRequest.toPageable());
 
         // then
         assertThat(results).hasSize(2)
@@ -104,7 +104,7 @@ public class UserRepositoryImplTest extends IntegrationTestSupport {
         CommonPageRequest pageRequest = new CommonPageRequest();
 
         // when
-        Slice<User> results = userRepository.searchFollowings("", user.getId(), pageRequest.toPageable());
+        Slice<User> results = userRepository.searchFollowings("", user.getId(), null, pageRequest.toPageable());
 
         // then
         assertThat(results).hasSize(3)
@@ -128,7 +128,7 @@ public class UserRepositoryImplTest extends IntegrationTestSupport {
         CommonPageRequest pageRequest = new CommonPageRequest();
 
         // when
-        Slice<User> results = userRepository.searchFollowings("감", user.getId(), pageRequest.toPageable());
+        Slice<User> results = userRepository.searchFollowings("감", user.getId(), null, pageRequest.toPageable());
 
         // then
         assertThat(results).hasSize(2)

@@ -1,22 +1,28 @@
 package zip.ootd.ootdzip.ootd.repository;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import io.lettuce.core.dynamic.annotation.Param;
 import zip.ootd.ootdzip.category.domain.Style;
 import zip.ootd.ootdzip.ootd.domain.Ootd;
 
 @Repository
 public interface OotdRepository extends JpaRepository<Ootd, Long>, OotdRepositoryCustom {
 
-    @Query("SELECT o from Ootd o where (o.isPrivate = false or o.writer.id = :userId) AND o.writer.isDeleted = false ")
-    Slice<Ootd> findAllByUserId(@Param("userId") Long userId, Pageable pageable);
+    @Query("SELECT o from Ootd o "
+            + "where (o.isPrivate = false or o.writer.id = :userId) "
+            + "AND o.writer.isDeleted = false "
+            + "AND o.writer.id NOT IN :userIds")
+    Slice<Ootd> findAllByUserIdAndWriterIdNotIn(@Param("userId") Long userId,
+            @Param("userIds") Set<Long> userIds,
+            Pageable pageable);
 
     @Query("SELECT o from Ootd o where o.writer.id = :userId "
             + "and (o.isPrivate = false or o.writer.id = :loginUserId) "
@@ -41,9 +47,11 @@ public interface OotdRepository extends JpaRepository<Ootd, Long>, OotdRepositor
             + "JOIN o.styles os ON os.style IN (:styles) "
             + "AND o.id <> :ootdId "
             + "AND o.isPrivate = false "
-            + "AND o.writer.isDeleted = false ")
-    Slice<Ootd> findAllByOotdIdNotAndStyles(
+            + "AND o.writer.isDeleted = false "
+            + "WHERE o.writer.id NOT IN :userIds ")
+    Slice<Ootd> findAllByOotdIdNotAndStylesWriterIdNotIn(
             @Param("ootdId") Long ootdId,
             @Param("styles") List<Style> styles,
+            @Param("userIds") Set<Long> userIds,
             Pageable pageable);
 }

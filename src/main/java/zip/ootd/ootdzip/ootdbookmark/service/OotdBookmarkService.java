@@ -1,6 +1,7 @@
 package zip.ootd.ootdzip.ootdbookmark.service;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
@@ -17,6 +18,7 @@ import zip.ootd.ootdzip.ootdbookmark.domain.OotdBookmark;
 import zip.ootd.ootdzip.ootdbookmark.repository.OotdBookmarkRepository;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.service.UserService;
+import zip.ootd.ootdzip.userblock.repository.UserBlockRepository;
 
 @Service
 @Transactional(readOnly = true)
@@ -25,11 +27,16 @@ public class OotdBookmarkService {
 
     private final OotdBookmarkRepository ootdBookmarkRepository;
     private final UserService userService;
+    private final UserBlockRepository userBlockRepository;
 
     public CommonPageResponse<OotdBookmarkGetAllRes> getOotdBookmarks(User loginUser, CommonPageRequest request) {
 
+        Set<Long> nonAccessibleUserIds = userBlockRepository.getNonAccessibleUserIds(loginUser.getId());
+
         Pageable pageable = request.toPageable();
-        Page<OotdBookmark> ootdBookmarks = ootdBookmarkRepository.findAllByUserId(loginUser.getId(), pageable);
+        Page<OotdBookmark> ootdBookmarks = ootdBookmarkRepository.findAllByUserIdAndWriterIdNotIn(loginUser.getId(),
+                nonAccessibleUserIds,
+                pageable);
         List<OotdBookmarkGetAllRes> ootdBookmarkGetAllResList = ootdBookmarks.stream()
                 .map(OotdBookmarkGetAllRes::of)
                 .collect(Collectors.toList());

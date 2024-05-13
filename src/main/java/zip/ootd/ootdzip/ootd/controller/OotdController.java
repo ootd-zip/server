@@ -145,7 +145,8 @@ public class OotdController {
     @GetMapping("/other")
     public ApiResponse<CommonSliceResponse<OotdGetOtherRes>> getOtherOotd(@Valid OotdGetOtherReq request) {
 
-        CommonSliceResponse<OotdGetOtherRes> response = ootdService.getOotdOther(request);
+        CommonSliceResponse<OotdGetOtherRes> response = ootdService.getOotdOther(request,
+                userService.getAuthenticatiedUser());
 
         return new ApiResponse<>(response);
     }
@@ -155,7 +156,8 @@ public class OotdController {
     @GetMapping("/similar")
     public ApiResponse<CommonSliceResponse<OotdGetSimilarRes>> getSimilarOotd(@Valid OotdGetSimilarReq request) {
 
-        CommonSliceResponse<OotdGetSimilarRes> response = ootdService.getOotdSimilar(request);
+        CommonSliceResponse<OotdGetSimilarRes> response = ootdService.getOotdSimilar(request,
+                userService.getAuthenticatiedUser());
 
         return new ApiResponse<>(response);
     }
@@ -184,6 +186,7 @@ public class OotdController {
     @Operation(summary = "ootd 검색 기능")
     @GetMapping("/search")
     public ApiResponse<CommonPageResponse<OotdSearchRes>> searchOotds(@Valid OotdSearchReq request) {
-        return new ApiResponse<>(ootdService.searchOotds(request.toServiceRequest()));
+        return new ApiResponse<>(
+                ootdService.searchOotds(request.toServiceRequest(), userService.getAuthenticatiedUser()));
     }
 }
