@@ -63,7 +63,7 @@ public class UserBlockService {
 
         List<UserBlockGetRes> userBlockGetRes = allByBlockUser.getContent()
                 .stream()
-                .map(userBlock -> UserBlockGetRes.createBy(userBlock.getBlockedUser()))
+                .map(userBlock -> UserBlockGetRes.createBy(userBlock))
                 .toList();
 
         return new CommonSliceResponse<>(userBlockGetRes, request.getPageable(), allByBlockUser.isLast());
