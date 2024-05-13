@@ -63,6 +63,8 @@ public enum ErrorCode {
 
     GOOGLE_LOGIN_ERROR(400, "A002", "Google Login Error Exception"),
 
+    SOCIAL_LOGIN_ERROR(401, "A003", "Social Login Error Exception"),
+
     NONE_SOCIAL_ERROR(400, "U001", "존재 하지 않는 소셜로그인 요청"),
 
     NOT_AUTHENTICATED_ERROR(401, "U002", "인증되지 않은 사용자"),

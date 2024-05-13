@@ -86,9 +86,10 @@ spring:
       max-request-size: 500MB # 요청 당 최대 사이즈 + 서비스단 별도 제한 50MB
 
 logging: #로그 레벨을 정하는 것
-  level: 
+  level:
     org.hibernate.SQL: off #JPA 하이버네이트가 생성하는 SQL 로그
     org.hibernate.orm.jdbc.bind: off # 스프링 3.0 이후 변경됨
+    zip.ootd.ootdzip.oauth.OAuth2AuthenticationFailureHandler: debug # 로그인 실패 시 로그
 
 # for swagger
 springdoc:
