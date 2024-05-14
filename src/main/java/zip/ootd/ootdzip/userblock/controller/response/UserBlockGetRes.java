@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import zip.ootd.ootdzip.user.domain.User;
+import zip.ootd.ootdzip.userblock.domain.UserBlock;
 
 @Getter
 @NoArgsConstructor
@@ -13,15 +13,17 @@ import zip.ootd.ootdzip.user.domain.User;
 @Builder
 public class UserBlockGetRes {
 
+    private Long id;
     private Long userId;
     private String userName;
     private String profileImage;
 
-    public static UserBlockGetRes createBy(User user) {
+    public static UserBlockGetRes createBy(UserBlock userBlock) {
         return UserBlockGetRes.builder()
-                .userId(user.getId())
-                .userName(user.getName())
-                .profileImage(user.getProfileImage())
+                .id(userBlock.getId())
+                .userId(userBlock.getBlockedUser().getId())
+                .userName(userBlock.getBlockedUser().getName())
+                .profileImage(userBlock.getBlockedUser().getProfileImage())
                 .build();
     }
 }
