@@ -73,7 +73,7 @@ public class Clothes extends BaseEntity {
     private List<ClothesColor> clothesColors = new ArrayList<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "clothes", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "clothes", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OotdImageClothes> ootdImageClothesList = new ArrayList<>();
 
     public static Clothes createClothes(User user,
