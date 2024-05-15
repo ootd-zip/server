@@ -16,6 +16,7 @@ import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.exception.code.ErrorCode;
 import zip.ootd.ootdzip.common.response.ApiResponse;
 import zip.ootd.ootdzip.oauth.data.TokenResponse;
+import zip.ootd.ootdzip.oauth.service.LoginService;
 import zip.ootd.ootdzip.oauth.service.TokenService;
 
 @RestController
@@ -24,6 +25,7 @@ import zip.ootd.ootdzip.oauth.service.TokenService;
 public class TokenController {
 
     private final TokenService tokenService;
+    private final LoginService loginService;
 
     // Swagger 문서용 더미 메소드, 실제로는 AuthoriationConfig에서 처리.
     @Operation(summary = "소셜 로그인",
@@ -61,5 +63,11 @@ public class TokenController {
     public ApiResponse<Void> revoke(@RequestParam("refreshToken") String refreshToken) {
         tokenService.revokeRefreshToken(refreshToken);
         return new ApiResponse<>();
+    }
+
+    @Operation(summary = "카카오 코드로 토큰 발급", description = "state 없이 코드를 토큰으로 변환할 때 사용하는 API")
+    @PostMapping(value = "/api/v1/oauth/token/code/kakao", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public TokenResponse token(@RequestParam("code") String code) {
+        return loginService.token("kakao", code);
     }
 }
