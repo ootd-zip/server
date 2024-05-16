@@ -20,8 +20,8 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     @Query("SELECT c from Comment c where "
             + "c.ootd.id = :ootdId "
-            + "AND ((c.depth = 2 OR (c.depth = 1 AND c.childCount = 0)) AND c.writer.id NOT IN :userIds"
-            + " OR c.depth = 1 AND 0 < c.childCount)")
+            + "AND (((c.depth = 2 OR (c.depth = 1 AND c.childCount = 0)) AND c.writer.id NOT IN :userIds) "
+            + " OR (c.depth = 1 AND 0 < c.childCount))")
     Slice<Comment> findAllByOotdId(@Param("ootdId") Long ootdId, @Param("userIds") Set<Long> userIds,
             Pageable pageable);
 }
