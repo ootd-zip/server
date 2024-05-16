@@ -4,13 +4,19 @@ import static org.assertj.core.api.Assertions.*;
 import static zip.ootd.ootdzip.clothes.data.PurchaseStoreType.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 
+import jakarta.persistence.EntityManager;
 import zip.ootd.ootdzip.IntegrationTestSupport;
 import zip.ootd.ootdzip.brand.domain.Brand;
 import zip.ootd.ootdzip.brand.repository.BrandRepository;
@@ -18,9 +24,11 @@ import zip.ootd.ootdzip.category.data.SizeType;
 import zip.ootd.ootdzip.category.domain.Category;
 import zip.ootd.ootdzip.category.domain.Color;
 import zip.ootd.ootdzip.category.domain.Size;
+import zip.ootd.ootdzip.category.domain.Style;
 import zip.ootd.ootdzip.category.repository.CategoryRepository;
 import zip.ootd.ootdzip.category.repository.ColorRepository;
 import zip.ootd.ootdzip.category.repository.SizeRepository;
+import zip.ootd.ootdzip.category.repository.StyleRepository;
 import zip.ootd.ootdzip.clothes.controller.response.FindClothesRes;
 import zip.ootd.ootdzip.clothes.data.DeleteClothesByIdRes;
 import zip.ootd.ootdzip.clothes.data.SaveClothesRes;
@@ -33,6 +41,10 @@ import zip.ootd.ootdzip.clothes.service.request.UpdateClothesIsPrivateSvcReq;
 import zip.ootd.ootdzip.clothes.service.request.UpdateClothesSvcReq;
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.response.CommonSliceResponse;
+import zip.ootd.ootdzip.oauth.OAuthUtils;
+import zip.ootd.ootdzip.ootd.data.OotdPostReq;
+import zip.ootd.ootdzip.ootd.domain.Ootd;
+import zip.ootd.ootdzip.ootd.service.OotdService;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.repository.UserRepository;
 
@@ -58,6 +70,15 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
 
     @Autowired
     private ClothesRepository clothesRepository;
+
+    @Autowired
+    private StyleRepository styleRepository;
+
+    @Autowired
+    private OotdService ootdService;
+
+    @Autowired
+    private EntityManager em;
 
     @DisplayName("유저가 옷을 저장한다.")
     @Test
@@ -1009,6 +1030,57 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
 
     }
 
+    @DisplayName("OOTD 게시글에 사용된 옷을 삭제한다.")
+    @Test
+    void deleteClothesUsingOotd() {
+        // given
+        User user = createUserBy("유저");
+        Clothes clothes = createClothesBy(user, true, "1");
+        Clothes clothes1 = createClothesBy(user, true, "2");
+        OotdPostReq.OotdImageReq.ClothesTagReq clothesTagReq = new OotdPostReq.OotdImageReq.ClothesTagReq();
+        clothesTagReq.setClothesId(clothes.getId());
+        clothesTagReq.setDeviceWidth(100L);
+        clothesTagReq.setDeviceHeight(50L);
+        clothesTagReq.setXRate("22.33");
+        clothesTagReq.setYRate("33.44");
+
+        OotdPostReq.OotdImageReq.ClothesTagReq clothesTagReq1 = new OotdPostReq.OotdImageReq.ClothesTagReq();
+        clothesTagReq1.setClothesId(clothes1.getId());
+        clothesTagReq1.setDeviceWidth(100L);
+        clothesTagReq1.setDeviceHeight(50L);
+        clothesTagReq1.setXRate("33.44");
+        clothesTagReq1.setYRate("44.55");
+
+        OotdPostReq.OotdImageReq ootdImageReq = new OotdPostReq.OotdImageReq();
+        ootdImageReq.setOotdImage("input_image_url");
+        ootdImageReq.setClothesTags(Arrays.asList(clothesTagReq, clothesTagReq1));
+
+        Style style = Style.builder().name("올드머니").build();
+        Style savedStyle = styleRepository.save(style);
+        Style style1 = Style.builder().name("블루코어").build();
+        Style savedStyle1 = styleRepository.save(style1);
+
+        OotdPostReq ootdPostReq = new OotdPostReq();
+        ootdPostReq.setIsPrivate(false);
+        ootdPostReq.setContent("테스트");
+        ootdPostReq.setStyles(Arrays.asList(savedStyle.getId(), savedStyle1.getId()));
+        ootdPostReq.setOotdImages(List.of(ootdImageReq));
+        Ootd ootd = ootdService.postOotd(ootdPostReq, user);
+        makeAuthenticatedUserBy(user);
+        ootdService.deleteOotd(ootd.getId());
+        em.flush();
+        em.clear();
+        // when
+        clothesService.deleteClothesById(clothes.getId(), user);
+        em.flush();
+        em.clear();
+        // then
+        Optional<Clothes> result = clothesRepository.findById(clothes.getId());
+
+        assertThat(result.isEmpty()).isTrue();
+
+    }
+
     private Clothes createClothesBy(User user, boolean isPrivate, String idx) {
 
         Brand brand = Brand.builder().name("브랜드" + idx).build();
@@ -1043,5 +1115,13 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
         User user = User.getDefault();
         user.setName(userName);
         return userRepository.save(user);
+    }
+
+    private void makeAuthenticatedUserBy(User user) {
+        SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+        Authentication authentication = OAuthUtils.createJwtAuthentication(user);
+        securityContext.setAuthentication(authentication);
+
+        SecurityContextHolder.setContext(securityContext);
     }
 }
