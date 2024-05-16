@@ -1,7 +1,9 @@
 package zip.ootd.ootdzip.report.domain;
 
+import jakarta.persistence.ConstraintMode;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -23,7 +25,7 @@ public class ReportOotd extends BaseEntity {
     private Report report;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ootd_id")
+    @JoinColumn(name = "ootd_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Ootd ootd;
 
     @ManyToOne(fetch = FetchType.LAZY)
