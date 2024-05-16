@@ -37,7 +37,8 @@ public class SecurityConfig {
                         .accessDeniedHandler(accessDeniedHandler))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(CorsUtils::isPreFlightRequest).permitAll() // Preflight 요청 허용
-                        .requestMatchers(HttpMethod.POST, "/api/v1/oauth/token").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/oauth/token", "/api/v1/oauth/token/revoke",
+                                "/api/v1/oauth/token/code/*").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                         .anyRequest().authenticated())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource));
