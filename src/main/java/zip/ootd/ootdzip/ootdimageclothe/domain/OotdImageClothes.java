@@ -3,6 +3,7 @@ package zip.ootd.ootdzip.ootdimageclothe.domain;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
@@ -22,7 +23,7 @@ import zip.ootd.ootdzip.ootdimage.domain.OotdImage;
 @AllArgsConstructor
 public class OotdImageClothes extends BaseEntity {
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ootd_image_id")
     private OotdImage ootdImage;
 
