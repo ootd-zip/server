@@ -1,6 +1,5 @@
 package zip.ootd.ootdzip.ootdimageclothe.domain;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -27,7 +26,7 @@ public class OotdImageClothes extends BaseEntity {
     @JoinColumn(name = "ootd_image_id")
     private OotdImage ootdImage;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "clothes_id")
     private Clothes clothes;
 
