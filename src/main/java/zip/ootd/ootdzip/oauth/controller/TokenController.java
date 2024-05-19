@@ -48,7 +48,7 @@ public class TokenController {
 
     @Operation(summary = "토큰 재발급", description = "리프레시 토큰을 사용하여 액세스 및 리프레시 토큰을 재발급하고 기존 리프레시 토큰은 무효화")
     @PostMapping(value = "/api/v1/oauth/token", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public TokenResponse token(
+    public TokenResponse refresh(
             @RequestParam("grantType") String grantType,
             @RequestParam("refreshToken") String refreshToken) {
         if (!OAuth2ParameterNames.REFRESH_TOKEN.equals(grantType)) {
@@ -67,7 +67,7 @@ public class TokenController {
 
     @Operation(summary = "카카오 코드로 토큰 발급", description = "state 없이 코드를 토큰으로 변환할 때 사용하는 API")
     @PostMapping(value = "/api/v1/oauth/token/code/kakao", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public TokenResponse token(@RequestParam("code") String code) {
-        return loginService.token("kakao", code);
+    public TokenResponse token(@RequestParam("code") String code, @RequestParam("redirect_uri") String redirectUri) {
+        return loginService.token("kakao", code, redirectUri);
     }
 }
