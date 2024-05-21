@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 
 import lombok.RequiredArgsConstructor;
@@ -49,8 +50,10 @@ public class S3UploadService {
     // 업로드하기
     private String putS3(MultipartFile multipartFile, String fileName) {
         try {
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentLength(multipartFile.getSize());
             amazonS3Client.putObject(
-                    new PutObjectRequest(bucket, fileName, multipartFile.getInputStream(), null)
+                    new PutObjectRequest(bucket, fileName, multipartFile.getInputStream(), metadata)
                             .withCannedAcl(CannedAccessControlList.PublicRead));
             return amazonS3Client.getUrl(bucket, fileName).toString();
         } catch (IOException e) {
