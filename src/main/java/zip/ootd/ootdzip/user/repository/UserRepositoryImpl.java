@@ -32,6 +32,7 @@ public class UserRepositoryImpl extends QuerydslRepositorySupport implements Use
                 .where(
                         containName(name),
                         user.isDeleted.eq(false),
+                        user.isCompleted.eq(true),
                         notInNonAccessibleUserIds(nonAccessibleUserIds)
                 )
                 .orderBy(
@@ -45,7 +46,9 @@ public class UserRepositoryImpl extends QuerydslRepositorySupport implements Use
         Long totalCount = queryFactory.select(user.count())
                 .from(user)
                 .where(containName(name),
-                        user.isDeleted.eq(false))
+                        user.isDeleted.eq(false),
+                        user.isCompleted.eq(true),
+                        notInNonAccessibleUserIds(nonAccessibleUserIds))
                 .fetchOne();
 
         return new PageImpl<>(findUsers, pageable, totalCount);
