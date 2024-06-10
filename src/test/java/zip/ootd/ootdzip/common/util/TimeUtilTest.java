@@ -23,9 +23,9 @@ public class TimeUtilTest {
     @DisplayName("댓글 작성시 표기 시간 규칙(~분전)을 지키는지 확인한다.")
     @ParameterizedTest
     @CsvSource({
-            "1, '1분전'",
-            "30, '30분전'",
-            "59, '59분전'"
+            "1, '1분 전'",
+            "30, '30분 전'",
+            "59, '59분 전'"
     })
     void compareCreatedTimeAndNowForLastMinute(long minutesAgo, String expected) {
         // given
@@ -38,9 +38,9 @@ public class TimeUtilTest {
     @DisplayName("댓글 작성시 표기 시간 규칙(~시간전)을 지키는지 확인한다.")
     @ParameterizedTest
     @CsvSource({
-            "1, '1시간전'",
-            "12, '12시간전'",
-            "23, '23시간전'"
+            "1, '1시간 전'",
+            "12, '12시간 전'",
+            "23, '23시간 전'"
     })
     void compareCreatedTimeAndNowLastHour(long hoursAgo, String expected) {
         // given
@@ -53,9 +53,9 @@ public class TimeUtilTest {
     @DisplayName("댓글 작성시 표기 시간 규칙(~일전)을 지키는지 확인한다.")
     @ParameterizedTest
     @CsvSource({
-            "1, '1일전'",
-            "3, '3일전'",
-            "6, '6일전'"
+            "1, '1일 전'",
+            "3, '3일 전'",
+            "6, '6일 전'"
     })
     void compareCreatedTimeAndNowForLastDay(long daysAgo, String expected) {
         // given
@@ -68,11 +68,11 @@ public class TimeUtilTest {
     @DisplayName("댓글 작성시 표기 시간 규칙(~주전)을 지키는지 확인한다.")
     @ParameterizedTest
     @CsvSource({
-            "7, '1주전'",
-            "10, '1주전'",
-            "15, '2주전'",
-            "27, '3주전'",
-            "28, '4주전'"
+            "7, '1주 전'",
+            "10, '1주 전'",
+            "15, '2주 전'",
+            "27, '3주 전'",
+            "28, '4주 전'"
     })
     void compareCreatedTimeAndNowForLastWeek(long daysAgo, String expected) {
         // given
@@ -85,9 +85,9 @@ public class TimeUtilTest {
     @DisplayName("댓글 작성시 표기 시간 규칙(~달전)을 지키는지 확인한다.")
     @ParameterizedTest
     @CsvSource({
-            "1, '1달전'",
-            "6, '6달전'",
-            "11, '11달전'"
+            "1, '1달 전'",
+            "6, '6달 전'",
+            "11, '11달 전'"
     })
     void compareCreatedTimeAndNowForLastMonth(long monthsAgo, String expected) {
         // given
@@ -100,8 +100,8 @@ public class TimeUtilTest {
     @DisplayName("댓글 작성시 표기 시간 규칙(~년전)을 지키는지 확인한다.")
     @ParameterizedTest
     @CsvSource({
-            "1, '1년전'",
-            "100, '100년전'"
+            "1, '1년 전'",
+            "100, '100년 전'"
     })
     void compareCreatedTimeAndNowForLastYear(long yearsAgo, String expected) {
         // given
