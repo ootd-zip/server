@@ -27,23 +27,23 @@ public class TimeUtil {
             return "지금";
         } else if (seconds < 3600) { // 3600 = 1시간
             long minutes = ChronoUnit.MINUTES.between(createdTimeLT, nowLT);
-            return minutes + "분전";
+            return minutes + "분 전";
         } else if (seconds < 86400) { //86400 = 1일
             long hours = ChronoUnit.HOURS.between(createdTimeLT, nowLT);
-            return hours + "시간전";
+            return hours + "시간 전";
         } else if (seconds < 604800) { //604800 = 1주일
             long days = ChronoUnit.DAYS.between(createdTimeLD, nowLD);
-            return days + "일전";
+            return days + "일 전";
         } else if (seconds < 3024000 && ChronoUnit.MONTHS.between(createdTimeLD, nowLD) == 0) { //3024000 = 35일
             long weeks = ChronoUnit.WEEKS.between(createdTimeLD, nowLD);
-            return weeks + "주전";
+            return weeks + "주 전";
         } else if (seconds < 31536000 && ChronoUnit.YEARS.between(createdTimeLD, nowLD) == 0) {
             // 31536000 = 365일, 1년이 366일때는 대비해 년도 비교 추가
             long months = ChronoUnit.MONTHS.between(createdTimeLD, nowLD);
-            return months + "달전";
+            return months + "달 전";
         } else {
             long years = ChronoUnit.YEARS.between(createdTimeLD, nowLD);
-            return years + "년전";
+            return years + "년 전";
         }
     }
 }
