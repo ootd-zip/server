@@ -170,7 +170,7 @@ public class OotdService {
         }
 
         redisDao.setValues(viewCountKey,
-                String.valueOf(ootdRepository.findViewCountByOotdId(ootdId)),
+                String.valueOf(ootdRepository.findViewCountByOotdId(ootdId) + 1),
                 Duration.ofMinutes(5));
     }
 
