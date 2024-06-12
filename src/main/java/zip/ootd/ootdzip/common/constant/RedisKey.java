@@ -5,12 +5,9 @@ import lombok.Getter;
 @Getter
 public enum RedisKey {
 
-    VIEWS("views"),
-    VIEW_FILTER("viewfilter"),
-    UPDATED_VIEWS("updateviews"),
-    LIKES("likes"),
-    USER_LIKES("userLikes"),
-    UPDATED_LIKES("updatelikes");
+    OOTD("Ootd"),
+    OOTDVIEW("OotdView"),
+    OOTDLIKE("OotdLike");
 
     private final String key;
 
@@ -18,7 +15,11 @@ public enum RedisKey {
         this.key = key;
     }
 
-    public String makeKeyWith(Long uniqueNumber) {
-        return uniqueNumber + "_" + key;
+    public String makeKeyWith(Long id) {
+        return key + "::" + id;
+    }
+
+    public static Long getId(String key) {
+        return Long.parseLong(key.split("::")[1]);
     }
 }

@@ -53,6 +53,15 @@ public class RedisDao {
         redisTemplate.delete(key);
     }
 
+    public void incrementValues(String key) {
+        ValueOperations<String, String> values = redisTemplate.opsForValue();
+        values.increment(key);
+    }
+
+    public Set<String> getKeys(String key) {
+        return redisTemplate.keys(key);
+    }
+
     public void setValuesSet(String key, String data) {
         redisTemplate.opsForSet().add(key, data);
     }
