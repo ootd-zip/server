@@ -23,15 +23,14 @@ public class OotdRedisScheduler {
 
     /**
      * 3분마다 주기적으로 실행
-     *
      * 조회수를 주기적으로 Redis -> DB 로 저장하는 작업을 수행합니다.
      */
     @Transactional
-    @Scheduled(cron = "0 0/3 * * * ?") // 매일 자정마다 한번 실행
+    @Scheduled(cron = "0 0/3 * * * ?") // 3분마다 실행
     public void updateViewCountFromRedisToRdb() {
 
         // OOTD 조회수 키 전체 조회
-        Set<String> redisKeys = redisDao.getKeys(RedisKey.OOTDVIEW + "*");
+        Set<String> redisKeys = redisDao.getKeys(RedisKey.OOTDVIEW.getKey() + "*");
 
         for (String key : redisKeys) {
             Long ootdId = RedisKey.getId(key);
