@@ -40,6 +40,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
+    // embedded-redis for test
+    implementation group: 'com.github.codemonstur', name: 'embedded-redis', version: '1.4.0'
+
     //자바 역직렬화 문제 해결 패키지
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
     implementation 'com.fasterxml.jackson.core:jackson-databind'
@@ -72,6 +75,8 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.mockito:mockito-core:3.11.2'
     testImplementation 'org.mockito:mockito-junit-jupiter:3.11.2'
+    testImplementation 'org.projectlombok:lombok' // test 에서 롬복 추가
+    testAnnotationProcessor 'org.projectlombok:lombok' // test 에서 롬복 인식
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
 
     // h2
