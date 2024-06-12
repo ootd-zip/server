@@ -10,12 +10,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Coordinate {
 
-    private String xRate;
+    private String x;
 
-    private String yRate;
+    private String y;
 
-    public Coordinate(String xRate, String yRate) {
-        this.xRate = xRate;
-        this.yRate = yRate;
+    public Coordinate(String x, String y) {
+        this.x = x;
+        this.y = y;
     }
 }

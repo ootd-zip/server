@@ -1,10 +1,12 @@
 package zip.ootd.ootdzip.ootd.service;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.math.NumberUtils;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -96,6 +98,7 @@ public class OotdService {
         return ootd;
     }
 
+    @CacheEvict(cacheNames = "ootd", key = "#id")
     public void updateContentsAndIsPrivate(Long id, OotdPatchReq request) {
 
         Ootd ootd = ootdRepository.findById(id).orElseThrow();
@@ -105,6 +108,7 @@ public class OotdService {
         ootd.updateIsPrivate(request.getIsPrivate());
     }
 
+    @CacheEvict(cacheNames = "ootd", key = "#id")
     public void updateAll(Long id, OotdPutReq request) {
 
         Ootd ootd = ootdRepository.findById(id).orElseThrow();
@@ -132,6 +136,7 @@ public class OotdService {
                 ootdStyles);
     }
 
+    @CacheEvict(cacheNames = "ootd", key = "#id")
     public void deleteOotd(Long id) {
         Ootd ootd = ootdRepository.findById(id).orElseThrow();
         userService.checkValidUser(ootd.getWriter());
@@ -142,18 +147,31 @@ public class OotdService {
      * 기본적인 단건조회 API 입니다.
      * 비공개글은 본인글이 아니면 볼 수 없습니다.
      */
+    @Cacheable(cacheNames = "ootd", key = "#ootdId")
     public OotdGetRes getOotd(Long ootdId, User loginUser) {
 
         Ootd ootd = ootdRepository.findById(ootdId).orElseThrow();
 
         checkOotd(ootd, loginUser);
 
-        countViewInRedis(ootd, loginUser);
-        int view = getView(ootd);
-        int like = getLike(ootd);
-        boolean isLike = getUserLike(ootd, loginUser);
+        return new OotdGetRes(ootd, loginUser);
+    }
 
-        return new OotdGetRes(ootd, isLike, view, like, loginUser);
+    /**
+     * Redis 에서 OOTD 조회수는 별도의 키를 만들어 관리합니다.
+     * Redis 에서 조회수키가 없을경우 새로 만듭니다.
+     * 해당 키는 스케줄러를 통해 DB 로 저장됩니다.
+     */
+    public void increaseViewCountToRedis(Long ootdId) {
+        String viewCountKey = RedisKey.OOTDVIEW.makeKeyWith(ootdId);
+        if (redisDao.getValues(viewCountKey) != null) {
+            redisDao.incrementValues(viewCountKey);
+            return;
+        }
+
+        redisDao.setValues(viewCountKey,
+                String.valueOf(ootdRepository.findViewCountByOotdId(ootdId)),
+                Duration.ofMinutes(5));
     }
 
     private void checkOotd(Ootd ootd, User user) {
@@ -184,96 +202,10 @@ public class OotdService {
                 pageable);
 
         List<OotdGetAllRes> ootdGetAllResList = ootds.stream()
-                .map(ootd -> new OotdGetAllRes(
-                        ootd,
-                        getUserLike(ootd, loginUser),
-                        getView(ootd),
-                        getLike(ootd),
-                        loginUser))
+                .map(ootd -> new OotdGetAllRes(ootd, loginUser))
                 .collect(Collectors.toList());
 
         return new SliceImpl<>(ootdGetAllResList, pageable, ootds.hasNext());
-    }
-
-    /**
-     * ootdKey : ootd 게시글 키
-     * ootdFilterKey : 중복된 사용자의 조회수 카운트 막기위한 ootd 필터키
-     * updateKey : 추후 스케줄러작업에서 조회수가 변경된 게시판을 가져오기위해, ootdKey 를 저장해두는 키
-     */
-    private void countViewInRedis(Ootd ootd, User loginUser) {
-        Long id = ootd.getId();
-
-        if (!isUserViewedInRedis(id, loginUser)) {
-            String ootdKey = RedisKey.VIEWS.makeKeyWith(id);
-            String ootdFilterKey = RedisKey.VIEW_FILTER.makeKeyWith(id);
-            String userKey = RedisKey.VIEWS.makeKeyWith(loginUser.getId());
-            String updateKey = RedisKey.UPDATED_VIEWS.getKey();
-
-            redisDao.setValuesSet(ootdFilterKey, userKey);
-            redisDao.setValues(ootdKey, String.valueOf(getView(ootd) + 1));
-            redisDao.setValuesSet(updateKey, ootdKey);
-        }
-    }
-
-    private boolean isUserViewedInRedis(Long id, User loginUser) {
-        String ootdFilterKey = RedisKey.VIEW_FILTER.makeKeyWith(id);
-        String userKey = RedisKey.VIEWS.makeKeyWith(loginUser.getId());
-
-        return redisDao.getValuesSet(ootdFilterKey).contains(userKey);
-    }
-
-    private int getViewInRedis(Long id) {
-        String ootdKey = RedisKey.VIEWS.makeKeyWith(id);
-
-        return NumberUtils.toInt(redisDao.getValues(ootdKey));
-    }
-
-    /**
-     * redis 에 조회수가 저장되어있으면 반환, 없으면 entity 에서 조회수를 가져와 redis에 저장 후 조회수 반환
-     */
-    private int getView(Ootd ootd) {
-        int viewInRedis = getViewInRedis(ootd.getId());
-
-        if (viewInRedis > 0) {
-            return viewInRedis;
-        }
-
-        int viewInDb = ootd.getViewCount();
-        setViewInRedis(ootd.getId(), viewInDb);
-        return viewInDb;
-    }
-
-    private void setViewInRedis(Long id, int count) {
-        String ootdKey = RedisKey.VIEWS.makeKeyWith(id);
-
-        redisDao.setValues(ootdKey, String.valueOf(count));
-    }
-
-    /**
-     * redis 에 좋아요수가 저장되어있으면 반환, 없으면 entity 에서 좋아요수를 가져와 redis에 저장 후 좋아요 수 반환
-     */
-    private int getLike(Ootd ootd) {
-        int likeInRedis = getLikeInRedis(ootd.getId());
-
-        if (likeInRedis > 0) {
-            return likeInRedis;
-        }
-
-        int likeInDb = ootd.getLikeCount();
-        setLikeInRedis(ootd.getId(), likeInDb);
-        return likeInDb;
-    }
-
-    private int getLikeInRedis(Long id) {
-        String likeKey = RedisKey.LIKES.makeKeyWith(id);
-
-        return NumberUtils.toInt(redisDao.getValues(likeKey));
-    }
-
-    private void setLikeInRedis(Long id, int count) {
-        String likeKey = RedisKey.LIKES.makeKeyWith(id);
-
-        redisDao.setValues(likeKey, String.valueOf(count));
     }
 
     /**
@@ -282,8 +214,6 @@ public class OotdService {
     public void addLike(Long ootdId, User loginUser) {
         Ootd ootd = ootdRepository.findById(ootdId).orElseThrow();
 
-        increaseLikeInRedis(ootd, loginUser);
-        addUserLikeInRedis(ootdId, loginUser.getId());
         ootd.addLike(loginUser);
         notifyOotdLike(ootd.getWriter(), loginUser, ootd.getFirstImage(), ootd.getId());
     }
@@ -305,79 +235,7 @@ public class OotdService {
 
     public void cancelLike(Long ootdId, User loginUser) {
         Ootd ootd = ootdRepository.findById(ootdId).orElseThrow();
-
-        decreaseLikeInRedis(ootd, loginUser);
-        cancelUserLikeInRedis(ootdId, loginUser.getId());
         ootd.cancelLike(loginUser);
-    }
-
-    /**
-     * redis 에 유저가 좋아요를 한 기록이 저장되어있으면 반환, 없으면 entity 에서 유저의 좋아요 여부 가져와 redis에 저장 후 좋아요 여부 반환
-     */
-    private boolean getUserLike(Ootd ootd, User user) {
-
-        Long ootdId = ootd.getId();
-        Long userId = user.getId();
-
-        if (isUserLikeSavedInRedis(ootdId)) {
-            return isUserLikeInRedis(ootdId, userId);
-        }
-
-        boolean userLike = ootd.isOotdLike(user);
-        if (userLike) {
-            addUserLikeInRedis(ootdId, userId);
-        }
-
-        return userLike;
-    }
-
-    private boolean isUserLikeSavedInRedis(Long ootdId) {
-        String ootdKey = RedisKey.USER_LIKES.makeKeyWith(ootdId);
-
-        return redisDao.getValuesSet(ootdKey).size() != 0;
-    }
-
-    private boolean isUserLikeInRedis(Long ootdId, Long userId) {
-        String ootdKey = RedisKey.USER_LIKES.makeKeyWith(ootdId);
-        String userKey = RedisKey.USER_LIKES.makeKeyWith(userId);
-
-        return redisDao.getValuesSet(ootdKey).contains(userKey);
-    }
-
-    private void addUserLikeInRedis(Long ootdId, Long userId) {
-        String ootdKey = RedisKey.USER_LIKES.makeKeyWith(ootdId);
-        String userKey = RedisKey.USER_LIKES.makeKeyWith(userId);
-
-        redisDao.setValuesSet(ootdKey, userKey);
-    }
-
-    private void cancelUserLikeInRedis(Long ootdId, Long userId) {
-        String ootdKey = RedisKey.USER_LIKES.makeKeyWith(ootdId);
-        String userKey = RedisKey.USER_LIKES.makeKeyWith(userId);
-
-        redisDao.deleteValuesSet(ootdKey, userKey);
-    }
-
-    private void increaseLikeInRedis(Ootd ootd, User user) {
-        Long id = ootd.getId();
-        String likeKey = RedisKey.LIKES.makeKeyWith(id);
-
-        if (!getUserLike(ootd, user)) {
-            redisDao.setValues(likeKey, String.valueOf(getLike(ootd) + 1));
-            String updateKey = RedisKey.UPDATED_LIKES.getKey();
-            redisDao.setValuesSet(updateKey, likeKey);
-        }
-    }
-
-    private void decreaseLikeInRedis(Ootd ootd, User user) {
-        Long id = ootd.getId();
-        String likeKey = RedisKey.LIKES.makeKeyWith(id);
-
-        if (getUserLike(ootd, user)) {
-            redisDao.setValues(likeKey, String.valueOf(getLike(ootd) - 1));
-            String updateKey = RedisKey.UPDATED_LIKES.getKey();
-            redisDao.setValuesSet(updateKey, likeKey);
-        }
     }
 
     /**

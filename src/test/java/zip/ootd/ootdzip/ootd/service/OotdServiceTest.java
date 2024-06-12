@@ -146,7 +146,7 @@ public class OotdServiceTest extends IntegrationTestSupport {
 
         assertThat(savedResult.getOotdImages().get(0).getOotdImageClothesList())
                 .hasSize(2)
-                .extracting("clothes.id", "coordinate.xRate", "coordinate.yRate", "deviceSize.deviceWidth",
+                .extracting("clothes.id", "coordinate.x", "coordinate.y", "deviceSize.deviceWidth",
                         "deviceSize.deviceHeight")
                 .containsExactlyInAnyOrder(
                         tuple(clothes.getId(), "22.33", "33.44", 100L, 50L),
@@ -233,7 +233,7 @@ public class OotdServiceTest extends IntegrationTestSupport {
 
         assertThat(savedResult.getOotdImages().get(0).getOotdImageClothesList())
                 .hasSize(2)
-                .extracting("clothes.id", "coordinate.xRate", "coordinate.yRate", "deviceSize.deviceWidth",
+                .extracting("clothes.id", "coordinate.x", "coordinate.y", "deviceSize.deviceWidth",
                         "deviceSize.deviceHeight")
                 .containsExactlyInAnyOrder(
                         tuple(clothes.getId(), "11.22", "22.33", 20L, 30L),

@@ -55,15 +55,11 @@ public class OotdGetRes {
 
     private List<OotdStyleRes> styles;
 
-    public OotdGetRes(Ootd ootd,
-            Boolean isLike,
-            Integer viewCount,
-            Integer likeCount,
-            User loginUser) {
+    public OotdGetRes(Ootd ootd, User loginUser) {
 
-        this.isLike = isLike;
-        this.viewCount = viewCount;
-        this.likeCount = likeCount;
+        this.isLike = ootd.isOotdLike(loginUser);
+        this.viewCount = ootd.getViewCount();
+        this.likeCount = ootd.getLikeCount();
         this.isBookmark = ootd.isBookmark(loginUser);
         this.isFollowing = loginUser.isFollowing(ootd.getWriter());
 
@@ -89,6 +85,7 @@ public class OotdGetRes {
     }
 
     @Data
+    @NoArgsConstructor
     static class OotdStyleRes {
 
         private Long id;
@@ -102,6 +99,7 @@ public class OotdGetRes {
     }
 
     @Data
+    @NoArgsConstructor
     static class OotdImageRes {
 
         private String ootdImage;
@@ -116,6 +114,7 @@ public class OotdGetRes {
         }
 
         @Data
+        @NoArgsConstructor
         static class OotdImageClothesRes {
 
             private BrandDto brand;
