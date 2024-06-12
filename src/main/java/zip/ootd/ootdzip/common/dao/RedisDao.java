@@ -79,4 +79,11 @@ public class RedisDao {
         SetOperations<String, String> values = redisTemplate.opsForSet();
         values.remove(key, value);
     }
+
+    public void deleteAll() {
+        Set<String> keys = redisTemplate.keys("*");
+        if (keys != null && !keys.isEmpty()) {
+            redisTemplate.delete(keys);
+        }
+    }
 }

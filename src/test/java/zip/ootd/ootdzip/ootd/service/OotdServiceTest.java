@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -33,6 +34,8 @@ import zip.ootd.ootdzip.clothes.data.PurchaseStoreType;
 import zip.ootd.ootdzip.clothes.domain.Clothes;
 import zip.ootd.ootdzip.clothes.domain.ClothesColor;
 import zip.ootd.ootdzip.clothes.repository.ClothesRepository;
+import zip.ootd.ootdzip.common.constant.RedisKey;
+import zip.ootd.ootdzip.common.dao.RedisDao;
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.response.CommonPageResponse;
 import zip.ootd.ootdzip.common.response.CommonSliceResponse;
@@ -87,6 +90,14 @@ public class OotdServiceTest extends IntegrationTestSupport {
 
     @Autowired
     private OotdRepository ootdRepository;
+
+    @Autowired
+    private RedisDao redisDao;
+
+    @AfterEach
+    void tearDown() {
+        redisDao.deleteAll();
+    }
 
     @DisplayName("OOTD 게시글 저장")
     @Test
@@ -354,10 +365,37 @@ public class OotdServiceTest extends IntegrationTestSupport {
         Ootd ootd = createOotdBy(user, "안녕", isPrivate);
 
         // when
+        ootdService.increaseViewCountToRedis(ootd.getId());
         OotdGetRes result = ootdService.getOotd(ootd.getId(), user);
 
         // then
         assertThat(result.getId()).isEqualTo(ootd.getId());
+        assertThat(redisDao.getValues(RedisKey.OOTDVIEW.makeKeyWith(ootd.getId())))
+                .isEqualTo("1"); // redis 에 저장된 조회 수 검증
+    }
+
+    @DisplayName("ootd 를 여러번 조회한다.")
+    @Test
+    void getOotdSeveral() {
+        // given
+        User user = createUserBy("유저");
+        Ootd ootd = createOotdBy(user, "안녕", false);
+
+        // when & then
+        ootdService.increaseViewCountToRedis(ootd.getId());
+        ootdService.getOotd(ootd.getId(), user);
+        assertThat(redisDao.getValues(RedisKey.OOTDVIEW.makeKeyWith(ootd.getId())))
+                .isEqualTo("1"); // redis 에 저장된 조회 수 검증
+
+        ootdService.increaseViewCountToRedis(ootd.getId());
+        ootdService.getOotd(ootd.getId(), user);
+        assertThat(redisDao.getValues(RedisKey.OOTDVIEW.makeKeyWith(ootd.getId())))
+                .isEqualTo("2"); // redis 에 저장된 조회 수 검증
+
+        ootdService.increaseViewCountToRedis(ootd.getId());
+        ootdService.getOotd(ootd.getId(), user);
+        assertThat(redisDao.getValues(RedisKey.OOTDVIEW.makeKeyWith(ootd.getId())))
+                .isEqualTo("3"); // redis 에 저장된 조회 수 검증
     }
 
     @DisplayName("ootd 를 조회시 존재하는 ootd 이어야 한다.")
