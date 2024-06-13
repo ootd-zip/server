@@ -90,7 +90,6 @@ public class OotdController {
     @GetMapping("/{id}")
     public ApiResponse<OotdGetRes> getOotdPost(@PathVariable Long id) {
 
-        ootdService.increaseViewCountToRedis(id);
         OotdGetRes response = ootdService.getOotd(id, userService.getAuthenticatiedUser());
 
         return new ApiResponse<>(response);

@@ -5,8 +5,7 @@ import lombok.Getter;
 @Getter
 public enum RedisKey {
 
-    OOTD("ootd"),
-    OOTDVIEW("ootdView");
+    OOTD("ootd");
 
     private final String key;
 

@@ -13,35 +13,36 @@ import zip.ootd.ootdzip.ootd.repository.OotdRepository;
 
 /**
  * 해당 스케줄러는 Redis 에 저장된 정보를 DB 에 저장하는 스케줄러입니다.
+ * OOTD 에서 Redis 로직이 변경되어 현재 사용하지 않고있으나 추후 사용할 수 있어 남겨둡니다.
  */
-@Component
-@RequiredArgsConstructor
-public class OotdRedisScheduler {
-
-    private final RedisDao redisDao;
-    private final OotdRepository ootdRepository;
-
-    /**
-     * 3분마다 주기적으로 실행
-     * 조회수를 주기적으로 Redis -> DB 로 저장하는 작업을 수행합니다.
-     */
-    @Transactional
-    @Scheduled(cron = "0 0/3 * * * ?") // 3분마다 실행
-    public void updateViewCountFromRedisToRdb() {
-
-        // OOTD 조회수 키 전체 조회
-        Set<String> redisKeys = redisDao.getKeys(RedisKey.OOTDVIEW.getKey() + "*");
-
-        for (String key : redisKeys) {
-            Long ootdId = RedisKey.getId(key);
-            Long viewCount = Long.valueOf(redisDao.getValues(key));
-
-            // 조회수 Redis -> DB 반영
-            ootdRepository.updateViewCountByOotdId(ootdId, viewCount);
-
-            // OOTD 조회수, OOTD 게시글을 Redis 에서 삭제
-            redisDao.deleteValues(key);
-            redisDao.deleteValues(RedisKey.OOTD.makeKeyWith(ootdId));
-        }
-    }
-}
+// @Component
+// @RequiredArgsConstructor
+// public class OotdRedisScheduler {
+//
+//     private final RedisDao redisDao;
+//     private final OotdRepository ootdRepository;
+//
+//     /**
+//      * 3분마다 주기적으로 실행
+//      * 조회수를 주기적으로 Redis -> DB 로 저장하는 작업을 수행합니다.
+//      */
+//     @Transactional
+//     @Scheduled(cron = "0 0/3 * * * ?") // 3분마다 실행
+//     public void updateViewCountFromRedisToRdb() {
+//
+//         // OOTD 조회수 키 전체 조회
+//         Set<String> redisKeys = redisDao.getKeys(RedisKey.OOTDVIEW.getKey() + "*");
+//
+//         for (String key : redisKeys) {
+//             Long ootdId = RedisKey.getId(key);
+//             Long viewCount = Long.valueOf(redisDao.getValues(key));
+//
+//             // 조회수 Redis -> DB 반영
+//             ootdRepository.updateViewCountByOotdId(ootdId, viewCount);
+//
+//             // OOTD 조회수, OOTD 게시글을 Redis 에서 삭제
+//             redisDao.deleteValues(key);
+//             redisDao.deleteValues(RedisKey.OOTD.makeKeyWith(ootdId));
+//         }
+//     }
+// }

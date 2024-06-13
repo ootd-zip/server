@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -98,7 +96,6 @@ public class OotdService {
         return ootd;
     }
 
-    @CacheEvict(cacheNames = "ootd", key = "#id")
     public void updateContentsAndIsPrivate(Long id, OotdPatchReq request) {
 
         Ootd ootd = ootdRepository.findById(id).orElseThrow();
@@ -108,7 +105,6 @@ public class OotdService {
         ootd.updateIsPrivate(request.getIsPrivate());
     }
 
-    @CacheEvict(cacheNames = "ootd", key = "#id")
     public void updateAll(Long id, OotdPutReq request) {
 
         Ootd ootd = ootdRepository.findById(id).orElseThrow();
@@ -136,7 +132,6 @@ public class OotdService {
                 ootdStyles);
     }
 
-    @CacheEvict(cacheNames = "ootd", key = "#id")
     public void deleteOotd(Long id) {
         Ootd ootd = ootdRepository.findById(id).orElseThrow();
         userService.checkValidUser(ootd.getWriter());
@@ -147,31 +142,48 @@ public class OotdService {
      * 기본적인 단건조회 API 입니다.
      * 비공개글은 본인글이 아니면 볼 수 없습니다.
      */
-    @Cacheable(cacheNames = "ootd", key = "#ootdId")
     public OotdGetRes getOotd(Long ootdId, User loginUser) {
 
         Ootd ootd = ootdRepository.findById(ootdId).orElseThrow();
 
         checkOotd(ootd, loginUser);
 
+        increaseViewCount(ootd, loginUser);
+
         return new OotdGetRes(ootd, loginUser);
     }
 
-    /**
-     * Redis 에서 OOTD 조회수는 별도의 키를 만들어 관리합니다.
-     * Redis 에서 조회수키가 없을경우 새로 만듭니다.
-     * 해당 키는 스케줄러를 통해 DB 로 저장됩니다.
-     */
-    public void increaseViewCountToRedis(Long ootdId) {
-        String viewCountKey = RedisKey.OOTDVIEW.makeKeyWith(ootdId);
-        if (redisDao.getValues(viewCountKey) != null) {
-            redisDao.incrementValues(viewCountKey);
+    private void increaseViewCount(Ootd ootd, User loginUser) {
+
+        if (isDuplicatedView(ootd.getId(), loginUser.getId())) {
             return;
         }
 
-        redisDao.setValues(viewCountKey,
-                String.valueOf(ootdRepository.findViewCountByOotdId(ootdId) + 1),
-                Duration.ofMinutes(5));
+        ootd.increaseViewCount();
+    }
+
+    /**
+     * Redis 를 이용해 해당 유저가 중복 조회인지 확인합니다.
+     * TTL 을 두고 해당 시간이 지나면 다시 조회수 카운트가 됩니다.
+     */
+    private Boolean isDuplicatedView(Long ootdId, Long userId) {
+        String ootdKey = RedisKey.OOTD.makeKeyWith(ootdId);
+        String value = String.valueOf(userId);
+
+        // 중복 조회인 경우
+        if (redisDao.getValuesSet(ootdKey).contains(value)) {
+            return true;
+        }
+
+        // 키가 존재하지 않거나, 존재하지만 중복 값이 없는 경우
+        redisDao.setValuesSet(ootdKey, value);
+
+        // 키가 존재하지 않을시 만료기간 지정
+        if (redisDao.getValuesSet(ootdKey).isEmpty()) {
+            redisDao.setExpiration(ootdKey, Duration.ofDays(1));
+        }
+
+        return false;
     }
 
     private void checkOotd(Ootd ootd, User user) {

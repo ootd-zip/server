@@ -119,6 +119,10 @@ public class Ootd extends BaseEntity {
         return ootd;
     }
 
+    public void increaseViewCount() {
+        this.viewCount += 1;
+    }
+
     public void updateIsPrivate(boolean isPrivate) {
         this.isPrivate = isPrivate;
     }
