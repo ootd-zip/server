@@ -10,12 +10,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Coordinate {
 
-    private String x;
+    // stylecheck 때문에 x -> xRate 로 변경, xRate 사용시 해당부분 캐싱할때 맵핑이 안되서 에러 발생할 수 있으니 캐싱사용시주의
+    private String xRate;
 
-    private String y;
+    private String yRate;
 
-    public Coordinate(String x, String y) {
-        this.x = x;
-        this.y = y;
+    public Coordinate(String xRate, String yRate) {
+        this.xRate = xRate;
+        this.yRate = yRate;
     }
 }
