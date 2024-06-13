@@ -75,8 +75,8 @@ public class RedisDao {
         return values.members(key);
     }
 
-    public void setExpiration(String key, Duration duration) {
-        redisTemplate.expire(key, duration);
+    public Boolean setExpiration(String key, Duration duration) {
+        return redisTemplate.expire(key, duration);
     }
 
     public void deleteValuesSet(String key, String value) {

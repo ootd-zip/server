@@ -175,12 +175,12 @@ public class OotdService {
             return true;
         }
 
-        // 키가 존재하지 않거나, 존재하지만 중복 값이 없는 경우
-        redisDao.setValuesSet(ootdKey, value);
-
         // 키가 존재하지 않을시 만료기간 지정
         if (redisDao.getValuesSet(ootdKey).isEmpty()) {
-            redisDao.setExpiration(ootdKey, Duration.ofDays(1));
+            redisDao.setValuesSet(ootdKey, value);
+            redisDao.setExpiration(ootdKey, Duration.ofSeconds(10));
+        } else {
+            redisDao.setValuesSet(ootdKey, value);
         }
 
         return false;
