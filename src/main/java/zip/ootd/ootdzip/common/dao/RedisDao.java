@@ -53,6 +53,15 @@ public class RedisDao {
         redisTemplate.delete(key);
     }
 
+    public void incrementValues(String key) {
+        ValueOperations<String, String> values = redisTemplate.opsForValue();
+        values.increment(key);
+    }
+
+    public Set<String> getKeys(String key) {
+        return redisTemplate.keys(key);
+    }
+
     public void setValuesSet(String key, String data) {
         redisTemplate.opsForSet().add(key, data);
     }
@@ -66,8 +75,19 @@ public class RedisDao {
         return values.members(key);
     }
 
+    public Boolean setExpiration(String key, Duration duration) {
+        return redisTemplate.expire(key, duration);
+    }
+
     public void deleteValuesSet(String key, String value) {
         SetOperations<String, String> values = redisTemplate.opsForSet();
         values.remove(key, value);
+    }
+
+    public void deleteAll() {
+        Set<String> keys = redisTemplate.keys("*");
+        if (keys != null && !keys.isEmpty()) {
+            redisTemplate.delete(keys);
+        }
     }
 }

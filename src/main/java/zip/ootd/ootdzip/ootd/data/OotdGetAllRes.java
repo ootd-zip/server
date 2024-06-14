@@ -43,15 +43,11 @@ public class OotdGetAllRes {
 
     private List<OotdStyleRes> styles;
 
-    public OotdGetAllRes(Ootd ootd,
-            Boolean isLike,
-            Integer viewCount,
-            Integer likeCount,
-            User loginUser) {
+    public OotdGetAllRes(Ootd ootd, User loginUser) {
 
-        this.isLike = isLike;
-        this.viewCount = viewCount;
-        this.likeCount = likeCount;
+        this.isLike = ootd.isOotdLike(loginUser);
+        this.viewCount = ootd.getViewCount();
+        this.likeCount = ootd.getLikeCount();
         this.isBookmark = ootd.isBookmark(loginUser);
         this.isFollowing = loginUser.isFollowing(ootd.getWriter());
 

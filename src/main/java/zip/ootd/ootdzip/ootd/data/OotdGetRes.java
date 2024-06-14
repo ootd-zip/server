@@ -55,17 +55,15 @@ public class OotdGetRes {
 
     private List<OotdStyleRes> styles;
 
-    public OotdGetRes(Ootd ootd,
-            Boolean isLike,
-            Integer viewCount,
-            Integer likeCount,
-            User loginUser) {
+    public OotdGetRes(Ootd ootd, User loginUser) {
 
-        this.isLike = isLike;
-        this.viewCount = viewCount;
-        this.likeCount = likeCount;
+        User writer = ootd.getWriter();
+
+        this.isLike = ootd.isOotdLike(loginUser);
+        this.viewCount = ootd.getViewCount();
+        this.likeCount = ootd.getLikeCount();
         this.isBookmark = ootd.isBookmark(loginUser);
-        this.isFollowing = loginUser.isFollowing(ootd.getWriter());
+        this.isFollowing = loginUser.isFollowing(writer);
 
         this.id = ootd.getId();
         this.reportCount = ootd.getReportCount();
@@ -73,11 +71,12 @@ public class OotdGetRes {
         this.createAt = ootd.getCreatedAt();
         this.isPrivate = ootd.isPrivate();
 
-        this.userId = ootd.getWriter().getId();
-        this.userName = ootd.getWriter().getName();
-        this.userImage = ootd.getWriter().getProfileImage();
-        this.userHeight = ootd.getWriter().getProfileHeight(loginUser);
-        this.userWeight = ootd.getWriter().getProfileWeight(loginUser);
+
+        this.userId = writer.getId();
+        this.userName = writer.getName();
+        this.userImage = writer.getProfileImage();
+        this.userHeight = writer.getProfileHeight(loginUser);
+        this.userWeight = writer.getProfileWeight(loginUser);
 
         this.styles = ootd.getStyles().stream()
                 .map(OotdStyleRes::new)
@@ -89,6 +88,7 @@ public class OotdGetRes {
     }
 
     @Data
+    @NoArgsConstructor
     static class OotdStyleRes {
 
         private Long id;
@@ -102,6 +102,7 @@ public class OotdGetRes {
     }
 
     @Data
+    @NoArgsConstructor
     static class OotdImageRes {
 
         private String ootdImage;
@@ -116,6 +117,7 @@ public class OotdGetRes {
         }
 
         @Data
+        @NoArgsConstructor
         static class OotdImageClothesRes {
 
             private BrandDto brand;

@@ -6,6 +6,7 @@ import java.util.Set;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -54,4 +55,11 @@ public interface OotdRepository extends JpaRepository<Ootd, Long>, OotdRepositor
             @Param("styles") List<Style> styles,
             @Param("userIds") Set<Long> userIds,
             Pageable pageable);
+
+    @Query("SELECT o.viewCount FROM Ootd o WHERE o.id = :ootdId")
+    Long findViewCountByOotdId(@Param("ootdId") Long ootdId);
+
+    @Modifying // 더티체크를 사용하지 않을 경우, 해당 어노테이션을 이용해 1차캐시를 비워줍니다.
+    @Query("UPDATE Ootd o SET o.viewCount = :viewCount WHERE o.id = :ootdId")
+    void updateViewCountByOotdId(@Param("ootdId") Long ootdId, @Param("viewCount") Long viewCount);
 }

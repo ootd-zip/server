@@ -119,6 +119,10 @@ public class Ootd extends BaseEntity {
         return ootd;
     }
 
+    public void increaseViewCount() {
+        this.viewCount += 1;
+    }
+
     public void updateIsPrivate(boolean isPrivate) {
         this.isPrivate = isPrivate;
     }
@@ -137,22 +141,16 @@ public class Ootd extends BaseEntity {
         this.addOotdStyles(ootdStyles);
     }
 
-    public void updateViewCount(int viewCount) {
-        this.viewCount = viewCount;
-    }
-
-    public void updateLikeCount(int likeCount) {
-        this.likeCount = likeCount;
-    }
-
     public void addLike(User user) {
         OotdLike ootdLike = getOotdLike(user).orElse(OotdLike.createOotdLikeBy(user));
         addOotdLike(ootdLike);
+        this.likeCount += 1;
     }
 
     public void cancelLike(User user) {
         OotdLike ootdLike = getOotdLike(user).orElseThrow(NoSuchElementException::new);
         deleteOotdLike(ootdLike);
+        this.likeCount -= 1;
     }
 
     public boolean isOotdLike(User user) {

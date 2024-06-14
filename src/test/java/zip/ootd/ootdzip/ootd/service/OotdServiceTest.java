@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -33,6 +34,8 @@ import zip.ootd.ootdzip.clothes.data.PurchaseStoreType;
 import zip.ootd.ootdzip.clothes.domain.Clothes;
 import zip.ootd.ootdzip.clothes.domain.ClothesColor;
 import zip.ootd.ootdzip.clothes.repository.ClothesRepository;
+import zip.ootd.ootdzip.common.constant.RedisKey;
+import zip.ootd.ootdzip.common.dao.RedisDao;
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.response.CommonPageResponse;
 import zip.ootd.ootdzip.common.response.CommonSliceResponse;
@@ -87,6 +90,14 @@ public class OotdServiceTest extends IntegrationTestSupport {
 
     @Autowired
     private OotdRepository ootdRepository;
+
+    @Autowired
+    private RedisDao redisDao;
+
+    @AfterEach
+    void tearDown() {
+        redisDao.deleteAll();
+    }
 
     @DisplayName("OOTD 게시글 저장")
     @Test
@@ -146,7 +157,7 @@ public class OotdServiceTest extends IntegrationTestSupport {
 
         assertThat(savedResult.getOotdImages().get(0).getOotdImageClothesList())
                 .hasSize(2)
-                .extracting("clothes.id", "coordinate.xRate", "coordinate.yRate", "deviceSize.deviceWidth",
+                .extracting("clothes.id", "coordinate.x", "coordinate.y", "deviceSize.deviceWidth",
                         "deviceSize.deviceHeight")
                 .containsExactlyInAnyOrder(
                         tuple(clothes.getId(), "22.33", "33.44", 100L, 50L),
@@ -233,7 +244,7 @@ public class OotdServiceTest extends IntegrationTestSupport {
 
         assertThat(savedResult.getOotdImages().get(0).getOotdImageClothesList())
                 .hasSize(2)
-                .extracting("clothes.id", "coordinate.xRate", "coordinate.yRate", "deviceSize.deviceWidth",
+                .extracting("clothes.id", "coordinate.x", "coordinate.y", "deviceSize.deviceWidth",
                         "deviceSize.deviceHeight")
                 .containsExactlyInAnyOrder(
                         tuple(clothes.getId(), "11.22", "22.33", 20L, 30L),
@@ -358,6 +369,29 @@ public class OotdServiceTest extends IntegrationTestSupport {
 
         // then
         assertThat(result.getId()).isEqualTo(ootd.getId());
+        assertThat(redisDao.getValuesSet(RedisKey.OOTD.makeKeyWith(ootd.getId())))
+                .contains(user.getId() + ""); // redis 에 저장된 유저확인
+    }
+
+    @DisplayName("ootd 를 여러번 조회한다.")
+    @Test
+    void getOotdSeveral() {
+        // given
+        User user = createUserBy("유저");
+        User user1 = createUserBy("유저1");
+        Ootd ootd = createOotdBy(user, "안녕", false);
+
+        // when & then
+        ootdService.getOotd(ootd.getId(), user);
+        assertThat(redisDao.getValuesSet(RedisKey.OOTD.makeKeyWith(ootd.getId())))
+                .contains(user.getId() + "");
+
+        ootdService.getOotd(ootd.getId(), user1);
+        assertThat(redisDao.getValuesSet(RedisKey.OOTD.makeKeyWith(ootd.getId())))
+                .contains(user.getId() + "", user1.getId() + "");
+
+        ootdService.getOotd(ootd.getId(), user);
+        assertThat(ootd.getViewCount()).isEqualTo(2);
     }
 
     @DisplayName("ootd 를 조회시 존재하는 ootd 이어야 한다.")
