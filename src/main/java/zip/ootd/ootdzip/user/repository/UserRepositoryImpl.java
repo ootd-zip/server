@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
+import zip.ootd.ootdzip.user.data.UserSearchType;
 import zip.ootd.ootdzip.user.domain.User;
 
 @Repository
@@ -26,10 +27,22 @@ public class UserRepositoryImpl extends QuerydslRepositorySupport implements Use
         this.queryFactory = queryFactory;
     }
 
-    public Page<User> searchUsers(String name, Set<Long> nonAccessibleUserIds, Pageable pageable) {
+    public Page<User> searchUsers(
+            UserSearchType searchType,
+            String name,
+            Long userId,
+            Set<Long> nonAccessibleUserIds,
+            Pageable pageable) {
+
+        BooleanExpression additionalCondition = switch (searchType) {
+            case FOLLOWER -> containUserInFollowings(userId);
+            case FOLLOWING -> containUserInFollowers(userId);
+            default -> null;
+        };
 
         List<User> findUsers = queryFactory.selectFrom(user)
                 .where(
+                        additionalCondition,
                         containName(name),
                         user.isDeleted.eq(false),
                         user.isCompleted.eq(true),
@@ -45,62 +58,13 @@ public class UserRepositoryImpl extends QuerydslRepositorySupport implements Use
 
         Long totalCount = queryFactory.select(user.count())
                 .from(user)
-                .where(containName(name),
+                .where(
+                        additionalCondition,
+                        containName(name),
                         user.isDeleted.eq(false),
                         user.isCompleted.eq(true),
-                        notInNonAccessibleUserIds(nonAccessibleUserIds))
-                .fetchOne();
-
-        return new PageImpl<>(findUsers, pageable, totalCount);
-    }
-
-    public Page<User> searchFollowers(String name, Long userId, Set<Long> nonAccessibleUserIds, Pageable pageable) {
-
-        List<User> findUsers = queryFactory.selectFrom(user)
-                .where(containUserInFollowings(userId),
-                        containName(name),
-                        user.isDeleted.eq(false),
                         notInNonAccessibleUserIds(nonAccessibleUserIds)
                 )
-                .orderBy(
-                        user.name.length().asc(),
-                        user.name.asc()
-                )
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
-
-        Long totalCount = queryFactory.select(user.count())
-                .from(user)
-                .where(containUserInFollowings(userId),
-                        containName(name),
-                        user.isDeleted.eq(false))
-                .fetchOne();
-
-        return new PageImpl<>(findUsers, pageable, totalCount);
-    }
-
-    public Page<User> searchFollowings(String name, Long userId, Set<Long> nonAccessibleUserIds, Pageable pageable) {
-
-        List<User> findUsers = queryFactory.selectFrom(user)
-                .where(containUserInFollowers(userId),
-                        containName(name),
-                        user.isDeleted.eq(false),
-                        notInNonAccessibleUserIds(nonAccessibleUserIds)
-                )
-                .orderBy(
-                        user.name.length().asc(),
-                        user.name.asc()
-                )
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
-
-        Long totalCount = queryFactory.select(user.count())
-                .from(user)
-                .where(containUserInFollowers(userId),
-                        containName(name),
-                        user.isDeleted.eq(false))
                 .fetchOne();
 
         return new PageImpl<>(findUsers, pageable, totalCount);

@@ -23,6 +23,7 @@ import zip.ootd.ootdzip.common.response.CommonPageResponse;
 import zip.ootd.ootdzip.notification.domain.NotificationType;
 import zip.ootd.ootdzip.notification.event.NotificationEvent;
 import zip.ootd.ootdzip.oauth.service.UserSocialLoginService;
+import zip.ootd.ootdzip.user.controller.response.CommonPageResponseForUserSearch;
 import zip.ootd.ootdzip.user.controller.response.ProfileRes;
 import zip.ootd.ootdzip.user.controller.response.UserInfoForMyPageRes;
 import zip.ootd.ootdzip.user.controller.response.UserSearchRes;
@@ -199,34 +200,23 @@ public class UserService {
 
     public CommonPageResponse<UserSearchRes> searchUser(UserSearchSvcReq request, User loginUser) {
 
-        Page<User> findUsers = null;
         UserSearchType userSearchType = request.getUserSearchType();
         Set<Long> nonAccessibleUserIds = userBlockRepository.getNonAccessibleUserIds(loginUser.getId());
 
-        if (userSearchType == UserSearchType.USER) {
-            findUsers = userRepository.searchUsers(request.getName(),
-                    nonAccessibleUserIds,
-                    request.getPageable());
-        } else if (userSearchType == UserSearchType.FOLLOWER) {
-            findUsers = userRepository.searchFollowers(request.getName(),
-                    request.getUserId(),
-                    nonAccessibleUserIds,
-                    request.getPageable());
-        } else if (userSearchType == UserSearchType.FOLLOWING) {
-            findUsers = userRepository.searchFollowings(request.getName(),
-                    request.getUserId(),
-                    nonAccessibleUserIds,
-                    request.getPageable());
-        } else {
-            throw new IllegalArgumentException("잘못된 검색 조건");
-        }
+        Page<User> findUsers = userRepository.searchUsers(
+                userSearchType,
+                request.getName(),
+                request.getUserId(),
+                nonAccessibleUserIds,
+                request.getPageable()
+        );
 
         List<UserSearchRes> result = findUsers.stream()
                 .map((item) -> UserSearchRes.of(item, loginUser))
                 .toList();
 
-        return new CommonPageResponse<>(result, request.getPageable(), findUsers.isLast(),
-                findUsers.getTotalElements());
+        return new CommonPageResponseForUserSearch<>(result, request.getPageable(), findUsers.isLast(),
+                findUsers.getTotalElements(), loginUser.getFollowerCount(), loginUser.getFollowingCount());
     }
 
     public List<UserStyleRes> getUserStyle(User loginUser) {

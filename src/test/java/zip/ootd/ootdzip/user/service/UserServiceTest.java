@@ -663,6 +663,7 @@ class UserServiceTest extends IntegrationTestSupport {
     private User createUserBy(String userName) {
         User user = User.getDefault();
         user.setName(userName);
+        user.setIsCompleted(true);
         return userRepository.save(user);
     }
 

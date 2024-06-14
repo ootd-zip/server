@@ -9,6 +9,7 @@ import org.springframework.data.domain.Slice;
 
 import zip.ootd.ootdzip.IntegrationTestSupport;
 import zip.ootd.ootdzip.common.request.CommonPageRequest;
+import zip.ootd.ootdzip.user.data.UserSearchType;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.service.UserService;
 
@@ -31,7 +32,8 @@ public class UserRepositoryImplTest extends IntegrationTestSupport {
         CommonPageRequest pageRequest = new CommonPageRequest();
 
         // when
-        Slice<User> results = userRepository.searchUsers("감자", null, pageRequest.toPageable());
+        Slice<User> results = userRepository.searchUsers(UserSearchType.USER, "감자",
+                null, null, pageRequest.toPageable());
 
         // then
         assertThat(results).hasSize(2)
@@ -54,7 +56,8 @@ public class UserRepositoryImplTest extends IntegrationTestSupport {
         CommonPageRequest pageRequest = new CommonPageRequest();
 
         // when
-        Slice<User> results = userRepository.searchFollowers("", user.getId(), null, pageRequest.toPageable());
+        Slice<User> results = userRepository.searchUsers(UserSearchType.FOLLOWER, "", user.getId(),
+                null, pageRequest.toPageable());
 
         // then
         assertThat(results).hasSize(2)
@@ -79,7 +82,8 @@ public class UserRepositoryImplTest extends IntegrationTestSupport {
         CommonPageRequest pageRequest = new CommonPageRequest();
 
         // when
-        Slice<User> results = userRepository.searchFollowers("감", user.getId(), null, pageRequest.toPageable());
+        Slice<User> results = userRepository.searchUsers(UserSearchType.FOLLOWER, "감",
+                user.getId(), null, pageRequest.toPageable());
 
         // then
         assertThat(results).hasSize(2)
@@ -104,7 +108,8 @@ public class UserRepositoryImplTest extends IntegrationTestSupport {
         CommonPageRequest pageRequest = new CommonPageRequest();
 
         // when
-        Slice<User> results = userRepository.searchFollowings("", user.getId(), null, pageRequest.toPageable());
+        Slice<User> results = userRepository.searchUsers(UserSearchType.FOLLOWING, "",
+                user.getId(), null, pageRequest.toPageable());
 
         // then
         assertThat(results).hasSize(3)
@@ -128,7 +133,8 @@ public class UserRepositoryImplTest extends IntegrationTestSupport {
         CommonPageRequest pageRequest = new CommonPageRequest();
 
         // when
-        Slice<User> results = userRepository.searchFollowings("감", user.getId(), null, pageRequest.toPageable());
+        Slice<User> results = userRepository.searchUsers(UserSearchType.FOLLOWING, "감",
+                user.getId(), null, pageRequest.toPageable());
 
         // then
         assertThat(results).hasSize(2)
