@@ -199,27 +199,16 @@ public class UserService {
 
     public CommonPageResponse<UserSearchRes> searchUser(UserSearchSvcReq request, User loginUser) {
 
-        Page<User> findUsers = null;
         UserSearchType userSearchType = request.getUserSearchType();
         Set<Long> nonAccessibleUserIds = userBlockRepository.getNonAccessibleUserIds(loginUser.getId());
 
-        if (userSearchType == UserSearchType.USER) {
-            findUsers = userRepository.searchUsers(request.getName(),
-                    nonAccessibleUserIds,
-                    request.getPageable());
-        } else if (userSearchType == UserSearchType.FOLLOWER) {
-            findUsers = userRepository.searchFollowers(request.getName(),
-                    request.getUserId(),
-                    nonAccessibleUserIds,
-                    request.getPageable());
-        } else if (userSearchType == UserSearchType.FOLLOWING) {
-            findUsers = userRepository.searchFollowings(request.getName(),
-                    request.getUserId(),
-                    nonAccessibleUserIds,
-                    request.getPageable());
-        } else {
-            throw new IllegalArgumentException("잘못된 검색 조건");
-        }
+        Page<User> findUsers = userRepository.searchUsers(
+                userSearchType,
+                request.getName(),
+                request.getUserId(),
+                nonAccessibleUserIds,
+                request.getPageable()
+        );
 
         List<UserSearchRes> result = findUsers.stream()
                 .map((item) -> UserSearchRes.of(item, loginUser))
