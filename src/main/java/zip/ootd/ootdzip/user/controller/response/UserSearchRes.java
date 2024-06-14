@@ -16,8 +16,6 @@ public class UserSearchRes {
     private String profileImage;
     private String name;
     private Boolean isFollow;
-    private Long followerCount;
-    private Long followingCount;
 
     public static UserSearchRes of(User user, User loginUser) {
         return UserSearchRes.builder()
@@ -25,8 +23,7 @@ public class UserSearchRes {
                 .name(user.getName())
                 .profileImage(user.getProfileImage())
                 .isFollow(loginUser.isFollowing(user))
-                .followerCount(loginUser.getFollowerCount())
-                .followingCount(loginUser.getFollowingCount())
                 .build();
     }
 }
+

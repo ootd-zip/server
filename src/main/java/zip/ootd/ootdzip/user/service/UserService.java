@@ -23,6 +23,7 @@ import zip.ootd.ootdzip.common.response.CommonPageResponse;
 import zip.ootd.ootdzip.notification.domain.NotificationType;
 import zip.ootd.ootdzip.notification.event.NotificationEvent;
 import zip.ootd.ootdzip.oauth.service.UserSocialLoginService;
+import zip.ootd.ootdzip.user.controller.response.CommonPageResponseForUserSearch;
 import zip.ootd.ootdzip.user.controller.response.ProfileRes;
 import zip.ootd.ootdzip.user.controller.response.UserInfoForMyPageRes;
 import zip.ootd.ootdzip.user.controller.response.UserSearchRes;
@@ -214,8 +215,8 @@ public class UserService {
                 .map((item) -> UserSearchRes.of(item, loginUser))
                 .toList();
 
-        return new CommonPageResponse<>(result, request.getPageable(), findUsers.isLast(),
-                findUsers.getTotalElements());
+        return new CommonPageResponseForUserSearch<>(result, request.getPageable(), findUsers.isLast(),
+                findUsers.getTotalElements(), loginUser.getFollowerCount(), loginUser.getFollowingCount());
     }
 
     public List<UserStyleRes> getUserStyle(User loginUser) {
