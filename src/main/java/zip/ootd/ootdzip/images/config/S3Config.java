@@ -1,4 +1,4 @@
-package zip.ootd.ootdzip.s3.config;
+package zip.ootd.ootdzip.images.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

@@ -34,6 +34,6 @@ public class ClothesAndOotdsForHomeRes {
         this.message = message;
         this.detailMessage = detailMessage;
         this.tagType = TagType.OOTD;
-        this.imageUrl = ootd.getOotdImages().stream().findFirst().orElse(new OotdImage()).getImageUrl();
+        this.imageUrl = ootd.getOotdImages().stream().findFirst().orElse(new OotdImage()).getOotd().getFirstImage();
     }
 }

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -16,6 +15,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import zip.ootd.ootdzip.common.entity.BaseEntity;
+import zip.ootd.ootdzip.images.domain.Images;
 import zip.ootd.ootdzip.ootd.domain.Ootd;
 import zip.ootd.ootdzip.ootdimageclothe.domain.OotdImageClothes;
 
@@ -32,8 +32,7 @@ public class OotdImage extends BaseEntity {
     @JoinColumn(name = "ootd_id", nullable = false)
     private Ootd ootd;
 
-    @Column(length = 2048)
-    private String imageUrl;
+    private Images images;
 
     @Builder.Default
     @OneToMany(mappedBy = "ootdImage", cascade = CascadeType.ALL)
@@ -43,7 +42,7 @@ public class OotdImage extends BaseEntity {
             List<OotdImageClothes> ootdImageClothesList) {
 
         OotdImage ootdImage = OotdImage.builder()
-                .imageUrl(imageUrl)
+                .images(new Images(imageUrl))
                 .build();
 
         ootdImage.addOotdImageClothesList(ootdImageClothesList);

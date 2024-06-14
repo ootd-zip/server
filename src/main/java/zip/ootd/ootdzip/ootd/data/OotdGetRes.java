@@ -71,7 +71,6 @@ public class OotdGetRes {
         this.createAt = ootd.getCreatedAt();
         this.isPrivate = ootd.isPrivate();
 
-
         this.userId = writer.getId();
         this.userName = writer.getName();
         this.userImage = writer.getProfileImage();
@@ -110,7 +109,7 @@ public class OotdGetRes {
         private List<OotdImageClothesRes> ootdImageClothesList;
 
         public OotdImageRes(OotdImage ootdImage) {
-            this.ootdImage = ootdImage.getImageUrl();
+            this.ootdImage = ootdImage.getImages().getImage173x173();
             this.ootdImageClothesList = ootdImage.getOotdImageClothesList().stream()
                     .map(OotdImageClothesRes::new)
                     .collect(Collectors.toList());

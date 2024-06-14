@@ -86,7 +86,7 @@ public class OotdGetAllRes {
         private String url;
 
         public OotdImageRes(OotdImage ootdImage) {
-            this.url = ootdImage.getImageUrl();
+            this.url = ootdImage.getImages().getImage173x173();
         }
     }
 }

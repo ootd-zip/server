@@ -52,6 +52,9 @@ dependencies {
     implementation 'commons-io:commons-io:2.6'
     implementation 'commons-fileupload:commons-fileupload:1.4'
 
+    // 이미지 리사이즈
+    implementation 'net.coobird:thumbnailator:0.4.20'
+
     // swagger 설정 추가, spring 3.x 이후에는 아래 의존성을 추가
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
 

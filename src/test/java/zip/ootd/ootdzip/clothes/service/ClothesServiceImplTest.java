@@ -80,6 +80,8 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
     @Autowired
     private EntityManager em;
 
+    private final String OOTD_IMAGE_URL = "https://ootdzip.s3.ap-northeast-2.amazonaws.com/8c00f7f4-3f47-4238-90e7-0bedfeebcae0_2024-06-14.png";
+
     @DisplayName("유저가 옷을 저장한다.")
     @Test
     void saveClothes() {
@@ -1052,7 +1054,7 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
         clothesTagReq1.setYRate("44.55");
 
         OotdPostReq.OotdImageReq ootdImageReq = new OotdPostReq.OotdImageReq();
-        ootdImageReq.setOotdImage("input_image_url");
+        ootdImageReq.setOotdImage(OOTD_IMAGE_URL);
         ootdImageReq.setClothesTags(Arrays.asList(clothesTagReq, clothesTagReq1));
 
         Style style = Style.builder().name("올드머니").build();

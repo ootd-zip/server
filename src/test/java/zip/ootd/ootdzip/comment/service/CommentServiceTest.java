@@ -358,7 +358,8 @@ public class CommentServiceTest extends IntegrationTestSupport {
                 .deviceSize(deviceSize1)
                 .build();
 
-        OotdImage ootdImage = OotdImage.createOotdImageBy("input_image_url",
+        OotdImage ootdImage = OotdImage.createOotdImageBy(
+                "https://ootdzip.s3.ap-northeast-2.amazonaws.com/8c00f7f4-3f47-4238-90e7-0bedfeebcae0_2024-06-14.png",
                 Arrays.asList(ootdImageClothes, ootdImageClothes1));
 
         Style style = Style.builder().name("올드머니").build();
@@ -403,7 +404,8 @@ public class CommentServiceTest extends IntegrationTestSupport {
         List<ClothesColor> clothesColors = ClothesColor.createClothesColorsBy(List.of(savedColor));
 
         Clothes clothes = Clothes.createClothes(user, savedBrand, "구매처" + idx, PurchaseStoreType.Write, "제품명" + idx,
-                isOpen, savedCategory, savedSize, "메모입니다" + idx, "구매일" + idx, "image" + idx + ".jpg", clothesColors);
+                isOpen, savedCategory, savedSize, "메모입니다" + idx, "구매일" + idx, "zip/ootd/ootdzip/images" + idx + ".jpg",
+                clothesColors);
 
         return clothesRepository.save(clothes);
     }
