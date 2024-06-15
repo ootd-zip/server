@@ -35,7 +35,7 @@ public class ProfileRes {
     public static ProfileRes of(User loginUser) {
         return ProfileRes.builder()
                 .name(loginUser.getName())
-                .profileImage(loginUser.getProfileImage())
+                .profileImage(loginUser.getProfileImage().getImageUrl173x173())
                 .description(loginUser.getDescription())
                 .height(loginUser.getProfileHeight(loginUser))
                 .weight(loginUser.getProfileWeight(loginUser))

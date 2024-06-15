@@ -185,8 +185,10 @@ class UserBlockServiceTest extends IntegrationTestSupport {
         assertThat(result.getContent()).hasSize(2)
                 .extracting("userId", "userName", "profileImage")
                 .containsExactlyInAnyOrder(
-                        tuple(blockedUser2.getId(), blockedUser2.getName(), blockedUser2.getProfileImage()),
-                        tuple(blockedUser3.getId(), blockedUser3.getName(), blockedUser3.getProfileImage()));
+                        tuple(blockedUser2.getId(), blockedUser2.getName(),
+                                blockedUser2.getProfileImage().getImageUrl70x70()),
+                        tuple(blockedUser3.getId(), blockedUser3.getName(),
+                                blockedUser3.getProfileImage().getImageUrl70x70()));
 
         assertThat(result.getIsLast()).isFalse();
     }

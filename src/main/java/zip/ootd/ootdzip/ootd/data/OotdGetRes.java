@@ -73,7 +73,7 @@ public class OotdGetRes {
 
         this.userId = writer.getId();
         this.userName = writer.getName();
-        this.userImage = writer.getProfileImage();
+        this.userImage = writer.getProfileImage().getImageUrl32x32();
         this.userHeight = writer.getProfileHeight(loginUser);
         this.userWeight = writer.getProfileWeight(loginUser);
 

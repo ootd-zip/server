@@ -19,7 +19,6 @@ import lombok.NoArgsConstructor;
 public class Images {
 
     @Builder.Default
-    @Column(nullable = false)
     private String imageUrl = "";
 
     @Builder.Default
@@ -30,6 +29,10 @@ public class Images {
 
     @Builder.Default
     private String imageUrl32x32 = "";
+
+    public static Images defaultImage() {
+        return Images.builder().build();
+    }
 
     public static Images of(String imageUrl) {
         return Images.builder()

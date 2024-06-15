@@ -50,6 +50,8 @@ class UserServiceTest extends IntegrationTestSupport {
     @Autowired
     private EntityManager em;
 
+    private String USER_IMAGE = "https://ootdzip.com/0459a64c-89d9-4c63_2024-03-27.png";
+
     @DisplayName("userId로 마이페이지에서 사용하는 유저 정보를 조회한다.")
     @Test
     void getUserInfoForMyPage() {
@@ -80,7 +82,7 @@ class UserServiceTest extends IntegrationTestSupport {
                         "clothesCount")
                 .contains(user1.getId(),
                         user1.getName(),
-                        user1.getProfileImage(),
+                        user1.getProfileImage().getImageUrl173x173(),
                         user1.getFollowerCount(),
                         user1.getFollowingCount(),
                         user1.getProfileHeight(loginUser),
@@ -121,7 +123,7 @@ class UserServiceTest extends IntegrationTestSupport {
                         "clothesCount")
                 .contains(loginUser.getId(),
                         loginUser.getName(),
-                        loginUser.getProfileImage(),
+                        loginUser.getProfileImage().getImageUrl173x173(),
                         loginUser.getFollowerCount(),
                         loginUser.getFollowingCount(),
                         loginUser.getProfileHeight(loginUser),
@@ -164,7 +166,7 @@ class UserServiceTest extends IntegrationTestSupport {
                         "clothesCount")
                 .contains(user1.getId(),
                         user1.getName(),
-                        user1.getProfileImage(),
+                        user1.getProfileImage().getImageUrl173x173(),
                         user1.getFollowerCount(),
                         user1.getFollowingCount(),
                         user1.getProfileHeight(loginUser),
@@ -232,7 +234,7 @@ class UserServiceTest extends IntegrationTestSupport {
                         "weight",
                         "isBodyPrivate")
                 .contains(user.getName(),
-                        user.getProfileImage(),
+                        user.getProfileImage().getImageUrl173x173(),
                         user.getDescription(),
                         user.getHeight(),
                         user.getWeight(),
@@ -358,7 +360,7 @@ class UserServiceTest extends IntegrationTestSupport {
         User user = createDefaultUser();
         ProfileSvcReq request = ProfileSvcReq.builder()
                 .name("유저1")
-                .profileImage("image.jpg")
+                .profileImage(USER_IMAGE)
                 .description("소개")
                 .height(180)
                 .weight(80)
@@ -373,13 +375,13 @@ class UserServiceTest extends IntegrationTestSupport {
 
         assertThat(updatedUser)
                 .extracting("name",
-                        "profileImage",
+                        "profileImage.imageUrl",
                         "description",
                         "height",
                         "weight",
                         "isBodyPrivate")
                 .contains("유저1",
-                        "image.jpg",
+                        USER_IMAGE,
                         "소개",
                         180,
                         80,

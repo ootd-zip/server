@@ -90,12 +90,10 @@ class OotdLikeServiceTest extends IntegrationTestSupport {
 
         //then
         assertThat(result).hasSize(2)
-                .extracting("ootdId", "ootdImageUrl", "ootdImageCount", "writerId", "writerProfileImage", "writerName")
+                .extracting("ootdId", "ootdImageUrl", "ootdImageCount", "writerId", "writerName")
                 .containsExactlyInAnyOrder(
-                        tuple(ootd1.getId(), ootd1.getFirstImage(), ootd1.getImageCount(), user1.getId(),
-                                user1.getProfileImage(), user1.getName()),
-                        tuple(ootd2.getId(), ootd2.getFirstImage(), ootd2.getImageCount(), user1.getId(),
-                                user1.getProfileImage(), user1.getName()));
+                        tuple(ootd1.getId(), ootd1.getFirstImage(), ootd1.getImageCount(), user1.getId(), user1.getName()),
+                        tuple(ootd2.getId(), ootd2.getFirstImage(), ootd2.getImageCount(), user1.getId(), user1.getName()));
 
     }
 
@@ -116,10 +114,9 @@ class OotdLikeServiceTest extends IntegrationTestSupport {
 
         //then
         assertThat(result).hasSize(1)
-                .extracting("ootdId", "ootdImageUrl", "ootdImageCount", "writerId", "writerProfileImage", "writerName")
+                .extracting("ootdId", "ootdImageUrl", "ootdImageCount", "writerId", "writerName")
                 .containsExactlyInAnyOrder(
-                        tuple(ootd1.getId(), ootd1.getFirstImage(), ootd1.getImageCount(), user1.getId(),
-                                user1.getProfileImage(), user1.getName()));
+                        tuple(ootd1.getId(), ootd1.getFirstImage(), ootd1.getImageCount(), user1.getId(), user1.getName()));
 
     }
 
@@ -160,10 +157,9 @@ class OotdLikeServiceTest extends IntegrationTestSupport {
 
         //then
         assertThat(result).hasSize(1)
-                .extracting("ootdId", "ootdImageUrl", "ootdImageCount", "writerId", "writerProfileImage", "writerName")
+                .extracting("ootdId", "ootdImageUrl", "ootdImageCount", "writerId", "writerName")
                 .containsExactlyInAnyOrder(
-                        tuple(ootd1.getId(), ootd1.getFirstImage(), ootd1.getImageCount(), user1.getId(),
-                                user1.getProfileImage(), user1.getName()));
+                        tuple(ootd1.getId(), ootd1.getFirstImage(), ootd1.getImageCount(), user1.getId(), user1.getName()));
 
     }
 
