@@ -92,8 +92,10 @@ class OotdLikeServiceTest extends IntegrationTestSupport {
         assertThat(result).hasSize(2)
                 .extracting("ootdId", "ootdImageUrl", "ootdImageCount", "writerId", "writerName")
                 .containsExactlyInAnyOrder(
-                        tuple(ootd1.getId(), ootd1.getFirstImage(), ootd1.getImageCount(), user1.getId(), user1.getName()),
-                        tuple(ootd2.getId(), ootd2.getFirstImage(), ootd2.getImageCount(), user1.getId(), user1.getName()));
+                        tuple(ootd1.getId(), ootd1.getFirstImage(), ootd1.getImageCount(), user1.getId(),
+                                user1.getName()),
+                        tuple(ootd2.getId(), ootd2.getFirstImage(), ootd2.getImageCount(), user1.getId(),
+                                user1.getName()));
 
     }
 
@@ -116,7 +118,8 @@ class OotdLikeServiceTest extends IntegrationTestSupport {
         assertThat(result).hasSize(1)
                 .extracting("ootdId", "ootdImageUrl", "ootdImageCount", "writerId", "writerName")
                 .containsExactlyInAnyOrder(
-                        tuple(ootd1.getId(), ootd1.getFirstImage(), ootd1.getImageCount(), user1.getId(), user1.getName()));
+                        tuple(ootd1.getId(), ootd1.getFirstImage(), ootd1.getImageCount(), user1.getId(),
+                                user1.getName()));
 
     }
 
@@ -159,7 +162,8 @@ class OotdLikeServiceTest extends IntegrationTestSupport {
         assertThat(result).hasSize(1)
                 .extracting("ootdId", "ootdImageUrl", "ootdImageCount", "writerId", "writerName")
                 .containsExactlyInAnyOrder(
-                        tuple(ootd1.getId(), ootd1.getFirstImage(), ootd1.getImageCount(), user1.getId(), user1.getName()));
+                        tuple(ootd1.getId(), ootd1.getFirstImage(), ootd1.getImageCount(), user1.getId(),
+                                user1.getName()));
 
     }
 
@@ -230,7 +234,8 @@ class OotdLikeServiceTest extends IntegrationTestSupport {
         List<ClothesColor> clothesColors = ClothesColor.createClothesColorsBy(List.of(savedColor));
 
         Clothes clothes = Clothes.createClothes(user, savedBrand, "구매처" + idx, PurchaseStoreType.Write, "제품명" + idx,
-                isOpen, savedCategory, savedSize, "메모입니다" + idx, "구매일" + idx, "https://ootdzip.com/8c00f7f4-3f47-4238-2024-06-15.png" + idx + ".jpg", clothesColors);
+                isOpen, savedCategory, savedSize, "메모입니다" + idx, "구매일" + idx,
+                "https://ootdzip.com/8c00f7f4-3f47-4238-2024-06-15.png" + idx + ".jpg", clothesColors);
 
         return clothesRepository.save(clothes);
     }

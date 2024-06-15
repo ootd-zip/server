@@ -80,9 +80,9 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
     @Autowired
     private EntityManager em;
 
-    private final String OOTD_IMAGE_URL = "https://ootdzip.com/8c00f7f4-3f47-4238-2024-06-14.png";
+    private static final String OOTD_IMAGE_URL = "https://ootdzip.com/8c00f7f4-3f47-4238-2024-06-14.png";
 
-    private final String CLOTHES_IMAGE_URL = "https://ootdzip.com/8c00f7f4-3f47-4238-2024-06-15.png";
+    private static final String CLOTHES_IMAGE_URL = "https://ootdzip.com/8c00f7f4-3f47-4238-2024-06-15.png";
 
     @DisplayName("유저가 옷을 저장한다.")
     @Test
@@ -579,8 +579,10 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
                 .extracting("id", "name", "userName", "isPrivate", "memo", "purchaseStore", "purchaseDate", "imageUrl",
                         "purchaseStoreType")
                 .containsExactlyInAnyOrder(
-                        tuple(clothes1.getId(), "제품명1", "유저1", false, "메모입니다1", "구매처1", "구매일1", CLOTHES_IMAGE_URL, Write),
-                        tuple(clothes2.getId(), "제품명2", "유저1", false, "메모입니다2", "구매처2", "구매일2", CLOTHES_IMAGE_URL, Write));
+                        tuple(clothes1.getId(), "제품명1", "유저1", false, "메모입니다1", "구매처1", "구매일1", CLOTHES_IMAGE_URL,
+                                Write),
+                        tuple(clothes2.getId(), "제품명2", "유저1", false, "메모입니다2", "구매처2", "구매일2", CLOTHES_IMAGE_URL,
+                                Write));
 
     }
 
@@ -606,7 +608,8 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
                 .extracting("id", "name", "userName", "isPrivate", "memo", "purchaseStore", "purchaseDate", "imageUrl",
                         "purchaseStoreType")
                 .containsExactlyInAnyOrder(
-                        tuple(clothes2.getId(), "제품명2", "유저1", false, "메모입니다2", "구매처2", "구매일2", CLOTHES_IMAGE_URL, Write));
+                        tuple(clothes2.getId(), "제품명2", "유저1", false, "메모입니다2", "구매처2", "구매일2", CLOTHES_IMAGE_URL,
+                                Write));
 
     }
 

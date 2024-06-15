@@ -94,9 +94,9 @@ public class OotdServiceTest extends IntegrationTestSupport {
     @Autowired
     private RedisDao redisDao;
 
-    private final String OOTD_IMAGE_URL = "https://ootdzip.com/8c00f7f4-3f47-4238-2024-06-14.png";
+    private static final String OOTD_IMAGE_URL = "https://ootdzip.com/8c00f7f4-3f47-4238-2024-06-14.png";
 
-    private final String OOTD_IMAGE_URL1 = "https://ootdzip/0459a64c-89d9-4c63-be21_2024-03-27.png";
+    private static final String OOTD_IMAGE_URL1 = "https://ootdzip/0459a64c-89d9-4c63-be21_2024-03-27.png";
 
     @AfterEach
     void tearDown() {
@@ -856,7 +856,8 @@ public class OotdServiceTest extends IntegrationTestSupport {
         List<ClothesColor> clothesColors = ClothesColor.createClothesColorsBy(List.of(savedColor));
 
         Clothes clothes = Clothes.createClothes(user, savedBrand, "구매처" + idx, PurchaseStoreType.Write, "제품명" + idx,
-                isOpen, savedCategory, savedSize, "메모입니다" + idx, "구매일" + idx, "https://ootdzip.com/8c00f7f4-3f47-4238-2024-06-15.png" + idx + ".jpg", clothesColors);
+                isOpen, savedCategory, savedSize, "메모입니다" + idx, "구매일" + idx,
+                "https://ootdzip.com/8c00f7f4-3f47-4238-2024-06-15.png" + idx + ".jpg", clothesColors);
 
         return clothesRepository.save(clothes);
     }
