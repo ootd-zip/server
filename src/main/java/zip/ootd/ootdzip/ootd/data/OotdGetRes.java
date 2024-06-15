@@ -141,7 +141,7 @@ public class OotdGetRes {
                 Clothes clothes = ootdImageClothes.getClothes();
                 this.clothesId = clothes.getId();
                 this.clothesName = clothes.getName();
-                this.clothesImage = clothes.getImageUrl();
+                this.clothesImage = clothes.getImageUrl().getImageUrl70x70();
                 this.brand = BrandDto.of(clothes.getBrand());
                 this.category = DetailCategory.builder()
                         .id(clothes.getCategory().getId())

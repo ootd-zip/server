@@ -27,7 +27,7 @@ public class SameClothesDifferentFeelRes {
     public SameClothesDifferentFeelRes(Clothes clothes, List<Ootd> ootds) {
         this.clothesId = clothes.getId();
         this.clothesName = clothes.getName();
-        this.clothesImageUrl = clothes.getImageUrl();
+        this.clothesImageUrl = clothes.getImageUrl().getImageUrl70x70();
         this.clothesCategory = CategoryForSameClothesDifferentFeelRes.of(clothes.getCategory());
         this.clothesColors = ColorForSameClothesDifferentFeelRes.of(clothes.getClothesColors());
         this.ootds = OotdImageForSameClothesDifferentFeelRes.of(ootds);
