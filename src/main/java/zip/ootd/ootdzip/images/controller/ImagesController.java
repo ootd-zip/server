@@ -20,14 +20,16 @@ import zip.ootd.ootdzip.images.service.ImagesService;
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "Images 컨트롤러", description = "이미지를 저장할때 호출합니다")
-@RequestMapping("/api/v1/images")
+@RequestMapping("/api/v1")
 @Slf4j
 public class ImagesController {
 
     private final ImagesService imagesService;
 
+    // 일단 구글 등록되기전에 이전 api 로 이미지 저장하기로함
     @Operation(summary = "s3 이미지 저장", description = "사용자가 올릴 이미지를 s3에 저장후 해당 url 을 반환 합니다.")
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/s3/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiResponse<ImagesRes> saveS3Image(@ModelAttribute ImagesReq request) {
         List<String> images = imagesService.getUrls(request);
         ImagesRes imagesRes = new ImagesRes(images);
