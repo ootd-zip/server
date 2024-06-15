@@ -13,16 +13,20 @@ public class BrandDto {
 
     private String name;
 
+    private String engName;
+
     @Builder
-    private BrandDto(Long id, String name) {
+    private BrandDto(Long id, String name, String engName) {
         this.id = id;
         this.name = name;
+        this.engName = engName;
     }
 
     public static BrandDto of(Brand brand) {
         return BrandDto.builder()
                 .id(brand.getId())
                 .name(brand.getName())
+                .engName(brand.getEngName())
                 .build();
     }
 }
