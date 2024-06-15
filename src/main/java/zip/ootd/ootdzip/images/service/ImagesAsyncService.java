@@ -2,6 +2,7 @@ package zip.ootd.ootdzip.images.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
@@ -38,6 +39,7 @@ public class ImagesAsyncService {
     public void upload(MultipartFile multipartFile, String fileName) {
 
         File localFile = convertToFile(multipartFile, fileName);
+        checkFile(localFile);
 
         try {
             // 원본 업로드
@@ -71,6 +73,21 @@ public class ImagesAsyncService {
             return tempFile;
         } catch (IOException e) {
             throw new CustomException(ErrorCode.IMAGE_CONVERT_ERROR);
+        }
+    }
+
+    private void checkFile(File file) {
+
+        String type;
+
+        try {
+            type = Files.probeContentType(file.toPath());
+        } catch (IOException e) {
+            throw new CustomException(ErrorCode.INVALID_IMAGE_URL);
+        }
+
+        if (!type.startsWith("image")) {
+            throw new CustomException(ErrorCode.INVALID_IMAGE_URL);
         }
     }
 
