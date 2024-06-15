@@ -109,7 +109,7 @@ public class OotdGetRes {
         private List<OotdImageClothesRes> ootdImageClothesList;
 
         public OotdImageRes(OotdImage ootdImage) {
-            this.ootdImage = ootdImage.getImages().getImage173x173();
+            this.ootdImage = ootdImage.getImages().getImageUrl173x173();
             this.ootdImageClothesList = ootdImage.getOotdImageClothesList().stream()
                     .map(OotdImageClothesRes::new)
                     .collect(Collectors.toList());

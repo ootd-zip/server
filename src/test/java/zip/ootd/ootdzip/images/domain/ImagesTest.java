@@ -18,11 +18,11 @@ public class ImagesTest {
         Images images = Images.of(url);
 
         // then
-        assertThat(images.getImage173x173())
+        assertThat(images.getImageUrl173x173())
                 .isEqualTo("https://ootdzip.com/8c00f7f4-3f47-4238-2024-06-14_173x173.png");
-        assertThat(images.getImage70x70())
+        assertThat(images.getImageUrl70x70())
                 .isEqualTo("https://ootdzip.com/8c00f7f4-3f47-4238-2024-06-14_70x70.png");
-        assertThat(images.getImage32x32())
+        assertThat(images.getImageUrl32x32())
                 .isEqualTo("https://ootdzip.com/8c00f7f4-3f47-4238-2024-06-14_32x32.png");
     }
 }

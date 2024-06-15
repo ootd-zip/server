@@ -12,31 +12,31 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Embeddable
-@Getter
 @Builder
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Images {
 
     @Builder.Default
     @Column(nullable = false)
-    private String image = "";
+    private String imageUrl = "";
 
     @Builder.Default
-    private String image173x173 = "";
+    private String imageUrl173x173 = "";
 
     @Builder.Default
-    private String image70x70 = "";
+    private String imageUrl70x70 = "";
 
     @Builder.Default
-    private String image32x32 = "";
+    private String imageUrl32x32 = "";
 
-    public static Images of(String image) {
+    public static Images of(String imageUrl) {
         return Images.builder()
-                .image(image)
-                .image173x173(makeThumbnailUrl(image, 173, 173))
-                .image70x70(makeThumbnailUrl(image, 70, 70))
-                .image32x32(makeThumbnailUrl(image, 32, 32))
+                .imageUrl(imageUrl)
+                .imageUrl173x173(makeThumbnailUrl(imageUrl, 173, 173))
+                .imageUrl70x70(makeThumbnailUrl(imageUrl, 70, 70))
+                .imageUrl32x32(makeThumbnailUrl(imageUrl, 32, 32))
                 .build();
     }
 
@@ -56,5 +56,31 @@ public class Images {
         String extension = matcher.group(3);
 
         return baseUrl + fileName + extension;
+    }
+
+    // 썸네일 이미지 없을 경우 원본 이미지 반환 //
+
+    public String getImageUrl173x173() {
+        if (imageUrl173x173.isBlank()) {
+            return imageUrl;
+        }
+
+        return imageUrl173x173;
+    }
+
+    public String getImageUrl70x70() {
+        if (imageUrl70x70.isBlank()) {
+            return imageUrl;
+        }
+
+        return imageUrl70x70;
+    }
+
+    public String getImageUrl32x32() {
+        if (imageUrl32x32.isBlank()) {
+            return imageUrl;
+        }
+
+        return imageUrl32x32;
     }
 }
