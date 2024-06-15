@@ -29,7 +29,6 @@ public class ImagesController {
     @Operation(summary = "s3 이미지 저장", description = "사용자가 올릴 이미지를 s3에 저장후 해당 url 을 반환 합니다.")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiResponse<ImagesRes> saveS3Image(@ModelAttribute ImagesReq request) {
-        //imagesService.saveImagesToS3(request);
         List<String> images = imagesService.getUrls(request);
         ImagesRes imagesRes = new ImagesRes(images);
 
