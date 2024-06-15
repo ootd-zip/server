@@ -95,13 +95,66 @@ class BrandServiceTest extends IntegrationTestSupport {
                 .contains("브랜드1");
     }
 
+    @DisplayName("영문명으로 브랜드를 조회한다")
+    @Test
+    void getBrandWithEngName() {
+        // given
+        Brand brand = createBrandBy("나이키", "NIKE");
+        Brand brand2 = createBrandBy("브랜드", "brand");
+        BrandSearchSvcReq request = BrandSearchSvcReq.builder()
+                .name("NIKE")
+                .build();
+
+        // when
+        List<BrandDto> result = brandService.getBrands(request);
+        //then
+        assertThat(result).hasSize(1)
+                .extracting("name", "engName")
+                .containsExactlyInAnyOrder(tuple(brand.getName(), brand.getEngName()));
+    }
+
+    @DisplayName("대소문자 구분없이 영문명으로 브랜드를 조회한다")
+    @Test
+    void getBrandWithCaseEngName() {
+        // given
+        Brand brand = createBrandBy("나이키", "NIKE");
+        Brand brand2 = createBrandBy("브랜드", "brand");
+        BrandSearchSvcReq request = BrandSearchSvcReq.builder()
+                .name("Nike")
+                .build();
+
+        BrandSearchSvcReq request2 = BrandSearchSvcReq.builder()
+                .name("nike")
+                .build();
+
+        BrandSearchSvcReq request3 = BrandSearchSvcReq.builder()
+                .name("NIKE")
+                .build();
+
+        // when
+        List<BrandDto> result = brandService.getBrands(request);
+        List<BrandDto> result2 = brandService.getBrands(request2);
+        List<BrandDto> result3 = brandService.getBrands(request3);
+        //then
+        assertThat(result).hasSize(1)
+                .extracting("name", "engName")
+                .containsExactlyInAnyOrder(tuple(brand.getName(), brand.getEngName()));
+        assertThat(result2).hasSize(1)
+                .extracting("name", "engName")
+                .containsExactlyInAnyOrder(tuple(brand.getName(), brand.getEngName()));
+        assertThat(result3).hasSize(1)
+                .extracting("name", "engName")
+                .containsExactlyInAnyOrder(tuple(brand.getName(), brand.getEngName()));
+
+    }
+
     @DisplayName("유저가 등록한 옷의 브랜드를 조회한다.")
     @Test
     void getUserBrands() {
         // given
         User user = createUserBy("유저1");
-        Brand brand1 = createBrandBy("브랜드1");
-        Brand brand2 = createBrandBy("브랜드2");
+        Brand brand1 = createBrandBy("브랜드1", "brand1");
+        Brand brand2 = createBrandBy("브랜드2", "brand2");
         createClothesBy(user, brand1, false, "1");
         createClothesBy(user, brand1, false, "1");
         createClothesBy(user, brand2, false, "1");
@@ -121,9 +174,9 @@ class BrandServiceTest extends IntegrationTestSupport {
     void getUserBrandsWithDifferentUser() {
         // given
         User user = createUserBy("유저1");
-        Brand brand1 = createBrandBy("브랜드1");
-        Brand brand2 = createBrandBy("브랜드2");
-        Brand brand3 = createBrandBy("브랜드3");
+        Brand brand1 = createBrandBy("브랜드1", "brand1");
+        Brand brand2 = createBrandBy("브랜드2", "brand2");
+        Brand brand3 = createBrandBy("브랜드3", "brand3");
         createClothesBy(user, brand1, false, "1");
         createClothesBy(user, brand1, false, "2");
         createClothesBy(user, brand2, true, "3");
@@ -144,8 +197,8 @@ class BrandServiceTest extends IntegrationTestSupport {
     void getUserBrandsWithDeletedUser() {
         // given
         User user = createUserBy("유저1", true);
-        Brand brand1 = createBrandBy("브랜드1");
-        Brand brand2 = createBrandBy("브랜드2");
+        Brand brand1 = createBrandBy("브랜드1", "brand1");
+        Brand brand2 = createBrandBy("브랜드2", "brand2");
         createClothesBy(user, brand1, false, "1");
         createClothesBy(user, brand1, false, "1");
         createClothesBy(user, brand2, false, "1");
@@ -196,8 +249,11 @@ class BrandServiceTest extends IntegrationTestSupport {
         return userRepository.save(user);
     }
 
-    private Brand createBrandBy(String brandName) {
-        Brand brand = Brand.builder().name(brandName).build();
+    private Brand createBrandBy(String brandName, String brandEngName) {
+        Brand brand = Brand.builder()
+                .name(brandName)
+                .engName(brandEngName)
+                .build();
         return brandRepository.save(brand);
     }
 

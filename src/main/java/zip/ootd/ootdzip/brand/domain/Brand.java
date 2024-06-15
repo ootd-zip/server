@@ -17,4 +17,6 @@ import zip.ootd.ootdzip.common.entity.BaseEntity;
 public class Brand extends BaseEntity {
 
     private String name;
+
+    private String engName;
 }
