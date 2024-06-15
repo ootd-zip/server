@@ -32,7 +32,7 @@ public class ImagesAsyncService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    private final String FILE_EXTENSION = ".png";
+    private static final String FILE_EXTENSION = ".png";
 
     @Async
     public void upload(MultipartFile multipartFile, String fileName) {

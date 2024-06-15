@@ -23,7 +23,7 @@ public class ImagesService {
     @Value("${cloud.aws.s3.url.prefix}")
     private String urlPrefix;
 
-    private final String FILE_EXTENSION = ".png";
+    private static final String FILE_EXTENSION = ".png";
 
     /**
      * 프론트에는 사진 url 을 만들어서 먼저 반환해줍니다.(실제로 이미지가 저장되지 않은상태)
