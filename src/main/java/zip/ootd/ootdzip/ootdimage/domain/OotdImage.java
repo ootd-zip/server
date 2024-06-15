@@ -42,7 +42,7 @@ public class OotdImage extends BaseEntity {
             List<OotdImageClothes> ootdImageClothesList) {
 
         OotdImage ootdImage = OotdImage.builder()
-                .images(new Images(imageUrl))
+                .images(Images.of(imageUrl))
                 .build();
 
         ootdImage.addOotdImageClothesList(ootdImageClothesList);

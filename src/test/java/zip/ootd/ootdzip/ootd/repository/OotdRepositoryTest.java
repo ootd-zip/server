@@ -455,7 +455,7 @@ public class OotdRepositoryTest extends IntegrationTestSupport {
                 .build();
 
         OotdImage ootdImage = OotdImage.createOotdImageBy(
-                "https://ootdzip.s3.ap-northeast-2.amazonaws.com/8c00f7f4-3f47-4238-90e7-0bedfeebcae0_2024-06-14.png",
+                "https://ootdzip.com/8c00f7f4-3f47-4238-2024-06-14.png",
                 Arrays.asList(ootdImageClothes, ootdImageClothes1));
 
         Style style = Style.builder().name("올드머니").build();
@@ -491,7 +491,7 @@ public class OotdRepositoryTest extends IntegrationTestSupport {
         }
 
         OotdImage ootdImage = OotdImage.createOotdImageBy(
-                "https://ootdzip.s3.ap-northeast-2.amazonaws.com/8c00f7f4-3f47-4238-90e7-0bedfeebcae0_2024-06-14.png",
+                "https://ootdzip.com/8c00f7f4-3f47-4238-2024-06-14.png",
                 ootdImageClothes);
 
         List<OotdStyle> ootdStyles = new ArrayList<>();
@@ -561,7 +561,7 @@ public class OotdRepositoryTest extends IntegrationTestSupport {
                 .build();
 
         OotdImage ootdImage = OotdImage.createOotdImageBy(
-                "https://ootdzip.s3.ap-northeast-2.amazonaws.com/8c00f7f4-3f47-4238-90e7-0bedfeebcae0_2024-06-14.png",
+                "https://ootdzip.com/8c00f7f4-3f47-4238-2024-06-14.png",
                 Arrays.asList(ootdImageClothes, ootdImageClothes1));
 
         List<OotdStyle> ootdStyles = OotdStyle.createOotdStylesBy(styles);

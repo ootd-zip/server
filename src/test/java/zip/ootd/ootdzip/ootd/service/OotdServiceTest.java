@@ -94,9 +94,9 @@ public class OotdServiceTest extends IntegrationTestSupport {
     @Autowired
     private RedisDao redisDao;
 
-    private final String OOTD_IMAGE_URL = "https://ootdzip.s3.ap-northeast-2.amazonaws.com/8c00f7f4-3f47-4238-90e7-0bedfeebcae0_2024-06-14.png";
+    private final String OOTD_IMAGE_URL = "https://ootdzip.com/8c00f7f4-3f47-4238-2024-06-14.png";
 
-    private final String OOTD_IMAGE_URL1 = "https://ootdzip.s3.ap-northeast-2.amazonaws.com/0459a64c-89d9-4c63-be21-1cd9f0f4115a_2024-03-27.png";
+    private final String OOTD_IMAGE_URL1 = "https://ootdzip/0459a64c-89d9-4c63-be21_2024-03-27.png";
 
     @AfterEach
     void tearDown() {

@@ -116,7 +116,7 @@ public class QueryDslExample extends IntegrationTestSupport {
         }
 
         OotdImage ootdImage = OotdImage.createOotdImageBy(
-                "https://ootdzip.s3.ap-northeast-2.amazonaws.com/8c00f7f4-3f47-4238-90e7-0bedfeebcae0_2024-06-14.png",
+                "https://ootdzip.com/8c00f7f4-3f47-4238-2024-06-14.png",
                 ootdImageClothes);
 
         List<OotdStyle> ootdStyles = new ArrayList<>();

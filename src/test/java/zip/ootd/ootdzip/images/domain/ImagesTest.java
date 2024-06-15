@@ -12,20 +12,17 @@ public class ImagesTest {
     void makeImageUrl() {
 
         // given
-        String url = "https://ootdzip.s3.ap-northeast-2.amazonaws.com/8c00f7f4-3f47-4238-90e7-0bedfeebcae0_2024-06-14.png";
+        String url = "https://ootdzip.com/8c00f7f4-3f47-4238-2024-06-14.png";
 
         // when
-        Images images = new Images(url);
+        Images images = Images.of(url);
 
         // then
         assertThat(images.getImage173x173())
-                .isEqualTo(
-                        "https://ootdzip.s3.ap-northeast-2.amazonaws.com/8c00f7f4-3f47-4238-90e7-0bedfeebcae0_2024-06-14_173x173.png");
+                .isEqualTo("https://ootdzip.com/8c00f7f4-3f47-4238-2024-06-14_173x173.png");
         assertThat(images.getImage70x70())
-                .isEqualTo(
-                        "https://ootdzip.s3.ap-northeast-2.amazonaws.com/8c00f7f4-3f47-4238-90e7-0bedfeebcae0_2024-06-14_70x70.png");
+                .isEqualTo("https://ootdzip.com/8c00f7f4-3f47-4238-2024-06-14_70x70.png");
         assertThat(images.getImage32x32())
-                .isEqualTo(
-                        "https://ootdzip.s3.ap-northeast-2.amazonaws.com/8c00f7f4-3f47-4238-90e7-0bedfeebcae0_2024-06-14_32x32.png");
+                .isEqualTo("https://ootdzip.com/8c00f7f4-3f47-4238-2024-06-14_32x32.png");
     }
 }
