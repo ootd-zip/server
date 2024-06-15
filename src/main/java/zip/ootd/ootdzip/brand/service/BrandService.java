@@ -41,7 +41,8 @@ public class BrandService {
     }
 
     public List<BrandDto> getBrands(BrandSearchSvcReq request) {
-        List<Brand> brands = brandRepository.findByNameStartsWith(request.getName(),
+        List<Brand> brands = brandRepository.findByNameStartsWithOrEngNameStartsWith(request.getName(),
+                request.getName().toUpperCase(),
                 Sort.by(Sort.Direction.ASC, "name"));
 
         return brands
