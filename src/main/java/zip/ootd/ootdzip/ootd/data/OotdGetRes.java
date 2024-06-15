@@ -73,7 +73,7 @@ public class OotdGetRes {
 
         this.userId = writer.getId();
         this.userName = writer.getName();
-        this.userImage = writer.getProfileImage().getImageUrl32x32();
+        this.userImage = writer.getProfileImage().getImageUrlSmall();
         this.userHeight = writer.getProfileHeight(loginUser);
         this.userWeight = writer.getProfileWeight(loginUser);
 
@@ -109,7 +109,7 @@ public class OotdGetRes {
         private List<OotdImageClothesRes> ootdImageClothesList;
 
         public OotdImageRes(OotdImage ootdImage) {
-            this.ootdImage = ootdImage.getImages().getImageUrl173x173();
+            this.ootdImage = ootdImage.getImages().getImageUrlBig();
             this.ootdImageClothesList = ootdImage.getOotdImageClothesList().stream()
                     .map(OotdImageClothesRes::new)
                     .collect(Collectors.toList());
@@ -141,7 +141,7 @@ public class OotdGetRes {
                 Clothes clothes = ootdImageClothes.getClothes();
                 this.clothesId = clothes.getId();
                 this.clothesName = clothes.getName();
-                this.clothesImage = clothes.getImageUrl().getImageUrl70x70();
+                this.clothesImage = clothes.getImageUrl().getImageUrlMedium();
                 this.brand = BrandDto.of(clothes.getBrand());
                 this.category = DetailCategory.builder()
                         .id(clothes.getCategory().getId())

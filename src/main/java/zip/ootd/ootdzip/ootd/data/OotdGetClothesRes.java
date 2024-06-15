@@ -14,7 +14,7 @@ public class OotdGetClothesRes {
 
     public OotdGetClothesRes(OotdImage ootdImage) {
         this.id = ootdImage.getOotd().getId();
-        this.image = ootdImage.getImages().getImageUrl173x173();
+        this.image = ootdImage.getImages().getImageUrlBig();
         this.imageCount = ootdImage.getOotd().getImageCount();
     }
 }

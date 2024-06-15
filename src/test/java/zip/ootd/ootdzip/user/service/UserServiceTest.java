@@ -82,7 +82,7 @@ class UserServiceTest extends IntegrationTestSupport {
                         "clothesCount")
                 .contains(user1.getId(),
                         user1.getName(),
-                        user1.getProfileImage().getImageUrl173x173(),
+                        user1.getProfileImage().getImageUrlBig(),
                         user1.getFollowerCount(),
                         user1.getFollowingCount(),
                         user1.getProfileHeight(loginUser),
@@ -123,7 +123,7 @@ class UserServiceTest extends IntegrationTestSupport {
                         "clothesCount")
                 .contains(loginUser.getId(),
                         loginUser.getName(),
-                        loginUser.getProfileImage().getImageUrl173x173(),
+                        loginUser.getProfileImage().getImageUrlBig(),
                         loginUser.getFollowerCount(),
                         loginUser.getFollowingCount(),
                         loginUser.getProfileHeight(loginUser),
@@ -166,7 +166,7 @@ class UserServiceTest extends IntegrationTestSupport {
                         "clothesCount")
                 .contains(user1.getId(),
                         user1.getName(),
-                        user1.getProfileImage().getImageUrl173x173(),
+                        user1.getProfileImage().getImageUrlBig(),
                         user1.getFollowerCount(),
                         user1.getFollowingCount(),
                         user1.getProfileHeight(loginUser),
@@ -234,7 +234,7 @@ class UserServiceTest extends IntegrationTestSupport {
                         "weight",
                         "isBodyPrivate")
                 .contains(user.getName(),
-                        user.getProfileImage().getImageUrl173x173(),
+                        user.getProfileImage().getImageUrlBig(),
                         user.getDescription(),
                         user.getHeight(),
                         user.getWeight(),

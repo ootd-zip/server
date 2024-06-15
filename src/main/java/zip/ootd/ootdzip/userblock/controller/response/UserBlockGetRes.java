@@ -23,7 +23,7 @@ public class UserBlockGetRes {
                 .id(userBlock.getId())
                 .userId(userBlock.getBlockedUser().getId())
                 .userName(userBlock.getBlockedUser().getName())
-                .profileImage(userBlock.getBlockedUser().getProfileImage().getImageUrl70x70())
+                .profileImage(userBlock.getBlockedUser().getProfileImage().getImageUrlMedium())
                 .build();
     }
 }

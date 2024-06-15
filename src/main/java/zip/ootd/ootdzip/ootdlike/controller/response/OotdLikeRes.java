@@ -25,7 +25,7 @@ public class OotdLikeRes {
                 .ootdImageUrl(ootdLike.getOotd().getFirstImage())
                 .ootdImageCount(ootdLike.getOotd().getImageCount())
                 .writerId(ootdLike.getOotd().getWriter().getId())
-                .writerProfileImage(ootdLike.getOotd().getWriter().getProfileImage().getImageUrl32x32())
+                .writerProfileImage(ootdLike.getOotd().getWriter().getProfileImage().getImageUrlSmall())
                 .writerName(ootdLike.getOotd().getWriter().getName())
                 .build();
     }

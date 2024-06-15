@@ -21,24 +21,29 @@ public class Images {
     private String imageUrl = "";
 
     @Builder.Default
-    private String imageUrl173x173 = "";
+    private String imageUrlBig = "";
 
     @Builder.Default
-    private String imageUrl70x70 = "";
+    private String imageUrlMedium = "";
 
     @Builder.Default
-    private String imageUrl32x32 = "";
+    private String imageUrlSmall = "";
 
     public static Images defaultImage() {
         return Images.builder().build();
     }
 
     public static Images of(String imageUrl) {
+
+        Integer largeUrl = 800;
+        Integer mediumUrl = 400;
+        Integer smallUrl = 200;
+
         return Images.builder()
                 .imageUrl(imageUrl)
-                .imageUrl173x173(makeThumbnailUrl(imageUrl, 173, 173))
-                .imageUrl70x70(makeThumbnailUrl(imageUrl, 70, 70))
-                .imageUrl32x32(makeThumbnailUrl(imageUrl, 32, 32))
+                .imageUrlBig(makeThumbnailUrl(imageUrl, largeUrl, largeUrl))
+                .imageUrlMedium(makeThumbnailUrl(imageUrl, mediumUrl, mediumUrl))
+                .imageUrlSmall(makeThumbnailUrl(imageUrl, smallUrl, smallUrl))
                 .build();
     }
 
@@ -62,27 +67,27 @@ public class Images {
 
     // 썸네일 이미지 없을 경우 원본 이미지 반환 //
 
-    public String getImageUrl173x173() {
-        if (imageUrl173x173.isBlank()) {
+    public String getImageUrlBig() {
+        if (imageUrlBig.isBlank()) {
             return imageUrl;
         }
 
-        return imageUrl173x173;
+        return imageUrlBig;
     }
 
-    public String getImageUrl70x70() {
-        if (imageUrl70x70.isBlank()) {
+    public String getImageUrlMedium() {
+        if (imageUrlMedium.isBlank()) {
             return imageUrl;
         }
 
-        return imageUrl70x70;
+        return imageUrlMedium;
     }
 
-    public String getImageUrl32x32() {
-        if (imageUrl32x32.isBlank()) {
+    public String getImageUrlSmall() {
+        if (imageUrlSmall.isBlank()) {
             return imageUrl;
         }
 
-        return imageUrl32x32;
+        return imageUrlSmall;
     }
 }
