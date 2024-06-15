@@ -33,7 +33,7 @@ public class ImagesAsyncService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    private static final String FILE_EXTENSION = ".png";
+    private static final String FILE_EXTENSION = ".jpg";
 
     @Async
     public void upload(MultipartFile multipartFile, String fileName) {
@@ -46,16 +46,16 @@ public class ImagesAsyncService {
             putS3(localFile, fileName + FILE_EXTENSION);
 
             // 썸네일 업로드
-            String imageName1 = makeResizedFileName(fileName, 173, 173) + FILE_EXTENSION;
-            File resizedImage1 = resizeImage(localFile, imageName1, 173, 173);
+            String imageName1 = makeResizedFileName(fileName, 800, 800) + FILE_EXTENSION;
+            File resizedImage1 = resizeImage(localFile, imageName1, 800, 800);
             putS3(resizedImage1, imageName1);
 
-            String imageName2 = makeResizedFileName(fileName, 70, 70) + FILE_EXTENSION;
-            File resizedImage2 = resizeImage(localFile, imageName2, 70, 70);
+            String imageName2 = makeResizedFileName(fileName, 400, 400) + FILE_EXTENSION;
+            File resizedImage2 = resizeImage(localFile, imageName2, 400, 400);
             putS3(resizedImage2, imageName2);
 
-            String imageName3 = makeResizedFileName(fileName, 32, 32) + FILE_EXTENSION;
-            File resizedImage3 = resizeImage(localFile, imageName3, 32, 32);
+            String imageName3 = makeResizedFileName(fileName, 200, 200) + FILE_EXTENSION;
+            File resizedImage3 = resizeImage(localFile, imageName3, 200, 200);
             putS3(resizedImage3, imageName3);
 
         } catch (Exception e) {
@@ -79,7 +79,6 @@ public class ImagesAsyncService {
     private void checkFile(File file) {
 
         String type;
-
         try {
             type = Files.probeContentType(file.toPath());
         } catch (IOException e) {
@@ -111,7 +110,7 @@ public class ImagesAsyncService {
             File resizedFile = new File(file.getParent(), name);
             Thumbnails.of(file)
                     .size(width, height)
-                    .outputFormat("png")
+                    .outputFormat("jpg")
                     .toFile(resizedFile);
             return resizedFile;
         } catch (IOException e) {
