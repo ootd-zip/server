@@ -14,6 +14,10 @@ if (!project.hasProperty('env') || (project.hasProperty('env') && project.proper
     }
 }
 
+// profile 옵션을 줬으면 그 옵션, 없으면 "prod"
+def profile = project.hasProperty("profile") ? project.property("profile").toString() : "prod"
+
+
 group = 'zip.ootd'
 version = '0.0.1-SNAPSHOT'
 
@@ -98,6 +102,7 @@ tasks.withType(JavaCompile) {
 // java source set 에 querydsl QClass 위치 추가
 sourceSets {
     main.java.srcDirs += [generated]
+    main.resources.srcDirs = ["$frontDir/build", "$projectDir/src/main/resources", "src/main/resources/resources-${profile}"]
 }
 
 // gradle clean 시에 QClass 디렉토리 삭제
