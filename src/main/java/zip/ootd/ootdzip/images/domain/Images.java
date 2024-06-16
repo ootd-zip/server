@@ -128,15 +128,25 @@ public class Images {
 
     // imageUrl, imageUrlBig, imageMedium, imageUrlSmall 값이 같으면 모두 같은 객체로 인식 합니다.
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (object == null || getClass() != object.getClass()) {
+            return false;
+        }
 
-        Images images = (Images) o;
+        Images images = (Images)object;
 
-        if (!imageUrl.equals(images.imageUrl)) return false;
-        if (!imageUrlBig.equals(images.getImageUrlBig())) return false;
-        if (!imageUrlMedium.equals(images.getImageUrlMedium())) return false;
+        if (!imageUrl.equals(images.imageUrl)) {
+            return false;
+        }
+        if (!imageUrlBig.equals(images.getImageUrlBig())) {
+            return false;
+        }
+        if (!imageUrlMedium.equals(images.getImageUrlMedium())) {
+            return false;
+        }
         return imageUrlSmall.equals(images.getImageUrlSmall());
     }
 

@@ -20,9 +20,6 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.exception.code.ErrorCode;
-import zip.ootd.ootdzip.notification.domain.NotificationType;
-import zip.ootd.ootdzip.notification.event.NotificationEvent;
-import zip.ootd.ootdzip.user.domain.User;
 
 /**
  * 비동기 서비스를 분리한 이유는
