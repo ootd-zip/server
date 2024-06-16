@@ -49,7 +49,7 @@ public class Images {
 
     private static String makeThumbnailUrl(String url, Integer width, Integer height) {
         // 정규 표현식 패턴 설정
-        String regex = "(https://ootdzip.*?/)(.*?)(\\.png)";
+        String regex = "(https://ootdzip.*?/)(.*?)(\\.(png|jpg|jpeg))";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(url);
 
