@@ -1,5 +1,7 @@
 package zip.ootd.ootdzip.images.service;
 
+import static zip.ootd.ootdzip.images.domain.Images.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -33,8 +35,6 @@ public class ImagesAsyncService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    private static final String FILE_EXTENSION = ".jpg";
-
     @Async
     public void upload(MultipartFile multipartFile, String fileName) {
 
@@ -46,17 +46,17 @@ public class ImagesAsyncService {
             putS3(localFile, fileName + FILE_EXTENSION);
 
             // 썸네일 업로드
-            String imageName1 = makeResizedFileName(fileName, 800, 800) + FILE_EXTENSION;
-            File resizedImage1 = resizeImage(localFile, imageName1, 800, 800);
-            putS3(resizedImage1, imageName1);
+            String imageLarge = makeResizedFileName(fileName, LARGE, LARGE) + FILE_EXTENSION;
+            File resizedImage1 = resizeImage(localFile, imageLarge, LARGE, LARGE);
+            putS3(resizedImage1, imageLarge);
 
-            String imageName2 = makeResizedFileName(fileName, 400, 400) + FILE_EXTENSION;
-            File resizedImage2 = resizeImage(localFile, imageName2, 400, 400);
-            putS3(resizedImage2, imageName2);
+            String imageMedium = makeResizedFileName(fileName, MEDIUM, MEDIUM) + FILE_EXTENSION;
+            File resizedImage2 = resizeImage(localFile, imageMedium, MEDIUM, MEDIUM);
+            putS3(resizedImage2, imageMedium);
 
-            String imageName3 = makeResizedFileName(fileName, 200, 200) + FILE_EXTENSION;
-            File resizedImage3 = resizeImage(localFile, imageName3, 200, 200);
-            putS3(resizedImage3, imageName3);
+            String imageSmall = makeResizedFileName(fileName, SMALL, SMALL) + FILE_EXTENSION;
+            File resizedImage3 = resizeImage(localFile, imageSmall, SMALL, SMALL);
+            putS3(resizedImage3, imageSmall);
 
         } catch (Exception e) {
             throw new CustomException(ErrorCode.IMAGE_CONVERT_ERROR);
@@ -116,10 +116,6 @@ public class ImagesAsyncService {
         } catch (IOException e) {
             throw new CustomException(ErrorCode.IMAGE_CONVERT_ERROR);
         }
-    }
-
-    private String makeResizedFileName(String name, int width, int height) {
-        return name + "_" + width + "x" + height;
     }
 
     private void deleteFile(File file) {

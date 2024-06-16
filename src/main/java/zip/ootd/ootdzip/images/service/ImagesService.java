@@ -1,5 +1,7 @@
 package zip.ootd.ootdzip.images.service;
 
+import static zip.ootd.ootdzip.images.domain.Images.*;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
@@ -23,11 +25,9 @@ public class ImagesService {
     @Value("${cloud.aws.s3.url.prefix}")
     private String urlPrefix;
 
-    private static final String FILE_EXTENSION = ".jpg";
-
     /**
      * 프론트에는 사진 url 을 만들어서 먼저 반환해줍니다.(실제로 이미지가 저장되지 않은상태)
-     * 그리고 saveImageToS3 함수를 통해 비동기로 s3 로 이미지를 저장합니다.
+     * 그리고 imagesAsyncService 클래스를 통해 비동기로 s3 로 이미지를 저장합니다.
      */
     public List<String> getUrls(ImagesReq request) {
 
@@ -37,12 +37,16 @@ public class ImagesService {
                 .map(i -> {
                     String fileName = makeFileName();
                     imagesAsyncService.upload(i, fileName);
-                    return urlPrefix + fileName + FILE_EXTENSION;
+                    return makeImageUrl(fileName);
                 })
                 .collect(Collectors.toList());
     }
 
     private String makeFileName() {
         return UUID.randomUUID() + "_" + LocalDate.now();
+    }
+
+    private String makeImageUrl(String name) {
+        return urlPrefix + name + FILE_EXTENSION;
     }
 }
