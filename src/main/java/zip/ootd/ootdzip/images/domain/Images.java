@@ -4,15 +4,14 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.FilenameUtils;
+
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import org.apache.commons.io.FilenameUtils;
-
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.exception.code.ErrorCode;
 
@@ -83,7 +82,7 @@ public class Images {
         return name + "_" + width + "x" + height;
     }
 
-    // imageUrl 이 이미지 링크인지 체크
+    // imageUrl 이 이미지 링크인지 체경
     public static void checkValidImageUrl(String imageUrl) {
         String extension = FilenameUtils.getExtension(imageUrl);
         if (!imageExtensions.contains(extension.toLowerCase())) {
