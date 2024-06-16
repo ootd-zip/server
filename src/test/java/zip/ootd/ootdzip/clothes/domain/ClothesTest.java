@@ -48,7 +48,7 @@ class ClothesTest {
 
         //then
         assertThat(clothes).extracting("user.name", "brand.name", "purchaseStore", "name", "isPrivate", "category.name",
-                        "size.name", "memo", "purchaseDate", "imageUrl.imageUrl")
+                        "size.name", "memo", "purchaseDate", "images.imageUrl")
                 .contains("유저1", "브랜드1", "구매처", "제품명", true, "카테고리2", "XL", "메모입니다", "구매일",
                         "https://ootdzip.com/8c00f7f4-3f47-4238-2024-06-15.png");
 

@@ -60,7 +60,7 @@ public class User extends BaseEntity {
 
     private Boolean isBodyPrivate = false;
 
-    private Images profileImage;
+    private Images images;
 
     private String description;
 
@@ -87,7 +87,7 @@ public class User extends BaseEntity {
                 .height(0)
                 .isBodyPrivate(false)
                 .weight(0)
-                .profileImage(Images.defaultImage())
+                .images(Images.defaultImage())
                 .description(null)
                 .isCompleted(false)
                 .isDeleted(false)
@@ -192,7 +192,7 @@ public class User extends BaseEntity {
             Integer weight,
             Boolean isBodyPrivate) {
         this.name = name;
-        this.profileImage = Images.of(profileImage);
+        this.images = Images.of(profileImage);
         this.description = description;
         this.height = height;
         this.weight = weight;
@@ -211,10 +211,10 @@ public class User extends BaseEntity {
         return name;
     }
 
-    public Images getProfileImage() {
+    public Images getImages() {
         if (isDeleted) {
             throw new CustomException(ErrorCode.DELETED_USER_ERROR);
         }
-        return profileImage;
+        return images;
     }
 }

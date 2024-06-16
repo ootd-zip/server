@@ -21,7 +21,7 @@ public class UserSearchRes {
         return UserSearchRes.builder()
                 .id(user.getId())
                 .name(user.getName())
-                .profileImage(user.getProfileImage().getImageUrlMedium())
+                .profileImage(user.getImages().getImageUrlMedium())
                 .isFollow(loginUser.isFollowing(user))
                 .build();
     }

@@ -30,7 +30,7 @@ public class UserInfoForMyPageRes {
         return UserInfoForMyPageRes.builder()
                 .userId(user.getId())
                 .userName(user.getName())
-                .profileImage(user.getProfileImage().getImageUrlBig())
+                .profileImage(user.getImages().getImageUrlBig())
                 .followerCount(user.getFollowerCount())
                 .followingCount(user.getFollowingCount())
                 .height(user.getProfileHeight(loginUser))

@@ -130,7 +130,7 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
         Clothes saveResult = clothesRepository.findById(result.getId()).get();
 
         assertThat(saveResult).extracting("id", "name", "user", "brand", "isPrivate", "category", "size", "memo",
-                        "purchaseStore", "purchaseDate", "imageUrl.imageUrl", "purchaseStoreType")
+                        "purchaseStore", "purchaseDate", "images.imageUrl", "purchaseStoreType")
                 .contains(result.getId(), "제품명1", user, savedBrand, false, savedCategory, savedSize, "메모입니다.", "구매처1",
                         "구매시기1", CLOTHES_IMAGE_URL, Write);
 
@@ -987,7 +987,7 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
 
         assertThat(updatedClothes)
                 .extracting("id", "name", "user", "brand.name", "isPrivate", "category.name", "size.name", "memo",
-                        "purchaseStore", "purchaseDate", "imageUrl.imageUrl", "purchaseStoreType")
+                        "purchaseStore", "purchaseDate", "images.imageUrl", "purchaseStoreType")
                 .contains(result.getId(), "제품명1", user, "브랜드1", true, "카테고리1", "사이즈1", "메모입니다1", "구매처1",
                         "구매일1", CLOTHES_IMAGE_URL, Write);
 

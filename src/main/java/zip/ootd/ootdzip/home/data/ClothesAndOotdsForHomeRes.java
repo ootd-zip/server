@@ -26,7 +26,7 @@ public class ClothesAndOotdsForHomeRes {
         this.message = message;
         this.detailMessage = detailMessage;
         this.tagType = TagType.CLOTHES;
-        this.imageUrl = clothes.getImageUrl().getImageUrlBig();
+        this.imageUrl = clothes.getImages().getImageUrlBig();
     }
 
     public ClothesAndOotdsForHomeRes(Ootd ootd, String message, String detailMessage) {

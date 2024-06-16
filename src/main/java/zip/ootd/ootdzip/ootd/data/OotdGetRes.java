@@ -73,7 +73,7 @@ public class OotdGetRes {
 
         this.userId = writer.getId();
         this.userName = writer.getName();
-        this.userImage = writer.getProfileImage().getImageUrlSmall();
+        this.userImage = writer.getImages().getImageUrlSmall();
         this.userHeight = writer.getProfileHeight(loginUser);
         this.userWeight = writer.getProfileWeight(loginUser);
 
@@ -141,7 +141,7 @@ public class OotdGetRes {
                 Clothes clothes = ootdImageClothes.getClothes();
                 this.clothesId = clothes.getId();
                 this.clothesName = clothes.getName();
-                this.clothesImage = clothes.getImageUrl().getImageUrlMedium();
+                this.clothesImage = clothes.getImages().getImageUrlMedium();
                 this.brand = BrandDto.of(clothes.getBrand());
                 this.category = DetailCategory.builder()
                         .id(clothes.getCategory().getId())

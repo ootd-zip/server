@@ -39,7 +39,7 @@ public class CommentGetAllRes {
                 .id(comment.getId())
                 .userId(comment.getWriter().getId())
                 .userName(comment.getWriter().getName())
-                .userImage(comment.getWriter().getProfileImage().getImageUrlSmall())
+                .userImage(comment.getWriter().getImages().getImageUrlSmall())
                 .content(comment.getContents(nonAccessibleUserIds))
                 .timeStamp(TimeUtil.compareCreatedTimeAndNow(comment.getCreatedAt()))
                 .taggedUserName(comment.getTaggedUserName())

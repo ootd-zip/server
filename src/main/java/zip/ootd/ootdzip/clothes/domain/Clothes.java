@@ -65,7 +65,7 @@ public class Clothes extends BaseEntity {
 
     private String purchaseDate;
 
-    private Images imageUrl;
+    private Images images;
 
     private Integer reportCount;
 
@@ -101,7 +101,7 @@ public class Clothes extends BaseEntity {
                 .size(size)
                 .memo(memo)
                 .purchaseDate(purchaseDate)
-                .imageUrl(Images.of(imageUrl))
+                .images(Images.of(imageUrl))
                 .reportCount(0)
                 .build();
 
@@ -130,7 +130,7 @@ public class Clothes extends BaseEntity {
         this.size = size;
         this.memo = memo;
         this.purchaseDate = purchaseDate;
-        this.imageUrl = Images.of(clothesImageUrl);
+        this.images = Images.of(clothesImageUrl);
         this.updateClothesColor(clothesColors);
     }
 
