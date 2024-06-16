@@ -4,7 +4,7 @@
 APPLICATION_NAME="ootdzip-CD"
 
 # 현재 배포 그룹 이름을 가져옵니다.
-DEPLOYMENT_GROUP_NAME=$(aws deploy get-deployment-group --application-name $APPLICATION_NAME --deployment-group-name $DEPLOYMENT_GROUP_NAME --query "deploymentGroupInfo.deploymentGroupName" --output text)
+DEPLOYMENT_GROUP_NAME=$(aws deploy get-deployment-group --region ap-northeast-2 --application-name $APPLICATION_NAME --deployment-group-name $DEPLOYMENT_GROUP_NAME --query "deploymentGroupInfo.deploymentGroupName" --output text)
 
 # 배포 그룹에 따라 대상 디렉토리를 설정합니다.
 if [ "$DEPLOYMENT_GROUP_NAME" == "ootdzip-cd-group" ]; then
