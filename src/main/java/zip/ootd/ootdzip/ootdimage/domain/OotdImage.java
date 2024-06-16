@@ -38,11 +38,11 @@ public class OotdImage extends BaseEntity {
     @OneToMany(mappedBy = "ootdImage", cascade = CascadeType.ALL)
     private List<OotdImageClothes> ootdImageClothesList = new ArrayList<>();
 
-    public static OotdImage createOotdImageBy(String imageUrl,
+    public static OotdImage createOotdImageBy(Images images,
             List<OotdImageClothes> ootdImageClothesList) {
 
         OotdImage ootdImage = OotdImage.builder()
-                .images(Images.of(imageUrl))
+                .images(images)
                 .build();
 
         ootdImage.addOotdImageClothesList(ootdImageClothesList);

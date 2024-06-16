@@ -36,9 +36,10 @@ import zip.ootd.ootdzip.clothes.service.request.UpdateClothesSvcReq;
 import zip.ootd.ootdzip.common.entity.BaseEntity;
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.response.CommonSliceResponse;
+import zip.ootd.ootdzip.images.domain.Images;
+import zip.ootd.ootdzip.images.service.ImagesService;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.repository.UserRepository;
-import zip.ootd.ootdzip.user.service.UserService;
 import zip.ootd.ootdzip.userblock.repository.UserBlockRepository;
 
 @Service
@@ -53,8 +54,7 @@ public class ClothesServiceImpl implements ClothesService {
     private final ClothesRepository clothesRepository;
     private final UserRepository userRepository;
     private final UserBlockRepository userBlockRepository;
-
-    private final UserService userService;
+    private final ImagesService imagesService;
 
     @Override
     @Transactional
@@ -169,6 +169,9 @@ public class ClothesServiceImpl implements ClothesService {
             throw new CustomException(UNAUTHORIZED_USER_ERROR);
         }
 
+        // 삭제전 s3 에서 이미지 삭제
+        imagesService.deleteImagesByUrlToS3(deleteClothes.getImages());
+
         clothesRepository.delete(deleteClothes);
 
         return new DeleteClothesByIdRes("옷 삭제 성공");
@@ -208,6 +211,12 @@ public class ClothesServiceImpl implements ClothesService {
 
         List<ClothesColor> clothesColors = ClothesColor.createClothesColorsBy(colors);
 
+        // 업데이트전 s3 에서 이미지 삭제
+        Images images = Images.of(request.getClothesImageUrl());
+        if (!updateTarget.getImages().equals(images)) {
+            imagesService.deleteImagesByUrlToS3(updateTarget.getImages());
+        }
+
         updateTarget.updateClothes(brand,
                 request.getPurchaseStore(),
                 request.getPurchaseStoreType(),
@@ -217,7 +226,7 @@ public class ClothesServiceImpl implements ClothesService {
                 size,
                 request.getMemo(),
                 request.getPurchaseDate(),
-                request.getClothesImageUrl(),
+                images,
                 clothesColors);
 
         Clothes updatedClothes = clothesRepository.save(updateTarget);

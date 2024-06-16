@@ -186,13 +186,13 @@ public class User extends BaseEntity {
     }
 
     public void updateProfile(String name,
-            String profileImage,
+            Images images,
             String description,
             Integer height,
             Integer weight,
             Boolean isBodyPrivate) {
         this.name = name;
-        this.images = Images.of(profileImage);
+        this.images = images;
         this.description = description;
         this.height = height;
         this.weight = weight;

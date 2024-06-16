@@ -30,6 +30,7 @@ import zip.ootd.ootdzip.clothes.domain.Clothes;
 import zip.ootd.ootdzip.clothes.domain.ClothesColor;
 import zip.ootd.ootdzip.common.entity.BaseEntity;
 import zip.ootd.ootdzip.common.request.CommonPageRequest;
+import zip.ootd.ootdzip.images.domain.Images;
 import zip.ootd.ootdzip.ootd.domain.Ootd;
 import zip.ootd.ootdzip.ootd.repository.OotdRepository;
 import zip.ootd.ootdzip.ootdimage.domain.OotdImage;
@@ -222,7 +223,7 @@ class ClothesRepositoryTest extends IntegrationTestSupport {
         }
 
         OotdImage ootdImage = OotdImage.createOotdImageBy(
-                "https://ootdzip.com/8c00f7f4-3f47-4238-2024-06-14.png",
+                Images.of("https://ootdzip.com/8c00f7f4-3f47-4238-2024-06-14.png"),
                 ootdImageClothesList);
 
         Style style = Style.builder().name("올드머니").build();

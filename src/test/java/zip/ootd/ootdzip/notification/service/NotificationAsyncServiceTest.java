@@ -35,6 +35,7 @@ import zip.ootd.ootdzip.comment.data.CommentPostReq;
 import zip.ootd.ootdzip.comment.domain.Comment;
 import zip.ootd.ootdzip.comment.repository.CommentRepository;
 import zip.ootd.ootdzip.comment.service.CommentService;
+import zip.ootd.ootdzip.images.domain.Images;
 import zip.ootd.ootdzip.notification.domain.Notification;
 import zip.ootd.ootdzip.notification.repository.NotificationRepository;
 import zip.ootd.ootdzip.oauth.OAuthUtils;
@@ -306,7 +307,7 @@ public class NotificationAsyncServiceTest {
                 .build();
 
         OotdImage ootdImage = OotdImage.createOotdImageBy(
-                "https://ootdzip.com/8c00f7f4-3f47-4238-2024-06-14.png",
+                Images.of("https://ootdzip.com/8c00f7f4-3f47-4238-2024-06-14.png"),
                 Arrays.asList(ootdImageClothes, ootdImageClothes1));
 
         Style style = Style.builder().name("올드머니").build();

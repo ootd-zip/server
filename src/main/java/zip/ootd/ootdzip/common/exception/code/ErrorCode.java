@@ -135,6 +135,8 @@ public enum ErrorCode {
 
     INVALID_IMAGE_URL(400, "I001", "이미지 URL이 유효하지 않습니다."),
 
+    IMAGE_DELETE_FAIL(400, "I002", "이미지 삭제를 실패 했습니다."),
+
     DELETE_USER_CLOTHES(404, "C006", "삭제된 유저의 옷입니다."),
 
     NOT_FOUND_USER_BLCOK_ID(404, "UB001", "유효하지 않은 사용자 차단 ID"),

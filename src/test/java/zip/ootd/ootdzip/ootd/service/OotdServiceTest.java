@@ -39,6 +39,7 @@ import zip.ootd.ootdzip.common.dao.RedisDao;
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.response.CommonPageResponse;
 import zip.ootd.ootdzip.common.response.CommonSliceResponse;
+import zip.ootd.ootdzip.images.domain.Images;
 import zip.ootd.ootdzip.oauth.OAuthUtils;
 import zip.ootd.ootdzip.ootd.data.OotdGetByUserReq;
 import zip.ootd.ootdzip.ootd.data.OotdGetByUserRes;
@@ -730,7 +731,7 @@ public class OotdServiceTest extends IntegrationTestSupport {
             ootdImageClothesList.add(ootdImageClothes);
         }
 
-        OotdImage ootdImage = OotdImage.createOotdImageBy(OOTD_IMAGE_URL1, ootdImageClothesList);
+        OotdImage ootdImage = OotdImage.createOotdImageBy(Images.of(OOTD_IMAGE_URL1), ootdImageClothesList);
 
         Style style = Style.builder().name("올드머니").build();
         styleRepository.save(style);
@@ -770,7 +771,7 @@ public class OotdServiceTest extends IntegrationTestSupport {
                 .deviceSize(deviceSize1)
                 .build();
 
-        OotdImage ootdImage = OotdImage.createOotdImageBy(OOTD_IMAGE_URL,
+        OotdImage ootdImage = OotdImage.createOotdImageBy(Images.of(OOTD_IMAGE_URL),
                 Arrays.asList(ootdImageClothes, ootdImageClothes1));
 
         List<OotdStyle> ootdStyles = OotdStyle.createOotdStylesBy(styles);
@@ -811,7 +812,7 @@ public class OotdServiceTest extends IntegrationTestSupport {
                 .deviceSize(deviceSize1)
                 .build();
 
-        OotdImage ootdImage = OotdImage.createOotdImageBy(OOTD_IMAGE_URL,
+        OotdImage ootdImage = OotdImage.createOotdImageBy(Images.of(OOTD_IMAGE_URL),
                 Arrays.asList(ootdImageClothes, ootdImageClothes1));
 
         Style style = Style.builder().name("올드머니").build();

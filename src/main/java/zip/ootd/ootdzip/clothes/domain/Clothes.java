@@ -119,7 +119,7 @@ public class Clothes extends BaseEntity {
             Size size,
             String memo,
             String purchaseDate,
-            String clothesImageUrl,
+            Images images,
             List<ClothesColor> clothesColors) {
         this.brand = brand;
         this.purchaseStore = purchaseStore;
@@ -130,7 +130,7 @@ public class Clothes extends BaseEntity {
         this.size = size;
         this.memo = memo;
         this.purchaseDate = purchaseDate;
-        this.images = Images.of(clothesImageUrl);
+        this.images = images;
         this.updateClothesColor(clothesColors);
     }
 

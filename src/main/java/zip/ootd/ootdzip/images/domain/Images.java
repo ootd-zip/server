@@ -62,13 +62,12 @@ public class Images {
                 .build();
     }
 
-    private static String makeThumbnailUrl(String url, Integer width, Integer height) {
-        // 정규 표현식 패턴 설정
+    public static String makeThumbnailUrl(String url, Integer width, Integer height) {
         Matcher matcher = pattern.matcher(url);
 
         // 매칭된 부분 추출
         if (!matcher.find()) {
-            throw new IllegalArgumentException("잘못된 이미지 URL, 추출 불가");
+            throw new CustomException(ErrorCode.INVALID_IMAGE_URL);
         }
 
         String baseUrl = matcher.group(1);
@@ -80,6 +79,18 @@ public class Images {
 
     public static String makeResizedFileName(String name, int width, int height) {
         return name + "_" + width + "x" + height;
+    }
+
+    // 이미지 링크로 부터 원본 이름 얻기
+    public static String getNameFromImageUrl(String url) {
+        Matcher matcher = pattern.matcher(url);
+
+        // 매칭된 부분 추출
+        if (!matcher.find()) {
+            throw new CustomException(ErrorCode.INVALID_IMAGE_URL);
+        }
+
+        return matcher.group(2);
     }
 
     // imageUrl 이 이미지 링크인지 체경
@@ -113,5 +124,28 @@ public class Images {
         }
 
         return imageUrlSmall;
+    }
+
+    // imageUrl, imageUrlBig, imageMedium, imageUrlSmall 값이 같으면 모두 같은 객체로 인식 합니다.
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Images images = (Images) o;
+
+        if (!imageUrl.equals(images.imageUrl)) return false;
+        if (!imageUrlBig.equals(images.getImageUrlBig())) return false;
+        if (!imageUrlMedium.equals(images.getImageUrlMedium())) return false;
+        return imageUrlSmall.equals(images.getImageUrlSmall());
+    }
+
+    @Override
+    public int hashCode() {
+        int result = imageUrl.hashCode();
+        result = 31 * result + getImageUrlBig().hashCode();
+        result = 31 * result + getImageUrlMedium().hashCode();
+        result = 31 * result + getImageUrlSmall().hashCode();
+        return result;
     }
 }

@@ -29,6 +29,7 @@ import zip.ootd.ootdzip.clothes.data.PurchaseStoreType;
 import zip.ootd.ootdzip.clothes.domain.Clothes;
 import zip.ootd.ootdzip.clothes.domain.ClothesColor;
 import zip.ootd.ootdzip.clothes.repository.ClothesRepository;
+import zip.ootd.ootdzip.images.domain.Images;
 import zip.ootd.ootdzip.oauth.OAuthUtils;
 import zip.ootd.ootdzip.ootd.domain.Ootd;
 import zip.ootd.ootdzip.ootd.repository.OotdRepository;
@@ -138,7 +139,7 @@ public class OotdBookmarkServiceTest extends IntegrationTestSupport {
                 .build();
 
         OotdImage ootdImage = OotdImage.createOotdImageBy(
-                "https://ootdzip.com/8c00f7f4-3f47-4238-2024-06-14.png",
+                Images.of("https://ootdzip.com/8c00f7f4-3f47-4238-2024-06-14.png"),
                 Arrays.asList(ootdImageClothes, ootdImageClothes1));
 
         Style style = Style.builder().name("올드머니").build();
