@@ -16,5 +16,10 @@ else
     exit 1
 fi
 
-chmod 755 $DESTINATION_DIR/scripts/start.sh
-chmod 755 $DESTINATION_DIR/scripts/stop.sh
+echo "Moving files to $DESTINATION_DIR"
+
+# 해당 디렉토리가 없으면 생성
+mkdir -p $DESTINATION_DIR
+
+# /tmp/deployment 디렉토리의 파일을 대상 디렉토리로 이동
+mv /home/ubuntu/deploy/* $DESTINATION_DIR/
