@@ -41,7 +41,6 @@ import zip.ootd.ootdzip.user.service.request.UserRegisterSvcReq;
 import zip.ootd.ootdzip.user.service.request.UserSearchSvcReq;
 import zip.ootd.ootdzip.user.service.request.UserStyleUpdateSvcReq;
 import zip.ootd.ootdzip.userblock.repository.UserBlockRepository;
-import zip.ootd.ootdzip.utils.ImageFileUtil;
 
 @Service
 @Transactional(readOnly = true)
@@ -182,11 +181,6 @@ public class UserService {
 
     @Transactional
     public void updateProfile(ProfileSvcReq request, User loginUser) {
-
-        if (!request.getProfileImage().isBlank()
-                && !ImageFileUtil.isValidImageUrl(request.getProfileImage())) {
-            throw new CustomException(ErrorCode.INVALID_IMAGE_URL);
-        }
 
         loginUser.updateProfile(request.getName(),
                 request.getProfileImage(),

@@ -76,6 +76,7 @@ public class ImagesAsyncService {
         }
     }
 
+    // 해당 파일이 이미지 파일인지 체크
     private void checkFile(File file) {
 
         String type;

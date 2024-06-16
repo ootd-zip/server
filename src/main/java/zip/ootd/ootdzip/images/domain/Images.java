@@ -1,5 +1,6 @@
 package zip.ootd.ootdzip.images.domain;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -9,6 +10,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import org.apache.commons.io.FilenameUtils;
+
+import zip.ootd.ootdzip.common.exception.CustomException;
+import zip.ootd.ootdzip.common.exception.code.ErrorCode;
 
 @Embeddable
 @Builder
@@ -40,12 +46,15 @@ public class Images {
 
     public static final String FILE_EXTENSION = ".jpg";
 
+    private static final List<String> imageExtensions = List.of("jpg", "jpeg", "png");
+
     public static Images defaultImage() {
         return Images.builder().build();
     }
 
     public static Images of(String imageUrl) {
 
+        checkValidImageUrl(imageUrl);
         return Images.builder()
                 .imageUrl(imageUrl)
                 .imageUrlBig(makeThumbnailUrl(imageUrl, LARGE, LARGE))
@@ -72,6 +81,14 @@ public class Images {
 
     public static String makeResizedFileName(String name, int width, int height) {
         return name + "_" + width + "x" + height;
+    }
+
+    // imageUrl 이 이미지 링크인지 체크
+    public static void checkValidImageUrl(String imageUrl) {
+        String extension = FilenameUtils.getExtension(imageUrl);
+        if (!imageExtensions.contains(extension.toLowerCase())) {
+            throw new CustomException(ErrorCode.INVALID_IMAGE_URL);
+        }
     }
 
     // 썸네일 이미지 없을 경우 원본 이미지 반환 //
