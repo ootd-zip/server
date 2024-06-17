@@ -139,7 +139,7 @@ class ClothesRepositoryImplTest extends IntegrationTestSupport {
                 size,
                 "메모",
                 "구매기간",
-                "Image.jpg",
+                "https://ootdzip.com/8c00f7f4-3f47-4238-2024-06-15.png",
                 clothesColors);
 
         return clothesRepository.save(clothes);

@@ -1,4 +1,4 @@
-package zip.ootd.ootdzip.s3.data;
+package zip.ootd.ootdzip.images.data;
 
 import java.util.List;
 
@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class S3ImageRes {
+public class ImagesRes {
 
     private List<String> imageUrls;
 }

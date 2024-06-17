@@ -68,7 +68,7 @@ public interface ClothesRepository extends JpaRepository<Clothes, Long>, Clothes
     List<Clothes> findByOotdId(@Param("ootdId") Long ootdId);
 
     @Query(value =
-            "SELECT c.id, c.created_at AS CREATEAT, 1 AS ISTAGGED, c.image_url AS imageUrl, "
+            "SELECT c.id, c.created_at AS CREATEAT, 1 AS ISTAGGED, c.image_url_big AS imageUrl, "
                     + "c.name AS clothesName, b.name AS brandName, cg.name AS categoryName, s.name AS sizeName "
                     + "FROM clothes c "
                     + "JOIN brands b ON c.brand_id = b.id "

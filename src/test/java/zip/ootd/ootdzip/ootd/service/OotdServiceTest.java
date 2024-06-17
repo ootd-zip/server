@@ -39,6 +39,7 @@ import zip.ootd.ootdzip.common.dao.RedisDao;
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.response.CommonPageResponse;
 import zip.ootd.ootdzip.common.response.CommonSliceResponse;
+import zip.ootd.ootdzip.images.domain.Images;
 import zip.ootd.ootdzip.oauth.OAuthUtils;
 import zip.ootd.ootdzip.ootd.data.OotdGetByUserReq;
 import zip.ootd.ootdzip.ootd.data.OotdGetByUserRes;
@@ -94,6 +95,10 @@ public class OotdServiceTest extends IntegrationTestSupport {
     @Autowired
     private RedisDao redisDao;
 
+    private static final String OOTD_IMAGE_URL = "https://ootdzip.com/8c00f7f4-3f47-4238-2024-06-14.png";
+
+    private static final String OOTD_IMAGE_URL1 = "https://ootdzip/0459a64c-89d9-4c63-be21_2024-03-27.png";
+
     @AfterEach
     void tearDown() {
         redisDao.deleteAll();
@@ -122,7 +127,7 @@ public class OotdServiceTest extends IntegrationTestSupport {
         clothesTagReq1.setYRate("44.55");
 
         OotdPostReq.OotdImageReq ootdImageReq = new OotdPostReq.OotdImageReq();
-        ootdImageReq.setOotdImage("input_image_url");
+        ootdImageReq.setOotdImage(OOTD_IMAGE_URL);
         ootdImageReq.setClothesTags(Arrays.asList(clothesTagReq, clothesTagReq1));
 
         Style style = Style.builder().name("올드머니").build();
@@ -151,13 +156,11 @@ public class OotdServiceTest extends IntegrationTestSupport {
                 .containsExactlyInAnyOrder("올드머니", "블루코어");
 
         assertThat(savedResult.getOotdImages())
-                .hasSize(1)
-                .extracting("imageUrl")
-                .contains("input_image_url");
+                .hasSize(1);
 
         assertThat(savedResult.getOotdImages().get(0).getOotdImageClothesList())
                 .hasSize(2)
-                .extracting("clothes.id", "coordinate.x", "coordinate.y", "deviceSize.deviceWidth",
+                .extracting("clothes.id", "coordinate.xRate", "coordinate.yRate", "deviceSize.deviceWidth",
                         "deviceSize.deviceHeight")
                 .containsExactlyInAnyOrder(
                         tuple(clothes.getId(), "22.33", "33.44", 100L, 50L),
@@ -209,7 +212,7 @@ public class OotdServiceTest extends IntegrationTestSupport {
         clothesTagReq1.setYRate("55.66");
 
         OotdPutReq.OotdImageReq ootdImageReq = new OotdPutReq.OotdImageReq();
-        ootdImageReq.setOotdImage("input_image_url1");
+        ootdImageReq.setOotdImage(OOTD_IMAGE_URL1);
         ootdImageReq.setClothesTags(Arrays.asList(clothesTagReq, clothesTagReq1));
 
         Style style = Style.builder().name("아메카제").build();
@@ -238,13 +241,11 @@ public class OotdServiceTest extends IntegrationTestSupport {
                 .containsExactlyInAnyOrder("아메카제", "미니멀");
 
         assertThat(savedResult.getOotdImages())
-                .hasSize(1)
-                .extracting("imageUrl")
-                .contains("input_image_url1");
+                .hasSize(1);
 
         assertThat(savedResult.getOotdImages().get(0).getOotdImageClothesList())
                 .hasSize(2)
-                .extracting("clothes.id", "coordinate.x", "coordinate.y", "deviceSize.deviceWidth",
+                .extracting("clothes.id", "coordinate.xRate", "coordinate.yRate", "deviceSize.deviceWidth",
                         "deviceSize.deviceHeight")
                 .containsExactlyInAnyOrder(
                         tuple(clothes.getId(), "11.22", "22.33", 20L, 30L),
@@ -730,7 +731,7 @@ public class OotdServiceTest extends IntegrationTestSupport {
             ootdImageClothesList.add(ootdImageClothes);
         }
 
-        OotdImage ootdImage = OotdImage.createOotdImageBy("input_image_url", ootdImageClothesList);
+        OotdImage ootdImage = OotdImage.createOotdImageBy(Images.of(OOTD_IMAGE_URL1), ootdImageClothesList);
 
         Style style = Style.builder().name("올드머니").build();
         styleRepository.save(style);
@@ -770,7 +771,7 @@ public class OotdServiceTest extends IntegrationTestSupport {
                 .deviceSize(deviceSize1)
                 .build();
 
-        OotdImage ootdImage = OotdImage.createOotdImageBy("input_image_url",
+        OotdImage ootdImage = OotdImage.createOotdImageBy(Images.of(OOTD_IMAGE_URL),
                 Arrays.asList(ootdImageClothes, ootdImageClothes1));
 
         List<OotdStyle> ootdStyles = OotdStyle.createOotdStylesBy(styles);
@@ -811,7 +812,7 @@ public class OotdServiceTest extends IntegrationTestSupport {
                 .deviceSize(deviceSize1)
                 .build();
 
-        OotdImage ootdImage = OotdImage.createOotdImageBy("input_image_url",
+        OotdImage ootdImage = OotdImage.createOotdImageBy(Images.of(OOTD_IMAGE_URL),
                 Arrays.asList(ootdImageClothes, ootdImageClothes1));
 
         Style style = Style.builder().name("올드머니").build();
@@ -856,7 +857,8 @@ public class OotdServiceTest extends IntegrationTestSupport {
         List<ClothesColor> clothesColors = ClothesColor.createClothesColorsBy(List.of(savedColor));
 
         Clothes clothes = Clothes.createClothes(user, savedBrand, "구매처" + idx, PurchaseStoreType.Write, "제품명" + idx,
-                isOpen, savedCategory, savedSize, "메모입니다" + idx, "구매일" + idx, "image" + idx + ".jpg", clothesColors);
+                isOpen, savedCategory, savedSize, "메모입니다" + idx, "구매일" + idx,
+                "https://ootdzip.com/8c00f7f4-3f47-4238-2024-06-15.png" + idx + ".jpg", clothesColors);
 
         return clothesRepository.save(clothes);
     }

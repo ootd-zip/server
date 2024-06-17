@@ -68,7 +68,7 @@ public class FindClothesRes {
                 .purchaseStoreType(clothes.getPurchaseStoreType())
                 .purchaseDate(clothes.getPurchaseDate())
                 .colors(ClothesColorDto.createClothesColorDtosBy(clothes.getClothesColors()))
-                .imageUrl(clothes.getImageUrl())
+                .imageUrl(clothes.getImages().getImageUrl())
                 .createdAt(clothes.getCreatedAt())
                 .updatedAt(clothes.getUpdatedAt())
                 .build();

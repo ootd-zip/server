@@ -57,7 +57,7 @@ public class OotdGetAllRes {
         this.createAt = ootd.getCreatedAt();
 
         this.userName = ootd.getWriter().getName();
-        this.userImage = ootd.getWriter().getProfileImage();
+        this.userImage = ootd.getWriter().getImages().getImageUrlSmall();
         this.userHeight = ootd.getWriter().getProfileHeight(loginUser);
         this.userWeight = ootd.getWriter().getProfileWeight(loginUser);
 
@@ -86,7 +86,7 @@ public class OotdGetAllRes {
         private String url;
 
         public OotdImageRes(OotdImage ootdImage) {
-            this.url = ootdImage.getImageUrl();
+            this.url = ootdImage.getImages().getImageUrlBig();
         }
     }
 }
