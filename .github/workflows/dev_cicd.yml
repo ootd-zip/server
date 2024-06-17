@@ -7,10 +7,10 @@ on:
 
 env:
   AWS_REGION: ap-northeast-2
-  AWS_S3_BUCKET: ootdzip-dev-cicd
+  AWS_S3_BUCKET: ootdzip-cicd-dev
   AWS_CODE_DEPLOY_APPLICATION: ootdzip-CD
-  AWS_CODE_DEPLOY_GROUP: ootdzip-dev-group
-  OCCUPY_SECRET: ${{ secrets.OCCUPY_SECRET }}
+  AWS_CODE_DEPLOY_GROUP: ootdzip-cd-group
+  OCCUPY_SECRET: ${{ secrets.OCCUPY_DEV_SECRET }}
   OCCUPY_SECRET_DIR: src/main/resources
   OCCUPY_SECRET_TEST_DIR: src/test/resources
   OCCUPY_SECRET_DIR_FILE_NAME: application-secret.yml
@@ -38,8 +38,8 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: ${{ env.AWS_REGION }}
-          aws-access-key-id: ${{ secrets.CICD_ACCESS_KEY }}
-          aws-secret-access-key: ${{ secrets.CICD_SECRET_KEY }}
+          aws-access-key-id: ${{ secrets.DEV_CICD_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.DEV_CICD_SECRET_KEY }}
       - name: S3에 업로드
         run: aws deploy push --application-name ${{ env.AWS_CODE_DEPLOY_APPLICATION }} --ignore-hidden-files --s3-location s3://$AWS_S3_BUCKET/ootdzip/$GITHUB_SHA.zip --source .
       - name: EC2에 배포

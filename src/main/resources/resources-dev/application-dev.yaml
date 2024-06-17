@@ -11,14 +11,14 @@ spring:
         order_updates: true
         dialect: org.hibernate.dialect.MariaDB103Dialect
   datasource:
-    url: jdbc:mariadb://localhost:3306/dev_ootdzip # mariaDB 쿼리로그가 보고싶을시 ?&profileSQL=true&maxQuerySizeToLog=0
-    username: ootdzip
+    url: jdbc:mariadb://localhost:3306/ootdzip_dev # mariaDB 쿼리로그가 보고싶을시 ?&profileSQL=true&maxQuerySizeToLog=0
+    username: ootdzip_dev
     password: 1234
     driver-class-name: org.mariadb.jdbc.Driver
   data:
     redis:
       host: 127.0.0.1
-      port: 6380
+      port: 6379
       timeout: 10
 
   security:
@@ -73,7 +73,7 @@ spring:
       max-request-size: 500MB # 요청 당 최대 사이즈 + 서비스단 별도 제한 50MB
 
 server:
-  port: 8082
+  port: 8081
   tomcat:
     accesslog:
       enabled: true
@@ -84,7 +84,7 @@ server:
       pattern: "%{yyyy-MM-dd HH:mm:ss}t %s %r %{User-Agent}i %{Referer}i %a %b %D"
 
 client:
-  base-url: https://ootdzip.com
+  base-url: https://dev-ootdzip.com
   dev-url: http://localhost:3000
 
 

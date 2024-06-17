@@ -16,14 +16,9 @@ if (!project.hasProperty('env') || (project.hasProperty('env') && project.proper
 
 // profile 옵션을 줬으면 그 옵션, 없으면 "prod"
 def profile = project.hasProperty("profile") ? project.property("profile").toString() : "prod"
-def jarFileName = "ootdzip-${profile}.jar"
 
 group = 'zip.ootd'
 version = '0.0.1-SNAPSHOT'
-
-jar {
-    archiveFileName = jarName
-}
 
 java {
     sourceCompatibility = '17'
