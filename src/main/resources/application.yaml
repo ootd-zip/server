@@ -44,8 +44,8 @@ spring:
             user-name-attribute: response/id
 
   profiles:
-    default: prod
     include: secret
+    active: prod
   servlet:
     multipart:
       max-file-size: 10MB # 파일 최대 사이즈 + 서비스단 별도 제한 10MB
