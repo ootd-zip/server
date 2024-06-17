@@ -32,43 +32,47 @@ public class ImagesAsyncService {
 
     private final AmazonS3Client amazonS3Client;
 
+    private final String tempImageFolder = System.getProperty("user.dir") + "/" + "temp";
+
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
     @Async
-    public void upload(MultipartFile multipartFile, String fileName) {
+    public void upload(MultipartFile multipartFile, String name) {
 
-        File localFile = convertToFile(multipartFile, fileName);
+        File localFile = convertToFile(multipartFile, name);
         checkFile(localFile);
 
+        // 썸네일 업로드
+        uploadThumbnail(localFile, name, LARGE);
+        uploadThumbnail(localFile, name, MEDIUM);
+        uploadThumbnail(localFile, name, SMALL);
+
+        // 원본 업로드, 원본 파일 삭제를 하기때문에 썸네일 파일을 업로드하고 실행해야함
+        uploadToS3(localFile, name);
+    }
+
+    private void uploadThumbnail(File localFile, String name, Integer size) {
+        String resizedName = makeResizedFileName(name, size, size);
+        File resizedImage = resizeImage(localFile, resizedName, size, size);
+        uploadToS3(resizedImage, resizedName);
+    }
+
+    private void uploadToS3(File localFile, String name) {
         try {
-            // 원본 업로드
-            putS3(localFile, fileName + FILE_EXTENSION);
-
-            // 썸네일 업로드
-            String imageLarge = makeResizedFileName(fileName, LARGE, LARGE) + FILE_EXTENSION;
-            File resizedImage1 = resizeImage(localFile, imageLarge, LARGE, LARGE);
-            putS3(resizedImage1, imageLarge);
-
-            String imageMedium = makeResizedFileName(fileName, MEDIUM, MEDIUM) + FILE_EXTENSION;
-            File resizedImage2 = resizeImage(localFile, imageMedium, MEDIUM, MEDIUM);
-            putS3(resizedImage2, imageMedium);
-
-            String imageSmall = makeResizedFileName(fileName, SMALL, SMALL) + FILE_EXTENSION;
-            File resizedImage3 = resizeImage(localFile, imageSmall, SMALL, SMALL);
-            putS3(resizedImage3, imageSmall);
-
+            // 업로드
+            putS3(localFile, name + FILE_EXTENSION);
         } catch (Exception e) {
-            throw new CustomException(ErrorCode.IMAGE_CONVERT_ERROR);
+            throw new CustomException(ErrorCode.IMAGE_UPLOAD_FAIL);
         } finally {
             deleteFile(localFile);
         }
     }
 
-    // MultipartFile 을 로컬 파일로 변환
-    private File convertToFile(MultipartFile multipartFile, String fileName) {
+    // MultipartFile 을 로컬 파일(File)로 변환
+    private File convertToFile(MultipartFile multipartFile, String name) {
         try {
-            File tempFile = File.createTempFile(fileName, FILE_EXTENSION);
+            File tempFile = File.createTempFile(name, FILE_EXTENSION, new File(tempImageFolder));
             multipartFile.transferTo(tempFile);
             return tempFile;
         } catch (IOException e) {
@@ -78,7 +82,6 @@ public class ImagesAsyncService {
 
     // 해당 파일이 이미지 파일인지 체크
     private void checkFile(File file) {
-
         String type;
         try {
             type = Files.probeContentType(file.toPath());
@@ -91,7 +94,7 @@ public class ImagesAsyncService {
         }
     }
 
-    // 업로드 하기
+    // s3 업로드, fileName 은 이미지 확장까지 붙은 완벽한 이름이어야함 ex) image.jpg
     private String putS3(File file, String fileName) {
         try {
             amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, file)
@@ -108,7 +111,7 @@ public class ImagesAsyncService {
      */
     private File resizeImage(File file, String name, int width, int height) {
         try {
-            File resizedFile = new File(file.getParent(), name);
+            File resizedFile = new File(file.getParent(), name + FILE_EXTENSION);
             Thumbnails.of(file)
                     .size(width, height)
                     .outputFormat("jpg")
@@ -121,7 +124,7 @@ public class ImagesAsyncService {
 
     private void deleteFile(File file) {
         if (!file.delete()) {
-            throw new RuntimeException("썸네일 파일 제거 실패!");
+            throw new CustomException(ErrorCode.IMAGE_DELETE_FAIL);
         }
     }
 }
