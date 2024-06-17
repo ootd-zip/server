@@ -1,26 +1,4 @@
 spring:
-  jpa:
-    hibernate:
-      ddl-auto: update
-    properties:
-      hibernate:
-        show-sql: false # 로그로 sql 구문을 출력하므로 사용안함
-        format_sql: true # sql 보기 편하게 출력
-        jdbc:
-          batch_size: 100 # update문 하이버네이트 배치를 사용하기 위해 추가, (Insert는 적용불가, id 생성방식이 Identity 이기 때문)
-        order_updates: true
-        dialect: org.hibernate.dialect.MariaDB103Dialect
-  datasource:
-    url: jdbc:mariadb://localhost:3306/ootdzip # mariaDB 쿼리로그가 보고싶을시 ?&profileSQL=true&maxQuerySizeToLog=0
-    username: ootdzip
-    password: 1234
-    driver-class-name: org.mariadb.jdbc.Driver
-  data:
-    redis:
-      host: 127.0.0.1
-      port: 6379
-      timeout: 10
-
   security:
     oauth2:
       client:
@@ -66,6 +44,7 @@ spring:
             user-name-attribute: response/id
 
   profiles:
+    default: prod
     include: secret
   servlet:
     multipart:
@@ -82,39 +61,3 @@ server:
       prefix: access_log
       file-date-format: .yyyy-MM-dd
       pattern: "%{yyyy-MM-dd HH:mm:ss}t %s %r %{User-Agent}i %{Referer}i %a %b %D"
-
-client:
-  base-url: https://ootdzip.com
-  dev-url: http://localhost:3000
-
-
-logging: #로그 레벨을 정하는 것
-  level:
-    org.hibernate.SQL: off #JPA 하이버네이트가 생성하는 SQL 로그
-    org.hibernate.orm.jdbc.bind: off # 스프링 3.0 이후 변경됨
-    zip.ootd.ootdzip.oauth.OAuth2AuthenticationFailureHandler: debug # 로그인 실패 시 로그
-
-# for swagger
-springdoc:
-  api-docs:
-    enabled: true
-  swagger-ui:
-    path: /swagger-ui
-    disable-swagger-default-url: true
-    display-request-duration: true
-    tags-sorter: alpha
-    operations-sorter: alpha
-    doc-expansion: none
-    syntax-highlight:
-      theme: nord
-    urls-primary-name: TEST API
-    persist-authorization: true
-    query-config-enabled: true
-  pre-loading-enabled: true
-
-# Token config
-authorization:
-  issuer: https://ootdzip.com
-  audience: https://ootdzip.com
-  access-token-time-to-live: 1800  # 30 minutes
-  refresh-token-time-to-live: 5184000  # 60 days
