@@ -6,8 +6,6 @@ APPLICATION_NAME="ootdzip-CD"
 # 현재 배포 그룹 이름을 가져옵니다.
 DEPLOYMENT_GROUP_NAME=$(aws deploy get-deployment-group --region ap-northeast-2 --application-name $APPLICATION_NAME --deployment-group-name $DEPLOYMENT_GROUP_NAME --query "deploymentGroupInfo.deploymentGroupName" --output text)
 
-
-
 PROJECT_ROOT="/home/ubuntu/server" #코드가 주입되는 경로
 JAR_FILE="$PROJECT_ROOT/build/libs/ootdzip-0.0.1-SNAPSHOT.jar" #build.gradle에서 설정한 파일명으로 변경
 
