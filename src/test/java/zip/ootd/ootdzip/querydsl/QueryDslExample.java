@@ -31,6 +31,7 @@ import zip.ootd.ootdzip.clothes.data.PurchaseStoreType;
 import zip.ootd.ootdzip.clothes.domain.Clothes;
 import zip.ootd.ootdzip.clothes.domain.ClothesColor;
 import zip.ootd.ootdzip.clothes.repository.ClothesRepository;
+import zip.ootd.ootdzip.images.domain.Images;
 import zip.ootd.ootdzip.ootd.domain.Ootd;
 import zip.ootd.ootdzip.ootd.repository.OotdRepository;
 import zip.ootd.ootdzip.ootdimage.domain.OotdImage;
@@ -115,7 +116,8 @@ public class QueryDslExample extends IntegrationTestSupport {
                     .build());
         }
 
-        OotdImage ootdImage = OotdImage.createOotdImageBy("input_image_url.jpg",
+        OotdImage ootdImage = OotdImage.createOotdImageBy(
+                Images.of("https://ootdzip.com/8c00f7f4-3f47-4238-2024-06-14.png"),
                 ootdImageClothes);
 
         List<OotdStyle> ootdStyles = new ArrayList<>();
@@ -158,7 +160,8 @@ public class QueryDslExample extends IntegrationTestSupport {
         List<ClothesColor> clothesColors = ClothesColor.createClothesColorsBy(List.of(savedColor));
 
         Clothes clothes = Clothes.createClothes(user, savedBrand, "구매처" + idx, PurchaseStoreType.Write, "제품명" + idx,
-                !isOpen, savedCategory, savedSize, "메모입니다" + idx, "구매일" + idx, "image" + idx + ".jpg", clothesColors);
+                !isOpen, savedCategory, savedSize, "메모입니다" + idx, "구매일" + idx,
+                "https://ootdzip.com/8c00f7f4-3f47-4238-2024-06-15.png" + idx + ".jpg", clothesColors);
 
         return clothesRepository.save(clothes);
     }

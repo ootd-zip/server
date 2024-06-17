@@ -22,6 +22,7 @@ import zip.ootd.ootdzip.category.domain.Category;
 import zip.ootd.ootdzip.category.domain.Size;
 import zip.ootd.ootdzip.clothes.data.PurchaseStoreType;
 import zip.ootd.ootdzip.common.entity.BaseEntity;
+import zip.ootd.ootdzip.images.domain.Images;
 import zip.ootd.ootdzip.ootdimageclothe.domain.OotdImageClothes;
 import zip.ootd.ootdzip.user.domain.User;
 
@@ -64,7 +65,7 @@ public class Clothes extends BaseEntity {
 
     private String purchaseDate;
 
-    private String imageUrl;
+    private Images images;
 
     private Integer reportCount;
 
@@ -100,7 +101,7 @@ public class Clothes extends BaseEntity {
                 .size(size)
                 .memo(memo)
                 .purchaseDate(purchaseDate)
-                .imageUrl(imageUrl)
+                .images(Images.of(imageUrl))
                 .reportCount(0)
                 .build();
 
@@ -118,7 +119,7 @@ public class Clothes extends BaseEntity {
             Size size,
             String memo,
             String purchaseDate,
-            String clothesImageUrl,
+            Images images,
             List<ClothesColor> clothesColors) {
         this.brand = brand;
         this.purchaseStore = purchaseStore;
@@ -129,7 +130,7 @@ public class Clothes extends BaseEntity {
         this.size = size;
         this.memo = memo;
         this.purchaseDate = purchaseDate;
-        this.imageUrl = clothesImageUrl;
+        this.images = images;
         this.updateClothesColor(clothesColors);
     }
 

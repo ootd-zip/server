@@ -1,6 +1,7 @@
 package zip.ootd.ootdzip.ootd.service;
 
 import java.time.Duration;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -26,6 +27,8 @@ import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.exception.code.ErrorCode;
 import zip.ootd.ootdzip.common.response.CommonPageResponse;
 import zip.ootd.ootdzip.common.response.CommonSliceResponse;
+import zip.ootd.ootdzip.images.domain.Images;
+import zip.ootd.ootdzip.images.service.ImagesService;
 import zip.ootd.ootdzip.notification.domain.NotificationType;
 import zip.ootd.ootdzip.notification.event.NotificationEvent;
 import zip.ootd.ootdzip.ootd.controller.response.OotdSearchRes;
@@ -68,6 +71,7 @@ public class OotdService {
     private final OotdImageRepository ootdImageRepository;
     private final ApplicationEventPublisher eventPublisher;
     private final UserBlockRepository userBlockRepository;
+    private final ImagesService imagesService;
 
     public Ootd postOotd(OotdPostReq request, User loginUser) {
 
@@ -80,7 +84,7 @@ public class OotdService {
                 return OotdImageClothes.createOotdImageClothesBy(clothes, coordinate, deviceSize);
             }).toList();
 
-            return OotdImage.createOotdImageBy(ootdImage.getOotdImage(), ootdImageClothesList);
+            return OotdImage.createOotdImageBy(Images.of(ootdImage.getOotdImage()), ootdImageClothesList);
         }).toList();
 
         List<Style> styles = styleRepository.findAllById(request.getStyles());
@@ -111,6 +115,8 @@ public class OotdService {
 
         userService.checkValidUser(ootd.getWriter());
 
+        Set<Images> imagesSet = new HashSet<>();
+
         List<OotdImage> ootdImages = request.getOotdImages().stream().map(ootdImage -> {
             List<OotdImageClothes> ootdImageClothesList = ootdImage.getClothesTags().stream().map(clothesTag -> {
                 Clothes clothes = clothesRepository.findById(clothesTag.getClothesId()).orElseThrow();
@@ -120,11 +126,20 @@ public class OotdService {
                 return OotdImageClothes.createOotdImageClothesBy(clothes, coordinate, deviceSize);
             }).toList();
 
-            return OotdImage.createOotdImageBy(ootdImage.getOotdImage(), ootdImageClothesList);
+            Images images = Images.of(ootdImage.getOotdImage());
+            imagesSet.add(images);
+            return OotdImage.createOotdImageBy(images, ootdImageClothesList);
         }).toList();
 
         List<Style> styles = styleRepository.findAllById(request.getStyles());
         List<OotdStyle> ootdStyles = OotdStyle.createOotdStylesBy(styles);
+
+        // 변경이 되지 않은 이미지 삭제
+        ootd.getOotdImages().stream().map(OotdImage::getImages).forEach(i -> {
+            if (!imagesSet.contains(i)) {
+                imagesService.deleteImagesByUrlToS3(i);
+            }
+        });
 
         ootd.updateAll(request.getContent(),
                 request.getIsPrivate(),
