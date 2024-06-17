@@ -9,7 +9,7 @@ env:
   AWS_REGION: ap-northeast-2
   AWS_S3_BUCKET: ootdzip-cicd-dev
   AWS_CODE_DEPLOY_APPLICATION: ootdzip-CD
-  AWS_CODE_DEPLOY_GROUP: ootdzip-cd-group
+  AWS_CODE_DEPLOY_GROUP: ootdzip-cd-dev
   OCCUPY_SECRET: ${{ secrets.OCCUPY_DEV_SECRET }}
   OCCUPY_SECRET_DIR: src/main/resources
   OCCUPY_SECRET_TEST_DIR: src/test/resources
