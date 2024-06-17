@@ -137,7 +137,7 @@ public enum ErrorCode {
 
     IMAGE_DELETE_FAIL(400, "I002", "이미지 삭제를 실패 했습니다."),
 
-    IMAGE_UPLOAD_FAIL(400, "I003", "이미지 업로드를 했습니다."),
+    IMAGE_UPLOAD_FAIL(400, "I003", "이미지 업로드를 실패 했습니다."),
 
     DELETE_USER_CLOTHES(404, "C006", "삭제된 유저의 옷입니다."),
 
