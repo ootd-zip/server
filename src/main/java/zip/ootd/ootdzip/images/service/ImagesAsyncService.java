@@ -49,24 +49,25 @@ public class ImagesAsyncService {
         uploadThumbnail(localFile, name, SMALL);
 
         // 원본 업로드, 원본 파일 삭제를 하기때문에 썸네일 파일을 업로드하고 실행해야함
-        uploadToS3(localFile, name);
+        uploadToS3(localFile, name + FILE_EXTENSION);
     }
 
     private void uploadThumbnail(File localFile, String name, Integer size) {
         String resizedName = makeResizedFileName(name, size, size);
         File resizedImage = resizeImage(localFile, resizedName, size, size);
-        uploadToS3(resizedImage, resizedName);
+        uploadToS3(resizedImage, resizedName + FILE_EXTENSION);
     }
 
-    private void uploadToS3(File localFile, String name) {
+    private void uploadToS3(File localFile, String fileName) {
         try {
             // 업로드
-            putS3(localFile, name + FILE_EXTENSION);
+            putS3(localFile, fileName);
         } catch (Exception e) {
+            // 이미지 업로드 실패시 파일 추후에 재업로드 하기위해 로컬에 파일을 남겨둠
             throw new CustomException(ErrorCode.IMAGE_UPLOAD_FAIL);
-        } finally {
-            deleteFile(localFile);
         }
+
+        deleteFile(localFile);
     }
 
     // MultipartFile 을 로컬 파일(File)로 변환
