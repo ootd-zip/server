@@ -70,12 +70,13 @@ public class ImagesService {
         uploadToS3(resizedImage, resizedName + FILE_EXTENSION);
     }
 
-    private void uploadToS3(File localFile, String fileName) {
+    // fileName 은 이미지 확장까지 붙은 완벽한 이름이어야함 ex) image.jpg
+    public void uploadToS3(File localFile, String fileName) {
         try {
             // 업로드
             putS3(localFile, fileName);
         } catch (Exception e) {
-            // 이미지 업로드 실패시 파일 추후에 재업로드 하기위해 로컬에 파일을 남겨둠
+            // 이미지 업로드 실패시 파일 추후에 재업로드 하기위해 로컬에 파일을 남겨둠(삭제 안함)
             throw new CustomException(ErrorCode.IMAGE_UPLOAD_FAIL);
         }
 
