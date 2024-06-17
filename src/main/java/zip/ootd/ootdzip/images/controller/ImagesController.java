@@ -1,6 +1,7 @@
 package zip.ootd.ootdzip.images.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -27,12 +28,26 @@ public class ImagesController {
     private final ImagesService imagesService;
 
     // 일단 구글 등록되기전에 이전 api 로 이미지 저장하기로함
-    @Operation(summary = "s3 이미지 저장", description = "사용자가 올릴 이미지를 s3에 저장후 해당 url 을 반환 합니다.")
+
+    /**
+     * 프론트에는 사진 url 을 만들어서 먼저 반환해줍니다.(실제로 이미지가 저장되지 않은상태)
+     * 비동기로 s3 로 이미지를 저장합니다.
+     * 비동기로 실행해서 자가호출문제를 막기위해 컨트롤러에서 imageService 를 따로 호출합니다.
+     */
+    @Operation(summary = "s3 이미지 저장", description = "사용자가 올릴 이미지를 s3에 저장, 해당 url 을 반환 합니다.")
     @PostMapping(value = "/s3/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiResponse<ImagesRes> saveS3Image(@ModelAttribute ImagesReq request) {
-        List<String> images = imagesService.getUrls(request);
-        ImagesRes imagesRes = new ImagesRes(images);
+
+        List<String> imageUrls = request.getImages().stream()
+                .map(i -> {
+                    String fileName = imagesService.makeFileName();
+                    imagesService.upload(i, fileName);
+                    return imagesService.makeImageUrl(fileName);
+                })
+                .collect(Collectors.toList());
+
+        ImagesRes imagesRes = new ImagesRes(imageUrls);
 
         return new ApiResponse<>(imagesRes);
     }
