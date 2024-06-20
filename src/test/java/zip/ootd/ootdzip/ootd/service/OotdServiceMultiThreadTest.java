@@ -228,7 +228,6 @@ public class OotdServiceMultiThreadTest {
         ExecutorService service = Executors.newFixedThreadPool(numberOfThreads);
         CountDownLatch latch = new CountDownLatch(numberOfThreads);
 
-        // 좋아요 감소
         // when
         Runnable task = () -> {
             try {
