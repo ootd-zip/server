@@ -47,6 +47,9 @@ dependencies {
     // embedded-redis for test
     implementation group: 'com.github.codemonstur', name: 'embedded-redis', version: '1.4.0'
 
+    // 동시성을 위한 redisson 추가
+    implementation group: 'org.redisson', name: 'redisson-spring-boot-starter', version: '3.31.0'
+
     //자바 역직렬화 문제 해결 패키지
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
     implementation 'com.fasterxml.jackson.core:jackson-databind'
