@@ -36,6 +36,7 @@ import zip.ootd.ootdzip.comment.data.CommentPostReq;
 import zip.ootd.ootdzip.comment.domain.Comment;
 import zip.ootd.ootdzip.comment.repository.CommentRepository;
 import zip.ootd.ootdzip.comment.service.CommentService;
+import zip.ootd.ootdzip.common.dao.RedisDao;
 import zip.ootd.ootdzip.images.domain.Images;
 import zip.ootd.ootdzip.notification.domain.Notification;
 import zip.ootd.ootdzip.notification.repository.NotificationRepository;
@@ -107,9 +108,13 @@ public class NotificationAsyncServiceTest {
     @Autowired
     private DBCleanUp dbCleanUp;
 
+    @Autowired
+    private RedisDao redisDao;
+
     @AfterEach
     void tearDown() {
         dbCleanUp.execute();
+        redisDao.deleteAll();
     }
 
     @DisplayName("OOTD 댓글 저장시 해당 댓글 ootd 에 대한 알림이 비동기로 저장 됩니다.")
