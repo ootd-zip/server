@@ -112,7 +112,7 @@ public class OotdController {
     public ApiResponse<Boolean> addLike(@PathVariable Long id) {
 
         ootdService.addLike(id, userService.getAuthenticatiedUser());
-        ootdService.increaseLike(id);
+        ootdService.increaseLikeCount(id);
 
         return new ApiResponse<>(true);
     }
@@ -122,7 +122,7 @@ public class OotdController {
     public ApiResponse<Boolean> cancelLike(@PathVariable Long id) {
 
         ootdService.cancelLike(id, userService.getAuthenticatiedUser());
-        ootdService.decreaseLike(id);
+        ootdService.decreaseLikeCount(id);
 
         return new ApiResponse<>(true);
     }

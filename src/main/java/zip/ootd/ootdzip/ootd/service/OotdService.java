@@ -261,7 +261,7 @@ public class OotdService {
 
     @RLockCustom(type = RLockType.OOTD_LIKE_COUNT, key = "#ootdId")
     @Transactional
-    public void increaseLike(Long ootdId) {
+    public void increaseLikeCount(Long ootdId) {
         Ootd ootd = ootdRepository.findById(ootdId).orElseThrow();
         ootd.increaseLike();
     }
@@ -289,7 +289,7 @@ public class OotdService {
 
     @RLockCustom(type = RLockType.OOTD_LIKE_COUNT, key = "#ootdId")
     @Transactional
-    public void decreaseLike(Long ootdId) {
+    public void decreaseLikeCount(Long ootdId) {
         Ootd ootd = ootdRepository.findById(ootdId).orElseThrow();
         ootd.decreaseLike();
     }
