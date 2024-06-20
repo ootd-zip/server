@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
+import zip.ootd.ootdzip.lock.annotation.RLockCustom;
+import zip.ootd.ootdzip.lock.domain.RLockType;
 import zip.ootd.ootdzip.report.controller.response.ReportRes;
 import zip.ootd.ootdzip.report.controller.response.ReportResultRes;
 import zip.ootd.ootdzip.report.domain.Report;
@@ -17,12 +19,12 @@ import zip.ootd.ootdzip.user.domain.User;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class ReportService {
 
     private final ReportRepository reportRepository;
     private final ReportStrategyProvider reportStrategyProvider;
 
+    @Transactional(readOnly = true)
     public List<ReportRes> getAllReports() {
 
         List<Report> allReports = reportRepository.findAll();
@@ -32,7 +34,8 @@ public class ReportService {
                 .toList();
     }
 
-    @Transactional(readOnly = false)
+    @RLockCustom(type = RLockType.REPORT_COUNT, keys = {"#request.getReportType()", "#request.getTargetId()"})
+    @Transactional
     public ReportResultRes report(ReportSvcReq request, User reporter) {
         final ReportStrategy reportStrategy = reportStrategyProvider.getStrategy(request.getReportType());
         return reportStrategy.report(reporter, request);
