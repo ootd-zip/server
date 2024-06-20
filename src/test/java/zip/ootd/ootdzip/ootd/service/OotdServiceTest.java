@@ -34,7 +34,6 @@ import zip.ootd.ootdzip.clothes.data.PurchaseStoreType;
 import zip.ootd.ootdzip.clothes.domain.Clothes;
 import zip.ootd.ootdzip.clothes.domain.ClothesColor;
 import zip.ootd.ootdzip.clothes.repository.ClothesRepository;
-import zip.ootd.ootdzip.common.constant.RedisKey;
 import zip.ootd.ootdzip.common.dao.RedisDao;
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.response.CommonPageResponse;
@@ -360,7 +359,7 @@ public class OotdServiceTest extends IntegrationTestSupport {
             "true",
             "false"
     })
-    void getOotd(boolean isPrivate) {
+    void getOotd(boolean isPrivate) throws InterruptedException {
         // given
         User user = createUserBy("유저");
         Ootd ootd = createOotdBy(user, "안녕", isPrivate);
@@ -370,29 +369,6 @@ public class OotdServiceTest extends IntegrationTestSupport {
 
         // then
         assertThat(result.getId()).isEqualTo(ootd.getId());
-        assertThat(redisDao.getValuesSet(RedisKey.OOTD.makeKeyWith(ootd.getId())))
-                .contains(user.getId() + ""); // redis 에 저장된 유저확인
-    }
-
-    @DisplayName("ootd 를 여러번 조회한다.")
-    @Test
-    void getOotdSeveral() {
-        // given
-        User user = createUserBy("유저");
-        User user1 = createUserBy("유저1");
-        Ootd ootd = createOotdBy(user, "안녕", false);
-
-        // when & then
-        ootdService.getOotd(ootd.getId(), user);
-        assertThat(redisDao.getValuesSet(RedisKey.OOTD.makeKeyWith(ootd.getId())))
-                .contains(user.getId() + "");
-
-        ootdService.getOotd(ootd.getId(), user1);
-        assertThat(redisDao.getValuesSet(RedisKey.OOTD.makeKeyWith(ootd.getId())))
-                .contains(user.getId() + "", user1.getId() + "");
-
-        ootdService.getOotd(ootd.getId(), user);
-        assertThat(ootd.getViewCount()).isEqualTo(2);
     }
 
     @DisplayName("ootd 를 조회시 존재하는 ootd 이어야 한다.")

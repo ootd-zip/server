@@ -36,6 +36,7 @@ import zip.ootd.ootdzip.ootd.data.OotdPostReq;
 import zip.ootd.ootdzip.ootd.data.OotdPostRes;
 import zip.ootd.ootdzip.ootd.data.OotdPutReq;
 import zip.ootd.ootdzip.ootd.service.OotdService;
+import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.service.UserService;
 
 @RestController
@@ -90,7 +91,9 @@ public class OotdController {
     @GetMapping("/{id}")
     public ApiResponse<OotdGetRes> getOotdPost(@PathVariable Long id) {
 
-        OotdGetRes response = ootdService.getOotd(id, userService.getAuthenticatiedUser());
+        User loginUser = userService.getAuthenticatiedUser();
+        OotdGetRes response = ootdService.getOotd(id, loginUser);
+        ootdService.increaseViewCount(id, loginUser);
 
         return new ApiResponse<>(response);
     }
@@ -109,6 +112,7 @@ public class OotdController {
     public ApiResponse<Boolean> addLike(@PathVariable Long id) {
 
         ootdService.addLike(id, userService.getAuthenticatiedUser());
+        ootdService.increaseLike(id);
 
         return new ApiResponse<>(true);
     }
@@ -118,6 +122,7 @@ public class OotdController {
     public ApiResponse<Boolean> cancelLike(@PathVariable Long id) {
 
         ootdService.cancelLike(id, userService.getAuthenticatiedUser());
+        ootdService.decreaseLike(id);
 
         return new ApiResponse<>(true);
     }
@@ -127,6 +132,7 @@ public class OotdController {
     public ApiResponse<Boolean> addBookMark(@PathVariable Long id) {
 
         ootdService.addBookmark(id, userService.getAuthenticatiedUser());
+        ootdService.increaseBookmarkCount(id);
 
         return new ApiResponse<>(true);
     }
@@ -136,6 +142,7 @@ public class OotdController {
     public ApiResponse<Boolean> cancelBookMark(@PathVariable Long id) {
 
         ootdService.cancelBookmark(id, userService.getAuthenticatiedUser());
+        ootdService.decreaseBookmarkCount(id);
 
         return new ApiResponse<>(true);
     }
