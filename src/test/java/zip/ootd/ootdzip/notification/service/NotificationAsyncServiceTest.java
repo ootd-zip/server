@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +14,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
 
+import zip.ootd.ootdzip.DBCleanUp;
 import zip.ootd.ootdzip.brand.domain.Brand;
 import zip.ootd.ootdzip.brand.repository.BrandRepository;
 import zip.ootd.ootdzip.category.data.SizeType;
@@ -56,8 +57,11 @@ import zip.ootd.ootdzip.user.service.UserService;
  * IntegrationTestSupport 에는 @Transaction 이 있는데
  * 알람 처리로직 중 부모 트랜잭션이 끝나야 수행되기 때문에 포괄적으로 트랜잭션 처리를 할 수 없습니다.
  * 그래서 트랜잭션으로 DB 를 초기화하지 않고 컨텍스트를 재시작해서 DB 를 초기화합니다.
+ * 컨텍스트 초기화방법으로 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD) 어노테이션을 사용했습니다
+ * </br>
+ * 2024.06.20
+ * 컨텍스트 초기화 방법은 시간이 오래걸립니다. 그래서 DB 를 비우는 방식으로 변경했습니다.
  */
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @SpringBootTest
 public class NotificationAsyncServiceTest {
 
@@ -99,6 +103,14 @@ public class NotificationAsyncServiceTest {
 
     @Autowired
     private NotificationRepository notificationRepository;
+
+    @Autowired
+    private DBCleanUp dbCleanUp;
+
+    @AfterEach
+    void tearDown() {
+        dbCleanUp.execute();
+    }
 
     @DisplayName("OOTD 댓글 저장시 해당 댓글 ootd 에 대한 알림이 비동기로 저장 됩니다.")
     @Test
