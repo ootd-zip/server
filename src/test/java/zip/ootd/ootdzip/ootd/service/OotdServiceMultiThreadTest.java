@@ -2,7 +2,6 @@ package zip.ootd.ootdzip.ootd.service;
 
 import static org.assertj.core.api.Assertions.*;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
