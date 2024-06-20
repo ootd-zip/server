@@ -14,5 +14,8 @@ import zip.ootd.ootdzip.lock.domain.RLockType;
 public @interface RLockCustom {
 
     RLockType type();
-    String key();
+
+    String key() default "";
+
+    String[] keys() default {};
 }

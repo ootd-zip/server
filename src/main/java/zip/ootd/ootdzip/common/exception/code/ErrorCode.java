@@ -151,7 +151,9 @@ public enum ErrorCode {
 
     RLOCK_TIME_OVER(400, "RL001", "락을 획득하려는 시간이 초과되었습니다."),
 
-    RLOCK_GET_FAIL(400, "RL002", "락을 획득을 실패했습니다.");
+    RLOCK_GET_FAIL(400, "RL002", "락을 획득을 실패했습니다."),
+
+    RLOCK_KEY_FAIL(400, "RL003", "락 키 생성에 실패했습니다.");
 
     private final Integer status;
 
