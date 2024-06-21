@@ -2,6 +2,7 @@ package zip.ootd.ootdzip.ootd.service;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -148,7 +149,7 @@ public class OotdServiceMultiThreadTest {
         assertThat(result.getViewCount()).isEqualTo(5);
     }
 
-    @DisplayName("ootd 좋아요 수 증가에 대한 동시성이 보장된다.")
+    @DisplayName("ootd 좋아요 수 증가/감소에 대한 동시성이 보장된다.")
     @Test
     public void increaseConcurrencyLikeCount() throws InterruptedException {
 
@@ -158,65 +159,56 @@ public class OotdServiceMultiThreadTest {
 
         int numberOfThreads = 100;
         ExecutorService service = Executors.newFixedThreadPool(numberOfThreads);
-        CountDownLatch latch = new CountDownLatch(numberOfThreads);
 
-        // 좋아요 증가
-        // when
-        Runnable task = () -> {
-            try {
-                ootdService.increaseLikeCount(ootd.getId());
-            } finally {
-                latch.countDown();
-            }
-        };
+        // 좋아요 추가 작업을 위한 latch
+        CountDownLatch latchAdd = new CountDownLatch(numberOfThreads);
 
-        // 모든 작업을 ExecutorService로 제출
+        List<User> users = new ArrayList<>();
         for (int i = 0; i < numberOfThreads; i++) {
-            service.execute(task);
+            users.add(createUserBy("유저" + i));
         }
 
-        latch.await();
+        // 좋아요 추가 작업
+        for (int i = 0; i < numberOfThreads; i++) {
+            final int index = i;
+            service.execute(() -> {
+                try {
+                    ootdService.addLike(ootd.getId(), users.get(index));
+                } finally {
+                    latchAdd.countDown();
+                }
+            });
+        }
+
+        latchAdd.await();
 
         // then
         Ootd result = ootdRepository.findById(ootd.getId()).orElseThrow();
         assertThat(result.getLikeCount()).isEqualTo(100);
-    }
 
-    @DisplayName("ootd 좋아요 수 감소에 대한 동시성이 보장된다.")
-    @Test
-    public void decreaseConcurrencyLikeCount() throws InterruptedException {
+        // 좋아요 취소 작업을 위한 latch
+        CountDownLatch latchCancel = new CountDownLatch(numberOfThreads);
 
-        // given
-        User user = createUserBy("유저");
-        Ootd ootd = createOotdBy(user, "안녕", false, 150, 150);
-
-        int numberOfThreads = 100;
-        ExecutorService service = Executors.newFixedThreadPool(numberOfThreads);
-        CountDownLatch latch = new CountDownLatch(numberOfThreads);
-
-        // 좋아요 감소
-        // when
-        Runnable task = () -> {
-            try {
-                ootdService.decreaseLikeCount(ootd.getId());
-            } finally {
-                latch.countDown();
-            }
-        };
-
-        // 모든 작업을 ExecutorService로 제출
+        // 좋아요 취소 작업
         for (int i = 0; i < numberOfThreads; i++) {
-            service.execute(task);
+            final int index = i;
+            service.execute(() -> {
+                try {
+                    ootdService.cancelLike(ootd.getId(), users.get(index));
+                } finally {
+                    latchCancel.countDown();
+                }
+            });
         }
 
-        latch.await();
+        latchCancel.await();
 
         // then
-        Ootd result = ootdRepository.findById(ootd.getId()).orElseThrow();
-        assertThat(result.getLikeCount()).isEqualTo(50);
+        Ootd result1 = ootdRepository.findById(ootd.getId()).orElseThrow();
+        assertThat(result1.getLikeCount()).isEqualTo(0);
     }
 
-    @DisplayName("ootd 북마크 수 증가에 대한 동시성이 보장된다.")
+    @DisplayName("ootd 북마크 수 증가/감소에 대한 동시성이 보장된다.")
     @Test
     public void increaseConcurrencyBookmarkCount() throws InterruptedException {
 
@@ -226,104 +218,53 @@ public class OotdServiceMultiThreadTest {
 
         int numberOfThreads = 100;
         ExecutorService service = Executors.newFixedThreadPool(numberOfThreads);
-        CountDownLatch latch = new CountDownLatch(numberOfThreads);
 
-        // when
-        Runnable task = () -> {
-            try {
-                ootdService.increaseBookmarkCount(ootd.getId());
-            } finally {
-                latch.countDown();
-            }
-        };
+        // 북마크 추가 작업을 위한 latch
+        CountDownLatch latchAdd = new CountDownLatch(numberOfThreads);
 
-        // 모든 작업을 ExecutorService로 제출
+        List<User> users = new ArrayList<>();
         for (int i = 0; i < numberOfThreads; i++) {
-            service.execute(task);
+            users.add(createUserBy("유저" + i));
         }
 
-        latch.await();
+        // 북마크 추가 작업
+        for (int i = 0; i < numberOfThreads; i++) {
+            final int index = i;
+            service.execute(() -> {
+                try {
+                    ootdService.addBookmark(ootd.getId(), users.get(index));
+                } finally {
+                    latchAdd.countDown();
+                }
+            });
+        }
+
+        latchAdd.await();
 
         // then
         Ootd result = ootdRepository.findById(ootd.getId()).orElseThrow();
         assertThat(result.getBookmarkCount()).isEqualTo(100);
-    }
 
-    @DisplayName("ootd 북마크 수 감소에 대한 동시성이 보장된다.")
-    @Test
-    public void decreaseConcurrencyBookmarkCount() throws InterruptedException {
+        // 북마크 취소 작업을 위한 latch
+        CountDownLatch latchCancel = new CountDownLatch(numberOfThreads);
 
-        // given
-        User user = createUserBy("유저");
-        Ootd ootd = createOotdBy(user, "안녕", false, 150, 150);
-
-        int numberOfThreads = 100;
-        ExecutorService service = Executors.newFixedThreadPool(numberOfThreads);
-        CountDownLatch latch = new CountDownLatch(numberOfThreads);
-
-        // when
-        Runnable task = () -> {
-            try {
-                ootdService.decreaseBookmarkCount(ootd.getId());
-            } finally {
-                latch.countDown();
-            }
-        };
-
-        // 모든 작업을 ExecutorService로 제출
+        // 북마크 취소 작업
         for (int i = 0; i < numberOfThreads; i++) {
-            service.execute(task);
+            final int index = i;
+            service.execute(() -> {
+                try {
+                    ootdService.cancelBookmark(ootd.getId(), users.get(index));
+                } finally {
+                    latchCancel.countDown();
+                }
+            });
         }
 
-        latch.await();
+        latchCancel.await();
 
         // then
-        Ootd result = ootdRepository.findById(ootd.getId()).orElseThrow();
-        assertThat(result.getBookmarkCount()).isEqualTo(50);
-    }
-
-    private Ootd createOotdBy(User user, String content, boolean isPrivate, int likeCount, int bookmarkCount) {
-
-        Clothes clothes = createClothesBy(user, true, "1");
-        Clothes clothes1 = createClothesBy(user, true, "2");
-
-        Coordinate coordinate = new Coordinate("22.33", "33.44");
-        Coordinate coordinate1 = new Coordinate("33.44", "44.55");
-
-        DeviceSize deviceSize = new DeviceSize(100L, 50L);
-        DeviceSize deviceSize1 = new DeviceSize(100L, 50L);
-
-        OotdImageClothes ootdImageClothes = OotdImageClothes.builder().clothes(clothes)
-                .coordinate(coordinate)
-                .deviceSize(deviceSize)
-                .build();
-
-        OotdImageClothes ootdImageClothes1 = OotdImageClothes.builder().clothes(clothes1)
-                .coordinate(coordinate1)
-                .deviceSize(deviceSize1)
-                .build();
-
-        OotdImage ootdImage = OotdImage.createOotdImageBy(Images.of(OOTD_IMAGE_URL),
-                Arrays.asList(ootdImageClothes, ootdImageClothes1));
-
-        Style style = Style.builder().name("올드머니").build();
-        styleRepository.save(style);
-        Style style1 = Style.builder().name("블루코어").build();
-        styleRepository.save(style1);
-
-        OotdStyle ootdStyle = OotdStyle.createOotdStyleBy(style);
-        OotdStyle ootdStyle1 = OotdStyle.createOotdStyleBy(style1);
-
-        Ootd ootd = Ootd.createOotd(user,
-                content,
-                isPrivate,
-                Arrays.asList(ootdImage),
-                Arrays.asList(ootdStyle, ootdStyle1));
-
-        ootd.setLikeCount(likeCount);
-        ootd.setBookmarkCount(bookmarkCount);
-
-        return ootdRepository.save(ootd);
+        Ootd result1 = ootdRepository.findById(ootd.getId()).orElseThrow();
+        assertThat(result1.getBookmarkCount()).isEqualTo(0);
     }
 
     private Ootd createOotdBy(User user, String content, boolean isPrivate) {

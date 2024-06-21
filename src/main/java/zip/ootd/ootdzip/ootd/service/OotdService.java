@@ -249,19 +249,14 @@ public class OotdService {
     /**
      * 로그인된 사용자 기준으로 좋아요를 추가합니다.
      */
+    @RLockCustom(type = RLockType.OOTD_LIKE_COUNT, key = "#ootdId")
     @Transactional
     public void addLike(Long ootdId, User loginUser) {
         Ootd ootd = ootdRepository.findById(ootdId).orElseThrow();
 
         ootd.addLike(loginUser);
-        notifyOotdLike(ootd.getWriter(), loginUser, ootd.getFirstImage(), ootd.getId());
-    }
-
-    @RLockCustom(type = RLockType.OOTD_LIKE_COUNT, key = "#ootdId")
-    @Transactional
-    public void increaseLikeCount(Long ootdId) {
-        Ootd ootd = ootdRepository.findById(ootdId).orElseThrow();
         ootd.increaseLike();
+        notifyOotdLike(ootd.getWriter(), loginUser, ootd.getFirstImage(), ootd.getId());
     }
 
     private void notifyOotdLike(User receiver, User sender, String imageUrl, Long id) {
@@ -279,45 +274,30 @@ public class OotdService {
                 .build());
     }
 
+    @RLockCustom(type = RLockType.OOTD_LIKE_COUNT, key = "#ootdId")
     @Transactional
     public void cancelLike(Long ootdId, User loginUser) {
         Ootd ootd = ootdRepository.findById(ootdId).orElseThrow();
         ootd.cancelLike(loginUser);
-    }
-
-    @RLockCustom(type = RLockType.OOTD_LIKE_COUNT, key = "#ootdId")
-    @Transactional
-    public void decreaseLikeCount(Long ootdId) {
-        Ootd ootd = ootdRepository.findById(ootdId).orElseThrow();
         ootd.decreaseLike();
     }
 
     /**
      * 로그인된 사용자 기준으로 북마크를 추가합니다.
      */
+    @RLockCustom(type = RLockType.OOTD_BOOKMARK_COUNT, key = "#ootdId")
     @Transactional
     public void addBookmark(Long ootdId, User loginUser) {
         Ootd ootd = ootdRepository.findById(ootdId).orElseThrow();
         ootd.addBookmark(loginUser);
-    }
-
-    @RLockCustom(type = RLockType.OOTD_BOOKMARK_COUNT, key = "#ootdId")
-    @Transactional
-    public void increaseBookmarkCount(Long ootdId) {
-        Ootd ootd = ootdRepository.findById(ootdId).orElseThrow();
         ootd.increaseBookmarkCount();
     }
 
+    @RLockCustom(type = RLockType.OOTD_BOOKMARK_COUNT, key = "#ootdId")
     @Transactional
     public void cancelBookmark(Long ootdId, User loginUser) {
         Ootd ootd = ootdRepository.findById(ootdId).orElseThrow();
         ootd.cancelBookmark(loginUser);
-    }
-
-    @RLockCustom(type = RLockType.OOTD_BOOKMARK_COUNT, key = "#ootdId")
-    @Transactional
-    public void decreaseBookmarkCount(Long ootdId) {
-        Ootd ootd = ootdRepository.findById(ootdId).orElseThrow();
         ootd.decreaseBookmarkCount();
     }
 
