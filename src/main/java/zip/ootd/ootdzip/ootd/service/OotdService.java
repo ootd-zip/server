@@ -32,7 +32,6 @@ import zip.ootd.ootdzip.images.domain.Images;
 import zip.ootd.ootdzip.images.service.ImagesService;
 import zip.ootd.ootdzip.lock.annotation.RLockCustom;
 import zip.ootd.ootdzip.lock.domain.RLockType;
-import zip.ootd.ootdzip.lock.service.RLockService;
 import zip.ootd.ootdzip.notification.domain.NotificationType;
 import zip.ootd.ootdzip.notification.event.NotificationEvent;
 import zip.ootd.ootdzip.ootd.controller.response.OotdSearchRes;
@@ -75,7 +74,6 @@ public class OotdService {
     private final ApplicationEventPublisher eventPublisher;
     private final UserBlockRepository userBlockRepository;
     private final ImagesService imagesService;
-    private final RLockService rLockService;
 
     @Transactional
     public Ootd postOotd(OotdPostReq request, User loginUser) {
