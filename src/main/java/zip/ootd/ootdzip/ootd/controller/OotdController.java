@@ -36,6 +36,7 @@ import zip.ootd.ootdzip.ootd.data.OotdPostReq;
 import zip.ootd.ootdzip.ootd.data.OotdPostRes;
 import zip.ootd.ootdzip.ootd.data.OotdPutReq;
 import zip.ootd.ootdzip.ootd.service.OotdService;
+import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.service.UserService;
 
 @RestController
@@ -90,7 +91,9 @@ public class OotdController {
     @GetMapping("/{id}")
     public ApiResponse<OotdGetRes> getOotdPost(@PathVariable Long id) {
 
-        OotdGetRes response = ootdService.getOotd(id, userService.getAuthenticatiedUser());
+        User loginUser = userService.getAuthenticatiedUser();
+        OotdGetRes response = ootdService.getOotd(id, loginUser);
+        ootdService.increaseViewCount(id, loginUser);
 
         return new ApiResponse<>(response);
     }

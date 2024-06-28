@@ -5,12 +5,14 @@ import static org.assertj.core.api.Assertions.*;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import jakarta.persistence.EntityManager;
-import zip.ootd.ootdzip.IntegrationTestSupport;
+import zip.ootd.ootdzip.DBCleanUp;
 import zip.ootd.ootdzip.brand.domain.Brand;
 import zip.ootd.ootdzip.brand.repository.BrandRepository;
 import zip.ootd.ootdzip.category.data.SizeType;
@@ -26,6 +28,7 @@ import zip.ootd.ootdzip.clothes.data.PurchaseStoreType;
 import zip.ootd.ootdzip.clothes.domain.Clothes;
 import zip.ootd.ootdzip.clothes.domain.ClothesColor;
 import zip.ootd.ootdzip.clothes.repository.ClothesRepository;
+import zip.ootd.ootdzip.common.dao.RedisDao;
 import zip.ootd.ootdzip.images.domain.Images;
 import zip.ootd.ootdzip.ootd.domain.Ootd;
 import zip.ootd.ootdzip.ootd.repository.OotdRepository;
@@ -39,7 +42,8 @@ import zip.ootd.ootdzip.ootdstyle.domain.OotdStyle;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.repository.UserRepository;
 
-class OotdLikeServiceTest extends IntegrationTestSupport {
+@SpringBootTest
+class OotdLikeServiceTest {
 
     @Autowired
     private OotdLikeService ootdLikeService;
@@ -70,6 +74,18 @@ class OotdLikeServiceTest extends IntegrationTestSupport {
 
     @Autowired
     private OotdRepository ootdRepository;
+
+    @Autowired
+    private RedisDao redisDao;
+
+    @Autowired
+    private DBCleanUp dbCleanUp;
+
+    @AfterEach
+    void tearDown() {
+        dbCleanUp.execute();
+        redisDao.deleteAll();
+    }
 
     @Autowired
     private EntityManager em;

@@ -43,6 +43,9 @@ dependencies {
     // embedded-redis for test
     implementation group: 'com.github.codemonstur', name: 'embedded-redis', version: '1.4.0'
 
+    // 동시성을 위한 redisson 추가
+    implementation group: 'org.redisson', name: 'redisson-spring-boot-starter', version: '3.31.0'
+
     //자바 역직렬화 문제 해결 패키지
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
     implementation 'com.fasterxml.jackson.core:jackson-databind'
@@ -81,6 +84,7 @@ dependencies {
     testImplementation 'org.projectlombok:lombok' // test 에서 롬복 추가
     testAnnotationProcessor 'org.projectlombok:lombok' // test 에서 롬복 인식
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+    implementation 'com.google.guava:guava:31.0.1-jre' // DB 초기화를 위함
 
     // h2
     testRuntimeOnly 'com.h2database:h2'
