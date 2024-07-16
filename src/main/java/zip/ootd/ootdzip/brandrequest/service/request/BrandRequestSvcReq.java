@@ -12,5 +12,5 @@ import lombok.NoArgsConstructor;
 @Getter
 public class BrandRequestSvcReq {
 
-    private String requestName;
+    private String requestContents;
 }

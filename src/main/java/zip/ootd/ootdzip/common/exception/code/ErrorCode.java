@@ -149,7 +149,7 @@ public enum ErrorCode {
 
     BLOCK_USER_CONTENTS(404, "UB004", "차단한 사용자의 컨텐츠입니다."),
 
-    REQUIRED_BRAND_REQUEST_NAME(400, "BR001", "요청할 브랜드의 이름은 필수입니다.");
+    REQUIRED_BRAND_REQUEST_NAME(400, "BR001", "브랜드 요청 내용은 필수입니다.");
 
     private final Integer status;
 

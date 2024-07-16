@@ -3,7 +3,6 @@ package zip.ootd.ootdzip.brandrequest.domain;
 import jakarta.persistence.*;
 import lombok.*;
 import zip.ootd.ootdzip.brandrequest.data.BrandRequestStatus;
-import zip.ootd.ootdzip.brandrequest.service.request.BrandRequestSvcReq;
 import zip.ootd.ootdzip.common.entity.BaseEntity;
 import zip.ootd.ootdzip.user.domain.User;
 
@@ -14,7 +13,7 @@ import zip.ootd.ootdzip.user.domain.User;
 @Builder
 public class BrandRequest extends BaseEntity {
 
-    private String requestName;
+    private String requestContents;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
@@ -25,10 +24,11 @@ public class BrandRequest extends BaseEntity {
 
     private String reason;
 
-    public static BrandRequest createBy(BrandRequestSvcReq svcRequest, User requestUser) {
+    public static BrandRequest createBy(String requestContents, User requestUser) {
         return BrandRequest.builder()
-                .requestName(svcRequest.getRequestName())
+                .requestContents(requestContents)
                 .requestUser(requestUser)
+                .requestStatus(BrandRequestStatus.REQUEST)
                 .build();
     }
 }

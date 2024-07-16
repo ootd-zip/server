@@ -19,7 +19,7 @@ class BrandRequestControllerTest extends ControllerTestSupport {
     void insertBrandRequest() throws Exception {
         // given
         BrandRequestReq request = new BrandRequestReq();
-        request.setRequestName("브랜드 이름");
+        request.setRequestContents("브랜드 이름");
 
         // when & then
         mockMvc.perform(post("/api/v1/brand-request")
@@ -36,7 +36,7 @@ class BrandRequestControllerTest extends ControllerTestSupport {
     void insertBrandRequestWithEmptyRequestName() throws Exception {
         // given
         BrandRequestReq request = new BrandRequestReq();
-        request.setRequestName("");
+        request.setRequestContents("");
 
         // when & then
         mockMvc.perform(post("/api/v1/brand-request")
@@ -46,7 +46,7 @@ class BrandRequestControllerTest extends ControllerTestSupport {
                 .andExpect(status().isNotFound())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(404))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.errors[0].field").value("requestName"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.errors[0].reason").value("요청할 브랜드의 이름은 필수입니다."));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errors[0].reason").value("브랜드 요청 내용은 필수입니다."));
     }
 
 }
