@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.hibernate.annotations.ColumnDefault;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -27,6 +29,7 @@ import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.exception.code.ErrorCode;
 import zip.ootd.ootdzip.images.domain.Images;
 import zip.ootd.ootdzip.ootd.domain.Ootd;
+import zip.ootd.ootdzip.user.data.UserRole;
 
 @Entity
 @Table(name = "users")
@@ -69,6 +72,11 @@ public class User extends BaseEntity {
 
     @Column(nullable = false)
     private Boolean isDeleted = false;
+
+    @Column(nullable = false)
+    @Enumerated(value = EnumType.STRING)
+    @ColumnDefault("'USER'")
+    private UserRole userRole = UserRole.USER;
 
     @OneToMany(mappedBy = "user")
     private List<Clothes> clothesList;
