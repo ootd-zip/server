@@ -1,6 +1,18 @@
 package zip.ootd.ootdzip.clothes.domain;
 
-import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,9 +25,6 @@ import zip.ootd.ootdzip.common.entity.BaseEntity;
 import zip.ootd.ootdzip.images.domain.Images;
 import zip.ootd.ootdzip.ootdimageclothe.domain.OotdImageClothes;
 import zip.ootd.ootdzip.user.domain.User;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "clothes")
