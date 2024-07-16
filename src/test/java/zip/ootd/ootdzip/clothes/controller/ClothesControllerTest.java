@@ -58,31 +58,33 @@ class ClothesControllerTest extends ControllerTestSupport {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result.id").isNumber());
     }
 
-    @DisplayName("옷을 저장할 때 구매처는 필수이다.")
+    @DisplayName("필수인 값만으로 옷을 저장한다.")
     @Test
-    void saveClothesWithoutPurchaseStore() throws Exception {
+    void saveClothesWithEssentialInfo() throws Exception {
         // given
         SaveClothesReq request = SaveClothesReq.builder()
+                .purchaseStore("")
+                .purchaseStoreType(null)
                 .brandId(1L)
-                .purchaseStoreType(PurchaseStoreType.Write)
                 .categoryId(1L)
                 .colorIds(List.of(1L))
                 .isPrivate(false)
-                .sizeId(1L)
+                .sizeId(0L)
                 .clothesImageUrl("image1.jpg")
                 .name("제품명1")
                 .memo("메모입니다.")
-                .purchaseDate("구매시기1")
+                .purchaseDate("")
                 .build();
+
+        when(clothesService.saveClothes(any(), any())).thenReturn(new SaveClothesRes(1L));
 
         // when & then
         mockMvc.perform(post("/api/v1/clothes").content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isNotFound())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(404))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.errors[0].field").value("purchaseStore"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.errors[0].reason").value("구매처는 필수입니다."));
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(200))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.id").isNumber());
     }
 
     @DisplayName("옷을 저장할 때 브랜드 ID는 양수이다.")
@@ -221,34 +223,6 @@ class ClothesControllerTest extends ControllerTestSupport {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(404))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.errors[0].field").value("isPrivate"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.errors[0].reason").value("공개여부는 필수입니다."));
-    }
-
-    @DisplayName("옷을 저장할 때 사이즈 ID는 양수여야 한다.")
-    @Test
-    void saveClothesWithZeroSizeId() throws Exception {
-        // given
-        SaveClothesReq request = SaveClothesReq.builder()
-                .purchaseStore("구매처1")
-                .purchaseStoreType(PurchaseStoreType.Write)
-                .brandId(1L)
-                .categoryId(1L)
-                .colorIds(List.of(1L))
-                .isPrivate(false)
-                .sizeId(0L)
-                .clothesImageUrl("image1.jpg")
-                .name("제품명1")
-                .memo("메모입니다.")
-                .purchaseDate("구매시기1")
-                .build();
-
-        // when & then
-        mockMvc.perform(post("/api/v1/clothes").content(objectMapper.writeValueAsString(request))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isNotFound())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(404))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.errors[0].field").value("sizeId"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.errors[0].reason").value("사이즈 ID는 양수여야 합니다."));
     }
 
     @DisplayName("옷을 저장할 때 이미지는 필수이다.")
@@ -506,6 +480,38 @@ class ClothesControllerTest extends ControllerTestSupport {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result.id").isNumber());
     }
 
+    @DisplayName("필수인 값만으로 옷 세부정보를 수정한다")
+    @Test
+    void updateClothesWithEssentialInfo() throws Exception {
+        // given
+        UpdateClothesReq request = UpdateClothesReq.builder()
+                .purchaseStore("")
+                .purchaseStoreType(null)
+                .brandId(1L)
+                .categoryId(1L)
+                .colorIds(List.of(1L))
+                .isPrivate(false)
+                .sizeId(0L)
+                .clothesImageUrl("image1.jpg")
+                .name("제품명1")
+                .memo("메모입니다.")
+                .purchaseDate("")
+                .build();
+
+        Long clothesId = 1L;
+
+        when(clothesService.updateClothes(any(), any())).thenReturn(new SaveClothesRes(clothesId));
+
+        // when & then
+        mockMvc.perform(put("/api/v1/clothes/{id}", clothesId)
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(200))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.id").isNumber());
+    }
+
     @DisplayName("옷을 수정할 때 옷 ID는 양수여야한다.")
     @Test
     void updateClothesWithZeroClothesId() throws Exception {
@@ -534,36 +540,6 @@ class ClothesControllerTest extends ControllerTestSupport {
                 .andExpect(status().isNotFound())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(404))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.reason").value(containsString("옷 ID는 양수여야 합니다.")));
-    }
-
-    @DisplayName("옷을 수정할 때 구매처는 필수이다.")
-    @Test
-    void updateClothesWithoutPurchaseStore() throws Exception {
-        // given
-        UpdateClothesReq request = UpdateClothesReq.builder()
-                .purchaseStoreType(PurchaseStoreType.Write)
-                .brandId(1L)
-                .categoryId(1L)
-                .colorIds(List.of(1L))
-                .isPrivate(false)
-                .sizeId(1L)
-                .clothesImageUrl("image1.jpg")
-                .name("제품명1")
-                .memo("메모입니다.")
-                .purchaseDate("구매시기1")
-                .build();
-
-        Long clothesId = 1L;
-
-        // when & then
-        mockMvc.perform(put("/api/v1/clothes/{id}", clothesId)
-                        .content(objectMapper.writeValueAsString(request))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isNotFound())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(404))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.errors[0].field").value("purchaseStore"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.errors[0].reason").value("구매처는 필수입니다."));
     }
 
     @DisplayName("옷을 수정할 때 브랜드 ID는 양수이다.")
@@ -720,36 +696,6 @@ class ClothesControllerTest extends ControllerTestSupport {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.errors[0].reason").value("공개여부는 필수입니다."));
     }
 
-    @DisplayName("옷을 수정할 때 사이즈 ID는 양수여야 한다.")
-    @Test
-    void updateClothesWithZeroSizeId() throws Exception {
-        // given
-        UpdateClothesReq request = UpdateClothesReq.builder()
-                .purchaseStore("구매처1")
-                .purchaseStoreType(PurchaseStoreType.Write)
-                .brandId(1L)
-                .categoryId(1L)
-                .colorIds(List.of(1L))
-                .isPrivate(false)
-                .sizeId(0L)
-                .clothesImageUrl("image1.jpg")
-                .name("제품명1")
-                .memo("메모입니다.")
-                .purchaseDate("구매시기1")
-                .build();
-
-        Long clothesId = 1L;
-
-        // when & then
-        mockMvc.perform(put("/api/v1/clothes/{id}", clothesId)
-                        .content(objectMapper.writeValueAsString(request))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isNotFound())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(404))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.errors[0].field").value("sizeId"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.errors[0].reason").value("사이즈 ID는 양수여야 합니다."));
-    }
 
     @DisplayName("옷을 수정할 때 이미지는 필수이다.")
     @Test
@@ -853,36 +799,6 @@ class ClothesControllerTest extends ControllerTestSupport {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(404))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.errors[0].field").value("memo"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.errors[0].reason").value("메모는 최대 2000자입니다."));
-    }
-
-    @DisplayName("옷을 수정할 때 구매처 타입은 필수이다.")
-    @Test
-    void updateClothesWithoutPurchaseStoreType() throws Exception {
-        // given
-        UpdateClothesReq request = UpdateClothesReq.builder()
-                .purchaseStore("구매처1")
-                .brandId(1L)
-                .categoryId(1L)
-                .colorIds(List.of(1L))
-                .isPrivate(false)
-                .sizeId(1L)
-                .clothesImageUrl("image1.jpg")
-                .name("제품명1")
-                .memo("메모입니다.")
-                .purchaseDate("구매시기1")
-                .build();
-
-        Long clothesId = 1L;
-
-        // when & then
-        mockMvc.perform(put("/api/v1/clothes/{id}", clothesId)
-                        .content(objectMapper.writeValueAsString(request))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isNotFound())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(404))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.errors[0].field").value("purchaseStoreType"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.errors[0].reason").value("유효하지 않은 구매처 타입입니다."));
     }
 
     @DisplayName("옷 공개여부를 수정한다")

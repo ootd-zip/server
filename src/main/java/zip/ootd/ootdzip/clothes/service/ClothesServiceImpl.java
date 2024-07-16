@@ -68,8 +68,7 @@ public class ClothesServiceImpl implements ClothesService {
         Category category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new CustomException(NOT_FOUND_CATEGORY_ID));
         List<Color> colors = colorRepository.findAllById(request.getColorIds());
-        Size size = sizeRepository.findById(request.getSizeId())
-                .orElseThrow(() -> new CustomException(NOT_FOUND_SIZE_ID));
+        Size size = null;
 
         if (colors.size() != request.getColorIds().size()
                 || request.getColorIds().isEmpty()) {
@@ -80,8 +79,20 @@ public class ClothesServiceImpl implements ClothesService {
             throw new CustomException(REQUIRED_DETAIL_CATEGORY);
         }
 
-        if (!size.getSizeType().equals(category.getSizeType())) {
-            throw new CustomException(INVALID_CATEGORY_AND_SIZE);
+        if (request.getSizeId() != null
+                && 0 < request.getSizeId()) {
+            size = sizeRepository.findById(request.getSizeId())
+                    .orElseThrow(() -> new CustomException(NOT_FOUND_SIZE_ID));
+
+            if (!size.getSizeType().equals(category.getSizeType())) {
+                throw new CustomException(INVALID_CATEGORY_AND_SIZE);
+            }
+        }
+
+        if (null != request.getPurchaseStore()
+                && !request.getPurchaseStore().isBlank()
+                && null == request.getPurchaseStoreType()) {
+            throw new CustomException(INVALID_PURCHASE_STORE_TYPE);
         }
 
         List<ClothesColor> clothesColors = ClothesColor.createClothesColorsBy(colors);
@@ -193,8 +204,7 @@ public class ClothesServiceImpl implements ClothesService {
         Category category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new CustomException(NOT_FOUND_CATEGORY_ID));
         List<Color> colors = colorRepository.findAllById(request.getColorIds());
-        Size size = sizeRepository.findById(request.getSizeId())
-                .orElseThrow(() -> new CustomException(NOT_FOUND_SIZE_ID));
+        Size size = null;
 
         if (colors.size() != request.getColorIds().size()
                 || request.getColorIds().isEmpty()) {
@@ -205,8 +215,20 @@ public class ClothesServiceImpl implements ClothesService {
             throw new CustomException(REQUIRED_DETAIL_CATEGORY);
         }
 
-        if (!size.getSizeType().equals(category.getSizeType())) {
-            throw new CustomException(INVALID_CATEGORY_AND_SIZE);
+        if (request.getSizeId() != null
+                && 0 < request.getSizeId()) {
+            size = sizeRepository.findById(request.getSizeId())
+                    .orElseThrow(() -> new CustomException(NOT_FOUND_SIZE_ID));
+
+            if (!size.getSizeType().equals(category.getSizeType())) {
+                throw new CustomException(INVALID_CATEGORY_AND_SIZE);
+            }
+        }
+
+        if (null != request.getPurchaseStore()
+                && !request.getPurchaseStore().isBlank()
+                && null == request.getPurchaseStoreType()) {
+            throw new CustomException(INVALID_PURCHASE_STORE_TYPE);
         }
 
         List<ClothesColor> clothesColors = ClothesColor.createClothesColorsBy(colors);

@@ -153,7 +153,9 @@ public enum ErrorCode {
 
     RLOCK_GET_FAIL(400, "RL002", "락을 획득을 실패했습니다."),
 
-    RLOCK_KEY_FAIL(400, "RL003", "락 키 생성에 실패했습니다.");
+    RLOCK_KEY_FAIL(400, "RL003", "락 키 생성에 실패했습니다."),
+
+    INVALID_PURCHASE_STORE_TYPE(404, "C007", "유효하지 않은 구매처 타입");
 
     private final Integer status;
 

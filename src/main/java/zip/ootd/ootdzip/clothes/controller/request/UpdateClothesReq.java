@@ -18,10 +18,9 @@ import zip.ootd.ootdzip.common.valid.EnumValid;
 @NoArgsConstructor
 public class UpdateClothesReq {
 
-    @NotBlank(message = "구매처는 필수입니다.")
     private String purchaseStore;
 
-    @EnumValid(enumClass = PurchaseStoreType.class, message = "유효하지 않은 구매처 타입입니다.")
+    @EnumValid(enumClass = PurchaseStoreType.class, message = "유효하지 않은 구매처 타입입니다.", nullable = true)
     private PurchaseStoreType purchaseStoreType;
 
     @Positive(message = "브랜드 ID는 양수여야 합니다.")
@@ -36,7 +35,6 @@ public class UpdateClothesReq {
     @NotNull(message = "공개여부는 필수입니다.")
     private Boolean isPrivate;
 
-    @Positive(message = "사이즈 ID는 양수여야 합니다.")
     private Long sizeId;
 
     @NotBlank(message = "이미지는 필수입니다.")
