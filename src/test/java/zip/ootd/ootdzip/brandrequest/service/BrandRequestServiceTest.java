@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import zip.ootd.ootdzip.brand.domain.Brand;
 import zip.ootd.ootdzip.brand.repository.BrandRepository;
 import zip.ootd.ootdzip.brandrequest.domain.BrandRequest;
 import zip.ootd.ootdzip.brandrequest.repository.BrandRequestRepository;
@@ -72,14 +73,14 @@ class BrandRequestServiceTest {
 
     }
 
-    @DisplayName("브랜드 요청을 승인하여 브랜드를 추가한다")
+    @DisplayName("브랜드 요청을 승인하여 브랜드를 추가하고 요청자에게 알림이 간다.")
     @Test
     void approveBrandRequest() {
         // given
         User requestUser = createUserBy("요청자1");
         BrandRequest brandRequest = createBrandRequestBy("브랜드1", requestUser);
 
-        User user = createUserBy("어드민1");
+        User user = createUserBy("어드민1", UserRole.ADMIN);
         BrandRequestApproveSvcReq request = new BrandRequestApproveSvcReq();
 
         // when
@@ -88,6 +89,56 @@ class BrandRequestServiceTest {
         //then
         brandRepository.findOneByName("브랜드1");
 
+    }
+
+    @DisplayName("브랜드 요청을 승인할 때 브랜드 요청 ID들을 입력하지 않으면 에러가 발생한다.")
+    @Test
+    void approveBrandRequestWithEmptyBrandRequestIds() {
+        // given
+
+        // when
+
+        //then
+    }
+
+    @DisplayName("브랜드 요청을 승인할 때 브랜드명을 입력하지 않으면 에러가 발생한다.")
+    @Test
+    void approveBrandRequestWithoutBrandName() {
+        // given
+
+        // when
+
+        //then
+    }
+
+    @DisplayName("브랜드 요청을 승인할 때 영문 브랜드명을 입력하지 않으면 에러가 발생한다.")
+    @Test
+    void approveBrandRequestWithoutBrandEngName() {
+        // given
+
+        // when
+
+        //then
+    }
+
+    @DisplayName("브랜드 요청을 승인할 때 이미 존재하는 브랜드명을 입력하면 에러가 발생한다.")
+    @Test
+    void approveBrandRequestWithExistBrandName() {
+        // given
+
+        // when
+
+        //then
+    }
+
+    @DisplayName("브랜드 요청을 승인할 때 이미 존재하는 영문 브랜드명을 입력하면 에러가 발생한다.")
+    @Test
+    void approveBrandRequestWithExistBrandEngName() {
+        // given
+
+        // when
+
+        //then
     }
 
     private User createUserBy(String name) {
@@ -106,5 +157,14 @@ class BrandRequestServiceTest {
     private BrandRequest createBrandRequestBy(String requestContents, User requestUser) {
         BrandRequest brandRequest = BrandRequest.createBy(requestContents, requestUser);
         return brandRequestRepository.save(brandRequest);
+    }
+
+    private Brand createBrandBy(String brandName, String brandEngName) {
+        Brand brand = Brand.builder()
+                .name(brandName)
+                .engName(brandEngName)
+                .build();
+
+        return brandRepository.save(brand);
     }
 }
