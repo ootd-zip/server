@@ -21,6 +21,15 @@ public class SizeRes {
     }
 
     public static SizeRes of(Size size) {
+
+        if (size == null) {
+            return SizeRes.builder()
+                    .id(0L)
+                    .name("")
+                    .lineNo((byte)0)
+                    .build();
+        }
+
         return SizeRes.builder()
                 .id(size.getId())
                 .name(size.getName())
