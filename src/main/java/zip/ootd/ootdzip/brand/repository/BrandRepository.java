@@ -14,4 +14,6 @@ public interface BrandRepository extends JpaRepository<Brand, Long>, BrandReposi
     Boolean existsByName(String name);
 
     List<Brand> findByNameStartsWithOrEngNameStartsWith(String name, String engName, Sort sort);
+
+    Brand findOneByName(String name);
 }

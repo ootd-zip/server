@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import zip.ootd.ootdzip.IntegrationTestSupport;
 import zip.ootd.ootdzip.brand.data.BrandDto;
-import zip.ootd.ootdzip.brand.data.BrandSaveReq;
 import zip.ootd.ootdzip.brand.domain.Brand;
 import zip.ootd.ootdzip.brand.repository.BrandRepository;
 import zip.ootd.ootdzip.brand.service.request.BrandSearchSvcReq;
@@ -51,36 +50,12 @@ class BrandServiceTest extends IntegrationTestSupport {
     @Autowired
     private ClothesRepository clothesRepository;
 
-    @DisplayName("브랜드를 저장한다.")
-    @Test
-    void saveBrand() {
-        // given
-        BrandSaveReq request = BrandSaveReq.builder()
-                .name("브랜드1")
-                .build();
-
-        // when
-        BrandDto result = brandService.saveBrand(request);
-
-        //then
-        assertThat(result.getName()).isEqualTo(request.getName());
-    }
-
     @DisplayName("브랜드를 조회한다.")
     @Test
     void getBrand() {
         // given
-        BrandSaveReq request1 = BrandSaveReq.builder()
-                .name("브랜드1")
-                .build();
-
-        BrandDto brand1 = brandService.saveBrand(request1);
-
-        BrandSaveReq request2 = BrandSaveReq.builder()
-                .name("테스트1")
-                .build();
-
-        BrandDto brand2 = brandService.saveBrand(request2);
+        createBrandBy("브랜드1", "brand1");
+        createBrandBy("테스트1", "test1");
 
         BrandSearchSvcReq request3 = BrandSearchSvcReq.builder()
                 .name("브")

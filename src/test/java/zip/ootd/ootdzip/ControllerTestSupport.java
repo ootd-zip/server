@@ -10,6 +10,8 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import zip.ootd.ootdzip.brandrequest.controller.BrandRequestController;
+import zip.ootd.ootdzip.brandrequest.service.BrandRequestService;
 import zip.ootd.ootdzip.clothes.controller.ClothesController;
 import zip.ootd.ootdzip.clothes.service.ClothesService;
 import zip.ootd.ootdzip.comment.controller.CommentController;
@@ -35,7 +37,8 @@ import zip.ootd.ootdzip.userblock.service.UserBlockService;
         OotdBookmarkController.class,
         UserController.class,
         NotificationController.class,
-        UserBlockController.class
+        UserBlockController.class,
+        BrandRequestController.class
 })
 public abstract class ControllerTestSupport {
 
@@ -71,6 +74,9 @@ public abstract class ControllerTestSupport {
 
     @MockBean
     protected UserBlockService userBlockService;
+
+    @MockBean
+    protected BrandRequestService brandRequestService;
 
     @BeforeEach
     void setUp() {

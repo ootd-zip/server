@@ -155,7 +155,9 @@ public enum ErrorCode {
 
     RLOCK_KEY_FAIL(400, "RL003", "락 키 생성에 실패했습니다."),
 
-    INVALID_PURCHASE_STORE_TYPE(404, "C007", "유효하지 않은 구매처 타입");
+    INVALID_PURCHASE_STORE_TYPE(404, "C007", "유효하지 않은 구매처 타입"),
+
+    REQUIRED_BRAND_REQUEST_NAME(400, "BR001", "브랜드 요청 내용은 필수입니다.");
 
     private final Integer status;
 
