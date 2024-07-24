@@ -144,12 +144,18 @@ public class Ootd extends BaseEntity {
     public void addLike(User user) {
         OotdLike ootdLike = getOotdLike(user).orElse(OotdLike.createOotdLikeBy(user));
         addOotdLike(ootdLike);
+    }
+
+    public void increaseLike() {
         this.likeCount += 1;
     }
 
     public void cancelLike(User user) {
         OotdLike ootdLike = getOotdLike(user).orElseThrow(NoSuchElementException::new);
         deleteOotdLike(ootdLike);
+    }
+
+    public void decreaseLike() {
         this.likeCount -= 1;
     }
 
@@ -167,13 +173,18 @@ public class Ootd extends BaseEntity {
     public void addBookmark(User user) {
         OotdBookmark ootdBookmark = getOotdBookmark(user).orElse(OotdBookmark.createOotdBookmarkBy(user));
         addOotdBookmark(ootdBookmark);
+    }
 
+    public void increaseBookmarkCount() {
         this.bookmarkCount += 1;
     }
 
     public void cancelBookmark(User user) {
         OotdBookmark ootdBookmark = getOotdBookmark(user).orElseThrow(NoSuchElementException::new);
         deleteOotdBookmark(ootdBookmark);
+    }
+
+    public void decreaseBookmarkCount() {
         if (0 < this.bookmarkCount) {
             this.bookmarkCount -= 1;
         }

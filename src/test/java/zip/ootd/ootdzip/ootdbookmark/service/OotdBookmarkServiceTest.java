@@ -112,9 +112,6 @@ public class OotdBookmarkServiceTest extends IntegrationTestSupport {
                 .hasSize(2)
                 .extracting("ootd.id")
                 .containsExactlyInAnyOrder(ootd.getId(), ootd1.getId());
-
-        assertThat(ootd.getBookmarkCount()).isEqualTo(1);
-        assertThat(ootd2.getBookmarkCount()).isEqualTo(0);
     }
 
     private Ootd createOotdBy(User user, String content, boolean isPrivate) {

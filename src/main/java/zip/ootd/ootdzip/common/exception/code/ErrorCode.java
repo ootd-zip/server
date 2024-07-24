@@ -149,7 +149,16 @@ public enum ErrorCode {
 
     BLOCK_USER_CONTENTS(404, "UB004", "차단한 사용자의 컨텐츠입니다."),
 
+    RLOCK_TIME_OVER(400, "RL001", "락을 획득하려는 시간이 초과되었습니다."),
+
+    RLOCK_GET_FAIL(400, "RL002", "락을 획득을 실패했습니다."),
+
+    RLOCK_KEY_FAIL(400, "RL003", "락 키 생성에 실패했습니다."),
+
+    INVALID_PURCHASE_STORE_TYPE(404, "C007", "유효하지 않은 구매처 타입"),
+  
     REQUIRED_BRAND_REQUEST_NAME(400, "BR001", "브랜드 요청 내용은 필수입니다.");
+
 
     private final Integer status;
 

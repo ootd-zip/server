@@ -73,7 +73,7 @@ public interface ClothesRepository extends JpaRepository<Clothes, Long>, Clothes
                     + "FROM clothes c "
                     + "JOIN brands b ON c.brand_id = b.id "
                     + "JOIN categories cg ON c.category_id = cg.id "
-                    + "JOIN sizes s ON c.size_id = s.id "
+                    + "LEFT OUTER JOIN sizes s ON c.size_id = s.id "
                     + "JOIN users u ON c.user_id = u.id AND u.is_deleted = false "
                     + "WHERE c.is_private = false "
                     + "AND c.id IN :clothesIds "

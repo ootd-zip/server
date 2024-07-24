@@ -19,6 +19,8 @@ public @interface EnumValid {
 
     String message() default "";
 
+    boolean nullable() default false;
+
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
