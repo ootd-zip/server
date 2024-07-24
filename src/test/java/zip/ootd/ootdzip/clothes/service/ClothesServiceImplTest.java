@@ -139,6 +139,57 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
                 .containsExactlyInAnyOrder(tuple("색1", "#fffff"));
     }
 
+    @DisplayName("필수인 값만으로 유저가 옷을 저장한다.")
+    @Test
+    void saveClothesWithEssentialInfo() {
+        // given
+        User user = createUserBy("유저1");
+
+        Brand brand = Brand.builder().name("브랜드1").build();
+
+        Brand savedBrand = brandRepository.save(brand);
+
+        Category parentCategory = Category.createLargeCategoryBy("상위카테고리1", SizeType.TOP);
+
+        Category savedParentCategory = categoryRepository.save(parentCategory);
+
+        Category category = Category.createDetailCategoryBy("카테고리1", savedParentCategory, SizeType.TOP);
+
+        Category savedCategory = categoryRepository.save(category);
+
+        Color color = Color.builder().name("색1").colorCode("#fffff").build();
+
+        Color savedColor = colorRepository.save(color);
+
+        SaveClothesSvcReq request = SaveClothesSvcReq.builder()
+                .purchaseStore("")
+                .purchaseStoreType(null)
+                .brandId(savedBrand.getId())
+                .categoryId(savedCategory.getId())
+                .colorIds(List.of(savedColor.getId()))
+                .isPrivate(false)
+                .sizeId(0L)
+                .clothesImageUrl(CLOTHES_IMAGE_URL)
+                .memo("메모입니다.")
+                .name("제품명1")
+                .purchaseDate("구매시기1")
+                .build();
+        // when
+        SaveClothesRes result = clothesService.saveClothes(request, user);
+
+        //then
+        Clothes saveResult = clothesRepository.findById(result.getId()).get();
+
+        assertThat(saveResult).extracting("id", "name", "user", "brand", "isPrivate", "category", "size", "memo",
+                        "purchaseStore", "purchaseDate", "images.imageUrl", "purchaseStoreType")
+                .contains(result.getId(), "제품명1", user, savedBrand, false, savedCategory, null, "메모입니다.", null,
+                        "구매시기1", CLOTHES_IMAGE_URL, null);
+
+        assertThat(saveResult.getClothesColors()).hasSize(1)
+                .extracting("color.name", "color.colorCode")
+                .containsExactlyInAnyOrder(tuple("색1", "#fffff"));
+    }
+
     @DisplayName("유효하지 않은 브랜드 id로 옷을 저장하면 에러가 발생한다.")
     @Test
     void saveClothesWithInvalidBrandId() {
@@ -482,6 +533,7 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
 
         SaveClothesSvcReq request = SaveClothesSvcReq.builder()
                 .purchaseStore("구매처1")
+                .purchaseStoreType(Write)
                 .brandId(savedBrand.getId())
                 .categoryId(savedCategory.getId())
                 .colorIds(List.of(savedColor.getId()))
@@ -685,6 +737,7 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
         UpdateClothesSvcReq request = UpdateClothesSvcReq.builder()
                 .clothesId(updateTarget.getId())
                 .purchaseStore("구매처1")
+                .purchaseStoreType(Write)
                 .brandId(updateTarget.getBrand().getId())
                 .categoryId(updateTarget.getCategory().getId())
                 .colorIds(List.of(updateTarget.getClothesColors().get(0).getColor().getId()))
@@ -694,6 +747,39 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
                 .memo("메모입니다.")
                 .name("제품명수정")
                 .purchaseDate("구매시기1")
+                .build();
+
+        // when
+        SaveClothesRes response = clothesService.updateClothes(request, user);
+
+        //then
+        assertThat(response.getId()).isEqualTo(updateTarget.getId());
+
+        Clothes updatedClothes = clothesRepository.findById(updateTarget.getId()).get();
+
+        assertThat(updatedClothes.getName()).isEqualTo("제품명수정");
+    }
+
+    @DisplayName("필수인 값만으로 옷 ID에 해당하는 옷 정보를 수정한다.")
+    @Test
+    void updateClothesWithEssentialInfo() {
+        // given
+        User user = createUserBy("작성자1");
+        Clothes updateTarget = createClothesBy(user, true, "1");
+
+        UpdateClothesSvcReq request = UpdateClothesSvcReq.builder()
+                .clothesId(updateTarget.getId())
+                .purchaseStore("")
+                .purchaseStoreType(null)
+                .brandId(updateTarget.getBrand().getId())
+                .categoryId(updateTarget.getCategory().getId())
+                .colorIds(List.of(updateTarget.getClothesColors().get(0).getColor().getId()))
+                .isPrivate(false)
+                .sizeId(0L)
+                .clothesImageUrl(CLOTHES_IMAGE_URL)
+                .memo("메모입니다.")
+                .name("제품명수정")
+                .purchaseDate("")
                 .build();
 
         // when
@@ -949,6 +1035,7 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
         UpdateClothesSvcReq request = UpdateClothesSvcReq.builder()
                 .clothesId(updateTarget.getId())
                 .purchaseStore("구매처1")
+                .purchaseStoreType(Write)
                 .brandId(updateTarget.getBrand().getId())
                 .categoryId(updateTarget.getCategory().getId())
                 .colorIds(List.of(updateTarget.getClothesColors().get(0).getColor().getId()))

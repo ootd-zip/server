@@ -42,7 +42,7 @@ public class Clothes extends BaseEntity {
     @JoinColumn(name = "brand_id", nullable = false)
     private Brand brand;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String purchaseStore;
 
     @Enumerated(EnumType.STRING)
@@ -56,7 +56,7 @@ public class Clothes extends BaseEntity {
     private Category category;
 
     @ManyToOne
-    @JoinColumn(name = "size_id", nullable = false)
+    @JoinColumn(name = "size_id", nullable = true)
     private Size size;
 
     private String memo;
