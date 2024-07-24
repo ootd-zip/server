@@ -102,6 +102,7 @@ public class User extends BaseEntity {
                 .clothesList(new ArrayList<>())
                 .ootds(new ArrayList<>())
                 .userStyles(new ArrayList<>())
+                .userRole(UserRole.USER)
                 .build();
     }
 
