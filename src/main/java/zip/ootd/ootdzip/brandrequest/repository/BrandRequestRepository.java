@@ -8,5 +8,4 @@ import zip.ootd.ootdzip.brandrequest.domain.BrandRequest;
 @Repository
 public interface BrandRequestRepository extends JpaRepository<BrandRequest, Long> {
 
-    BrandRequest findOneByRequestName(String requestName);
 }
