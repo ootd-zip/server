@@ -31,8 +31,6 @@ client:
 
 logging: #로그 레벨을 정하는 것
   level:
-    org.springframwork.web: trace
-    org.apache: trace
     org.hibernate.SQL: debug #JPA 하이버네이트가 생성하는 SQL 로그
     org.hibernate.orm.jdbc.bind: debug # 스프링 3.0 이후 변경됨
     zip.ootd.ootdzip.oauth.OAuth2AuthenticationFailureHandler: debug # 로그인 실패 시 로그
