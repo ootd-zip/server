@@ -76,7 +76,6 @@ public class ImagesService {
             // 업로드
             putS3(localFile, fileName);
         } catch (Exception e) {
-            // 이미지 업로드 실패시 파일 추후에 재업로드 하기위해 로컬에 파일을 남겨둠(삭제 안함)
             throw new CustomException(ErrorCode.IMAGE_UPLOAD_FAIL);
         }
 
