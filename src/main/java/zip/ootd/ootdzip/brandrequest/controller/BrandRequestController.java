@@ -24,7 +24,7 @@ public class BrandRequestController {
 
     @PostMapping
     public ApiResponse<String> insertBrandRequest(@Valid @RequestBody BrandRequestReq request) {
-        brandRequestService.insertBrandReqeust(request.toServiceRequest(), userService.getAuthenticatiedUser());
+        brandRequestService.insertBrandRequest(request.toServiceRequest(), userService.getAuthenticatiedUser());
         return new ApiResponse<>("OK");
     }
 

@@ -40,4 +40,9 @@ public class BrandRequest extends BaseEntity {
                 .requestStatus(BrandRequestStatus.REQUEST)
                 .build();
     }
+
+    public void approveBrandRequest() {
+        requestStatus = BrandRequestStatus.APPROVED;
+    }
+
 }

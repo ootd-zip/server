@@ -157,7 +157,19 @@ public enum ErrorCode {
 
     INVALID_PURCHASE_STORE_TYPE(404, "C007", "유효하지 않은 구매처 타입"),
 
-    REQUIRED_BRAND_REQUEST_NAME(400, "BR001", "브랜드 요청 내용은 필수입니다.");
+    REQUIRED_BRAND_REQUEST_NAME(400, "BR001", "브랜드 요청 내용은 필수입니다."),
+
+    REQUIRED_BRAND_REQUEST_ID(400, "BR002", "브랜드 요청 ID는 필수입니다."),
+
+    INVALID_BRAND_REQUEST_ID(404, "BR003", "유효하지 않은 브랜드 요청 ID가 있습니다."),
+
+    EXISTED_BRAND_NAME(400, "BR004", "이미 존재하는 브랜드명입니다."),
+
+    EXISTED_BRAND_ENG_NAME(400, "BR005", "이미 존재하는 영문 브랜드명입니다."),
+
+    REQUIRED_BRAND_REQUEST_BRAND_NAME(400, "BR006", "브랜드명은 필수입니다."),
+
+    REQUIRED_BRAND_REQUEST_BRAND_ENG_NAME(400, "BR007", "영문 브랜드명은 필수입니다.");
 
     private final Integer status;
 
