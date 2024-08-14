@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import zip.ootd.ootdzip.brandrequest.controller.reqeuest.BrandRequestApproveReq;
 import zip.ootd.ootdzip.brandrequest.controller.reqeuest.BrandRequestReq;
 import zip.ootd.ootdzip.brandrequest.service.BrandRequestService;
 import zip.ootd.ootdzip.common.response.ApiResponse;
@@ -25,6 +26,12 @@ public class BrandRequestController {
     @PostMapping
     public ApiResponse<String> insertBrandRequest(@Valid @RequestBody BrandRequestReq request) {
         brandRequestService.insertBrandRequest(request.toServiceRequest(), userService.getAuthenticatiedUser());
+        return new ApiResponse<>("OK");
+    }
+
+    @PostMapping("/api/admin/approve-brand-request")
+    public ApiResponse<String> approveBrandRequest(@Valid @RequestBody BrandRequestApproveReq request) {
+        brandRequestService.approveBrandRequest(request.toServiceRequest(), userService.getAuthenticatiedUser());
         return new ApiResponse<>("OK");
     }
 
