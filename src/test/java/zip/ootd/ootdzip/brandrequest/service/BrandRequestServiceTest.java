@@ -185,6 +185,16 @@ class BrandRequestServiceTest {
                 .contains(400, "BR005", "이미 존재하는 영문 브랜드명입니다.");
     }
 
+    @DisplayName("브랜드 요청을 거절한다.")
+    @Test
+    void rejectBrandRequest() {
+        // given
+
+        // when
+
+        //then
+    }
+
     private User createUserBy(String name) {
         User user = User.getDefault();
         user.setName(name);

@@ -12,6 +12,7 @@ import zip.ootd.ootdzip.brand.repository.BrandRepository;
 import zip.ootd.ootdzip.brandrequest.domain.BrandRequest;
 import zip.ootd.ootdzip.brandrequest.repository.BrandRequestRepository;
 import zip.ootd.ootdzip.brandrequest.service.request.BrandRequestApproveSvcReq;
+import zip.ootd.ootdzip.brandrequest.service.request.BrandRequestRejectSvcReq;
 import zip.ootd.ootdzip.brandrequest.service.request.BrandRequestSvcReq;
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.exception.code.ErrorCode;
@@ -79,5 +80,10 @@ public class BrandRequestService {
         });
 
         brandRepository.save(brand);
+    }
+
+    @Transactional
+    public void rejectBrandRequest(BrandRequestRejectSvcReq request, User loginUser) {
+
     }
 }
