@@ -148,7 +148,7 @@ public class OotdGetRes {
                         .categoryName(clothes.getCategory().getName())
                         .parentCategoryName(clothes.getCategory().getParentCategory().getName())
                         .build();
-                this.size = clothes.getSize().getName();
+                this.size = clothes.getSize() == null ? "" : clothes.getSize().getName();
             }
         }
     }
