@@ -51,14 +51,21 @@ public class ImagesService {
 
     @Async
     public void upload(MultipartFile multipartFile, String name) {
+        File localFile;
+        try {
+            localFile = convertToFile(multipartFile, name);
+            checkFile(localFile);
 
-        File localFile = convertToFile(multipartFile, name);
-        checkFile(localFile);
-
-        // 썸네일 업로드
-        uploadThumbnail(localFile, name, LARGE);
-        uploadThumbnail(localFile, name, MEDIUM);
-        uploadThumbnail(localFile, name, SMALL);
+            // 썸네일 업로드
+            uploadThumbnail(localFile, name, LARGE);
+            uploadThumbnail(localFile, name, MEDIUM);
+            uploadThumbnail(localFile, name, SMALL);
+        } catch (Exception e) {
+            log.error("Error during image upload: {}", e.getMessage());
+            throw e;
+        } finally {
+            log.info("upload : " + name);
+        }
 
         // 원본 업로드, 원본 파일 삭제를 하기때문에 썸네일 파일을 업로드하고 실행해야함
         uploadToS3(localFile, name + FILE_EXTENSION);
