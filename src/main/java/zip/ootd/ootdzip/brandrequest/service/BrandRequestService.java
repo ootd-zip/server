@@ -84,6 +84,31 @@ public class BrandRequestService {
 
     @Transactional
     public void rejectBrandRequest(BrandRequestRejectSvcReq request, User loginUser) {
+        if (!loginUser.isAdmin()) {
+            throw new CustomException(ErrorCode.FORBIDDEN_ERROR);
+        }
 
+        if (request.getReason() == null
+                || request.getReason().isBlank()) {
+            throw new CustomException(ErrorCode.REQUIRED_REJECT_REASON);
+        }
+
+        List<BrandRequest> approveTargets = brandRequestRepository.findByIdIn(request.getBrandRequestId());
+
+        if (approveTargets.size() != request.getBrandRequestId().size()) {
+            throw new CustomException(ErrorCode.INVALID_BRAND_REQUEST_ID);
+        }
+
+        approveTargets.forEach((brandRequest) -> {
+            eventPublisher.publishEvent(NotificationEvent.builder()
+                    .receiver(brandRequest.getRequestUser())
+                    .sender(brandRequest.getRequestUser())
+                    .notificationType(NotificationType.BRAND_REQUEST_REJECTED)
+                    .goUrl("")
+                    .imageUrl(brandRequest.getRequestUser().getImages().getImageUrlSmall())
+                    .content(String.format("사유: %s", request.getReason()))
+                    .build());
+            brandRequest.rejectBrandRequest(request.getReason());
+        });
     }
 }

@@ -4,8 +4,12 @@ import java.util.List;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import zip.ootd.ootdzip.brandrequest.service.request.BrandRequestApproveSvcReq;
 
+@Getter
+@NoArgsConstructor
 public class BrandRequestApproveReq {
 
     @NotEmpty(message = "브랜드 요청 ID는 필수입니다.")

@@ -45,4 +45,9 @@ public class BrandRequest extends BaseEntity {
         requestStatus = BrandRequestStatus.APPROVED;
     }
 
+    public void rejectBrandRequest(String reason) {
+        requestStatus = BrandRequestStatus.REJECTION;
+        this.reason = reason;
+    }
+
 }

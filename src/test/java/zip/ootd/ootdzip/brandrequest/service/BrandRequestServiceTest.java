@@ -16,6 +16,7 @@ import zip.ootd.ootdzip.brandrequest.data.BrandRequestStatus;
 import zip.ootd.ootdzip.brandrequest.domain.BrandRequest;
 import zip.ootd.ootdzip.brandrequest.repository.BrandRequestRepository;
 import zip.ootd.ootdzip.brandrequest.service.request.BrandRequestApproveSvcReq;
+import zip.ootd.ootdzip.brandrequest.service.request.BrandRequestRejectSvcReq;
 import zip.ootd.ootdzip.brandrequest.service.request.BrandRequestSvcReq;
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.user.data.UserRole;
@@ -186,13 +187,84 @@ class BrandRequestServiceTest {
     }
 
     @DisplayName("브랜드 요청을 거절한다.")
+    @Transactional
     @Test
     void rejectBrandRequest() {
         // given
+        User requestUser = createUserBy("요청자1");
+        BrandRequest brandRequest = createBrandRequestBy("브랜드1", requestUser);
+        BrandRequest brandRequest2 = createBrandRequestBy("브랜드1 요청", requestUser);
+        BrandRequest brandRequest3 = createBrandRequestBy("브랜드1 추가해주세요.", requestUser);
 
+        User user = createUserBy("어드민1", UserRole.ADMIN);
+        String reason = "거절 사유를 입력합니다.";
+        BrandRequestRejectSvcReq request = BrandRequestRejectSvcReq.builder()
+                .brandRequestId(List.of(brandRequest.getId(), brandRequest2.getId(), brandRequest3.getId()))
+                .reason(reason)
+                .build();
         // when
+        brandRequestService.rejectBrandRequest(request, user);
 
         //then
+        List<BrandRequest> result = brandRequestRepository.findAllById(
+                List.of(brandRequest.getId(), brandRequest2.getId(), brandRequest3.getId()));
+
+        assertThat(result)
+                .extracting("id", "requestStatus", "reason")
+                .containsExactlyInAnyOrder(
+                        tuple(brandRequest.getId(), BrandRequestStatus.REJECTION, reason),
+                        tuple(brandRequest2.getId(), BrandRequestStatus.REJECTION, reason),
+                        tuple(brandRequest3.getId(), BrandRequestStatus.REJECTION, reason)
+                );
+
+    }
+
+    @DisplayName("브랜드 요청을 거절할 때 사유를 입력하지 않으면 에러가 발생한다.")
+    @Transactional
+    @Test
+    void rejectBrandRequestWithoutReason() {
+        // given
+        User requestUser = createUserBy("요청자1");
+        BrandRequest brandRequest = createBrandRequestBy("브랜드1", requestUser);
+        BrandRequest brandRequest2 = createBrandRequestBy("브랜드1 요청", requestUser);
+        BrandRequest brandRequest3 = createBrandRequestBy("브랜드1 추가해주세요.", requestUser);
+
+        User user = createUserBy("어드민1", UserRole.ADMIN);
+        String reason = "";
+        BrandRequestRejectSvcReq request = BrandRequestRejectSvcReq.builder()
+                .brandRequestId(List.of(brandRequest.getId(), brandRequest2.getId(), brandRequest3.getId()))
+                .reason(reason)
+                .build();
+        // when & then
+        assertThatThrownBy(() -> brandRequestService.rejectBrandRequest(request, user))
+                .isInstanceOf(CustomException.class)
+                .extracting("errorCode.status", "errorCode.divisionCode", "errorCode.message")
+                .contains(400, "BR006", "거절 사유를 입력해주세요.");
+
+    }
+
+    @DisplayName("브랜드 요청을 거절할 때 유효하지 않은 브랜드 요청 ID를 입력하면 에러가 발생한다.")
+    @Transactional
+    @Test
+    void rejectBrandRequestWithInvalidBrandRequestId() {
+        // given
+        User requestUser = createUserBy("요청자1");
+        BrandRequest brandRequest = createBrandRequestBy("브랜드1", requestUser);
+        BrandRequest brandRequest2 = createBrandRequestBy("브랜드1 요청", requestUser);
+        BrandRequest brandRequest3 = createBrandRequestBy("브랜드1 추가해주세요.", requestUser);
+
+        User user = createUserBy("어드민1", UserRole.ADMIN);
+        String reason = "거절 사유를 입력합니다.";
+        BrandRequestRejectSvcReq request = BrandRequestRejectSvcReq.builder()
+                .brandRequestId(List.of(brandRequest.getId() + 12331, brandRequest2.getId(), brandRequest3.getId()))
+                .reason(reason)
+                .build();
+        // when & then
+        assertThatThrownBy(() -> brandRequestService.rejectBrandRequest(request, user))
+                .isInstanceOf(CustomException.class)
+                .extracting("errorCode.status", "errorCode.divisionCode", "errorCode.message")
+                .contains(404, "BR003", "유효하지 않은 브랜드 요청 ID가 있습니다.");
+
     }
 
     private User createUserBy(String name) {
