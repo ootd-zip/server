@@ -42,6 +42,7 @@ public class ImagesController {
         List<String> imageUrls = request.getImages().stream()
                 .map(i -> {
                     String fileName = imagesService.makeFileName();
+                    System.out.println("Controller FIle : " + i.getName() + " size : " + i.getSize());
                     imagesService.upload(i, fileName);
                     return imagesService.makeImageUrl(fileName);
                 })
