@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -90,9 +91,11 @@ public class ImagesService {
     }
 
     // MultipartFile 을 로컬 파일(File)로 변환
-    private synchronized File convertToFile(MultipartFile multipartFile, String name) {
+    private File convertToFile(MultipartFile multipartFile, String name) {
         try {
+            System.out.println("name : " + name + " size : "+ multipartFile.getSize());
             File tempFile = File.createTempFile(name, FILE_EXTENSION, new File(tempImageFolder));
+            System.out.println("name : " + name + " path : "+ tempFile.getAbsolutePath());
             multipartFile.transferTo(tempFile);
             return tempFile;
         } catch (IOException e) {
@@ -143,7 +146,7 @@ public class ImagesService {
         }
     }
 
-    private synchronized void deleteFile(File file) {
+    private void deleteFile(File file) {
         if (!file.delete()) {
             throw new CustomException(ErrorCode.IMAGE_DELETE_FAIL);
         }
