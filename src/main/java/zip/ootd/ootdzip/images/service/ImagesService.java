@@ -90,7 +90,7 @@ public class ImagesService {
     }
 
     // MultipartFile 을 로컬 파일(File)로 변환
-    private File convertToFile(MultipartFile multipartFile, String name) {
+    private synchronized File convertToFile(MultipartFile multipartFile, String name) {
         try {
             File tempFile = File.createTempFile(name, FILE_EXTENSION, new File(tempImageFolder));
             multipartFile.transferTo(tempFile);
@@ -143,7 +143,7 @@ public class ImagesService {
         }
     }
 
-    private void deleteFile(File file) {
+    private synchronized void deleteFile(File file) {
         if (!file.delete()) {
             throw new CustomException(ErrorCode.IMAGE_DELETE_FAIL);
         }
