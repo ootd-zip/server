@@ -21,7 +21,8 @@ echo "$TIME_NOW > $JAR_FILE 파일 실행 DEPLOYMENT_GROUP_NAME: $DEPLOYMENT_GRO
 if [ "$DEPLOYMENT_GROUP_NAME" == "ootdzip-cd-group" ]; then
     nohup java -jar $JAR_FILE --spring.profiles.active=prod > $APP_LOG 2> $ERROR_LOG &
 elif [ "$DEPLOYMENT_GROUP_NAME" == "ootdzip-cd-dev" ]; then
-    nohup java -Xms256m -Xmx1024m -jar $JAR_FILE --spring.profiles.active=dev > $APP_LOG 2> $ERROR_LOG &
+    # nohup java -Xms256m -Xmx1024m -jar $JAR_FILE --spring.profiles.active=dev > $APP_LOG 2> $ERROR_LOG &
+    nohup java -jar $JAR_FILE --spring.profiles.active=dev > $APP_LOG 2> $ERROR_LOG &
 else
     echo "Unknown deployment group: $DEPLOYMENT_GROUP_NAME"
     exit 1
