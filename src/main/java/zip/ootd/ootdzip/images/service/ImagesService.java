@@ -96,7 +96,8 @@ public class ImagesService {
             multipartFile.transferTo(tempFile);
             return tempFile;
         } catch (IOException e) {
-            throw new CustomException(ErrorCode.IMAGE_CONVERT_ERROR);
+            //throw new CustomException(ErrorCode.IMAGE_CONVERT_ERROR);
+            throw new IllegalArgumentException(e);
         }
     }
 
