@@ -54,6 +54,7 @@ public class ImagesService {
     public void upload(MultipartFile multipartFile, String name) {
         File localFile;
         try {
+            System.out.println("upload : " + multipartFile.getSize());
             localFile = convertToFile(multipartFile, name);
             checkFile(localFile);
 
