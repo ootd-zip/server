@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import zip.ootd.ootdzip.brandrequest.domain.BrandRequest;
 
 @Repository
-public interface BrandRequestRepository extends JpaRepository<BrandRequest, Long> {
+public interface BrandRequestRepository extends JpaRepository<BrandRequest, Long>, BrandRequestRepositoryCustom {
 
     Optional<BrandRequest> findOneByRequestContents(String requestContents);
 

@@ -2,16 +2,20 @@ package zip.ootd.ootdzip.brandrequest.service;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
 import zip.ootd.ootdzip.brand.domain.Brand;
 import zip.ootd.ootdzip.brand.repository.BrandRepository;
+import zip.ootd.ootdzip.brandrequest.controller.reqeuest.BrandRequestSearchReq;
+import zip.ootd.ootdzip.brandrequest.controller.response.BrandRequestSearchRes;
 import zip.ootd.ootdzip.brandrequest.data.BrandRequestStatus;
 import zip.ootd.ootdzip.brandrequest.domain.BrandRequest;
 import zip.ootd.ootdzip.brandrequest.repository.BrandRequestRepository;
@@ -19,6 +23,8 @@ import zip.ootd.ootdzip.brandrequest.service.request.BrandRequestApproveSvcReq;
 import zip.ootd.ootdzip.brandrequest.service.request.BrandRequestRejectSvcReq;
 import zip.ootd.ootdzip.brandrequest.service.request.BrandRequestSvcReq;
 import zip.ootd.ootdzip.common.exception.CustomException;
+import zip.ootd.ootdzip.common.request.SortColumn;
+import zip.ootd.ootdzip.common.response.CommonPageResponse;
 import zip.ootd.ootdzip.user.data.UserRole;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.repository.UserRepository;
@@ -267,6 +273,43 @@ class BrandRequestServiceTest {
 
     }
 
+    @DisplayName("브랜드 요청을 검색한다.")
+    @Test
+    void searchBrandRequest() {
+        // given
+        User requestUser = createUserBy("요청자1");
+        List<BrandRequest> brandRequests = new ArrayList<>();
+
+        for (int i = 0; i < 100; i++) {
+            brandRequests.add(
+                    createBrandRequestBy(String.format("브랜드 요청%d", i), requestUser, BrandRequestStatus.REQUEST));
+        }
+
+        for (int i = 0; i < 100; i++) {
+            brandRequests.add(
+                    createBrandRequestBy(String.format("브랜드 요청%d", i + 100), requestUser, BrandRequestStatus.APPROVED));
+        }
+
+        User user = createUserBy("어드민1", UserRole.ADMIN);
+
+        BrandRequestSearchReq request = BrandRequestSearchReq.builder()
+                .pageNo(1)
+                .pageSize(10)
+                .searchStatus(BrandRequestStatus.REQUEST)
+                .sortColumns(List.of(new SortColumn("createdAt", Sort.Direction.DESC)))
+                .build();
+
+        // when
+        CommonPageResponse<BrandRequestSearchRes> result = brandRequestService.searchBrandRequest(
+                request.toServiceRequest(), user);
+
+        //then
+        assertThat(result.getTotalPageCount()).isEqualTo(10);
+        assertThat(result.getTotal()).isEqualTo(100);
+        assertThat(result.getContent().size()).isEqualTo(10);
+
+    }
+
     private User createUserBy(String name) {
         User user = User.getDefault();
         user.setName(name);
@@ -282,6 +325,15 @@ class BrandRequestServiceTest {
 
     private BrandRequest createBrandRequestBy(String requestContents, User requestUser) {
         BrandRequest brandRequest = BrandRequest.createBy(requestContents, requestUser);
+        return brandRequestRepository.save(brandRequest);
+    }
+
+    private BrandRequest createBrandRequestBy(String requestContents, User requestUser, BrandRequestStatus status) {
+        BrandRequest brandRequest = BrandRequest.builder()
+                .requestContents(requestContents)
+                .requestUser(requestUser)
+                .requestStatus(status)
+                .build();
         return brandRequestRepository.save(brandRequest);
     }
 

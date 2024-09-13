@@ -21,11 +21,22 @@ public class CommonPageResponse<T> {
 
     private Long total;
 
+    private Integer totalPageCount;
+
     public CommonPageResponse(List<T> content, Pageable pageable, Boolean isLast, Long total) {
         this.content = content;
         this.page = pageable.getPageNumber();
         this.size = pageable.getPageSize();
         this.isLast = isLast;
         this.total = total;
+    }
+
+    public CommonPageResponse(List<T> content, Pageable pageable, Boolean isLast, Long total, Integer totalPageCount) {
+        this.content = content;
+        this.page = pageable.getPageNumber();
+        this.size = pageable.getPageSize();
+        this.isLast = isLast;
+        this.total = total;
+        this.totalPageCount = totalPageCount;
     }
 }

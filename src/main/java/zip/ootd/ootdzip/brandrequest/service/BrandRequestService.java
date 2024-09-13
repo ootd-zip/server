@@ -3,19 +3,24 @@ package zip.ootd.ootdzip.brandrequest.service;
 import java.util.List;
 
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import zip.ootd.ootdzip.brand.domain.Brand;
 import zip.ootd.ootdzip.brand.repository.BrandRepository;
+import zip.ootd.ootdzip.brandrequest.controller.response.BrandRequestSearchRes;
 import zip.ootd.ootdzip.brandrequest.domain.BrandRequest;
 import zip.ootd.ootdzip.brandrequest.repository.BrandRequestRepository;
+import zip.ootd.ootdzip.brandrequest.repository.model.BrandRequestSearchRepoParam;
 import zip.ootd.ootdzip.brandrequest.service.request.BrandRequestApproveSvcReq;
 import zip.ootd.ootdzip.brandrequest.service.request.BrandRequestRejectSvcReq;
+import zip.ootd.ootdzip.brandrequest.service.request.BrandRequestSearchSvcReq;
 import zip.ootd.ootdzip.brandrequest.service.request.BrandRequestSvcReq;
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.exception.code.ErrorCode;
+import zip.ootd.ootdzip.common.response.CommonPageResponse;
 import zip.ootd.ootdzip.notification.domain.NotificationType;
 import zip.ootd.ootdzip.notification.event.NotificationEvent;
 import zip.ootd.ootdzip.user.domain.User;
@@ -110,5 +115,31 @@ public class BrandRequestService {
                     .build());
             brandRequest.rejectBrandRequest(request.getReason());
         });
+    }
+
+    public CommonPageResponse<BrandRequestSearchRes> searchBrandRequest(BrandRequestSearchSvcReq request,
+            User loginUser) {
+
+        if (!loginUser.isAdmin()) {
+            throw new CustomException(ErrorCode.FORBIDDEN_ERROR);
+        }
+
+        BrandRequestSearchRepoParam repoParam = BrandRequestSearchRepoParam.builder()
+                .brandRequestStatus(request.getSearchStatus())
+                .searchText(request.getSearchText())
+                .build();
+
+        Page<BrandRequest> searchResult = brandRequestRepository.searchBrandRequests(repoParam, request.getPageable());
+
+        List<BrandRequestSearchRes> contents = searchResult.getContent()
+                .stream()
+                .map(BrandRequestSearchRes::of)
+                .toList();
+
+        return new CommonPageResponse<BrandRequestSearchRes>(contents,
+                searchResult.getPageable(),
+                searchResult.isLast(),
+                searchResult.getTotalElements(),
+                searchResult.getTotalPages());
     }
 }
