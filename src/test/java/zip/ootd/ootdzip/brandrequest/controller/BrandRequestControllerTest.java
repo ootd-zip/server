@@ -45,7 +45,7 @@ class BrandRequestControllerTest extends ControllerTestSupport {
                 .andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(404))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.errors[0].field").value("requestName"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errors[0].field").value("requestContents"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.errors[0].reason").value("브랜드 요청 내용은 필수입니다."));
     }
 

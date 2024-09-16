@@ -1,5 +1,6 @@
 package zip.ootd.ootdzip.brandrequest.controller;
 
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -8,9 +9,14 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import zip.ootd.ootdzip.brandrequest.controller.reqeuest.BrandRequestApproveReq;
+import zip.ootd.ootdzip.brandrequest.controller.reqeuest.BrandRequestRejectReq;
 import zip.ootd.ootdzip.brandrequest.controller.reqeuest.BrandRequestReq;
+import zip.ootd.ootdzip.brandrequest.controller.reqeuest.BrandRequestSearchReq;
+import zip.ootd.ootdzip.brandrequest.controller.response.BrandRequestSearchRes;
 import zip.ootd.ootdzip.brandrequest.service.BrandRequestService;
 import zip.ootd.ootdzip.common.response.ApiResponse;
+import zip.ootd.ootdzip.common.response.CommonPageResponse;
 import zip.ootd.ootdzip.user.service.UserService;
 
 @RestController
@@ -24,8 +30,27 @@ public class BrandRequestController {
 
     @PostMapping
     public ApiResponse<String> insertBrandRequest(@Valid @RequestBody BrandRequestReq request) {
-        brandRequestService.insertBrandReqeust(request.toServiceRequest(), userService.getAuthenticatiedUser());
+        brandRequestService.insertBrandRequest(request.toServiceRequest(), userService.getAuthenticatiedUser());
         return new ApiResponse<>("OK");
+    }
+
+    @PostMapping("/api/admin/approve-brand-request")
+    public ApiResponse<String> approveBrandRequest(@Valid @RequestBody BrandRequestApproveReq request) {
+        brandRequestService.approveBrandRequest(request.toServiceRequest(), userService.getAuthenticatiedUser());
+        return new ApiResponse<>("OK");
+    }
+
+    @PostMapping("/api/admin/reject-brand-request")
+    public ApiResponse<String> rejectBrandRequest(@Valid @RequestBody BrandRequestRejectReq request) {
+        brandRequestService.rejectBrandRequest(request.toServiceRequest(), userService.getAuthenticatiedUser());
+        return new ApiResponse<>("OK");
+    }
+
+    @GetMapping("/api/admin/brand-request")
+    public ApiResponse<CommonPageResponse<BrandRequestSearchRes>> searchBrandRequest(
+            @Valid @RequestBody BrandRequestSearchReq request) {
+        return new ApiResponse<>(brandRequestService.searchBrandRequest(request.toServiceRequest(),
+                userService.getAuthenticatiedUser()));
     }
 
 }

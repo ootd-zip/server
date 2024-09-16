@@ -226,4 +226,8 @@ public class User extends BaseEntity {
         }
         return images;
     }
+
+    public boolean isAdmin() {
+        return userRole.equals(UserRole.ADMIN);
+    }
 }
