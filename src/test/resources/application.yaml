@@ -66,3 +66,7 @@ authorization:
   audience: https://ootdzip.com
   access-token-time-to-live: 1800  # 30 minutes
   refresh-token-time-to-live: 5184000  # 60 days
+
+api:
+  weather:
+    url: https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst
