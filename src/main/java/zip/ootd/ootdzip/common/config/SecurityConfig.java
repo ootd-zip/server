@@ -40,7 +40,6 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/v1/oauth/token", "/api/v1/oauth/token/revoke",
                                 "/api/v1/oauth/token/code/*").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
-                        .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
                         .anyRequest().authenticated())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource));
 
