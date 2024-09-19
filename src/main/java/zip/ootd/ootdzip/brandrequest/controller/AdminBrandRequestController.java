@@ -1,6 +1,5 @@
 package zip.ootd.ootdzip.brandrequest.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,9 +38,9 @@ public class AdminBrandRequestController {
         return new ApiResponse<>("OK");
     }
 
-    @GetMapping
+    @PostMapping
     public ApiResponse<CommonPageResponse<BrandRequestSearchRes>> searchBrandRequest(
-            @Valid BrandRequestSearchReq request) {
+            @Valid @RequestBody BrandRequestSearchReq request) {
         return new ApiResponse<>(brandRequestService.searchBrandRequest(request.toServiceRequest(),
                 userService.getAuthenticatiedUser()));
     }
