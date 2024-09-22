@@ -51,11 +51,9 @@ public class ImagesService {
     }
 
     @Async
-    public void upload(MultipartFile multipartFile, String name) {
-        File localFile;
+    public void upload(File localFile, String name) {
         try {
-            System.out.println("upload : " + multipartFile.getSize());
-            localFile = convertToFile(multipartFile, name);
+            System.out.println("upload : " + localFile.getName());
             checkFile(localFile);
 
             // 썸네일 업로드
@@ -92,7 +90,7 @@ public class ImagesService {
     }
 
     // MultipartFile 을 로컬 파일(File)로 변환
-    private File convertToFile(MultipartFile multipartFile, String name) {
+    public File convertToFile(MultipartFile multipartFile, String name) {
         try {
             System.out.println("name : " + name + " size : "+ multipartFile.getSize());
             File tempFile = File.createTempFile(name, FILE_EXTENSION, new File(tempImageFolder));

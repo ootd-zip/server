@@ -43,7 +43,7 @@ public class ImagesController {
                 .map(i -> {
                     String fileName = imagesService.makeFileName();
                     System.out.println("Controller FIle : " + i.getName() + " size : " + i.getSize());
-                    imagesService.upload(i, fileName);
+                    imagesService.upload(imagesService.convertToFile(i, fileName), fileName);
                     return imagesService.makeImageUrl(fileName);
                 })
                 .collect(Collectors.toList());
