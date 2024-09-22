@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -52,20 +51,14 @@ public class ImagesService {
 
     @Async
     public void upload(File localFile, String name) {
-        try {
-            System.out.println("upload : " + localFile.getName());
-            checkFile(localFile);
 
-            // 썸네일 업로드
-            uploadThumbnail(localFile, name, LARGE);
-            uploadThumbnail(localFile, name, MEDIUM);
-            uploadThumbnail(localFile, name, SMALL);
-        } catch (Exception e) {
-            log.error("Error during image upload: {}", e.getMessage());
-            throw e;
-        } finally {
-            log.info("upload : " + name);
-        }
+        System.out.println("upload : " + localFile.getName());
+        checkFile(localFile);
+
+        // 썸네일 업로드
+        uploadThumbnail(localFile, name, LARGE);
+        uploadThumbnail(localFile, name, MEDIUM);
+        uploadThumbnail(localFile, name, SMALL);
 
         // 원본 업로드, 원본 파일 삭제를 하기때문에 썸네일 파일을 업로드하고 실행해야함
         uploadToS3(localFile, name + FILE_EXTENSION);
@@ -92,14 +85,11 @@ public class ImagesService {
     // MultipartFile 을 로컬 파일(File)로 변환
     public File convertToFile(MultipartFile multipartFile, String name) {
         try {
-            System.out.println("name : " + name + " size : "+ multipartFile.getSize());
             File tempFile = File.createTempFile(name, FILE_EXTENSION, new File(tempImageFolder));
-            System.out.println("name : " + name + " path : "+ tempFile.getAbsolutePath());
             multipartFile.transferTo(tempFile);
             return tempFile;
         } catch (IOException e) {
-            //throw new CustomException(ErrorCode.IMAGE_CONVERT_ERROR);
-            throw new IllegalArgumentException(e);
+            throw new CustomException(ErrorCode.IMAGE_CONVERT_ERROR);
         }
     }
 
