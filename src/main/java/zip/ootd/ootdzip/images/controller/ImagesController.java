@@ -1,5 +1,6 @@
 package zip.ootd.ootdzip.images.controller;
 
+import java.io.File;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,7 +43,9 @@ public class ImagesController {
         List<String> imageUrls = request.getImages().stream()
                 .map(i -> {
                     String fileName = imagesService.makeFileName();
-                    imagesService.upload(imagesService.convertToFile(i, fileName), fileName);
+                    File file = imagesService.convertToFile(i, fileName);
+                    imagesService.checkFile(file);
+                    imagesService.upload(file, fileName);
                     return imagesService.makeImageUrl(fileName);
                 })
                 .collect(Collectors.toList());

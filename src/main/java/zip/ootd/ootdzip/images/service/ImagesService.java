@@ -6,7 +6,12 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.time.LocalDate;
+import java.util.Iterator;
 import java.util.UUID;
+
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
@@ -52,16 +57,17 @@ public class ImagesService {
     @Async
     public void upload(File localFile, String name) {
 
-        System.out.println("upload : " + localFile.getName());
-        checkFile(localFile);
+        // 원본 업로드
+        uploadToS3(localFile, name + FILE_EXTENSION);
 
         // 썸네일 업로드
         uploadThumbnail(localFile, name, LARGE);
         uploadThumbnail(localFile, name, MEDIUM);
         uploadThumbnail(localFile, name, SMALL);
 
-        // 원본 업로드, 원본 파일 삭제를 하기때문에 썸네일 파일을 업로드하고 실행해야함
-        uploadToS3(localFile, name + FILE_EXTENSION);
+        // 원본과, 썸네일 업로드시에 예외가 발생하면 아래코드가 실행되지 않아 물리파일을 삭제하지 않고 스케줄러가 다시 업로드함.
+        // 물리 파일 삭제
+        deleteFile(localFile);
     }
 
     private void uploadThumbnail(File localFile, String name, Integer size) {
@@ -78,8 +84,6 @@ public class ImagesService {
         } catch (Exception e) {
             throw new CustomException(ErrorCode.IMAGE_UPLOAD_FAIL);
         }
-
-        deleteFile(localFile);
     }
 
     // MultipartFile 을 로컬 파일(File)로 변환
@@ -94,7 +98,8 @@ public class ImagesService {
     }
 
     // 해당 파일이 이미지 파일인지 체크
-    private void checkFile(File file) {
+    // 너무 고해상도 인지 체크
+    public void checkFile(File file) {
         String type;
         try {
             type = Files.probeContentType(file.toPath());
@@ -103,6 +108,26 @@ public class ImagesService {
         }
 
         if (!type.startsWith("image")) {
+            throw new CustomException(ErrorCode.INVALID_IMAGE_URL);
+        }
+
+        // 사전에 고해상도 이미지 차단
+        // 이미지 메타데이터를 통해 해상도를 체크해, 이미지 전체를 메모리에 띄우지 않음
+        try (ImageInputStream input = ImageIO.createImageInputStream(file)) {
+            Iterator<ImageReader> readers = ImageIO.getImageReaders(input);
+            if (readers.hasNext()) {
+                ImageReader reader = readers.next();
+                reader.setInput(input, true);
+
+                long width = reader.getWidth(0);
+                long height = reader.getHeight(0);
+
+                if (width * height > 64_000_000) { // 64_000_000 이면 썸네일 변환 작업시 64x3 mb 를 사용함
+                    // 고해상도 이미지를 올릴시 에러 반환
+                    throw new CustomException(ErrorCode.IMAGE_OVER_RESOLUTION);
+                }
+            }
+        } catch (IOException e) {
             throw new CustomException(ErrorCode.INVALID_IMAGE_URL);
         }
     }
@@ -132,6 +157,10 @@ public class ImagesService {
             return resizedFile;
         } catch (IOException e) {
             throw new CustomException(ErrorCode.IMAGE_CONVERT_ERROR);
+        } catch (OutOfMemoryError error) {
+            // checkfile() 에서 고해상도의 경우 한번 걸러주지만, 비동기 작업으로 인한 oom 발생시 처리를 위해
+            // 나중에 여유가 되면 처리할 수 있으므로 원본파일 남겨두기위해 별도로 catch
+            throw new CustomException(ErrorCode.IMAGE_OVER_RESOLUTION);
         }
     }
 
