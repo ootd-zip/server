@@ -139,6 +139,8 @@ public enum ErrorCode {
 
     IMAGE_UPLOAD_FAIL(400, "I003", "이미지 업로드를 실패 했습니다."),
 
+    IMAGE_OVER_RESOLUTION(400, "I004", "고해상도 이미지를 업로드 했습니다."),
+
     DELETE_USER_CLOTHES(404, "C006", "삭제된 유저의 옷입니다."),
 
     NOT_FOUND_USER_BLCOK_ID(404, "UB001", "유효하지 않은 사용자 차단 ID"),

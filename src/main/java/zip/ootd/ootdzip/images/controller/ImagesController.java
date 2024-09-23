@@ -1,5 +1,6 @@
 package zip.ootd.ootdzip.images.controller;
 
+import java.io.File;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,10 +28,10 @@ public class ImagesController {
 
     private final ImagesService imagesService;
 
-    // 일단 구글 등록되기전에 이전 api 로 이미지 저장하기로함
-
     /**
      * 프론트에는 사진 url 을 만들어서 먼저 반환해줍니다.(실제로 이미지가 저장되지 않은상태)
+     * 서블릿 컨테이너 디스크에 먼저 MultipartFile 이 저장되지만 이는 쓰레드별로 저장되어 다른 쓰레드가 접근할 수 없다.
+     * 그래서 비동기로 접근시 파일이 없다는 에러가 떠서 그전에 물리적인 파일로 저장해준다.
      * 비동기로 s3 로 이미지를 저장합니다.
      * 비동기로 실행해서 자가호출문제를 막기위해 컨트롤러에서 imageService 를 따로 호출합니다.
      */
@@ -42,8 +43,9 @@ public class ImagesController {
         List<String> imageUrls = request.getImages().stream()
                 .map(i -> {
                     String fileName = imagesService.makeFileName();
-                    System.out.println("Controller FIle : " + i.getName() + " size : " + i.getSize());
-                    imagesService.upload(imagesService.convertToFile(i, fileName), fileName);
+                    File file = imagesService.convertToFile(i, fileName);
+                    imagesService.checkFile(file);
+                    imagesService.upload(file, fileName);
                     return imagesService.makeImageUrl(fileName);
                 })
                 .collect(Collectors.toList());
