@@ -1,7 +1,11 @@
 package zip.ootd.ootdzip.oauth.service;
 
+import java.util.HashMap;
+import java.util.Set;
+
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
@@ -22,6 +26,7 @@ import zip.ootd.ootdzip.oauth.data.OAuth2AccessTokenGrantRequest;
 import zip.ootd.ootdzip.oauth.data.OAuth2AccessTokenGrantResponse;
 import zip.ootd.ootdzip.oauth.data.TokenResponse;
 import zip.ootd.ootdzip.oauth.service.request.LoginSvcReq;
+import zip.ootd.ootdzip.user.data.UserRole;
 import zip.ootd.ootdzip.user.domain.User;
 
 @Service
@@ -43,18 +48,19 @@ public class LoginService {
     }
 
     public TokenResponse loginForAdmin(LoginSvcReq request) {
-        Admin admin = adminRepository.findByLoginId(request.getLoginId())
+        Admin admin = adminRepository.findByLoginIdAndIsUseTrue(request.getLoginId())
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ADMIN_LOGIN_ID));
 
         if (!passwordEncoder.matches(request.getPassword(), admin.getPassword())) {
             throw new CustomException(ErrorCode.INVALID_ADMIN_PASSWORD);
         }
 
-        return issueNewAccessToken(AuthorizedUser.builder()
-                .user(admin.getUser())
-                .authorities(null)
-                .attributes(null)
-                .build());
+        return issueNewAccessToken(
+                AuthorizedUser.builder()
+                        .user(admin.getUser())
+                        .authorities(Set.of(new SimpleGrantedAuthority(UserRole.ADMIN.name())))
+                        .attributes(new HashMap<>())
+                        .build());
 
     }
 

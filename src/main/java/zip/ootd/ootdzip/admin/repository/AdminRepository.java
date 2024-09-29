@@ -9,5 +9,7 @@ import zip.ootd.ootdzip.admin.domain.Admin;
 
 @Repository
 public interface AdminRepository extends JpaRepository<Admin, Long> {
-    Optional<Admin> findByLoginId(String loginId);
+    Optional<Admin> findByLoginIdAndIsUseTrue(String loginId);
+
+    Boolean existsByLoginId(String loginId);
 }

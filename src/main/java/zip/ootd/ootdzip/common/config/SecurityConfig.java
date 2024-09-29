@@ -17,6 +17,7 @@ import org.springframework.web.cors.CorsUtils;
 import lombok.RequiredArgsConstructor;
 import zip.ootd.ootdzip.common.security.CustomAccessDeniedHandler;
 import zip.ootd.ootdzip.common.security.CustomAuthenticationEntryPoint;
+import zip.ootd.ootdzip.user.data.UserRole;
 
 @Configuration
 @EnableWebSecurity
@@ -44,10 +45,13 @@ public class SecurityConfig {
                         .accessDeniedHandler(accessDeniedHandler))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(CorsUtils::isPreFlightRequest).permitAll() // Preflight 요청 허용
-                        .requestMatchers(HttpMethod.POST, "/api/v1/oauth/token", "/api/v1/oauth/token/revoke",
-                                "/api/v1/oauth/token/code/*").permitAll()
+                        .requestMatchers(HttpMethod.POST,
+                                "/api/v1/oauth/token",
+                                "/api/v1/oauth/token/revoke",
+                                "/api/v1/oauth/token/code/*",
+                                "/api/admin/login").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
-                        .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
+                        .requestMatchers("/api/admin/**").hasAuthority(UserRole.ADMIN.name())
                         .anyRequest().authenticated())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource));
 

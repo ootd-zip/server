@@ -23,9 +23,12 @@ import zip.ootd.ootdzip.user.domain.User;
 public class Admin extends BaseEntity {
 
     private String loginId;
+
     private String password;
 
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    private Boolean isUse = false;
 }
