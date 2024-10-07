@@ -17,7 +17,6 @@ import org.springframework.web.cors.CorsUtils;
 import lombok.RequiredArgsConstructor;
 import zip.ootd.ootdzip.common.security.CustomAccessDeniedHandler;
 import zip.ootd.ootdzip.common.security.CustomAuthenticationEntryPoint;
-import zip.ootd.ootdzip.user.data.UserRole;
 
 @Configuration
 @EnableWebSecurity
@@ -51,7 +50,6 @@ public class SecurityConfig {
                                 "/api/v1/oauth/token/code/*",
                                 "/api/admin/login").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
-                        .requestMatchers("/api/admin/**").hasAuthority(UserRole.ADMIN.name())
                         .anyRequest().authenticated())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource));
 
