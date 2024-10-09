@@ -167,7 +167,13 @@ public enum ErrorCode {
 
     EXISTED_BRAND_ENG_NAME(400, "BR005", "이미 존재하는 영문 브랜드명입니다."),
 
-    REQUIRED_REJECT_REASON(400, "BR006", "거절 사유를 입력해주세요.");
+    REQUIRED_REJECT_REASON(400, "BR006", "거절 사유를 입력해주세요."),
+
+    NOT_FOUND_ADMIN_LOGIN_ID(400, "A001", "존재하지 않는 ADMIN ID입니다."),
+
+    INVALID_ADMIN_PASSWORD(400, "A002", "비밀번호가 일치하지 않습니다."),
+
+    EXISTED_ADMIN_ID(400, "A003", "이미 존재하는 아이디입니다.");
 
     private final Integer status;
 
