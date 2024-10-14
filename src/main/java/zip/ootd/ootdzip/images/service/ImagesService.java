@@ -82,7 +82,7 @@ public class ImagesService {
             // 업로드
             putS3(localFile, fileName);
         } catch (Exception e) {
-            throw new CustomException(ErrorCode.IMAGE_UPLOAD_FAIL);
+            throw new RuntimeException(e);
         }
     }
 
@@ -93,7 +93,7 @@ public class ImagesService {
             multipartFile.transferTo(tempFile);
             return tempFile;
         } catch (IOException e) {
-            throw new CustomException(ErrorCode.IMAGE_CONVERT_ERROR);
+            throw new RuntimeException(e);
         }
     }
 
@@ -104,7 +104,7 @@ public class ImagesService {
         try {
             type = Files.probeContentType(file.toPath());
         } catch (IOException e) {
-            throw new CustomException(ErrorCode.INVALID_IMAGE_URL);
+            throw new RuntimeException(e);
         }
 
         if (!type.startsWith("image")) {
@@ -128,7 +128,7 @@ public class ImagesService {
                 }
             }
         } catch (IOException e) {
-            throw new CustomException(ErrorCode.INVALID_IMAGE_URL);
+            throw new RuntimeException(e);
         }
     }
 
@@ -139,7 +139,7 @@ public class ImagesService {
                     .withCannedAcl(CannedAccessControlList.PublicRead));
             return amazonS3Client.getUrl(bucket, fileName).toString();
         } catch (Exception e) {
-            throw new CustomException(ErrorCode.IMAGE_CONVERT_ERROR);
+            throw new RuntimeException(e);
         }
     }
 
@@ -181,7 +181,7 @@ public class ImagesService {
             amazonS3Client.deleteObject(bucket, fileNameMedium);
             amazonS3Client.deleteObject(bucket, fileNameSmall);
         } catch (SdkClientException e) {
-            throw new CustomException(ErrorCode.IMAGE_DELETE_FAIL);
+            throw new RuntimeException(e);
         }
     }
 }
