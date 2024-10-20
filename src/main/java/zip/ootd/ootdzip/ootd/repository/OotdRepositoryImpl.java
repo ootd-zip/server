@@ -1,13 +1,20 @@
 package zip.ootd.ootdzip.ootd.repository;
 
+import static zip.ootd.ootdzip.category.domain.QCategory.*;
+import static zip.ootd.ootdzip.category.domain.QCategoryTemperature.*;
+import static zip.ootd.ootdzip.category.domain.QColor.*;
 import static zip.ootd.ootdzip.clothes.domain.QClothes.*;
+import static zip.ootd.ootdzip.clothes.domain.QClothesColor.*;
 import static zip.ootd.ootdzip.ootd.domain.QOotd.*;
 import static zip.ootd.ootdzip.ootdimage.domain.QOotdImage.*;
 import static zip.ootd.ootdzip.ootdimageclothe.domain.QOotdImageClothes.*;
 import static zip.ootd.ootdzip.ootdstyle.domain.QOotdStyle.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.springframework.data.domain.Pageable;
@@ -19,9 +26,11 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
+import zip.ootd.ootdzip.clothes.domain.Clothes;
 import zip.ootd.ootdzip.common.response.CommonPageResponse;
 import zip.ootd.ootdzip.ootd.data.OotdSearchSortType;
 import zip.ootd.ootdzip.ootd.domain.Ootd;
+import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.domain.UserGender;
 
 @Repository
@@ -159,4 +168,61 @@ public class OotdRepositoryImpl extends QuerydslRepositorySupport implements Oot
 
     }
 
+    public List<Ootd> findOotdToday(double highestTemp, double lowestTemp, User user) {
+        int minClothesCount = 1;
+
+        List<Ootd> result = queryFactory.selectDistinct(ootd)
+                .from(ootd)
+                .join(ootd.ootdImages, ootdImage)
+                .join(ootdImage.ootdImageClothesList, ootdImageClothes)
+                .join(ootdImageClothes.clothes, clothes)
+                .join(clothes.category, category)
+                .join(clothes.clothesColors, clothesColor)
+                .join(clothesColor.color, color)
+                .join(category.temperature, categoryTemperature)
+                .where(
+                        ootd.writer.id.ne(user.getId())
+                                .and(ootd.isPrivate.isFalse())
+                                .and(categoryTemperature.lowestTemperature.goe(lowestTemp))
+                                .and(categoryTemperature.highestTemperature.loe(highestTemp))
+                )
+                .groupBy(ootd)
+                .having(clothes.count().goe(minClothesCount))
+                .limit(10)
+                .fetch();
+
+        return result;
+    }
+
+    public Map<Clothes, Set<Clothes>> findMatchingUserClothes(List<Clothes> clothesList, User user) {
+        Map<Long, Map<Long, List<Clothes>>> categoryColorMap = new HashMap<>();
+        for (Clothes clothes : clothesList) {
+            Long categoryId = clothes.getCategory().getId();
+            Map<Long, List<Clothes>> ColorMap = categoryColorMap.computeIfAbsent(categoryId, k -> new HashMap<>());
+            List<Long> colorIds = clothes.getClothesColors().stream().map(cc -> cc.getColor().getId()).toList();
+            for (Long colorId : colorIds) {
+                List<Clothes> mapClothesList = ColorMap.computeIfAbsent(colorId, k -> new ArrayList<>());
+                mapClothesList.add(clothes);
+            }
+        }
+
+        List<Clothes> userClothes = queryFactory
+                .selectFrom(clothes)
+                .where(clothes.user.eq(user))
+                .fetch();
+
+        Map<Clothes, Set<Clothes>> result = new HashMap<>();
+        for (Clothes clothes : userClothes) {
+            Map<Long, List<Clothes>> colorMap = categoryColorMap.get(clothes.getCategory().getId());
+            List<Long> colorIds = clothes.getClothesColors().stream().map(cc -> cc.getColor().getId()).toList();
+            for (Long colorId : colorIds) {
+                List<Clothes> taggedClothesList = colorMap.get(colorId);
+                for (Clothes taggedClothes : taggedClothesList) {
+                    result.computeIfAbsent(taggedClothes, k -> new HashSet<>()).add(clothes);
+                }
+            }
+        }
+
+        return result;
+    }
 }

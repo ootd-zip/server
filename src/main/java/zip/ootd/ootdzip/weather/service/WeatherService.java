@@ -1,16 +1,22 @@
 package zip.ootd.ootdzip.weather.service;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import zip.ootd.ootdzip.weather.client.WeatherClient;
-import zip.ootd.ootdzip.weather.data.*;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import lombok.RequiredArgsConstructor;
+import zip.ootd.ootdzip.weather.client.WeatherClient;
+import zip.ootd.ootdzip.weather.data.ForecastItem;
+import zip.ootd.ootdzip.weather.data.Grid;
+import zip.ootd.ootdzip.weather.data.Temperatures;
+import zip.ootd.ootdzip.weather.data.WeatherRequest;
+import zip.ootd.ootdzip.weather.data.WeatherResponse;
 
 @Service
 @RequiredArgsConstructor
@@ -29,14 +35,14 @@ public class WeatherService {
         List<ForecastItem> items = weatherResponse.getItems();
 
         List<Double> temperatures = items.stream()
-            .filter(item -> item.getForecastDateTime().toLocalDate().isEqual(date))
-            .filter(item -> item.getCategory().equals("TMP"))
-            .map(ForecastItem::getFcstValueAsDouble)
-            .toList();
+                .filter(item -> item.getForecastDateTime().toLocalDate().isEqual(date))
+                .filter(item -> item.getCategory().equals("TMP"))
+                .map(ForecastItem::getFcstValueAsDouble)
+                .toList();
         return Temperatures.builder()
-            .highestTemperature(temperatures.stream().max(Double::compare).orElseThrow())
-            .lowestTemperature(temperatures.stream().min(Double::compare).orElseThrow())
-            .build();
+                .highestTemperature(temperatures.stream().max(Double::compare).orElseThrow())
+                .lowestTemperature(temperatures.stream().min(Double::compare).orElseThrow())
+                .build();
 
     }
 
