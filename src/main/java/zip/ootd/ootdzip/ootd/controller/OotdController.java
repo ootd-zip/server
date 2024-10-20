@@ -35,6 +35,8 @@ import zip.ootd.ootdzip.ootd.data.OotdPatchReq;
 import zip.ootd.ootdzip.ootd.data.OotdPostReq;
 import zip.ootd.ootdzip.ootd.data.OotdPostRes;
 import zip.ootd.ootdzip.ootd.data.OotdPutReq;
+import zip.ootd.ootdzip.ootd.data.OotdTodayReq;
+import zip.ootd.ootdzip.ootd.data.OotdTodayRes;
 import zip.ootd.ootdzip.ootd.service.OotdService;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.service.UserService;
@@ -191,5 +193,11 @@ public class OotdController {
     public ApiResponse<CommonPageResponse<OotdSearchRes>> searchOotds(@Valid OotdSearchReq request) {
         return new ApiResponse<>(
                 ootdService.searchOotds(request.toServiceRequest(), userService.getAuthenticatiedUser()));
+    }
+
+    @Operation(summary = "오늘 입기 좋은 옷", description = "위치를 기준으로 기온과 오늘 입기 좋은 옷이 포함된 ootd 목록 반환")
+    @GetMapping("/today")
+    public ApiResponse<OotdTodayRes> getOotdToday(@Valid OotdTodayReq request) {
+        return new ApiResponse<>(ootdService.getOotdToday(request, userService.getAuthenticatiedUser()));
     }
 }

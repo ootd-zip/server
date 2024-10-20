@@ -1,8 +1,11 @@
 package zip.ootd.ootdzip.ootd.service;
 
 import java.time.Duration;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -48,6 +51,8 @@ import zip.ootd.ootdzip.ootd.data.OotdGetSimilarRes;
 import zip.ootd.ootdzip.ootd.data.OotdPatchReq;
 import zip.ootd.ootdzip.ootd.data.OotdPostReq;
 import zip.ootd.ootdzip.ootd.data.OotdPutReq;
+import zip.ootd.ootdzip.ootd.data.OotdTodayReq;
+import zip.ootd.ootdzip.ootd.data.OotdTodayRes;
 import zip.ootd.ootdzip.ootd.domain.Ootd;
 import zip.ootd.ootdzip.ootd.repository.OotdRepository;
 import zip.ootd.ootdzip.ootd.service.request.OotdSearchSvcReq;
@@ -60,6 +65,8 @@ import zip.ootd.ootdzip.ootdstyle.domain.OotdStyle;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.service.UserService;
 import zip.ootd.ootdzip.userblock.repository.UserBlockRepository;
+import zip.ootd.ootdzip.weather.data.Temperatures;
+import zip.ootd.ootdzip.weather.service.WeatherService;
 
 @Service
 @RequiredArgsConstructor
@@ -74,6 +81,7 @@ public class OotdService {
     private final ApplicationEventPublisher eventPublisher;
     private final UserBlockRepository userBlockRepository;
     private final ImagesService imagesService;
+    private final WeatherService weatherService;
 
     @Transactional
     public Ootd postOotd(OotdPostReq request, User loginUser) {
@@ -430,5 +438,53 @@ public class OotdService {
 
         return new CommonPageResponse<OotdSearchRes>(ootdSearchRes, request.getPageable(), findOotds.getIsLast(),
                 findOotds.getTotal());
+    }
+
+    /**
+     * 오늘 입기 좋은 옷 API를 구현합니다. OOTD는 최대 10개까지 반환합니다.
+     */
+    public OotdTodayRes getOotdToday(OotdTodayReq request, User loginUser) {
+        Temperatures temperatures = weatherService.getTemperatures(request.getLat(), request.getLng(), LocalDate.now());
+        List<Ootd> ootdToday = ootdRepository.findOotdToday(temperatures.getHighestTemperature(),
+                temperatures.getLowestTemperature(), loginUser);
+
+        List<OotdTodayRes.Ootd> ootdResList = new ArrayList<>();
+        for (Ootd ootd : ootdToday) {
+            List<Clothes> taggedClothesList = ootd.getOotdImages()
+                    .stream()
+                    .flatMap(images -> images.getOotdImageClothesList().stream()
+                            .map(OotdImageClothes::getClothes))
+                    .toList();
+            Map<Clothes, Set<Clothes>> userClothes = ootdRepository.findMatchingUserClothes(taggedClothesList,
+                    loginUser);
+
+            Clothes taggedClothes = findTaggedClothesWithSimilarMyClothesNotEmpty(taggedClothesList, userClothes);
+            if (taggedClothes != null) {
+                OotdTodayRes.Ootd.Clothes taggedClothesRes = OotdTodayRes.Ootd.Clothes.from(taggedClothes);
+                Clothes similarMyClothes = userClothes.get(taggedClothes).stream().iterator().next();
+                OotdTodayRes.Ootd.Clothes similarMyClothesRes = OotdTodayRes.Ootd.Clothes.from(similarMyClothes);
+                OotdTodayRes.Ootd ootdRes = OotdTodayRes.Ootd.withId(ootd.getId())
+                        .ootdImageUrl(ootd.getFirstImage())
+                        .taggedClothes(taggedClothesRes)
+                        .similarMyClothes(similarMyClothesRes)
+                        .build();
+                ootdResList.add(ootdRes);
+            }
+        }
+        return OotdTodayRes.builder()
+                .ootdList(ootdResList)
+                .highestTemp(temperatures.getHighestTemperature())
+                .lowestTemp(temperatures.getLowestTemperature())
+                .build();
+    }
+
+    private Clothes findTaggedClothesWithSimilarMyClothesNotEmpty(List<Clothes> taggedClothesList,
+            Map<Clothes, Set<Clothes>> userClothes) {
+        for (Clothes clothes : taggedClothesList) {
+            if (!userClothes.get(clothes).isEmpty()) {
+                return clothes;
+            }
+        }
+        return null;
     }
 }

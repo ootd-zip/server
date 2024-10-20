@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -42,6 +43,9 @@ public class Category {
     @ManyToOne
     @JoinColumn(name = "parent_id", nullable = true)
     private Category parentCategory;
+
+    @OneToOne(mappedBy = "category")
+    private CategoryTemperature temperature;
 
     @Builder
     private Category(String name, CategoryType type, Category parentCategory) {

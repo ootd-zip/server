@@ -61,3 +61,7 @@ server:
       prefix: access_log
       file-date-format: .yyyy-MM-dd
       pattern: "%{yyyy-MM-dd HH:mm:ss}t %s %r %{User-Agent}i %{Referer}i %a %b %D"
+
+api:
+  weather:
+    url: https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst
