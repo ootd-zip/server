@@ -1,0 +1,43 @@
+spring:
+  config:
+    activate:
+      on-profile: dev
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show-sql: true # 로그로 sql 구문을 출력하므로 사용안함
+        format_sql: true # sql 보기 편하게 출력
+        jdbc:
+          batch_size: 100 # update문 하이버네이트 배치를 사용하기 위해 추가, (Insert는 적용불가, id 생성방식이 Identity 이기 때문)
+        order_updates: true
+        dialect: org.hibernate.dialect.MariaDB103Dialect
+  datasource:
+    url: jdbc:mariadb://localhost:3306/ootdzip_dev # mariaDB 쿼리로그가 보고싶을시 ?&profileSQL=true&maxQuerySizeToLog=0
+    username: ootdzip_dev
+    password: 1234
+    driver-class-name: org.mariadb.jdbc.Driver
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+      timeout: 10
+
+client:
+  base-url: https://dev.ootdzip.com
+  dev-url: http://localhost:3000
+
+
+logging: #로그 레벨을 정하는 것
+  level:
+    org.hibernate.SQL: debug #JPA 하이버네이트가 생성하는 SQL 로그
+    org.hibernate.orm.jdbc.bind: debug # 스프링 3.0 이후 변경됨
+    zip.ootd.ootdzip.oauth.OAuth2AuthenticationFailureHandler: debug # 로그인 실패 시 로그
+
+# Token config
+authorization:
+  issuer: https://dev.ootdzip.com
+  audience: https://dev-ootdzip.com
+  access-token-time-to-live: 5184000  # 30 minutes
+  refresh-token-time-to-live: 5184000  # 60 days

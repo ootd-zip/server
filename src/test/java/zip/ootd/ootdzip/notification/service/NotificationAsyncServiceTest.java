@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +14,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
 
+import zip.ootd.ootdzip.DBCleanUp;
 import zip.ootd.ootdzip.brand.domain.Brand;
 import zip.ootd.ootdzip.brand.repository.BrandRepository;
 import zip.ootd.ootdzip.category.data.SizeType;
@@ -35,6 +36,8 @@ import zip.ootd.ootdzip.comment.data.CommentPostReq;
 import zip.ootd.ootdzip.comment.domain.Comment;
 import zip.ootd.ootdzip.comment.repository.CommentRepository;
 import zip.ootd.ootdzip.comment.service.CommentService;
+import zip.ootd.ootdzip.common.dao.RedisDao;
+import zip.ootd.ootdzip.images.domain.Images;
 import zip.ootd.ootdzip.notification.domain.Notification;
 import zip.ootd.ootdzip.notification.repository.NotificationRepository;
 import zip.ootd.ootdzip.oauth.OAuthUtils;
@@ -55,8 +58,11 @@ import zip.ootd.ootdzip.user.service.UserService;
  * IntegrationTestSupport 에는 @Transaction 이 있는데
  * 알람 처리로직 중 부모 트랜잭션이 끝나야 수행되기 때문에 포괄적으로 트랜잭션 처리를 할 수 없습니다.
  * 그래서 트랜잭션으로 DB 를 초기화하지 않고 컨텍스트를 재시작해서 DB 를 초기화합니다.
+ * 컨텍스트 초기화방법으로 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD) 어노테이션을 사용했습니다
+ * </br>
+ * 2024.06.20
+ * 컨텍스트 초기화 방법은 시간이 오래걸립니다. 그래서 DB 를 비우는 방식으로 변경했습니다.
  */
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @SpringBootTest
 public class NotificationAsyncServiceTest {
 
@@ -98,6 +104,18 @@ public class NotificationAsyncServiceTest {
 
     @Autowired
     private NotificationRepository notificationRepository;
+
+    @Autowired
+    private DBCleanUp dbCleanUp;
+
+    @Autowired
+    private RedisDao redisDao;
+
+    @AfterEach
+    void tearDown() {
+        dbCleanUp.execute();
+        redisDao.deleteAll();
+    }
 
     @DisplayName("OOTD 댓글 저장시 해당 댓글 ootd 에 대한 알림이 비동기로 저장 됩니다.")
     @Test
@@ -305,7 +323,8 @@ public class NotificationAsyncServiceTest {
                 .deviceSize(deviceSize1)
                 .build();
 
-        OotdImage ootdImage = OotdImage.createOotdImageBy("input_image_url",
+        OotdImage ootdImage = OotdImage.createOotdImageBy(
+                Images.of("https://ootdzip.com/8c00f7f4-3f47-4238-2024-06-14.png"),
                 Arrays.asList(ootdImageClothes, ootdImageClothes1));
 
         Style style = Style.builder().name("올드머니").build();
@@ -350,7 +369,8 @@ public class NotificationAsyncServiceTest {
         List<ClothesColor> clothesColors = ClothesColor.createClothesColorsBy(List.of(savedColor));
 
         Clothes clothes = Clothes.createClothes(user, savedBrand, "구매처" + idx, PurchaseStoreType.Write, "제품명" + idx,
-                isOpen, savedCategory, savedSize, "메모입니다" + idx, "구매일" + idx, "image" + idx + ".jpg", clothesColors);
+                isOpen, savedCategory, savedSize, "메모입니다" + idx, "구매일" + idx,
+                "https://ootdzip.com/8c00f7f4-3f47-4238-2024-06-15.png" + idx + ".jpg", clothesColors);
 
         return clothesRepository.save(clothes);
     }

@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.hibernate.annotations.ColumnDefault;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -23,7 +25,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import zip.ootd.ootdzip.clothes.domain.Clothes;
 import zip.ootd.ootdzip.common.entity.BaseEntity;
+import zip.ootd.ootdzip.common.exception.CustomException;
+import zip.ootd.ootdzip.common.exception.code.ErrorCode;
+import zip.ootd.ootdzip.images.domain.Images;
 import zip.ootd.ootdzip.ootd.domain.Ootd;
+import zip.ootd.ootdzip.user.data.UserRole;
 
 @Entity
 @Table(name = "users")
@@ -36,30 +42,48 @@ public class User extends BaseEntity {
 
     @ManyToMany(cascade = CascadeType.ALL, mappedBy = "followings")
     private final Set<User> followers = new HashSet<>();
+
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "followers",
             joinColumns = {@JoinColumn(name = "user_id")},
             inverseJoinColumns = {@JoinColumn(name = "follower_id")})
     private final Set<User> followings = new HashSet<>();
+
     @Column(unique = true)
     private String name;
+
     @Enumerated(EnumType.ORDINAL)
     private UserGender gender = UserGender.UNKNOWN;
+
     private Integer age;
+
     private Integer height;
+
     private Integer weight;
+
     private Boolean isBodyPrivate = false;
-    @Column(length = 2048)
-    private String profileImage;
+
+    private Images images;
+
     private String description;
+
     @Column(nullable = false)
     private Boolean isCompleted = false;
+
     @Column(nullable = false)
     private Boolean isDeleted = false;
+
+    @Column(nullable = false)
+    @Enumerated(value = EnumType.STRING)
+    @ColumnDefault("'USER'")
+    private UserRole userRole = UserRole.USER;
+
     @OneToMany(mappedBy = "user")
     private List<Clothes> clothesList;
+
     @OneToMany(mappedBy = "writer")
     private List<Ootd> ootds;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<UserStyle> userStyles;
 
@@ -71,13 +95,14 @@ public class User extends BaseEntity {
                 .height(0)
                 .isBodyPrivate(false)
                 .weight(0)
-                .profileImage("")
+                .images(Images.defaultImage())
                 .description(null)
                 .isCompleted(false)
                 .isDeleted(false)
                 .clothesList(new ArrayList<>())
                 .ootds(new ArrayList<>())
                 .userStyles(new ArrayList<>())
+                .userRole(UserRole.USER)
                 .build();
     }
 
@@ -170,13 +195,13 @@ public class User extends BaseEntity {
     }
 
     public void updateProfile(String name,
-            String profileImage,
+            Images images,
             String description,
             Integer height,
             Integer weight,
             Boolean isBodyPrivate) {
         this.name = name;
-        this.profileImage = profileImage;
+        this.images = images;
         this.description = description;
         this.height = height;
         this.weight = weight;
@@ -195,10 +220,14 @@ public class User extends BaseEntity {
         return name;
     }
 
-    public String getProfileImage() {
+    public Images getImages() {
         if (isDeleted) {
-            return "";
+            throw new CustomException(ErrorCode.DELETED_USER_ERROR);
         }
-        return profileImage;
+        return images;
+    }
+
+    public boolean isAdmin() {
+        return userRole.equals(UserRole.ADMIN);
     }
 }

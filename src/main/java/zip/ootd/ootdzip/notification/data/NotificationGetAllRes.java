@@ -40,7 +40,7 @@ public class NotificationGetAllRes {
 
         return NotificationGetAllRes.builder()
                 .id(notification.getId())
-                .profileImage(sender.getProfileImage())
+                .profileImage(sender.getImages().getImageUrlSmall())
                 .userName(sender.getName())
                 .userId(sender.getId())
                 .alarmType(notification.getNotificationType().toString())

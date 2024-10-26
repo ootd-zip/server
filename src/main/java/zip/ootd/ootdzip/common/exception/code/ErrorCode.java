@@ -135,6 +135,12 @@ public enum ErrorCode {
 
     INVALID_IMAGE_URL(400, "I001", "이미지 URL이 유효하지 않습니다."),
 
+    IMAGE_DELETE_FAIL(400, "I002", "이미지 삭제를 실패 했습니다."),
+
+    IMAGE_UPLOAD_FAIL(400, "I003", "이미지 업로드를 실패 했습니다."),
+
+    IMAGE_OVER_RESOLUTION(400, "I004", "고해상도 이미지를 업로드 했습니다."),
+
     DELETE_USER_CLOTHES(404, "C006", "삭제된 유저의 옷입니다."),
 
     NOT_FOUND_USER_BLCOK_ID(404, "UB001", "유효하지 않은 사용자 차단 ID"),
@@ -143,7 +149,31 @@ public enum ErrorCode {
 
     EXISTED_BLOCK_USER(200, "UB003", "이미 차단한 유저입니다."),
 
-    BLOCK_USER_CONTENTS(404, "UB004", "차단한 사용자의 컨텐츠입니다.");
+    BLOCK_USER_CONTENTS(404, "UB004", "차단한 사용자의 컨텐츠입니다."),
+
+    RLOCK_TIME_OVER(400, "RL001", "락을 획득하려는 시간이 초과되었습니다."),
+
+    RLOCK_GET_FAIL(400, "RL002", "락을 획득을 실패했습니다."),
+
+    RLOCK_KEY_FAIL(400, "RL003", "락 키 생성에 실패했습니다."),
+
+    INVALID_PURCHASE_STORE_TYPE(404, "C007", "유효하지 않은 구매처 타입"),
+
+    REQUIRED_BRAND_REQUEST_NAME(400, "BR001", "브랜드 요청 내용은 필수입니다."),
+
+    INVALID_BRAND_REQUEST_ID(404, "BR003", "유효하지 않은 브랜드 요청 ID가 있습니다."),
+
+    EXISTED_BRAND_NAME(400, "BR004", "이미 존재하는 브랜드명입니다."),
+
+    EXISTED_BRAND_ENG_NAME(400, "BR005", "이미 존재하는 영문 브랜드명입니다."),
+
+    REQUIRED_REJECT_REASON(400, "BR006", "거절 사유를 입력해주세요."),
+
+    NOT_FOUND_ADMIN_LOGIN_ID(400, "A001", "존재하지 않는 ADMIN ID입니다."),
+
+    INVALID_ADMIN_PASSWORD(400, "A002", "비밀번호가 일치하지 않습니다."),
+
+    EXISTED_ADMIN_ID(400, "A003", "이미 존재하는 아이디입니다.");
 
     private final Integer status;
 

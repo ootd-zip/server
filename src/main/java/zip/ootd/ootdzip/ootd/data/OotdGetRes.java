@@ -71,10 +71,9 @@ public class OotdGetRes {
         this.createAt = ootd.getCreatedAt();
         this.isPrivate = ootd.isPrivate();
 
-
         this.userId = writer.getId();
         this.userName = writer.getName();
-        this.userImage = writer.getProfileImage();
+        this.userImage = writer.getImages().getImageUrlSmall();
         this.userHeight = writer.getProfileHeight(loginUser);
         this.userWeight = writer.getProfileWeight(loginUser);
 
@@ -110,7 +109,7 @@ public class OotdGetRes {
         private List<OotdImageClothesRes> ootdImageClothesList;
 
         public OotdImageRes(OotdImage ootdImage) {
-            this.ootdImage = ootdImage.getImageUrl();
+            this.ootdImage = ootdImage.getImages().getImageUrl();
             this.ootdImageClothesList = ootdImage.getOotdImageClothesList().stream()
                     .map(OotdImageClothesRes::new)
                     .collect(Collectors.toList());
@@ -142,14 +141,14 @@ public class OotdGetRes {
                 Clothes clothes = ootdImageClothes.getClothes();
                 this.clothesId = clothes.getId();
                 this.clothesName = clothes.getName();
-                this.clothesImage = clothes.getImageUrl();
+                this.clothesImage = clothes.getImages().getImageUrlMedium();
                 this.brand = BrandDto.of(clothes.getBrand());
                 this.category = DetailCategory.builder()
                         .id(clothes.getCategory().getId())
                         .categoryName(clothes.getCategory().getName())
                         .parentCategoryName(clothes.getCategory().getParentCategory().getName())
                         .build();
-                this.size = clothes.getSize().getName();
+                this.size = clothes.getSize() == null ? "" : clothes.getSize().getName();
             }
         }
     }

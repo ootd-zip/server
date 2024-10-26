@@ -35,13 +35,12 @@ import zip.ootd.ootdzip.clothes.service.request.UpdateClothesIsPrivateSvcReq;
 import zip.ootd.ootdzip.clothes.service.request.UpdateClothesSvcReq;
 import zip.ootd.ootdzip.common.entity.BaseEntity;
 import zip.ootd.ootdzip.common.exception.CustomException;
-import zip.ootd.ootdzip.common.exception.code.ErrorCode;
 import zip.ootd.ootdzip.common.response.CommonSliceResponse;
+import zip.ootd.ootdzip.images.domain.Images;
+import zip.ootd.ootdzip.images.service.ImagesService;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.repository.UserRepository;
-import zip.ootd.ootdzip.user.service.UserService;
 import zip.ootd.ootdzip.userblock.repository.UserBlockRepository;
-import zip.ootd.ootdzip.utils.ImageFileUtil;
 
 @Service
 @RequiredArgsConstructor
@@ -55,8 +54,7 @@ public class ClothesServiceImpl implements ClothesService {
     private final ClothesRepository clothesRepository;
     private final UserRepository userRepository;
     private final UserBlockRepository userBlockRepository;
-
-    private final UserService userService;
+    private final ImagesService imagesService;
 
     @Override
     @Transactional
@@ -70,8 +68,7 @@ public class ClothesServiceImpl implements ClothesService {
         Category category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new CustomException(NOT_FOUND_CATEGORY_ID));
         List<Color> colors = colorRepository.findAllById(request.getColorIds());
-        Size size = sizeRepository.findById(request.getSizeId())
-                .orElseThrow(() -> new CustomException(NOT_FOUND_SIZE_ID));
+        Size size = null;
 
         if (colors.size() != request.getColorIds().size()
                 || request.getColorIds().isEmpty()) {
@@ -82,12 +79,20 @@ public class ClothesServiceImpl implements ClothesService {
             throw new CustomException(REQUIRED_DETAIL_CATEGORY);
         }
 
-        if (!size.getSizeType().equals(category.getSizeType())) {
-            throw new CustomException(INVALID_CATEGORY_AND_SIZE);
+        if (request.getSizeId() != null
+                && 0 < request.getSizeId()) {
+            size = sizeRepository.findById(request.getSizeId())
+                    .orElseThrow(() -> new CustomException(NOT_FOUND_SIZE_ID));
+
+            if (!size.getSizeType().equals(category.getSizeType())) {
+                throw new CustomException(INVALID_CATEGORY_AND_SIZE);
+            }
         }
 
-        if (!ImageFileUtil.isValidImageUrl(request.getClothesImageUrl())) {
-            throw new CustomException(ErrorCode.INVALID_IMAGE_URL);
+        if (null != request.getPurchaseStore()
+                && !request.getPurchaseStore().isBlank()
+                && null == request.getPurchaseStoreType()) {
+            throw new CustomException(INVALID_PURCHASE_STORE_TYPE);
         }
 
         List<ClothesColor> clothesColors = ClothesColor.createClothesColorsBy(colors);
@@ -175,6 +180,9 @@ public class ClothesServiceImpl implements ClothesService {
             throw new CustomException(UNAUTHORIZED_USER_ERROR);
         }
 
+        // 삭제전 s3 에서 이미지 삭제
+        imagesService.deleteImagesByUrlToS3(deleteClothes.getImages());
+
         clothesRepository.delete(deleteClothes);
 
         return new DeleteClothesByIdRes("옷 삭제 성공");
@@ -196,8 +204,7 @@ public class ClothesServiceImpl implements ClothesService {
         Category category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new CustomException(NOT_FOUND_CATEGORY_ID));
         List<Color> colors = colorRepository.findAllById(request.getColorIds());
-        Size size = sizeRepository.findById(request.getSizeId())
-                .orElseThrow(() -> new CustomException(NOT_FOUND_SIZE_ID));
+        Size size = null;
 
         if (colors.size() != request.getColorIds().size()
                 || request.getColorIds().isEmpty()) {
@@ -208,15 +215,29 @@ public class ClothesServiceImpl implements ClothesService {
             throw new CustomException(REQUIRED_DETAIL_CATEGORY);
         }
 
-        if (!size.getSizeType().equals(category.getSizeType())) {
-            throw new CustomException(INVALID_CATEGORY_AND_SIZE);
+        if (request.getSizeId() != null
+                && 0 < request.getSizeId()) {
+            size = sizeRepository.findById(request.getSizeId())
+                    .orElseThrow(() -> new CustomException(NOT_FOUND_SIZE_ID));
+
+            if (!size.getSizeType().equals(category.getSizeType())) {
+                throw new CustomException(INVALID_CATEGORY_AND_SIZE);
+            }
         }
 
-        if (!ImageFileUtil.isValidImageUrl(request.getClothesImageUrl())) {
-            throw new CustomException(INVALID_IMAGE_URL);
+        if (null != request.getPurchaseStore()
+                && !request.getPurchaseStore().isBlank()
+                && null == request.getPurchaseStoreType()) {
+            throw new CustomException(INVALID_PURCHASE_STORE_TYPE);
         }
 
         List<ClothesColor> clothesColors = ClothesColor.createClothesColorsBy(colors);
+
+        // 업데이트전 s3 에서 이미지 삭제
+        Images images = Images.of(request.getClothesImageUrl());
+        if (!updateTarget.getImages().equals(images)) {
+            imagesService.deleteImagesByUrlToS3(updateTarget.getImages());
+        }
 
         updateTarget.updateClothes(brand,
                 request.getPurchaseStore(),
@@ -227,7 +248,7 @@ public class ClothesServiceImpl implements ClothesService {
                 size,
                 request.getMemo(),
                 request.getPurchaseDate(),
-                request.getClothesImageUrl(),
+                images,
                 clothesColors);
 
         Clothes updatedClothes = clothesRepository.save(updateTarget);

@@ -1,7 +1,9 @@
 package zip.ootd.ootdzip.common.exception;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +36,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     protected ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
-        log.error("handleMethodArgumentNotValidException", ex);
+        logException(ex);
         final ErrorResponse response = ErrorResponse.of(ErrorCode.NOT_VALID_ERROR, ex.getBindingResult());
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
@@ -46,7 +48,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(ConstraintViolationException.class)
     protected ResponseEntity<ErrorResponse> handleConstraintViolationException(ConstraintViolationException ex) {
-        log.error("handleConstraintViolationException", ex);
+        logException(ex);
         final ErrorResponse response = ErrorResponse.of(ErrorCode.NOT_VALID_ERROR, ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
@@ -58,7 +60,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(MissingRequestHeaderException.class)
     protected ResponseEntity<ErrorResponse> handleMissingRequestHeaderException(MissingRequestHeaderException ex) {
-        log.error("MissingRequestHeaderException", ex);
+        logException(ex);
         final ErrorResponse response = ErrorResponse.of(ErrorCode.REQUEST_BODY_MISSING_ERROR, ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
@@ -71,7 +73,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     protected ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(
             HttpMessageNotReadableException ex) {
-        log.error("HttpMessageNotReadableException", ex);
+        logException(ex);
         final ErrorResponse response = ErrorResponse.of(ErrorCode.REQUEST_BODY_MISSING_ERROR, ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
@@ -84,7 +86,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MissingServletRequestParameterException.class)
     protected ResponseEntity<ErrorResponse> handleMissingRequestHeaderExceptionException(
             MissingServletRequestParameterException ex) {
-        log.error("handleMissingServletRequestParameterException", ex);
+        logException(ex);
         final ErrorResponse response = ErrorResponse.of(ErrorCode.MISSING_REQUEST_PARAMETER_ERROR, ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
@@ -96,7 +98,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(HttpClientErrorException.BadRequest.class)
     protected ResponseEntity<ErrorResponse> handleBadRequestException(HttpClientErrorException ex) {
-        log.error("HttpClientErrorException.BadRequest", ex);
+        logException(ex);
         final ErrorResponse response = ErrorResponse.of(ErrorCode.BAD_REQUEST_ERROR, ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
@@ -108,7 +110,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(NoHandlerFoundException.class)
     protected ResponseEntity<ErrorResponse> handleNoHandlerFoundExceptionException(NoHandlerFoundException ex) {
-        log.error("handleNoHandlerFoundExceptionException", ex);
+        logException(ex);
         final ErrorResponse response = ErrorResponse.of(ErrorCode.NOT_FOUND_ERROR, ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
@@ -120,7 +122,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(NullPointerException.class)
     protected ResponseEntity<ErrorResponse> handleNullPointerException(NullPointerException ex) {
-        log.error("handleNullPointerException", ex);
+        logException(ex);
         final ErrorResponse response = ErrorResponse.of(ErrorCode.NULL_POINT_ERROR, ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
@@ -132,7 +134,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(IOException.class)
     protected ResponseEntity<ErrorResponse> handleIOException(IOException ex) {
-        log.error("handleIOException", ex);
+        logException(ex);
         final ErrorResponse response = ErrorResponse.of(ErrorCode.IO_ERROR, ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
@@ -144,7 +146,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(JsonParseException.class)
     protected ResponseEntity<ErrorResponse> handleJsonParseExceptionException(JsonParseException ex) {
-        log.error("handleJsonParseExceptionException", ex);
+        logException(ex);
         final ErrorResponse response = ErrorResponse.of(ErrorCode.JSON_PARSE_ERROR, ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
@@ -156,7 +158,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(JsonProcessingException.class)
     protected ResponseEntity<ErrorResponse> handleJsonProcessingException(JsonProcessingException ex) {
-        log.error("handleJsonProcessingException", ex);
+        logException(ex);
         final ErrorResponse response = ErrorResponse.of(ErrorCode.REQUEST_BODY_MISSING_ERROR, ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
@@ -166,7 +168,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(NoSuchElementException.class)
     protected ResponseEntity<ErrorResponse> handleNoSuchElementException(NoSuchElementException ex) {
-        log.debug("handleNoSuchElementException", ex);
+        logException(ex);
         final ErrorResponse response = ErrorResponse.of(ErrorCode.NOT_FOUND_ERROR, ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
@@ -180,7 +182,19 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(Exception.class)
     protected final ResponseEntity<ErrorResponse> handleAllExceptions(Exception ex) {
-        log.error("Exception", ex);
+        logException(ex);
+        final ErrorResponse response = ErrorResponse.of(ErrorCode.INTERNAL_SERVER_ERROR, ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    /**
+     * [Exception] 모든 Throwable 경우 발생
+     * @param ex Exception
+     * @return ResponseEntity<ErrorResponse>
+     */
+    @ExceptionHandler(Throwable.class)
+    protected final ResponseEntity<ErrorResponse> handleAllThrowable(Throwable ex) {
+        logThrowable(ex);
         final ErrorResponse response = ErrorResponse.of(ErrorCode.INTERNAL_SERVER_ERROR, ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -192,17 +206,51 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(InvalidBearerTokenException.class)
     protected final ResponseEntity<ErrorResponse> handleInvalidBearerTokenException(InvalidBearerTokenException ex) {
-        log.debug(InvalidBearerTokenException.class.getSimpleName(), ex);
+        logException(ex);
         final ErrorResponse response = ErrorResponse.of(ErrorCode.NOT_AUTHENTICATED_ERROR, ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
     }
 
+    private void logException(Exception ex) {
+        log.warn("""
+                        Ex={}
+                        Message={}
+                        StackTrace={}""",
+                ex.getClass().getSimpleName(),
+                ex.getMessage(),
+                Arrays.stream(ex.getStackTrace())
+                        .map(StackTraceElement::toString) // 스택트레이스 줄바꿈 추가
+                        .collect(Collectors.joining("\n")));
+    }
+
+    private void logThrowable(Throwable ex) {
+        log.error("""
+                        Ex={}
+                        Message={}
+                        StackTrace={}""",
+                ex.getClass().getSimpleName(),
+                ex.getMessage(),
+                Arrays.stream(ex.getStackTrace())
+                        .map(StackTraceElement::toString) // 스택트레이스 줄바꿈 추가
+                        .collect(Collectors.joining("\n")));
+    }
     // ======================================Custom Exception===========================================================
 
     @ExceptionHandler(CustomException.class)
     protected final ResponseEntity<ErrorResponse> handleAllExceptions(CustomException ex) {
 
-        log.error("Custom Exception", ex);
+        log.warn("""
+                        Ex=CustomException
+                        Status={}
+                        DivisionCode={}
+                        Message={}
+                        StackTrace={}""",
+                ex.getErrorCode().getStatus(),
+                ex.getErrorCode().getDivisionCode(),
+                ex.getErrorCode().getMessage(),
+                Arrays.stream(ex.getStackTrace()) // 스택트레이스 줄바꿈 추가
+                        .map(StackTraceElement::toString)
+                        .collect(Collectors.joining("\n")));
 
         return new ResponseEntity<>(ErrorResponse.of(ex.getErrorCode(), ex.getMessage()),
                 HttpStatus.valueOf(ex.getErrorCode().getStatus()));

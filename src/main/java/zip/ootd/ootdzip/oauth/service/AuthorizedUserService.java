@@ -1,7 +1,11 @@
 package zip.ootd.ootdzip.oauth.service;
 
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
@@ -33,6 +37,10 @@ public class AuthorizedUserService {
             return newUser;
         });
 
-        return new AuthorizedUser(oauth2User.getAuthorities(), oauth2User.getAttributes(), user);
+        Set<GrantedAuthority> authorities = new HashSet<>();
+        authorities.addAll(oauth2User.getAuthorities());
+        authorities.add(new SimpleGrantedAuthority(user.getUserRole().toString()));
+
+        return new AuthorizedUser(authorities, oauth2User.getAttributes(), user);
     }
 }

@@ -5,12 +5,14 @@ import static org.assertj.core.api.Assertions.*;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import jakarta.persistence.EntityManager;
-import zip.ootd.ootdzip.IntegrationTestSupport;
+import zip.ootd.ootdzip.DBCleanUp;
 import zip.ootd.ootdzip.brand.domain.Brand;
 import zip.ootd.ootdzip.brand.repository.BrandRepository;
 import zip.ootd.ootdzip.category.data.SizeType;
@@ -26,6 +28,8 @@ import zip.ootd.ootdzip.clothes.data.PurchaseStoreType;
 import zip.ootd.ootdzip.clothes.domain.Clothes;
 import zip.ootd.ootdzip.clothes.domain.ClothesColor;
 import zip.ootd.ootdzip.clothes.repository.ClothesRepository;
+import zip.ootd.ootdzip.common.dao.RedisDao;
+import zip.ootd.ootdzip.images.domain.Images;
 import zip.ootd.ootdzip.ootd.domain.Ootd;
 import zip.ootd.ootdzip.ootd.repository.OotdRepository;
 import zip.ootd.ootdzip.ootd.service.OotdService;
@@ -38,7 +42,8 @@ import zip.ootd.ootdzip.ootdstyle.domain.OotdStyle;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.repository.UserRepository;
 
-class OotdLikeServiceTest extends IntegrationTestSupport {
+@SpringBootTest
+class OotdLikeServiceTest {
 
     @Autowired
     private OotdLikeService ootdLikeService;
@@ -71,6 +76,18 @@ class OotdLikeServiceTest extends IntegrationTestSupport {
     private OotdRepository ootdRepository;
 
     @Autowired
+    private RedisDao redisDao;
+
+    @Autowired
+    private DBCleanUp dbCleanUp;
+
+    @AfterEach
+    void tearDown() {
+        dbCleanUp.execute();
+        redisDao.deleteAll();
+    }
+
+    @Autowired
     private EntityManager em;
 
     @DisplayName("유저가 좋아요한 ootd를 조회한다")
@@ -90,12 +107,12 @@ class OotdLikeServiceTest extends IntegrationTestSupport {
 
         //then
         assertThat(result).hasSize(2)
-                .extracting("ootdId", "ootdImageUrl", "ootdImageCount", "writerId", "writerProfileImage", "writerName")
+                .extracting("ootdId", "ootdImageUrl", "ootdImageCount", "writerId", "writerName")
                 .containsExactlyInAnyOrder(
                         tuple(ootd1.getId(), ootd1.getFirstImage(), ootd1.getImageCount(), user1.getId(),
-                                user1.getProfileImage(), user1.getName()),
+                                user1.getName()),
                         tuple(ootd2.getId(), ootd2.getFirstImage(), ootd2.getImageCount(), user1.getId(),
-                                user1.getProfileImage(), user1.getName()));
+                                user1.getName()));
 
     }
 
@@ -116,10 +133,10 @@ class OotdLikeServiceTest extends IntegrationTestSupport {
 
         //then
         assertThat(result).hasSize(1)
-                .extracting("ootdId", "ootdImageUrl", "ootdImageCount", "writerId", "writerProfileImage", "writerName")
+                .extracting("ootdId", "ootdImageUrl", "ootdImageCount", "writerId", "writerName")
                 .containsExactlyInAnyOrder(
                         tuple(ootd1.getId(), ootd1.getFirstImage(), ootd1.getImageCount(), user1.getId(),
-                                user1.getProfileImage(), user1.getName()));
+                                user1.getName()));
 
     }
 
@@ -160,10 +177,10 @@ class OotdLikeServiceTest extends IntegrationTestSupport {
 
         //then
         assertThat(result).hasSize(1)
-                .extracting("ootdId", "ootdImageUrl", "ootdImageCount", "writerId", "writerProfileImage", "writerName")
+                .extracting("ootdId", "ootdImageUrl", "ootdImageCount", "writerId", "writerName")
                 .containsExactlyInAnyOrder(
                         tuple(ootd1.getId(), ootd1.getFirstImage(), ootd1.getImageCount(), user1.getId(),
-                                user1.getProfileImage(), user1.getName()));
+                                user1.getName()));
 
     }
 
@@ -188,7 +205,8 @@ class OotdLikeServiceTest extends IntegrationTestSupport {
                 .deviceSize(deviceSize1)
                 .build();
 
-        OotdImage ootdImage = OotdImage.createOotdImageBy("input_image_url",
+        OotdImage ootdImage = OotdImage.createOotdImageBy(
+                Images.of("https://ootdzip.com/8c00f7f4-3f47-4238-2024-06-14.png"),
                 Arrays.asList(ootdImageClothes, ootdImageClothes1));
 
         Style style = Style.builder().name("올드머니").build();
@@ -233,7 +251,8 @@ class OotdLikeServiceTest extends IntegrationTestSupport {
         List<ClothesColor> clothesColors = ClothesColor.createClothesColorsBy(List.of(savedColor));
 
         Clothes clothes = Clothes.createClothes(user, savedBrand, "구매처" + idx, PurchaseStoreType.Write, "제품명" + idx,
-                isOpen, savedCategory, savedSize, "메모입니다" + idx, "구매일" + idx, "image" + idx + ".jpg", clothesColors);
+                isOpen, savedCategory, savedSize, "메모입니다" + idx, "구매일" + idx,
+                "https://ootdzip.com/8c00f7f4-3f47-4238-2024-06-15.png" + idx + ".jpg", clothesColors);
 
         return clothesRepository.save(clothes);
     }

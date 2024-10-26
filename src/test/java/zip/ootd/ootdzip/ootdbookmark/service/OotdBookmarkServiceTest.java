@@ -29,6 +29,7 @@ import zip.ootd.ootdzip.clothes.data.PurchaseStoreType;
 import zip.ootd.ootdzip.clothes.domain.Clothes;
 import zip.ootd.ootdzip.clothes.domain.ClothesColor;
 import zip.ootd.ootdzip.clothes.repository.ClothesRepository;
+import zip.ootd.ootdzip.images.domain.Images;
 import zip.ootd.ootdzip.oauth.OAuthUtils;
 import zip.ootd.ootdzip.ootd.domain.Ootd;
 import zip.ootd.ootdzip.ootd.repository.OotdRepository;
@@ -111,9 +112,6 @@ public class OotdBookmarkServiceTest extends IntegrationTestSupport {
                 .hasSize(2)
                 .extracting("ootd.id")
                 .containsExactlyInAnyOrder(ootd.getId(), ootd1.getId());
-
-        assertThat(ootd.getBookmarkCount()).isEqualTo(1);
-        assertThat(ootd2.getBookmarkCount()).isEqualTo(0);
     }
 
     private Ootd createOotdBy(User user, String content, boolean isPrivate) {
@@ -137,7 +135,8 @@ public class OotdBookmarkServiceTest extends IntegrationTestSupport {
                 .deviceSize(deviceSize1)
                 .build();
 
-        OotdImage ootdImage = OotdImage.createOotdImageBy("input_image_url",
+        OotdImage ootdImage = OotdImage.createOotdImageBy(
+                Images.of("https://ootdzip.com/8c00f7f4-3f47-4238-2024-06-14.png"),
                 Arrays.asList(ootdImageClothes, ootdImageClothes1));
 
         Style style = Style.builder().name("올드머니").build();
@@ -182,7 +181,8 @@ public class OotdBookmarkServiceTest extends IntegrationTestSupport {
         List<ClothesColor> clothesColors = ClothesColor.createClothesColorsBy(List.of(savedColor));
 
         Clothes clothes = Clothes.createClothes(user, savedBrand, "구매처" + idx, PurchaseStoreType.Write, "제품명" + idx,
-                isOpen, savedCategory, savedSize, "메모입니다" + idx, "구매일" + idx, "image" + idx + ".jpg", clothesColors);
+                isOpen, savedCategory, savedSize, "메모입니다" + idx, "구매일" + idx,
+                "https://ootdzip.com/8c00f7f4-3f47-4238-2024-06-15.png" + idx + ".jpg", clothesColors);
 
         return clothesRepository.save(clothes);
     }

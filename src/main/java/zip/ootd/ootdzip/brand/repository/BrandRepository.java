@@ -1,6 +1,7 @@
 package zip.ootd.ootdzip.brand.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,5 +14,9 @@ public interface BrandRepository extends JpaRepository<Brand, Long>, BrandReposi
 
     Boolean existsByName(String name);
 
+    Boolean existsByEngName(String engName);
+
     List<Brand> findByNameStartsWithOrEngNameStartsWith(String name, String engName, Sort sort);
+
+    Optional<Brand> findOneByName(String name);
 }

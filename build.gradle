@@ -43,6 +43,9 @@ dependencies {
     // embedded-redis for test
     implementation group: 'com.github.codemonstur', name: 'embedded-redis', version: '1.4.0'
 
+    // 동시성을 위한 redisson 추가
+    implementation group: 'org.redisson', name: 'redisson-spring-boot-starter', version: '3.31.0'
+
     //자바 역직렬화 문제 해결 패키지
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
     implementation 'com.fasterxml.jackson.core:jackson-databind'
@@ -51,6 +54,9 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
     implementation 'commons-io:commons-io:2.6'
     implementation 'commons-fileupload:commons-fileupload:1.4'
+
+    // 이미지 리사이즈
+    implementation 'net.coobird:thumbnailator:0.4.20'
 
     // swagger 설정 추가, spring 3.x 이후에는 아래 의존성을 추가
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
@@ -78,6 +84,7 @@ dependencies {
     testImplementation 'org.projectlombok:lombok' // test 에서 롬복 추가
     testAnnotationProcessor 'org.projectlombok:lombok' // test 에서 롬복 인식
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+    implementation 'com.google.guava:guava:31.0.1-jre' // DB 초기화를 위함
 
     // h2
     testRuntimeOnly 'com.h2database:h2'

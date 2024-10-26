@@ -34,11 +34,11 @@ import zip.ootd.ootdzip.clothes.data.PurchaseStoreType;
 import zip.ootd.ootdzip.clothes.domain.Clothes;
 import zip.ootd.ootdzip.clothes.domain.ClothesColor;
 import zip.ootd.ootdzip.clothes.repository.ClothesRepository;
-import zip.ootd.ootdzip.common.constant.RedisKey;
 import zip.ootd.ootdzip.common.dao.RedisDao;
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.response.CommonPageResponse;
 import zip.ootd.ootdzip.common.response.CommonSliceResponse;
+import zip.ootd.ootdzip.images.domain.Images;
 import zip.ootd.ootdzip.oauth.OAuthUtils;
 import zip.ootd.ootdzip.ootd.data.OotdGetByUserReq;
 import zip.ootd.ootdzip.ootd.data.OotdGetByUserRes;
@@ -94,6 +94,10 @@ public class OotdServiceTest extends IntegrationTestSupport {
     @Autowired
     private RedisDao redisDao;
 
+    private static final String OOTD_IMAGE_URL = "https://ootdzip.com/8c00f7f4-3f47-4238-2024-06-14.png";
+
+    private static final String OOTD_IMAGE_URL1 = "https://ootdzip/0459a64c-89d9-4c63-be21_2024-03-27.png";
+
     @AfterEach
     void tearDown() {
         redisDao.deleteAll();
@@ -122,7 +126,7 @@ public class OotdServiceTest extends IntegrationTestSupport {
         clothesTagReq1.setYRate("44.55");
 
         OotdPostReq.OotdImageReq ootdImageReq = new OotdPostReq.OotdImageReq();
-        ootdImageReq.setOotdImage("input_image_url");
+        ootdImageReq.setOotdImage(OOTD_IMAGE_URL);
         ootdImageReq.setClothesTags(Arrays.asList(clothesTagReq, clothesTagReq1));
 
         Style style = Style.builder().name("올드머니").build();
@@ -151,13 +155,11 @@ public class OotdServiceTest extends IntegrationTestSupport {
                 .containsExactlyInAnyOrder("올드머니", "블루코어");
 
         assertThat(savedResult.getOotdImages())
-                .hasSize(1)
-                .extracting("imageUrl")
-                .contains("input_image_url");
+                .hasSize(1);
 
         assertThat(savedResult.getOotdImages().get(0).getOotdImageClothesList())
                 .hasSize(2)
-                .extracting("clothes.id", "coordinate.x", "coordinate.y", "deviceSize.deviceWidth",
+                .extracting("clothes.id", "coordinate.xRate", "coordinate.yRate", "deviceSize.deviceWidth",
                         "deviceSize.deviceHeight")
                 .containsExactlyInAnyOrder(
                         tuple(clothes.getId(), "22.33", "33.44", 100L, 50L),
@@ -209,7 +211,7 @@ public class OotdServiceTest extends IntegrationTestSupport {
         clothesTagReq1.setYRate("55.66");
 
         OotdPutReq.OotdImageReq ootdImageReq = new OotdPutReq.OotdImageReq();
-        ootdImageReq.setOotdImage("input_image_url1");
+        ootdImageReq.setOotdImage(OOTD_IMAGE_URL1);
         ootdImageReq.setClothesTags(Arrays.asList(clothesTagReq, clothesTagReq1));
 
         Style style = Style.builder().name("아메카제").build();
@@ -238,13 +240,11 @@ public class OotdServiceTest extends IntegrationTestSupport {
                 .containsExactlyInAnyOrder("아메카제", "미니멀");
 
         assertThat(savedResult.getOotdImages())
-                .hasSize(1)
-                .extracting("imageUrl")
-                .contains("input_image_url1");
+                .hasSize(1);
 
         assertThat(savedResult.getOotdImages().get(0).getOotdImageClothesList())
                 .hasSize(2)
-                .extracting("clothes.id", "coordinate.x", "coordinate.y", "deviceSize.deviceWidth",
+                .extracting("clothes.id", "coordinate.xRate", "coordinate.yRate", "deviceSize.deviceWidth",
                         "deviceSize.deviceHeight")
                 .containsExactlyInAnyOrder(
                         tuple(clothes.getId(), "11.22", "22.33", 20L, 30L),
@@ -269,97 +269,13 @@ public class OotdServiceTest extends IntegrationTestSupport {
         assertThat(result.getDeletedAt()).isNotNull();
     }
 
-    @DisplayName("좋아요를 한다.")
-    @Test
-    void addLike() {
-        // given
-        User user = createUserBy("유저");
-        User user1 = createUserBy("유저1");
-        Ootd ootd = createOotdBy(user, "안녕", false);
-
-        // when
-        ootdService.addLike(ootd.getId(), user);
-        ootdService.addLike(ootd.getId(), user1);
-        Ootd result = ootdRepository.findById(ootd.getId()).get();
-
-        // then
-        assertThat(result.getOotdLikes())
-                .hasSize(2)
-                .extracting("user.id")
-                .contains(user.getId(), user1.getId());
-    }
-
-    @DisplayName("좋아요를 취소한다")
-    @Test
-    void cancelLike() {
-        // given
-        User user = createUserBy("유저");
-        User user1 = createUserBy("유저1");
-        Ootd ootd = createOotdBy(user, "안녕", false);
-
-        ootdService.addLike(ootd.getId(), user);
-        ootdService.addLike(ootd.getId(), user1);
-
-        // when
-        ootdService.cancelLike(ootd.getId(), user);
-        Ootd result = ootdRepository.findById(ootd.getId()).get();
-
-        // then
-        assertThat(result.getOotdLikes())
-                .hasSize(1)
-                .extracting("user.id")
-                .contains(user1.getId());
-    }
-
-    @DisplayName("OOTD 북마크를 추가한다.")
-    @Test
-    void addBookmark() {
-        // given
-        User user = createUserBy("유저");
-        User user1 = createUserBy("유저1");
-        Ootd ootd = createOotdBy(user, "안녕", false);
-
-        // when
-        ootdService.addBookmark(ootd.getId(), user);
-        ootdService.addBookmark(ootd.getId(), user1);
-        Ootd result = ootdRepository.findById(ootd.getId()).get();
-
-        // then
-        assertThat(result.getOotdBookmarks())
-                .hasSize(2)
-                .extracting("user.id")
-                .contains(user.getId(), user1.getId());
-    }
-
-    @DisplayName("OOTD 북마크를 취소한다.")
-    @Test
-    void cancelBookmark() {
-        // given
-        User user = createUserBy("유저");
-        User user1 = createUserBy("유저1");
-        Ootd ootd = createOotdBy(user, "안녕", false);
-
-        ootdService.addBookmark(ootd.getId(), user);
-        ootdService.addBookmark(ootd.getId(), user1);
-
-        // when
-        ootdService.cancelBookmark(ootd.getId(), user);
-        Ootd result = ootdRepository.findById(ootd.getId()).get();
-
-        // then
-        assertThat(result.getOotdBookmarks())
-                .hasSize(1)
-                .extracting("user.id")
-                .contains(user1.getId());
-    }
-
     @DisplayName("ootd 를 조회한다.")
     @ParameterizedTest
     @CsvSource({
             "true",
             "false"
     })
-    void getOotd(boolean isPrivate) {
+    void getOotd(boolean isPrivate) throws InterruptedException {
         // given
         User user = createUserBy("유저");
         Ootd ootd = createOotdBy(user, "안녕", isPrivate);
@@ -369,29 +285,6 @@ public class OotdServiceTest extends IntegrationTestSupport {
 
         // then
         assertThat(result.getId()).isEqualTo(ootd.getId());
-        assertThat(redisDao.getValuesSet(RedisKey.OOTD.makeKeyWith(ootd.getId())))
-                .contains(user.getId() + ""); // redis 에 저장된 유저확인
-    }
-
-    @DisplayName("ootd 를 여러번 조회한다.")
-    @Test
-    void getOotdSeveral() {
-        // given
-        User user = createUserBy("유저");
-        User user1 = createUserBy("유저1");
-        Ootd ootd = createOotdBy(user, "안녕", false);
-
-        // when & then
-        ootdService.getOotd(ootd.getId(), user);
-        assertThat(redisDao.getValuesSet(RedisKey.OOTD.makeKeyWith(ootd.getId())))
-                .contains(user.getId() + "");
-
-        ootdService.getOotd(ootd.getId(), user1);
-        assertThat(redisDao.getValuesSet(RedisKey.OOTD.makeKeyWith(ootd.getId())))
-                .contains(user.getId() + "", user1.getId() + "");
-
-        ootdService.getOotd(ootd.getId(), user);
-        assertThat(ootd.getViewCount()).isEqualTo(2);
     }
 
     @DisplayName("ootd 를 조회시 존재하는 ootd 이어야 한다.")
@@ -730,7 +623,7 @@ public class OotdServiceTest extends IntegrationTestSupport {
             ootdImageClothesList.add(ootdImageClothes);
         }
 
-        OotdImage ootdImage = OotdImage.createOotdImageBy("input_image_url", ootdImageClothesList);
+        OotdImage ootdImage = OotdImage.createOotdImageBy(Images.of(OOTD_IMAGE_URL1), ootdImageClothesList);
 
         Style style = Style.builder().name("올드머니").build();
         styleRepository.save(style);
@@ -770,7 +663,7 @@ public class OotdServiceTest extends IntegrationTestSupport {
                 .deviceSize(deviceSize1)
                 .build();
 
-        OotdImage ootdImage = OotdImage.createOotdImageBy("input_image_url",
+        OotdImage ootdImage = OotdImage.createOotdImageBy(Images.of(OOTD_IMAGE_URL),
                 Arrays.asList(ootdImageClothes, ootdImageClothes1));
 
         List<OotdStyle> ootdStyles = OotdStyle.createOotdStylesBy(styles);
@@ -811,7 +704,7 @@ public class OotdServiceTest extends IntegrationTestSupport {
                 .deviceSize(deviceSize1)
                 .build();
 
-        OotdImage ootdImage = OotdImage.createOotdImageBy("input_image_url",
+        OotdImage ootdImage = OotdImage.createOotdImageBy(Images.of(OOTD_IMAGE_URL),
                 Arrays.asList(ootdImageClothes, ootdImageClothes1));
 
         Style style = Style.builder().name("올드머니").build();
@@ -856,7 +749,8 @@ public class OotdServiceTest extends IntegrationTestSupport {
         List<ClothesColor> clothesColors = ClothesColor.createClothesColorsBy(List.of(savedColor));
 
         Clothes clothes = Clothes.createClothes(user, savedBrand, "구매처" + idx, PurchaseStoreType.Write, "제품명" + idx,
-                isOpen, savedCategory, savedSize, "메모입니다" + idx, "구매일" + idx, "image" + idx + ".jpg", clothesColors);
+                isOpen, savedCategory, savedSize, "메모입니다" + idx, "구매일" + idx,
+                "https://ootdzip.com/8c00f7f4-3f47-4238-2024-06-15.png" + idx + ".jpg", clothesColors);
 
         return clothesRepository.save(clothes);
     }

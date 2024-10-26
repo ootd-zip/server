@@ -20,6 +20,8 @@ import zip.ootd.ootdzip.category.repository.StyleRepository;
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.exception.code.ErrorCode;
 import zip.ootd.ootdzip.common.response.CommonPageResponse;
+import zip.ootd.ootdzip.images.domain.Images;
+import zip.ootd.ootdzip.images.service.ImagesService;
 import zip.ootd.ootdzip.notification.domain.NotificationType;
 import zip.ootd.ootdzip.notification.event.NotificationEvent;
 import zip.ootd.ootdzip.oauth.service.UserSocialLoginService;
@@ -41,7 +43,6 @@ import zip.ootd.ootdzip.user.service.request.UserRegisterSvcReq;
 import zip.ootd.ootdzip.user.service.request.UserSearchSvcReq;
 import zip.ootd.ootdzip.user.service.request.UserStyleUpdateSvcReq;
 import zip.ootd.ootdzip.userblock.repository.UserBlockRepository;
-import zip.ootd.ootdzip.utils.ImageFileUtil;
 
 @Service
 @Transactional(readOnly = true)
@@ -55,6 +56,7 @@ public class UserService {
     private final UserStyleRepository userStyleRepository;
     private final EntityManager em;
     private final UserBlockRepository userBlockRepository;
+    private final ImagesService imagesService;
 
     @Transactional
     public void register(UserRegisterSvcReq request, User loginUser) {
@@ -183,13 +185,14 @@ public class UserService {
     @Transactional
     public void updateProfile(ProfileSvcReq request, User loginUser) {
 
-        if (!request.getProfileImage().isBlank()
-                && !ImageFileUtil.isValidImageUrl(request.getProfileImage())) {
-            throw new CustomException(ErrorCode.INVALID_IMAGE_URL);
+        // 유저 프로필 업데이트전 프로필 이미지 s3 에서 삭제
+        Images images = Images.of(request.getProfileImage());
+        if (!loginUser.getImages().getImageUrl().isBlank() && !loginUser.getImages().equals(images)) {
+            imagesService.deleteImagesByUrlToS3(loginUser.getImages());
         }
 
         loginUser.updateProfile(request.getName(),
-                request.getProfileImage(),
+                images,
                 request.getDescription(),
                 request.getHeight(),
                 request.getWeight(),

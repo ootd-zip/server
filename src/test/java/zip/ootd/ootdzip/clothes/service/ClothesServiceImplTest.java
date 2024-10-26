@@ -80,6 +80,10 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
     @Autowired
     private EntityManager em;
 
+    private static final String OOTD_IMAGE_URL = "https://ootdzip.com/8c00f7f4-3f47-4238-2024-06-14.png";
+
+    private static final String CLOTHES_IMAGE_URL = "https://ootdzip.com/8c00f7f4-3f47-4238-2024-06-15.png";
+
     @DisplayName("유저가 옷을 저장한다.")
     @Test
     void saveClothes() {
@@ -114,7 +118,7 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
                 .colorIds(List.of(savedColor.getId()))
                 .isPrivate(false)
                 .sizeId(savedSize.getId())
-                .clothesImageUrl("image1.jpg")
+                .clothesImageUrl(CLOTHES_IMAGE_URL)
                 .memo("메모입니다.")
                 .name("제품명1")
                 .purchaseDate("구매시기1")
@@ -126,9 +130,60 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
         Clothes saveResult = clothesRepository.findById(result.getId()).get();
 
         assertThat(saveResult).extracting("id", "name", "user", "brand", "isPrivate", "category", "size", "memo",
-                        "purchaseStore", "purchaseDate", "imageUrl", "purchaseStoreType")
+                        "purchaseStore", "purchaseDate", "images.imageUrl", "purchaseStoreType")
                 .contains(result.getId(), "제품명1", user, savedBrand, false, savedCategory, savedSize, "메모입니다.", "구매처1",
-                        "구매시기1", "image1.jpg", Write);
+                        "구매시기1", CLOTHES_IMAGE_URL, Write);
+
+        assertThat(saveResult.getClothesColors()).hasSize(1)
+                .extracting("color.name", "color.colorCode")
+                .containsExactlyInAnyOrder(tuple("색1", "#fffff"));
+    }
+
+    @DisplayName("필수인 값만으로 유저가 옷을 저장한다.")
+    @Test
+    void saveClothesWithEssentialInfo() {
+        // given
+        User user = createUserBy("유저1");
+
+        Brand brand = Brand.builder().name("브랜드1").build();
+
+        Brand savedBrand = brandRepository.save(brand);
+
+        Category parentCategory = Category.createLargeCategoryBy("상위카테고리1", SizeType.TOP);
+
+        Category savedParentCategory = categoryRepository.save(parentCategory);
+
+        Category category = Category.createDetailCategoryBy("카테고리1", savedParentCategory, SizeType.TOP);
+
+        Category savedCategory = categoryRepository.save(category);
+
+        Color color = Color.builder().name("색1").colorCode("#fffff").build();
+
+        Color savedColor = colorRepository.save(color);
+
+        SaveClothesSvcReq request = SaveClothesSvcReq.builder()
+                .purchaseStore("")
+                .purchaseStoreType(null)
+                .brandId(savedBrand.getId())
+                .categoryId(savedCategory.getId())
+                .colorIds(List.of(savedColor.getId()))
+                .isPrivate(false)
+                .sizeId(0L)
+                .clothesImageUrl(CLOTHES_IMAGE_URL)
+                .memo("메모입니다.")
+                .name("제품명1")
+                .purchaseDate("구매시기1")
+                .build();
+        // when
+        SaveClothesRes result = clothesService.saveClothes(request, user);
+
+        //then
+        Clothes saveResult = clothesRepository.findById(result.getId()).get();
+
+        assertThat(saveResult).extracting("id", "name", "user", "brand", "isPrivate", "category", "size", "memo",
+                        "purchaseStore", "purchaseDate", "images.imageUrl", "purchaseStoreType")
+                .contains(result.getId(), "제품명1", user, savedBrand, false, savedCategory, null, "메모입니다.", null,
+                        "구매시기1", CLOTHES_IMAGE_URL, null);
 
         assertThat(saveResult.getClothesColors()).hasSize(1)
                 .extracting("color.name", "color.colorCode")
@@ -478,6 +533,7 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
 
         SaveClothesSvcReq request = SaveClothesSvcReq.builder()
                 .purchaseStore("구매처1")
+                .purchaseStoreType(Write)
                 .brandId(savedBrand.getId())
                 .categoryId(savedCategory.getId())
                 .colorIds(List.of(savedColor.getId()))
@@ -511,7 +567,7 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
                         "purchaseDate",
                         "imageUrl", "purchaseStoreType")
                 .contains(clothes.getId(), "제품명1", user1.getId(), user1.getName(), true, "메모입니다1", "구매처1", "구매일1",
-                        "image1.jpg", Write);
+                        CLOTHES_IMAGE_URL, Write);
 
         assertThat(result.getBrand().getName()).isEqualTo("브랜드1");
 
@@ -575,8 +631,10 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
                 .extracting("id", "name", "userName", "isPrivate", "memo", "purchaseStore", "purchaseDate", "imageUrl",
                         "purchaseStoreType")
                 .containsExactlyInAnyOrder(
-                        tuple(clothes1.getId(), "제품명1", "유저1", false, "메모입니다1", "구매처1", "구매일1", "image1.jpg", Write),
-                        tuple(clothes2.getId(), "제품명2", "유저1", false, "메모입니다2", "구매처2", "구매일2", "image2.jpg", Write));
+                        tuple(clothes1.getId(), "제품명1", "유저1", false, "메모입니다1", "구매처1", "구매일1", CLOTHES_IMAGE_URL,
+                                Write),
+                        tuple(clothes2.getId(), "제품명2", "유저1", false, "메모입니다2", "구매처2", "구매일2", CLOTHES_IMAGE_URL,
+                                Write));
 
     }
 
@@ -602,7 +660,8 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
                 .extracting("id", "name", "userName", "isPrivate", "memo", "purchaseStore", "purchaseDate", "imageUrl",
                         "purchaseStoreType")
                 .containsExactlyInAnyOrder(
-                        tuple(clothes2.getId(), "제품명2", "유저1", false, "메모입니다2", "구매처2", "구매일2", "image2.jpg", Write));
+                        tuple(clothes2.getId(), "제품명2", "유저1", false, "메모입니다2", "구매처2", "구매일2", CLOTHES_IMAGE_URL,
+                                Write));
 
     }
 
@@ -678,15 +737,49 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
         UpdateClothesSvcReq request = UpdateClothesSvcReq.builder()
                 .clothesId(updateTarget.getId())
                 .purchaseStore("구매처1")
+                .purchaseStoreType(Write)
                 .brandId(updateTarget.getBrand().getId())
                 .categoryId(updateTarget.getCategory().getId())
                 .colorIds(List.of(updateTarget.getClothesColors().get(0).getColor().getId()))
                 .isPrivate(false)
                 .sizeId(updateTarget.getSize().getId())
-                .clothesImageUrl("image1.jpg")
+                .clothesImageUrl(CLOTHES_IMAGE_URL)
                 .memo("메모입니다.")
                 .name("제품명수정")
                 .purchaseDate("구매시기1")
+                .build();
+
+        // when
+        SaveClothesRes response = clothesService.updateClothes(request, user);
+
+        //then
+        assertThat(response.getId()).isEqualTo(updateTarget.getId());
+
+        Clothes updatedClothes = clothesRepository.findById(updateTarget.getId()).get();
+
+        assertThat(updatedClothes.getName()).isEqualTo("제품명수정");
+    }
+
+    @DisplayName("필수인 값만으로 옷 ID에 해당하는 옷 정보를 수정한다.")
+    @Test
+    void updateClothesWithEssentialInfo() {
+        // given
+        User user = createUserBy("작성자1");
+        Clothes updateTarget = createClothesBy(user, true, "1");
+
+        UpdateClothesSvcReq request = UpdateClothesSvcReq.builder()
+                .clothesId(updateTarget.getId())
+                .purchaseStore("")
+                .purchaseStoreType(null)
+                .brandId(updateTarget.getBrand().getId())
+                .categoryId(updateTarget.getCategory().getId())
+                .colorIds(List.of(updateTarget.getClothesColors().get(0).getColor().getId()))
+                .isPrivate(false)
+                .sizeId(0L)
+                .clothesImageUrl(CLOTHES_IMAGE_URL)
+                .memo("메모입니다.")
+                .name("제품명수정")
+                .purchaseDate("")
                 .build();
 
         // when
@@ -942,6 +1035,7 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
         UpdateClothesSvcReq request = UpdateClothesSvcReq.builder()
                 .clothesId(updateTarget.getId())
                 .purchaseStore("구매처1")
+                .purchaseStoreType(Write)
                 .brandId(updateTarget.getBrand().getId())
                 .categoryId(updateTarget.getCategory().getId())
                 .colorIds(List.of(updateTarget.getClothesColors().get(0).getColor().getId()))
@@ -980,9 +1074,9 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
 
         assertThat(updatedClothes)
                 .extracting("id", "name", "user", "brand.name", "isPrivate", "category.name", "size.name", "memo",
-                        "purchaseStore", "purchaseDate", "imageUrl", "purchaseStoreType")
+                        "purchaseStore", "purchaseDate", "images.imageUrl", "purchaseStoreType")
                 .contains(result.getId(), "제품명1", user, "브랜드1", true, "카테고리1", "사이즈1", "메모입니다1", "구매처1",
-                        "구매일1", "image1.jpg", Write);
+                        "구매일1", CLOTHES_IMAGE_URL, Write);
 
         assertThat(updatedClothes.getClothesColors()).hasSize(1)
                 .extracting("color.name", "color.colorCode")
@@ -1052,7 +1146,7 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
         clothesTagReq1.setYRate("44.55");
 
         OotdPostReq.OotdImageReq ootdImageReq = new OotdPostReq.OotdImageReq();
-        ootdImageReq.setOotdImage("input_image_url");
+        ootdImageReq.setOotdImage(OOTD_IMAGE_URL);
         ootdImageReq.setClothesTags(Arrays.asList(clothesTagReq, clothesTagReq1));
 
         Style style = Style.builder().name("올드머니").build();
@@ -1106,7 +1200,7 @@ class ClothesServiceImplTest extends IntegrationTestSupport {
         List<ClothesColor> clothesColors = ClothesColor.createClothesColorsBy(List.of(savedColor));
 
         Clothes clothes = Clothes.createClothes(user, savedBrand, "구매처" + idx, Write, "제품명" + idx,
-                isPrivate, savedCategory, savedSize, "메모입니다" + idx, "구매일" + idx, "image" + idx + ".jpg", clothesColors);
+                isPrivate, savedCategory, savedSize, "메모입니다" + idx, "구매일" + idx, CLOTHES_IMAGE_URL, clothesColors);
 
         return clothesRepository.save(clothes);
     }

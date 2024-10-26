@@ -17,6 +17,7 @@ import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -33,6 +34,7 @@ public class AuthorizedUser implements OAuth2User, OidcUser {
 
     private final User user;
 
+    @Builder
     public AuthorizedUser(Collection<? extends GrantedAuthority> authorities, Map<String, Object> attributes,
             User user) {
         this.authorities = authorities != null
