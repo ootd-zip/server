@@ -14,11 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 import redis.embedded.RedisServer;
 
 /**
- * 테스트를 위한 redis 입니다.
- * 해당 Redis 는 윈도우 환경은 사용하지 못합니다.
- * 레디스 포트가 겹칠시 명령어를 통해 새로운 포트를 찾는데 이 과정에서 맥/유닉스 에서 사용되는 명령어를 쓰기 때문입니다.
- * testcontainer 를 사용하는방법도 있지만,
- * 실행마다 redis 이미지를 풀땡겨야하므로 시간이 오래걸려 사용하지 않았습니다.
+ * 테스트 환경에서 사용되는 임베디드 Redis입니다.
+ * 테스트가 외부 Redis 서버에 의존하지 않고 실행될 수 있도록 합니다.
  */
 @DisplayName("Embedded Redis 설정")
 @Slf4j
@@ -59,8 +56,14 @@ public class EmbeddedRedisConfig {
     }
 
     private Process executeGrepProcessCommand(int port) throws IOException {
-        String command = String.format("netstat -nat | grep LISTEN|grep %d", port);
-        String[] shell = {"/bin/sh", "-c", command};
+        String[] shell;
+        if (System.getProperty("os.name").toLowerCase().startsWith("win")) {
+            String command = String.format("netstat -ano | findstr LISTENING | findstr %d", port);
+            shell = new String[] {"cmd", "/c", command};
+        } else {
+            String command = String.format("netstat -nat | grep LISTEN | grep %d", port);
+            shell = new String[] {"/bin/sh", "-c", command};
+        }
         return Runtime.getRuntime().exec(shell);
     }
 
