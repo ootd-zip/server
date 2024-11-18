@@ -5,7 +5,7 @@ plugins {
 }
 
 // dev일 때만 checkStyle 빌드에 포함
-if (!project.hasProperty('env') || (project.hasProperty('env') && project.property('env') == 'dev')) {
+if (project.findProperty('env') == 'dev') {
     apply plugin: 'checkstyle'
 
     checkstyle {
