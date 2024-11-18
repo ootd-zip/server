@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import jakarta.persistence.EntityManager;
+import zip.ootd.ootdzip.DBCleaner;
 import zip.ootd.ootdzip.IntegrationTestSupport;
 import zip.ootd.ootdzip.brand.domain.Brand;
 import zip.ootd.ootdzip.brand.repository.BrandRepository;
@@ -77,11 +78,11 @@ class OotdLikeServiceTest extends IntegrationTestSupport {
     private RedisDao redisDao;
 
     @Autowired
-    private DBCleanUp dbCleanUp;
+    private DBCleaner dbCleaner;
 
     @AfterEach
     void tearDown() {
-        dbCleanUp.execute();
+        dbCleaner.execute();
         redisDao.deleteAll();
     }
 
@@ -218,7 +219,7 @@ class OotdLikeServiceTest extends IntegrationTestSupport {
         Ootd ootd = Ootd.createOotd(user,
                 content,
                 isPrivate,
-                Arrays.asList(ootdImage),
+                List.of(ootdImage),
                 Arrays.asList(ootdStyle, ootdStyle1));
 
         return ootdRepository.save(ootd);

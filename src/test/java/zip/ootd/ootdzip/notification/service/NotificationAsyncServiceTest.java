@@ -15,7 +15,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 
-import zip.ootd.ootdzip.DBCleanUp;
+import zip.ootd.ootdzip.DBCleaner;
 import zip.ootd.ootdzip.IntegrationTestSupport;
 import zip.ootd.ootdzip.brand.domain.Brand;
 import zip.ootd.ootdzip.brand.repository.BrandRepository;
@@ -100,14 +100,14 @@ public class NotificationAsyncServiceTest extends IntegrationTestSupport {
     private NotificationRepository notificationRepository;
 
     @Autowired
-    private DBCleanUp dbCleanUp;
+    private DBCleaner dbCleaner;
 
     @Autowired
     private RedisDao redisDao;
 
     @AfterEach
     void tearDown() {
-        dbCleanUp.execute();
+        dbCleaner.execute();
         redisDao.deleteAll();
     }
 

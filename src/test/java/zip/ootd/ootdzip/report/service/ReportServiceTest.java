@@ -13,7 +13,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import zip.ootd.ootdzip.DBCleanUp;
+import zip.ootd.ootdzip.DBCleaner;
 import zip.ootd.ootdzip.IntegrationTestSupport;
 import zip.ootd.ootdzip.common.dao.RedisDao;
 import zip.ootd.ootdzip.ootd.domain.Ootd;
@@ -42,14 +42,14 @@ class ReportServiceTest extends IntegrationTestSupport {
     private UserRepository userRepository;
 
     @Autowired
-    private DBCleanUp dbCleanUp;
+    private DBCleaner dbCleaner;
 
     @Autowired
     private RedisDao redisDao;
 
     @AfterEach
     void tearDown() {
-        dbCleanUp.execute();
+        dbCleaner.execute();
         redisDao.deleteAll();
     }
 
