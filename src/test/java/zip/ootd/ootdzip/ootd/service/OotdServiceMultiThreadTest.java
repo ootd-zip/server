@@ -13,10 +13,10 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import jakarta.persistence.EntityManager;
 import zip.ootd.ootdzip.DBCleanUp;
+import zip.ootd.ootdzip.IntegrationTestSupport;
 import zip.ootd.ootdzip.brand.domain.Brand;
 import zip.ootd.ootdzip.brand.repository.BrandRepository;
 import zip.ootd.ootdzip.category.data.SizeType;
@@ -52,8 +52,7 @@ import zip.ootd.ootdzip.user.repository.UserRepository;
  * 그렇기에 다른 스레드에서는 1차캐시에 저장된게 없으므로, DB 를 직접조회하지만 실제 DB 에도 커밋된건 없으므로 조회에 실패합니다.
  * 그래서 Transcational 은 멀티스레드 환경에서 사용할 수 없습니다.
  */
-@SpringBootTest
-public class OotdServiceMultiThreadTest {
+public class OotdServiceMultiThreadTest extends IntegrationTestSupport {
 
     @Autowired
     private OotdService ootdService;
@@ -302,7 +301,7 @@ public class OotdServiceMultiThreadTest {
         Ootd ootd = Ootd.createOotd(user,
                 content,
                 isPrivate,
-                Arrays.asList(ootdImage),
+                List.of(ootdImage),
                 Arrays.asList(ootdStyle, ootdStyle1));
 
         return ootdRepository.save(ootd);

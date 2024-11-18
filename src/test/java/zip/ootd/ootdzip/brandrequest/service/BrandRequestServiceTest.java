@@ -8,10 +8,10 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
+import zip.ootd.ootdzip.IntegrationTestSupport;
 import zip.ootd.ootdzip.brand.domain.Brand;
 import zip.ootd.ootdzip.brand.repository.BrandRepository;
 import zip.ootd.ootdzip.brandrequest.controller.reqeuest.BrandRequestSearchReq;
@@ -29,8 +29,7 @@ import zip.ootd.ootdzip.user.data.UserRole;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.repository.UserRepository;
 
-@SpringBootTest
-class BrandRequestServiceTest {
+class BrandRequestServiceTest extends IntegrationTestSupport {
 
     @Autowired
     private BrandRequestService brandRequestService;
