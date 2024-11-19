@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
+import org.springframework.transaction.annotation.Transactional;
 
 import zip.ootd.ootdzip.IntegrationTestSupport;
 import zip.ootd.ootdzip.common.exception.CustomException;
@@ -23,6 +24,7 @@ import zip.ootd.ootdzip.userblock.service.request.UserBlockGetSvcReq;
 import zip.ootd.ootdzip.userblock.service.request.UserBlockSvcReq;
 import zip.ootd.ootdzip.userblock.service.request.UserBlockUnBlockSvcReq;
 
+@Transactional
 class UserBlockServiceTest extends IntegrationTestSupport {
 
     @Autowired

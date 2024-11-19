@@ -8,6 +8,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityManager;
 import zip.ootd.ootdzip.IntegrationTestSupport;
@@ -33,6 +34,7 @@ import zip.ootd.ootdzip.user.service.request.UserRegisterSvcReq;
 import zip.ootd.ootdzip.user.service.request.UserSearchSvcReq;
 import zip.ootd.ootdzip.user.service.request.UserStyleUpdateSvcReq;
 
+@Transactional
 class UserServiceTest extends IntegrationTestSupport {
 
     @Autowired
@@ -50,7 +52,7 @@ class UserServiceTest extends IntegrationTestSupport {
     @Autowired
     private EntityManager em;
 
-    private static String USER_IMAGE = "https://ootdzip.com/0459a64c-89d9-4c63_2024-03-27.png";
+    private static final String USER_IMAGE = "https://ootdzip.com/0459a64c-89d9-4c63_2024-03-27.png";
 
     @DisplayName("userId로 마이페이지에서 사용하는 유저 정보를 조회한다.")
     @Test

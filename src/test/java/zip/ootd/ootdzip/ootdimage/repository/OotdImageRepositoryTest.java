@@ -14,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
+import org.springframework.transaction.annotation.Transactional;
 
 import zip.ootd.ootdzip.IntegrationTestSupport;
 import zip.ootd.ootdzip.brand.domain.Brand;
@@ -42,6 +43,7 @@ import zip.ootd.ootdzip.ootdstyle.domain.OotdStyle;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.repository.UserRepository;
 
+@Transactional
 public class OotdImageRepositoryTest extends IntegrationTestSupport {
 
     @Autowired
@@ -88,12 +90,12 @@ public class OotdImageRepositoryTest extends IntegrationTestSupport {
         Ootd ootd1 = createOotdBy(user1, "안녕1", false, Arrays.asList(clothes, clothes1, clothes2));
 
         // 한 개라도 동일한 옷이 있으면 포함
-        Ootd ootd2 = createOotdBy(user, "안녕2", false, Arrays.asList(clothes));
+        Ootd ootd2 = createOotdBy(user, "안녕2", false, List.of(clothes));
         Ootd ootd3 = createOotdBy(user, "안녕3", false, Arrays.asList(clothes, clothes1));
         Ootd ootd4 = createOotdBy(user, "안녕4", false, Arrays.asList(clothes, clothes2));
 
         // 포함되는 옷이 하나도 없을시 포함하지 않음
-        Ootd ootd5 = createOotdBy(user, "안녕5", false, Arrays.asList(clothes1));
+        Ootd ootd5 = createOotdBy(user, "안녕5", false, List.of(clothes1));
         Ootd ootd6 = createOotdBy(user, "안녕6", false, Arrays.asList(clothes1, clothes2));
 
         // 비공개글이어도 본인이면 포함
@@ -268,7 +270,7 @@ public class OotdImageRepositoryTest extends IntegrationTestSupport {
         Ootd ootd = Ootd.createOotd(user,
                 content,
                 isPrivate,
-                Arrays.asList(ootdImage),
+                List.of(ootdImage),
                 Arrays.asList(ootdStyle, ootdStyle1));
 
         return ootdRepository.save(ootd);

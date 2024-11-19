@@ -29,6 +29,7 @@ import zip.ootd.ootdzip.user.data.UserRole;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.repository.UserRepository;
 
+@Transactional
 class BrandRequestServiceTest extends IntegrationTestSupport {
 
     @Autowired
@@ -44,7 +45,6 @@ class BrandRequestServiceTest extends IntegrationTestSupport {
     private BrandRepository brandRepository;
 
     @DisplayName("브랜드를 건의한다.")
-    @Transactional
     @Test
     void insertBrandRequest() {
         // given
@@ -67,7 +67,6 @@ class BrandRequestServiceTest extends IntegrationTestSupport {
     }
 
     @DisplayName("요청 이름이 없이 브랜드를 건의하면 실패한다.")
-    @Transactional
     @Test
     void insertBrandRequestWithEmptyReqeustName() {
         // given
@@ -86,7 +85,6 @@ class BrandRequestServiceTest extends IntegrationTestSupport {
     }
 
     @DisplayName("브랜드 요청을 승인하여 브랜드를 추가한다.")
-    @Transactional
     @Test
     void approveBrandRequest() {
         // given
@@ -125,7 +123,6 @@ class BrandRequestServiceTest extends IntegrationTestSupport {
     }
 
     @DisplayName("브랜드 요청을 승인할 때 일반 유저가 승인하면 에러가 발생한다.")
-    @Transactional
     @Test
     void approveBrandRequestWithNoAdminUser() {
         // given
@@ -146,7 +143,6 @@ class BrandRequestServiceTest extends IntegrationTestSupport {
     }
 
     @DisplayName("브랜드 요청을 승인할 때 이미 존재하는 브랜드명을 입력하면 에러가 발생한다.")
-    @Transactional
     @Test
     void approveBrandRequestWithExistBrandName() {
         // given
@@ -169,7 +165,6 @@ class BrandRequestServiceTest extends IntegrationTestSupport {
     }
 
     @DisplayName("브랜드 요청을 승인할 때 이미 존재하는 영문 브랜드명을 입력하면 에러가 발생한다.")
-    @Transactional
     @Test
     void approveBrandRequestWithExistBrandEngName() {
         // given
@@ -192,7 +187,6 @@ class BrandRequestServiceTest extends IntegrationTestSupport {
     }
 
     @DisplayName("브랜드 요청을 거절한다.")
-    @Transactional
     @Test
     void rejectBrandRequest() {
         // given
@@ -225,7 +219,6 @@ class BrandRequestServiceTest extends IntegrationTestSupport {
     }
 
     @DisplayName("브랜드 요청을 거절할 때 사유를 입력하지 않으면 에러가 발생한다.")
-    @Transactional
     @Test
     void rejectBrandRequestWithoutReason() {
         // given
@@ -249,7 +242,6 @@ class BrandRequestServiceTest extends IntegrationTestSupport {
     }
 
     @DisplayName("브랜드 요청을 거절할 때 유효하지 않은 브랜드 요청 ID를 입력하면 에러가 발생한다.")
-    @Transactional
     @Test
     void rejectBrandRequestWithInvalidBrandRequestId() {
         // given

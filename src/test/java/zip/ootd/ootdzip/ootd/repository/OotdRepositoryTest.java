@@ -15,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
+import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityManager;
 import zip.ootd.ootdzip.IntegrationTestSupport;
@@ -46,6 +47,7 @@ import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.domain.UserGender;
 import zip.ootd.ootdzip.user.repository.UserRepository;
 
+@Transactional
 public class OotdRepositoryTest extends IntegrationTestSupport {
 
     @Autowired
@@ -223,8 +225,8 @@ public class OotdRepositoryTest extends IntegrationTestSupport {
         Ootd ootd3 = createOotdBy(user1, "안녕3", false, Arrays.asList(style1, style2));
 
         // 한 개라도 동일한 스타일이 있으면 포함
-        Ootd ootd4 = createOotdBy(user1, "안녕4", false, Arrays.asList(style1));
-        Ootd ootd5 = createOotdBy(user1, "안녕5", false, Arrays.asList(style2));
+        Ootd ootd4 = createOotdBy(user1, "안녕4", false, List.of(style1));
+        Ootd ootd5 = createOotdBy(user1, "안녕5", false, List.of(style2));
         Ootd ootd6 = createOotdBy(user1, "안녕6", false, Arrays.asList(style1, style3));
 
         // 포함되는 스타일이 하나도 없을시 포함하지 않음
@@ -470,7 +472,7 @@ public class OotdRepositoryTest extends IntegrationTestSupport {
         Ootd ootd = Ootd.createOotd(user,
                 content,
                 isPrivate,
-                Arrays.asList(ootdImage),
+                List.of(ootdImage),
                 Arrays.asList(ootdStyle, ootdStyle1));
 
         return ootdRepository.save(ootd);
@@ -571,7 +573,7 @@ public class OotdRepositoryTest extends IntegrationTestSupport {
         Ootd ootd = Ootd.createOotd(user,
                 content,
                 isPrivate,
-                Arrays.asList(ootdImage),
+                List.of(ootdImage),
                 ootdStyles);
 
         return ootdRepository.save(ootd);
