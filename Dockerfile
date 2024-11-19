@@ -30,7 +30,7 @@ RUN ./gradlew build -x test
 FROM eclipse-temurin:17-alpine AS prod
 WORKDIR /app
 
-COPY --from=builder build/libs/*.jar app.jarWh
+COPY --from=builder build/libs/*.jar app.jar
 
 ENV SPRING_PROFILES_ACTIVE=prod
 ENV TZ=Asia/Seoul
