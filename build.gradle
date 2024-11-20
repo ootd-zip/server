@@ -84,7 +84,6 @@ dependencies {
     testImplementation 'org.projectlombok:lombok' // test 에서 롬복 추가
     testAnnotationProcessor 'org.projectlombok:lombok' // test 에서 롬복 인식
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
-    implementation 'com.google.guava:guava:31.0.1-jre' // DB 초기화를 위함
 
     // h2
     testRuntimeOnly 'com.h2database:h2'
