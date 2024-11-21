@@ -24,7 +24,7 @@ COPY gradlew build.gradle settings.gradle ./
 COPY src src
 RUN chmod +x gradlew
 
-RUN ./gradlew build -x test
+RUN ./gradlew bootJar
 
 ## Stage 2. Production
 FROM eclipse-temurin:17-alpine AS prod
