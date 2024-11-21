@@ -6,10 +6,10 @@ services:
     ports:
       - "8081:8081"
     volumes:
-      - ./.gradle:/app/.gradle
-      - ./build:/app/build
-      - ./src:/app/src
-      - ./build.gradle:/app/build.gradle
+      - build-cache:/app/build
+      - ./.gradle:/app/.gradle:delegated
+      - ./src:/app/src:ro
+      - ./build.gradle:/app/build.gradle:ro
     environment:
       - SPRING_PROFILES_ACTIVE=dev
       - SPRING_DATASOURCE_URL=jdbc:mariadb://db:3306/ootdzip_dev
@@ -40,4 +40,5 @@ services:
     restart: always
 
 volumes:
+  build-cache:
   db-data:
