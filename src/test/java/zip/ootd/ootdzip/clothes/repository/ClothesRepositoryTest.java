@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
+import org.springframework.transaction.annotation.Transactional;
 
 import zip.ootd.ootdzip.IntegrationTestSupport;
 import zip.ootd.ootdzip.brand.domain.Brand;
@@ -42,6 +43,7 @@ import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.domain.UserGender;
 import zip.ootd.ootdzip.user.repository.UserRepository;
 
+@Transactional
 class ClothesRepositoryTest extends IntegrationTestSupport {
 
     @Autowired
@@ -157,7 +159,7 @@ class ClothesRepositoryTest extends IntegrationTestSupport {
 
         Slice<ClothesOotdRepoRes> clothesOotdResList2 = clothesRepository.findClothesOotdResByOotdId(user.getId(),
                 clothesIds,
-                1 * 6,
+                6,
                 6);
 
         //then

@@ -696,7 +696,6 @@ class ClothesControllerTest extends ControllerTestSupport {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.errors[0].reason").value("공개여부는 필수입니다."));
     }
 
-
     @DisplayName("옷을 수정할 때 이미지는 필수이다.")
     @Test
     void updateClothesWithoutClothesImageUrl() throws Exception {

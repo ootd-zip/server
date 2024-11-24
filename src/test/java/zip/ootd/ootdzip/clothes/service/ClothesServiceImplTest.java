@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityManager;
 import zip.ootd.ootdzip.IntegrationTestSupport;
@@ -48,6 +49,7 @@ import zip.ootd.ootdzip.ootd.service.OotdService;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.repository.UserRepository;
 
+@Transactional
 class ClothesServiceImplTest extends IntegrationTestSupport {
 
     @Autowired

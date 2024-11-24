@@ -20,6 +20,7 @@ import zip.ootd.ootdzip.notification.domain.NotificationType;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.repository.UserRepository;
 
+@Transactional
 public class NotificationRepositoryTest extends IntegrationTestSupport {
 
     @Autowired
@@ -29,7 +30,6 @@ public class NotificationRepositoryTest extends IntegrationTestSupport {
     private NotificationRepository notificationRepository;
 
     @DisplayName("읽지않은 알람을 정상적으로 가져옵니다.")
-    @Transactional
     @Test
     void getNotifications() {
         // given
@@ -67,7 +67,6 @@ public class NotificationRepositoryTest extends IntegrationTestSupport {
     }
 
     @DisplayName("읽은 알람을 정상적으로 가져옵니다.")
-    @Transactional
     @Test
     void getReadNotifications() {
         // given
@@ -105,7 +104,6 @@ public class NotificationRepositoryTest extends IntegrationTestSupport {
     }
 
     @DisplayName("유저와 읽음처리에 해당하는 알림의 개수를 반환합니다.")
-    @Transactional
     @Test
     void findCountByUserIdAndIsRead() {
         // given

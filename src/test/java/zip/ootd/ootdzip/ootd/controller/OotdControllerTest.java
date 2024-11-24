@@ -53,7 +53,7 @@ public class OotdControllerTest extends ControllerTestSupport {
         ootdPostReq.setIsPrivate(false);
         ootdPostReq.setContent("테스트");
         ootdPostReq.setStyles(Arrays.asList(1L, 2L));
-        ootdPostReq.setOotdImages(Arrays.asList(ootdImageReq));
+        ootdPostReq.setOotdImages(List.of(ootdImageReq));
 
         Ootd ootd = new Ootd();
         ootd.setId(1L);
@@ -111,7 +111,7 @@ public class OotdControllerTest extends ControllerTestSupport {
         ootdPostReq.setIsPrivate(false);
         ootdPostReq.setContent("테스트");
         ootdPostReq.setStyles(Arrays.asList(1L, 2L));
-        ootdPostReq.setOotdImages(Arrays.asList(ootdImageReq));
+        ootdPostReq.setOotdImages(List.of(ootdImageReq));
 
         // when & then
         mockMvc.perform(post("/api/v1/ootd").content(objectMapper.writeValueAsString(ootdPostReq))
@@ -158,7 +158,7 @@ public class OotdControllerTest extends ControllerTestSupport {
         ootdPostReq.setIsPrivate(false);
         ootdPostReq.setContent(content.toString());
         ootdPostReq.setStyles(Arrays.asList(1L, 2L));
-        ootdPostReq.setOotdImages(Arrays.asList(ootdImageReq));
+        ootdPostReq.setOotdImages(List.of(ootdImageReq));
 
         // when & then
         mockMvc.perform(post("/api/v1/ootd").content(objectMapper.writeValueAsString(ootdPostReq))
@@ -228,7 +228,7 @@ public class OotdControllerTest extends ControllerTestSupport {
         ootdPutReq.setIsPrivate(false);
         ootdPutReq.setContent("테스트");
         ootdPutReq.setStyles(Arrays.asList(1L, 2L));
-        ootdPutReq.setOotdImages(Arrays.asList(ootdImageReq));
+        ootdPutReq.setOotdImages(List.of(ootdImageReq));
 
         // when & then
         mockMvc.perform(put("/api/v1/ootd/{id}", 1L)
@@ -265,7 +265,7 @@ public class OotdControllerTest extends ControllerTestSupport {
         OotdPutReq ootdPutReq = new OotdPutReq();
         ootdPutReq.setContent("테스트");
         ootdPutReq.setStyles(Arrays.asList(1L, 2L));
-        ootdPutReq.setOotdImages(Arrays.asList(ootdImageReq));
+        ootdPutReq.setOotdImages(List.of(ootdImageReq));
 
         // when & then
         mockMvc.perform(put("/api/v1/ootd/{id}", 1L)
@@ -321,7 +321,7 @@ public class OotdControllerTest extends ControllerTestSupport {
         ootdPutReq.setIsPrivate(false);
         ootdPutReq.setContent("테스트");
         ootdPutReq.setStyles(Arrays.asList(1L, 2L));
-        ootdPutReq.setOotdImages(Arrays.asList(ootdImageReq));
+        ootdPutReq.setOotdImages(List.of(ootdImageReq));
 
         // when & then
         mockMvc.perform(put("/api/v1/ootd/{id}", 1L)
@@ -369,7 +369,7 @@ public class OotdControllerTest extends ControllerTestSupport {
         content.append("메");
         ootdPutReq.setContent(content.toString());
         ootdPutReq.setStyles(Arrays.asList(1L, 2L));
-        ootdPutReq.setOotdImages(Arrays.asList(ootdImageReq));
+        ootdPutReq.setOotdImages(List.of(ootdImageReq));
 
         // when & then
         mockMvc.perform(put("/api/v1/ootd/{id}", 1L)

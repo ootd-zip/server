@@ -14,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
+import org.springframework.transaction.annotation.Transactional;
 
 import zip.ootd.ootdzip.IntegrationTestSupport;
 import zip.ootd.ootdzip.brand.domain.Brand;
@@ -43,6 +44,7 @@ import zip.ootd.ootdzip.ootdstyle.domain.OotdStyle;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.repository.UserRepository;
 
+@Transactional
 public class OotdBookmarkRepositoryTest extends IntegrationTestSupport {
 
     @Autowired
@@ -186,7 +188,7 @@ public class OotdBookmarkRepositoryTest extends IntegrationTestSupport {
         Ootd ootd = Ootd.createOotd(user,
                 content,
                 isPrivate,
-                Arrays.asList(ootdImage),
+                List.of(ootdImage),
                 Arrays.asList(ootdStyle, ootdStyle1));
 
         return ootdRepository.save(ootd);

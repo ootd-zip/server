@@ -9,10 +9,10 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import jakarta.persistence.EntityManager;
-import zip.ootd.ootdzip.DBCleanUp;
+import zip.ootd.ootdzip.DBCleaner;
+import zip.ootd.ootdzip.IntegrationTestSupport;
 import zip.ootd.ootdzip.brand.domain.Brand;
 import zip.ootd.ootdzip.brand.repository.BrandRepository;
 import zip.ootd.ootdzip.category.data.SizeType;
@@ -42,8 +42,7 @@ import zip.ootd.ootdzip.ootdstyle.domain.OotdStyle;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.repository.UserRepository;
 
-@SpringBootTest
-class OotdLikeServiceTest {
+class OotdLikeServiceTest extends IntegrationTestSupport {
 
     @Autowired
     private OotdLikeService ootdLikeService;
@@ -79,11 +78,11 @@ class OotdLikeServiceTest {
     private RedisDao redisDao;
 
     @Autowired
-    private DBCleanUp dbCleanUp;
+    private DBCleaner dbCleaner;
 
     @AfterEach
     void tearDown() {
-        dbCleanUp.execute();
+        dbCleaner.execute();
         redisDao.deleteAll();
     }
 
@@ -220,7 +219,7 @@ class OotdLikeServiceTest {
         Ootd ootd = Ootd.createOotd(user,
                 content,
                 isPrivate,
-                Arrays.asList(ootdImage),
+                List.of(ootdImage),
                 Arrays.asList(ootdStyle, ootdStyle1));
 
         return ootdRepository.save(ootd);

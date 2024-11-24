@@ -10,13 +10,13 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 
-import zip.ootd.ootdzip.DBCleanUp;
+import zip.ootd.ootdzip.DBCleaner;
+import zip.ootd.ootdzip.IntegrationTestSupport;
 import zip.ootd.ootdzip.brand.domain.Brand;
 import zip.ootd.ootdzip.brand.repository.BrandRepository;
 import zip.ootd.ootdzip.category.data.SizeType;
@@ -54,17 +54,11 @@ import zip.ootd.ootdzip.user.repository.UserRepository;
 import zip.ootd.ootdzip.user.service.UserService;
 
 /**
- * 알람 처리를 위해 IntegrationTestSupport 를 상속받지 않았습니다.
- * IntegrationTestSupport 에는 @Transaction 이 있는데
- * 알람 처리로직 중 부모 트랜잭션이 끝나야 수행되기 때문에 포괄적으로 트랜잭션 처리를 할 수 없습니다.
- * 그래서 트랜잭션으로 DB 를 초기화하지 않고 컨텍스트를 재시작해서 DB 를 초기화합니다.
- * 컨텍스트 초기화방법으로 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD) 어노테이션을 사용했습니다
- * </br>
- * 2024.06.20
- * 컨텍스트 초기화 방법은 시간이 오래걸립니다. 그래서 DB 를 비우는 방식으로 변경했습니다.
+ * 알람 처리 로직은 부모 트랜잭션이 끝나야 수행되기 때문에
+ * 테스트 메소드에 @Transactional 어노테이션을 사용할 수 없습니다.
+ * 그래서 트랜잭션으로 DB를 초기화하는 대신 DB를 비우는 방식을 사용합니다.
  */
-@SpringBootTest
-public class NotificationAsyncServiceTest {
+public class NotificationAsyncServiceTest extends IntegrationTestSupport {
 
     @Autowired
     private StyleRepository styleRepository;
@@ -106,14 +100,14 @@ public class NotificationAsyncServiceTest {
     private NotificationRepository notificationRepository;
 
     @Autowired
-    private DBCleanUp dbCleanUp;
+    private DBCleaner dbCleaner;
 
     @Autowired
     private RedisDao redisDao;
 
     @AfterEach
     void tearDown() {
-        dbCleanUp.execute();
+        dbCleaner.execute();
         redisDao.deleteAll();
     }
 

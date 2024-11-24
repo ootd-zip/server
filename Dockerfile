@@ -1,21 +1,40 @@
-# 첫 번째 스테이지: 빌드
-FROM openjdk:17 as builder
+# Development
+FROM eclipse-temurin:17 AS dev
+WORKDIR app
 
-RUN apk update && apk add --no-cache findutils # Alpine Linux에서는 apk를 사용
-COPY gradlew .
 COPY gradle gradle
-COPY build.gradle .
-COPY settings.gradle .
-COPY src src
-RUN chmod -R 755 ./gradlew
-RUN ./gradlew clean build -x test -Penv=ci
+COPY gradlew build.gradle settings.gradle ./
+RUN chmod +x gradlew
 
-# 두 번째 스테이지: 실행
-FROM openjdk:17
+RUN ./gradlew clean --no-daemon
+
+ENV SPRING_PROFILES_ACTIVE=dev
+ENV TZ=Asia/Seoul
+
+EXPOSE 8081
+
+ENTRYPOINT ["./gradlew", "bootRun", "--no-daemon"]
+
+# Production
+## Stage 1. Build
+FROM eclipse-temurin:17 AS builder
+
+COPY gradle gradle
+COPY gradlew build.gradle settings.gradle ./
+COPY src src
+RUN chmod +x gradlew
+
+RUN ./gradlew bootJar
+
+## Stage 2. Production
+FROM eclipse-temurin:17-alpine AS prod
+WORKDIR /app
+
 COPY --from=builder build/libs/*.jar app.jar
 
-ARG SERVER_MODE
-RUN echo "$SERVER_MODE"
-ENV SERVER_MODE=$SERVER_MODE
+ENV SPRING_PROFILES_ACTIVE=prod
+ENV TZ=Asia/Seoul
 
-ENTRYPOINT ["java", "-Dspring.profiles.active=${SERVER_MODE}","-Duser.timezone=Asia/Seoul", "-jar", "/app.jar"]
+EXPOSE 8081
+
+ENTRYPOINT ["java", "-jar", "/app.jar"]

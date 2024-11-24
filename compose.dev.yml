@@ -1,0 +1,44 @@
+services:
+  app:
+    build:
+      context: .
+      target: dev
+    ports:
+      - "8081:8081"
+    volumes:
+      - build-cache:/app/build
+      - ./.gradle:/app/.gradle:delegated
+      - ./src:/app/src:ro
+      - ./build.gradle:/app/build.gradle:ro
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_DATASOURCE_URL=jdbc:mariadb://db:3306/ootdzip_dev
+      - SPRING_DATA_REDIS_HOST=redis
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+  db:
+    image: mariadb
+    restart: always
+    environment:
+      - MARIADB_DATABASE=ootdzip_dev
+      - MARIADB_USER=ootdzip_dev
+      - MARIADB_PASSWORD=1234
+      - MARIADB_RANDOM_ROOT_PASSWORD=1
+    healthcheck:
+      test: [ "CMD", "healthcheck.sh", "--connect", "--innodb_initialized" ]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  redis:
+    image: redis
+    restart: always
+
+volumes:
+  build-cache:
+  db-data:

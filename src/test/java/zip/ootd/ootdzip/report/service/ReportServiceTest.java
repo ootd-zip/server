@@ -12,9 +12,9 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
-import zip.ootd.ootdzip.DBCleanUp;
+import zip.ootd.ootdzip.DBCleaner;
+import zip.ootd.ootdzip.IntegrationTestSupport;
 import zip.ootd.ootdzip.common.dao.RedisDao;
 import zip.ootd.ootdzip.ootd.domain.Ootd;
 import zip.ootd.ootdzip.ootd.repository.OotdRepository;
@@ -27,8 +27,7 @@ import zip.ootd.ootdzip.report.service.request.ReportType;
 import zip.ootd.ootdzip.user.domain.User;
 import zip.ootd.ootdzip.user.repository.UserRepository;
 
-@SpringBootTest
-class ReportServiceTest {
+class ReportServiceTest extends IntegrationTestSupport {
 
     @Autowired
     private ReportRepository reportRepository;
@@ -43,14 +42,14 @@ class ReportServiceTest {
     private UserRepository userRepository;
 
     @Autowired
-    private DBCleanUp dbCleanUp;
+    private DBCleaner dbCleaner;
 
     @Autowired
     private RedisDao redisDao;
 
     @AfterEach
     void tearDown() {
-        dbCleanUp.execute();
+        dbCleaner.execute();
         redisDao.deleteAll();
     }
 
