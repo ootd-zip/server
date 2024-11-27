@@ -29,13 +29,6 @@ public class NotificationController {
     private final NotificationService notificationService;
     private final UserService userService;
 
-    @Hidden
-    @GetMapping(value = "/subscribe", produces = "text/event-stream")
-    public SseEmitter subscribe(
-            @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId) {
-        return notificationService.subscribe(userService.getAuthenticatiedUser(), lastEventId);
-    }
-
     @Operation(summary = "알람 조회", description = "사용자가 받은 알람을 조회합니다.")
     @GetMapping(value = "")
     public ApiResponse<CommonSliceResponse<NotificationGetAllRes>> getNotification(
