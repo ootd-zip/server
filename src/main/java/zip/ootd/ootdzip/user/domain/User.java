@@ -27,6 +27,7 @@ import zip.ootd.ootdzip.clothes.domain.Clothes;
 import zip.ootd.ootdzip.common.entity.BaseEntity;
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.exception.code.ErrorCode;
+import zip.ootd.ootdzip.fcm.domain.FcmInfo;
 import zip.ootd.ootdzip.images.domain.Images;
 import zip.ootd.ootdzip.ootd.domain.Ootd;
 import zip.ootd.ootdzip.user.data.UserRole;
@@ -86,6 +87,9 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<UserStyle> userStyles;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<FcmInfo> fcmInfos;
 
     public static User getDefault() {
         return User.builder()

@@ -39,6 +39,7 @@ out/
 ### key file ###
 **/application-secret.yaml
 **/resources/**/*.p8
+**/resources/firebase/
 
 ### Querydsl ###
 /src/main/generated/
