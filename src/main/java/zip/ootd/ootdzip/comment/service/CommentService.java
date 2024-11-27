@@ -19,7 +19,6 @@ import zip.ootd.ootdzip.comment.repository.CommentRepository;
 import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.exception.code.ErrorCode;
 import zip.ootd.ootdzip.common.response.CommonSliceResponse;
-import zip.ootd.ootdzip.fcm.service.FcmService;
 import zip.ootd.ootdzip.notification.domain.NotificationType;
 import zip.ootd.ootdzip.notification.event.NotificationEvent;
 import zip.ootd.ootdzip.ootd.domain.Ootd;

@@ -28,7 +28,6 @@ import zip.ootd.ootdzip.common.exception.CustomException;
 import zip.ootd.ootdzip.common.exception.code.ErrorCode;
 import zip.ootd.ootdzip.common.response.CommonPageResponse;
 import zip.ootd.ootdzip.common.response.CommonSliceResponse;
-import zip.ootd.ootdzip.fcm.service.FcmService;
 import zip.ootd.ootdzip.images.domain.Images;
 import zip.ootd.ootdzip.images.service.ImagesService;
 import zip.ootd.ootdzip.lock.annotation.RLockCustom;
