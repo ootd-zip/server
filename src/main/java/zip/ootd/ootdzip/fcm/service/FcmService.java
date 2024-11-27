@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -37,6 +38,12 @@ public class FcmService {
 
     private final FcmRepository fcmRepository;
     private final UserRepository userRepository;
+
+    @Value(("${fcm.service-key}"))
+    private String accessKey;
+
+    @Value(("${fcm.project-id}"))
+    private String projectId;
 
     /**
      * 사용자가 토큰이없다면 최초생성이므로
@@ -105,7 +112,7 @@ public class FcmService {
 
         HttpEntity<String> entity = new HttpEntity<>(message, headers);
 
-        String url = "<https://fcm.googleapis.com/v1/projects/ootdzip-cf27f/messages:send>";
+        String url = "<https://fcm.googleapis.com/v1/projects/" + projectId + "/messages:send>";
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
 
         return response;
@@ -133,11 +140,10 @@ public class FcmService {
      * Firebase Admin SDK의 비공개 키를 참조하여 Bearer 토큰을 발급 받습니다.
      */
     private String getAccessToken() {
-        String firebaseConfigPath = "firebase/ootdzip-cf27f-firebase-adminsdk-iuig1-8969152a6a.json";
 
         try {
             GoogleCredentials googleCredentials = GoogleCredentials
-                    .fromStream(new ClassPathResource(firebaseConfigPath).getInputStream())
+                    .fromStream(new ClassPathResource(accessKey).getInputStream())
                     .createScoped(List.of("<https://www.googleapis.com/auth/cloud-platform>"));
 
             googleCredentials.refreshIfExpired();
