@@ -94,10 +94,8 @@ public class FcmService {
 
         RestTemplate restTemplate = new RestTemplate();
 
-        /**
-         * 추가된 사항 : RestTemplate 이용중 클라이언트의 한글 깨짐 증상에 대한 수정
-         * @refernece : https://stackoverflow.com/questions/29392422/how-can-i-tell-resttemplate-to-post-with-utf-8-encoding
-         */
+        // 추가된 사항 : RestTemplate 이용중 클라이언트의 한글 깨짐 증상에 대한 수정
+        //@refernece : https://stackoverflow.com/questions/29392422/how-can-i-tell-resttemplate-to-post-with-utf-8-encoding
         restTemplate.getMessageConverters()
                 .add(0, new StringHttpMessageConverter(StandardCharsets.UTF_8));
 
@@ -107,7 +105,7 @@ public class FcmService {
 
         HttpEntity<String> entity = new HttpEntity<>(message, headers);
 
-        String API_URL = "<https://fcm.googleapis.com/v1/projects/ootdzip-cf27f/messages:send>";
+        final String API_URL = "<https://fcm.googleapis.com/v1/projects/ootdzip-cf27f/messages:send>";
         ResponseEntity<String> response = restTemplate.exchange(API_URL, HttpMethod.POST, entity, String.class);
 
         return response;
