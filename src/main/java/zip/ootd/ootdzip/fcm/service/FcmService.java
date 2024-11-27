@@ -105,8 +105,8 @@ public class FcmService {
 
         HttpEntity<String> entity = new HttpEntity<>(message, headers);
 
-        final String API_URL = "<https://fcm.googleapis.com/v1/projects/ootdzip-cf27f/messages:send>";
-        ResponseEntity<String> response = restTemplate.exchange(API_URL, HttpMethod.POST, entity, String.class);
+        String url = "<https://fcm.googleapis.com/v1/projects/ootdzip-cf27f/messages:send>";
+        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
 
         return response;
     }
