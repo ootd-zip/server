@@ -265,6 +265,7 @@ public class OotdService {
             return;
         }
 
+        // 앱 내 알람
         eventPublisher.publishEvent(NotificationEvent.builder()
                 .receiver(receiver)
                 .sender(sender)
