@@ -54,7 +54,7 @@ public class FcmInfo extends BaseEntity {
 
         List<FcmNotificationType> fcmDefaultNotificationTypes = Stream.of(NotificationType.values())
                 .map(notificationType -> FcmNotificationType.builder()
-                .notificationType(notificationType).build()).toList();
+                        .notificationType(notificationType).build()).toList();
 
         FcmInfo fcmInfo = FcmInfo.builder()
                 .user(user)
@@ -78,6 +78,10 @@ public class FcmInfo extends BaseEntity {
     public boolean isExistAllowNotificationType(Notification notification) {
         return fcmNotificationTypes.stream()
                 .anyMatch(fnt -> fnt.getNotificationType() == notification.getNotificationType() && fnt.getIsAllow());
+    }
+
+    public void changePermission(Boolean isPermission) {
+        this.isPermission = isPermission;
     }
 
     // == 연관관계 메서드 == //
