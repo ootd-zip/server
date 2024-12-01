@@ -24,6 +24,7 @@ import com.google.auth.oauth2.GoogleCredentials;
 
 import lombok.RequiredArgsConstructor;
 import zip.ootd.ootdzip.fcm.data.FcmMessageRes;
+import zip.ootd.ootdzip.fcm.data.FcmPostConfigReq;
 import zip.ootd.ootdzip.fcm.data.FcmPostReq;
 import zip.ootd.ootdzip.fcm.domain.FcmInfo;
 import zip.ootd.ootdzip.fcm.repository.FcmRepository;
@@ -169,5 +170,32 @@ public class FcmService {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Transactional
+    public void changeConfig(FcmPostConfigReq fcmPostConfigReq) {
+
+        FcmInfo fcmInfo = fcmRepository.findByFcmToken(fcmPostConfigReq.getFcmToken()).orElseThrow();
+
+        // 전체 알림 허용 수정
+        if (fcmPostConfigReq.getIsPermission() != null) {
+            fcmInfo.changePermission(fcmPostConfigReq.getIsPermission());
+        }
+
+        // 세부 알림 허용 수정
+        if (fcmPostConfigReq.getDetailNotifications() != null) {
+            fcmPostConfigReq.getDetailNotifications().forEach(dn ->
+                    fcmInfo.getFcmNotificationTypes().stream()
+                            .filter(fn -> fn.getNotificationType() == dn.getNotificationType())
+                            .findFirst()
+                            .ifPresent(fn -> fn.changeAllow(dn.getIsAllow())));
+        }
+    }
+
+    @Transactional
+    public void getConfig(String token) {
+
+        FcmInfo fcmInfo = fcmRepository.findByFcmToken(token).orElseThrow();
+
     }
 }

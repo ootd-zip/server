@@ -30,4 +30,7 @@ public class FcmNotificationType extends BaseEntity {
     @Builder.Default
     private Boolean isAllow = true;
 
+    public void changeAllow(Boolean isAllow) {
+        this.isAllow = isAllow;
+    }
 }
